@@ -309,7 +309,7 @@ export const CATALOGUE: SeedCategory[] = [
         description:
           "Eggplant, zucchini, pepper, onion, potatoes, tomatoes.",
         price: 800,
-        note: `${UNIT_NOTE} UNRESOLVED: does the customer choose one vegetable, several, or is it always a mixed assortment? Transliteration of "Ma7sh" to confirm.`,
+        note: `${UNIT_NOTE} UNRESOLVED: does the customer choose one vegetable, several, or is it always a mixed assortment?`,
       },
       {
         slug: "noodles",
@@ -359,14 +359,14 @@ export const CATALOGUE: SeedCategory[] = [
         slug: "rokak-minced-meat",
         name: "Rokak with Minced Meat",
         price: 900,
-        note: `${UNIT_NOTE} Transliteration of "Ro2a2" is a placeholder — confirm the spelling you want.`,
+        note: `${UNIT_NOTE}`,
       },
       {
         slug: "rokak-cones",
         name: "Rokak Cones with Minced Meat, Mozzarella & Tomatoes",
         price: 950,
         allergens: ["dairy"],
-        note: `${UNIT_NOTE} Transliteration of "Ro2a2" is a placeholder.`,
+        note: `${UNIT_NOTE}`,
       },
       {
         slug: "lasagna",
@@ -457,7 +457,7 @@ export const CATALOGUE: SeedCategory[] = [
         name: "Kunafa with Cream",
         price: 1100,
         allergens: ["dairy"],
-        note: `${UNIT_NOTE} Spelling: "Kunafa" here, "Konafa" elsewhere in your list — confirm one.`,
+        note: `${UNIT_NOTE}`,
       },
       { slug: "cinnabon-cake", name: "Cinnabon Cake", price: 1250, note: UNIT_NOTE },
       {
@@ -528,8 +528,8 @@ export const CATALOGUE: SeedCategory[] = [
         note: UNIT_NOTE,
       },
       {
-        slug: "profiteroles-konafa-pistachio",
-        name: "Profiteroles with Konafa & Pistachio Sauce",
+        slug: "profiteroles-kunafa-pistachio",
+        name: "Profiteroles with Kunafa & Pistachio Sauce",
         price: 1450,
         allergens: ["nuts", "dairy"],
         note: UNIT_NOTE,
@@ -555,14 +555,14 @@ export const CATALOGUE: SeedCategory[] = [
         note: UNIT_NOTE,
       },
       {
-        slug: "mini-baklava-konafa",
-        name: "Mini Baklava with Konafa",
+        slug: "mini-baklava-kunafa",
+        name: "Mini Baklava with Kunafa",
         price: 1150,
         note: `${UNIT_NOTE} Named "Mini" rather than "Mini Bites" — same family, or a different product?`,
       },
       {
-        slug: "bonbon-chocolate-box-pistachio-konafa",
-        name: "Bonbon Chocolate Box stuffed with Pistachio Konafa",
+        slug: "bonbon-chocolate-box-pistachio-kunafa",
+        name: "Bonbon Chocolate Box stuffed with Pistachio Kunafa",
         price: 1450,
         allergens: ["nuts"],
         note: UNIT_NOTE,

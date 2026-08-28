@@ -5,9 +5,9 @@ Replaces manual order-taking over Instagram DMs.
 
 ## Status
 
-**Foundations.** The specification is agreed and the data layer is built, verified
-and seeded with the real catalogue. The customer website and admin dashboard are
-the next phase.
+**Customer website built through the cart.** Homepage, menu, product pages and cart
+are working against the real catalogue. Checkout, the event order form and the admin
+dashboard are the next phases.
 
 | | |
 |---|---|
@@ -16,6 +16,7 @@ the next phase.
 | [`docs/source-menu-full-buffet.pdf`](docs/source-menu-full-buffet.pdf) | Menu as supplied (image-only, no text layer) |
 | [`prisma/schema.prisma`](prisma/schema.prisma) | Data model |
 | [`prisma/catalogue.ts`](prisma/catalogue.ts) | The menu as data — readable, reviewable |
+| [`src/app`](src/app) | Customer website — home, menu, product, cart |
 
 ## The catalogue
 
@@ -64,6 +65,32 @@ Nothing has been invented to fill a gap.
 
 Items still open are listed in section 10 of the spec.
 
+## What the website does
+
+- **Homepage** with the two paths: *Order from The Diine* and *Plan an Event*.
+- **Menu** across all four categories, with a sticky category strip, plus a page
+  per category.
+- **Product pages** with required choices, priced variants, allergens, quantity,
+  special instructions and Add to Cart. Price updates live; Add to Cart stays
+  locked until every required choice is answered.
+- **Cart** showing each line's chosen options, editable quantities, removal and
+  a subtotal.
+
+Every dish, price, choice and category comes from the database. Nothing about the
+menu is written into the interface, so admin edits appear on the site immediately.
+
+**Missing information is omitted, never shown as a placeholder.** Selling units and
+serving sizes are absent from the catalogue, so the customer simply does not see
+them — no "TBD" reaches a customer.
+
+**Product photography** is not yet supplied. Each dish shows a branded placeholder
+derived from its name; setting `Product.imageUrl` replaces it with a photograph
+with no code change.
+
+**The cart stores references, not prices.** Only ids and quantities go into the
+browser; every name and price is resolved from the database each time the cart is
+shown, so a stale cart can never display an old price.
+
 ## Running it locally
 
 ```bash
@@ -71,6 +98,7 @@ npm install
 cp .env.example .env          # then fill in DATABASE_URL
 npm run db:push               # create the tables
 npm run db:seed               # load the catalogue
+npm run dev                   # http://localhost:3000
 ```
 
 `npm run db:seed` is idempotent — products are matched on slug, so re-running

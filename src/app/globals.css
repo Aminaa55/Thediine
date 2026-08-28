@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream text-ink font-body antialiased;
+  }
+  /* Logical properties throughout, so an Arabic RTL build needs no rework. */
+  [dir="rtl"] .flip-rtl {
+    transform: scaleX(-1);
+  }
+  ::selection {
+    background: #efe2be;
+    color: #3b2310;
+  }
+  :focus-visible {
+    outline: 2px solid #a87e2e;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-body text-[11px] uppercase tracking-widest text-gold;
+  }
+  .rule-gold {
+    @apply h-px w-12 bg-gold/40;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
+           text-[15px] font-medium transition-colors duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-cream hover:bg-ink/90;
+  }
+  .btn-gold {
+    @apply btn bg-gold text-white hover:bg-gold/90;
+  }
+  .btn-outline {
+    @apply btn border border-ink/25 text-ink hover:border-ink/60 hover:bg-ink/[0.04];
+  }
+  .card-surface {
+    @apply rounded-sm border border-line bg-cream-warm;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
