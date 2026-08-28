@@ -5,9 +5,10 @@ import { useEffect, useState, useTransition } from "react";
 import { useCart } from "@/lib/cart";
 import { resolveCart, type ResolvedCart } from "@/app/actions";
 import { formatEGP } from "@/lib/money";
+import { RULES } from "@/lib/ordering";
 
 export function CartView() {
-  const { lines, ready, setQuantity, removeLine } = useCart();
+  const { lines, ready, mode, setQuantity, removeLine } = useCart();
   const [resolved, setResolved] = useState<ResolvedCart | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -21,10 +22,12 @@ export function CartView() {
     return <p className="py-20 text-center text-[15px] text-ink-faint">Loading your cart…</p>;
   }
 
+  const isEvent = mode === "event";
+
   if (lines.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="font-display text-[24px] text-ink">Your cart is empty</p>
+        <p className="font-display text-[24px] text-ink">Nothing here yet</p>
         <p className="mx-auto mt-3 max-w-sm text-[16px] text-ink-soft">
           Browse the menu and add the dishes you would like.
         </p>
@@ -62,9 +65,6 @@ export function CartView() {
                     {line.options.map((o) => (
                       <li key={o.groupName} className="text-[14.5px] text-ink-soft">
                         <span className="text-ink-faint">{o.groupName}:</span> {o.choiceName}
-                        {o.priceDelta !== 0 && (
-                          <span className="ms-1 tabular-nums">(+{formatEGP(o.priceDelta)})</span>
-                        )}
                       </li>
                     ))}
                   </ul>
@@ -81,7 +81,7 @@ export function CartView() {
                 )}
               </div>
 
-              <p className="whitespace-nowrap font-display text-[18px] font-semibold text-ink tabular-nums">
+              <p className="whitespace-nowrap font-display text-[18px] font-semibold tabular-nums text-ink">
                 {formatEGP(line.lineTotal)}
               </p>
             </div>
@@ -96,9 +96,7 @@ export function CartView() {
                 >
                   &minus;
                 </button>
-                <span className="min-w-[2rem] text-center text-[15px] tabular-nums">
-                  {line.quantity}
-                </span>
+                <span className="min-w-[2rem] text-center text-[15px] tabular-nums">{line.quantity}</span>
                 <button
                   type="button"
                   onClick={() => setQuantity(line.key, line.quantity + line.quantityStep)}
@@ -118,7 +116,7 @@ export function CartView() {
               </button>
 
               {!line.problem && (
-                <span className="ms-auto text-[13.5px] text-ink-faint tabular-nums">
+                <span className="ms-auto text-[13.5px] tabular-nums text-ink-faint">
                   {formatEGP(line.unitPrice)} each
                 </span>
               )}
@@ -127,24 +125,28 @@ export function CartView() {
         ))}
       </ul>
 
-      <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="card-surface p-6">
-          <h2 className="font-display text-[21px] font-semibold text-ink">Order summary</h2>
+      <aside className="lg:sticky lg:top-32 lg:self-start">
+        <div className="rounded-sm border border-line bg-cream-warm p-6">
+          <h2 className="font-display text-[21px] font-semibold text-ink">
+            {isEvent ? "Your event so far" : "Order summary"}
+          </h2>
 
           <dl className="mt-6 space-y-3 text-[15.5px]">
             <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-ink-soft">Subtotal</dt>
+              <dt className="text-ink-soft">Food subtotal</dt>
               <dd className="font-medium tabular-nums">{formatEGP(cart.subtotal)}</dd>
             </div>
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-ink-soft">Delivery</dt>
-              <dd className="text-[14.5px] text-ink-faint">Calculated at checkout</dd>
-            </div>
+            {!isEvent && (
+              <div className="flex items-baseline justify-between gap-4">
+                <dt className="text-ink-soft">Delivery</dt>
+                <dd className="text-[14.5px] text-ink-faint">Calculated at checkout</dd>
+              </div>
+            )}
           </dl>
 
           <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-5">
             <span className="font-display text-[19px] font-semibold text-ink">Total so far</span>
-            <span className="font-display text-[21px] font-semibold text-ink tabular-nums">
+            <span className="font-display text-[21px] font-semibold tabular-nums text-ink">
               {formatEGP(cart.subtotal)}
             </span>
           </div>
@@ -155,25 +157,48 @@ export function CartView() {
             </p>
           )}
 
-          <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
-            Continue to checkout
-          </button>
-          <p className="mt-3 text-center text-[13.5px] text-ink-faint">
-            Delivery or pickup, your date and payment come next.
-          </p>
+          {isEvent ? (
+            <>
+              <Link href="/events/extras" className="btn-primary mt-6 w-full">
+                Continue to event extras
+              </Link>
+              <p className="mt-3 text-center text-[13.5px] text-ink-faint">
+                Table décor, setup and serving staff come next.
+              </p>
+            </>
+          ) : (
+            <>
+              <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
+                Continue to checkout
+              </button>
+              <p className="mt-3 text-center text-[13.5px] text-ink-faint">
+                Delivery or pickup, your date and payment come next.
+              </p>
+            </>
+          )}
 
-          <Link
-            href="/menu"
-            className="mt-5 block text-center text-[14.5px] text-gold underline underline-offset-4"
-          >
+          <Link href="/menu" className="mt-5 block text-center text-[14.5px] text-gold underline underline-offset-4">
             Keep browsing the menu
           </Link>
         </div>
 
-        <p className="mt-5 text-[13.5px] leading-relaxed text-ink-faint">
-          There is no minimum order. Orders need at least 48 hours&rsquo; notice, and every
-          order is confirmed by WhatsApp before we start cooking.
-        </p>
+        {/* Notice periods appear here, in context — never both at once, and
+            never on the homepage. */}
+        <div className="mt-5 rounded-sm border border-line bg-cream-deep px-5 py-4">
+          {isEvent ? (
+            <p className="text-[14px] leading-relaxed text-ink-soft">
+              Events need at least{" "}
+              <strong className="font-semibold text-ink">{RULES.event.noticeLabel}&rsquo; notice</strong>.
+              Your request is confirmed by us personally before it is booked.
+            </p>
+          ) : (
+            <p className="text-[14px] leading-relaxed text-ink-soft">
+              Orders need at least{" "}
+              <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>.
+              You will choose your date at checkout, and only available dates can be picked.
+            </p>
+          )}
+        </div>
       </aside>
     </div>
   );

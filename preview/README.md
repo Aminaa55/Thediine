@@ -14,3 +14,15 @@ To regenerate after the catalogue changes, re-export `prisma/catalogue.ts` to
 JSON and substitute it for the `DATA` constant. Keep the file pure ASCII —
 non-ASCII characters must be written as HTML entities or `\uXXXX` escapes, so
 the page cannot break if it is served without a charset header.
+
+## Escaping
+
+The file is pure ASCII so it cannot break when served without a charset header.
+The two regions escape differently, and mixing them up is a real bug:
+
+- **HTML markup** uses HTML entities (`&mdash;`, `&rsquo;`).
+- **JavaScript strings** use `\uXXXX` escapes.
+
+An HTML entity inside a JS string is escaped a second time by `esc()` and the
+customer literally sees `&mdash;` on the page. That is exactly what happened on
+the Events page in the first preview.

@@ -397,9 +397,13 @@ model EventDetail {
   guestCount     Int
   eventTime      String?
 
-  /// Quote-based: carries no price and adds nothing to the order total.
-  decorRequested Boolean @default(false)
-  decorNotes     String?
+  /// All three extras are quote-based: they carry no price and add nothing to
+  /// the order total. The business quotes them when confirming the event.
+  decorRequested        Boolean @default(false)
+  decorNotes            String?
+  setupRequested        Boolean @default(false)
+  servingStaffRequested Boolean @default(false)
+  extrasNotes           String?
 
   venueName String?
 
@@ -501,4 +505,31 @@ model StockMovement {
   createdAt    DateTime   @default(now())
 
   @@index([ingredientId, createdAt])
+}
+
+// ------------------------------------------------------------------ gallery
+
+/// Photographs of real dishes, tables and events, shown in "Our Work".
+/// Managed from admin: add, remove, reorder. Never hardcoded in the interface.
+model GalleryImage {
+  id        String           @id @default(cuid())
+  imageUrl  String
+  altEn     String
+  altAr     String?
+  captionEn String?
+  captionAr String?
+  /// Lets the same library feed different places without duplicating rows.
+  placement GalleryPlacement @default(BOTH)
+  isActive  Boolean          @default(true)
+  sortOrder Int              @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([placement, sortOrder])
+}
+
+enum GalleryPlacement {
+  HOME
+  EVENTS
+  BOTH
 }
