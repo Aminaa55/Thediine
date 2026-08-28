@@ -30,7 +30,7 @@ button{cursor:pointer}
 .narrow{max-width:760px; margin:0 auto; padding:0 20px}
 @media(min-width:640px){.narrow{padding:0 32px}}
 .eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--gold)}
-.eyebrow.light{color:var(--gold-bright)}
+.eyebrow.light{color:var(--gold)}
 .tnum{font-variant-numeric:tabular-nums}
 .hair{display:block; height:1px; width:100%;
   background:linear-gradient(90deg, rgba(168,126,46,.5), rgba(168,126,46,.15), transparent)}
@@ -60,16 +60,6 @@ nav.main a:hover{color:var(--ink)}
 .mobile-nav a{display:block; padding:14px 0; border-bottom:1px solid var(--line-soft)}
 .mobile-nav a:last-child{border-bottom:0}
 
-/* event ribbon */
-.ribbon{position:sticky; top:64px; z-index:30; background:var(--ink-deep); color:var(--cream);
-  border-bottom:1px solid var(--line-dark)}
-@media(min-width:640px){.ribbon{top:80px}}
-.ribbon .wrap{display:flex; flex-wrap:wrap; align-items:center; gap:4px 16px; padding:10px 20px; font-size:13px}
-@media(min-width:640px){.ribbon .wrap{padding:10px 32px}}
-.ribbon .meta{color:rgba(251,241,228,.7)}
-.ribbon a{margin-left:auto; color:var(--gold-bright)}
-.ribbon a:hover{text-decoration:underline}
-
 /* buttons */
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px;
   padding:14px 28px; font-size:15px; font-weight:500; border:1px solid transparent; transition:background-color .2s, border-color .2s}
@@ -78,16 +68,136 @@ nav.main a:hover{color:var(--ink)}
 .btn-primary[disabled]{background:rgba(59,35,16,.25); cursor:not-allowed}
 .btn-outline{border-color:rgba(59,35,16,.25); color:var(--ink)}
 .btn-outline:hover{border-color:rgba(59,35,16,.6); background:rgba(59,35,16,.04)}
-.btn-dark{border-color:rgba(199,154,63,.5); color:var(--cream)}
-.btn-dark:hover{background:rgba(199,154,63,.1)}
 
 /* bands */
 section{padding:72px 0}
 @media(min-width:640px){section{padding:96px 0}}
-.band-dark{background:var(--ink-deep); color:var(--cream)}
-.band-dark h2,.band-dark h3{color:var(--cream)}
-.band-deep{background:var(--cream-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
-.band-toast{background:var(--cream-toast); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+
+/* bands: warm creams only, no dark blocks */
+.band-warm{background:var(--cream-warm)}
+.band-deep{background:var(--cream-deep)}
+.band-toast{background:var(--cream-toast)}
+.curve{position:relative; margin-bottom:-1px; line-height:0}
+.curve svg{display:block; width:100%; height:46px}
+@media(min-width:640px){.curve svg{height:80px}}
+.curve.flip svg{transform:rotate(180deg)}
+.label-rule{display:flex; align-items:center; gap:16px; font-size:11px; text-transform:uppercase;
+  letter-spacing:.22em; color:var(--gold)}
+.label-rule::after{content:""; height:1px; flex:1; max-width:80px; background:rgba(168,126,46,.35)}
+.link-sweep{position:relative; display:inline-block; color:var(--gold)}
+.link-sweep::after{content:""; position:absolute; bottom:-2px; left:0; height:1px; width:0;
+  background:var(--gold); transition:width .3s}
+.link-sweep:hover::after{width:100%}
+.bracket{position:relative}
+.bracket::before,.bracket::after{content:""; position:absolute; width:20px; height:20px;
+  border-color:rgba(168,126,46,.45); pointer-events:none}
+.bracket::before{left:0; top:0; border-left:1px solid; border-top:1px solid}
+.bracket::after{right:0; bottom:0; border-right:1px solid; border-bottom:1px solid}
+.ital{font-style:italic; font-weight:400; color:var(--gold)}
+.rings{position:absolute; right:-160px; top:-130px; width:520px; height:520px;
+  color:rgba(168,126,46,.13); pointer-events:none}
+@media(min-width:1024px){.rings{right:-80px}}
+.cat-grid2{display:grid; gap:20px; margin-top:56px}
+@media(min-width:640px){.cat-grid2{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.cat-grid2{grid-template-columns:repeat(4,1fr)}}
+.cat-card{display:flex; flex-direction:column; justify-content:space-between; gap:48px;
+  border:1px solid var(--line); background:var(--cream); border-radius:2px; padding:32px 24px;
+  transition:transform .3s, border-color .3s, box-shadow .3s}
+.cat-card:hover{transform:translateY(-6px); border-color:var(--gold); box-shadow:0 18px 36px -26px rgba(59,35,16,.6)}
+@media(min-width:1024px){.cat-card.drop{margin-top:40px}}
+.cat-card .n{font-family:Fraunces,Georgia,serif; font-style:italic; font-size:15px; color:var(--gold)}
+.cat-card h3{font-size:23px; font-weight:600; line-height:1.25}
+.cat-card .c{margin-top:8px; font-size:13.5px; color:var(--ink-faint)}
+.cat-card .u{display:block; margin-top:20px; height:1px; width:32px; background:rgba(168,126,46,.4); transition:width .3s}
+.cat-card:hover .u{width:64px}
+.spotlight{display:grid; gap:20px; margin-top:48px}
+@media(min-width:1024px){.spotlight{grid-template-columns:1.15fr 1fr; align-items:start}}
+.spot{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:36px;
+  transition:transform .3s, border-color .3s}
+@media(min-width:640px){.spot{padding:48px}}
+.spot:hover{transform:translateY(-4px); border-color:var(--gold)}
+.spot h3{font-size:30px; font-weight:600; line-height:1.15; margin-top:16px}
+@media(min-width:640px){.spot h3{font-size:38px}}
+.spot .cat{margin-top:24px; font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--ink-faint)}
+.spot p{margin-top:20px; font-size:16.5px; color:var(--ink-soft); max-width:28rem}
+.mini{display:grid; gap:20px}
+@media(min-width:640px){.mini{grid-template-columns:repeat(2,1fr)}}
+.occ2{display:grid; gap:16px}
+@media(min-width:640px){.occ2{grid-template-columns:repeat(2,1fr)}}
+.occ2 li{list-style:none; border:1px solid rgba(168,126,46,.3); background:var(--cream-warm);
+  border-radius:2px; padding:32px 24px; transition:transform .3s}
+.occ2 li:hover{transform:translateY(-4px)}
+@media(min-width:640px){.occ2 li.d1{transform:translateY(24px)} .occ2 li.d2{transform:translateY(-12px)}
+  .occ2 li.d1:hover{transform:translateY(18px)} .occ2 li.d2:hover{transform:translateY(-18px)}}
+.occ2 li p{margin-top:16px; font-family:Fraunces,Georgia,serif; font-size:20px; line-height:1.3}
+.steps3{position:relative; display:grid; gap:48px; margin-top:56px; list-style:none; padding:0}
+@media(min-width:640px){.steps3{grid-template-columns:repeat(3,1fr); gap:32px}}
+.steps3 .thread{display:none}
+@media(min-width:640px){.steps3 .thread{display:block; position:absolute; left:32px; right:32px; top:13px;
+  border-top:1px dashed rgba(168,126,46,.35)}}
+.steps3 .num{position:relative; display:flex; align-items:center; justify-content:center; width:28px; height:28px;
+  border-radius:999px; border:1px solid rgba(168,126,46,.5); background:var(--cream);
+  font-family:Fraunces,Georgia,serif; font-size:13px; color:var(--gold)}
+.steps3 h3{margin-top:24px; font-size:21px; font-weight:600}
+.steps3 p{margin-top:10px; font-size:15.5px; color:var(--ink-soft)}
+.how5{display:grid; gap:40px; margin-top:56px; list-style:none; padding:0}
+@media(min-width:640px){.how5{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.how5{grid-template-columns:repeat(5,1fr); gap:24px}}
+.how5 li{border:1px solid var(--line); background:var(--cream); border-radius:2px; padding:32px 24px;
+  transition:transform .3s}
+.how5 li:hover{transform:translateY(-6px)}
+@media(min-width:1024px){.how5 li.drop{margin-top:32px}}
+.how5 .n{font-family:Fraunces,Georgia,serif; font-style:italic; font-size:15px; color:var(--gold)}
+.how5 h3{margin-top:20px; font-size:19px; font-weight:600}
+.how5 p{margin-top:10px; font-size:15px; color:var(--ink-soft)}
+/* event note in the menu header */
+.event-note{margin-top:32px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px;
+  border:1px solid rgba(168,126,46,.35); background:rgba(239,226,190,.35); border-radius:2px; padding:16px 20px}
+.event-note .dot{width:8px; height:8px; border-radius:999px; background:var(--gold); flex:none}
+.event-note .who{font-size:16px}
+.event-note a{margin-left:auto; font-size:14.5px}
+/* event details card in the cart */
+.ev-card{border:1px solid rgba(168,126,46,.4); background:rgba(239,226,190,.25); border-radius:2px; overflow:hidden; padding:0}
+.ev-card .head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;
+  border-bottom:1px solid rgba(168,126,46,.25); padding:16px 24px}
+.ev-card dl{display:grid; gap:20px 32px; padding:24px; margin:0}
+@media(min-width:640px){.ev-card dl{grid-template-columns:repeat(2,1fr)}}
+.ev-card dl .full{grid-column:1/-1}
+.ev-card dt{font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--ink-faint)}
+.ev-card dd{margin:6px 0 0; font-size:16px}
+.ev-card .extras{border-top:1px solid rgba(168,126,46,.25); padding:20px 24px}
+.ev-card .foot{border-top:1px solid rgba(168,126,46,.25); padding:16px 24px}
+.ev-tag{display:inline-block; border:1px solid rgba(168,126,46,.45); background:var(--cream-warm);
+  border-radius:999px; padding:6px 16px; font-size:14px; margin:0 8px 8px 0}
+.ev-edit{display:grid; gap:20px; padding:24px}
+@media(min-width:640px){.ev-edit{grid-template-columns:repeat(2,1fr)}}
+.ev-edit .full{grid-column:1/-1}
+.ev-edit .lab{display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase;
+  letter-spacing:.22em; color:var(--ink-faint)}
+.err{margin-top:8px; font-size:14px; color:var(--flag)}
+/* post-add actions on a product page */
+.added{margin-top:24px; border:1px solid rgba(168,126,46,.35); background:rgba(239,226,190,.35);
+  border-radius:2px; padding:20px}
+.added .row{margin-top:16px; display:flex; flex-wrap:wrap; gap:12px 24px}
+.backnav{display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px; padding:28px 0}
+.backnav button{background:none; border:0; padding:0; font-size:15px; color:var(--ink);
+  display:flex; align-items:center; gap:8px}
+.backnav button:hover{color:var(--gold)}
+.backnav .ar{transition:transform .2s}
+.backnav button:hover .ar{transform:translateX(-4px)}
+/* gallery collage */
+.gal{display:grid; gap:16px; margin-top:48px}
+@media(min-width:1024px){.gal{grid-template-columns:1.15fr 1fr; align-items:start}}
+.gal .sub{display:grid; gap:16px}
+@media(min-width:640px){.gal .sub{grid-template-columns:repeat(2,1fr)}}
+.frame{border:1px dashed var(--line); border-radius:2px; background:var(--cream-warm);
+  display:flex; align-items:center; justify-content:center; text-align:center; padding:24px}
+.frame p{font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--ink-faint)}
+.r45{aspect-ratio:4/5}
+.r43{aspect-ratio:4/3}
+.r11{aspect-ratio:1/1}
+@media(min-width:640px){.gal .sub .m1{margin-top:32px} .gal .sub .m3{margin-top:-32px}}
+
 h2.sec{font-size:30px; font-weight:600; line-height:1.15; margin-top:12px}
 @media(min-width:640px){h2.sec{font-size:40px}}
 .link-gold{color:var(--gold); font-size:15px}
@@ -315,12 +425,9 @@ ol.how{list-style:none; margin:48px 0 0; padding:0; display:grid; gap:40px}
 ol.how.five{gap:32px}
 @media(min-width:1024px){ol.how.five{grid-template-columns:repeat(5,1fr); gap:24px}}
 ol.how .n{font-family:Fraunces,Georgia,serif; font-size:15px; font-weight:600; color:var(--gold)}
-.band-dark ol.how .n{color:var(--gold-bright)}
 ol.how .bar{height:1px; background:var(--line); margin-top:12px}
-.band-dark ol.how .bar{background:var(--line-dark)}
 ol.how h3{margin-top:20px; font-size:20px; font-weight:600}
 ol.how p{margin-top:10px; font-size:15px; color:var(--ink-soft)}
-.band-dark ol.how p{color:rgba(251,241,228,.6)}
 
 /* occasion list */
 .occ{display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:2px; overflow:hidden}
@@ -331,17 +438,17 @@ ol.how p{margin-top:10px; font-size:15px; color:var(--ink-soft)}
 @media(min-width:1024px){.two-col{grid-template-columns:1fr 1.15fr; gap:80px}}
 
 /* footer */
-footer.site{margin-top:96px; background:var(--ink-deep); color:var(--cream); border-top:1px solid var(--line-dark)}
+footer.site{margin-top:96px; background:var(--cream-deep); color:var(--ink); border-top:1px solid var(--line)}
 footer.site .cols{display:grid; gap:48px; padding:64px 0}
 @media(min-width:640px){footer.site .cols{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){footer.site .cols{grid-template-columns:2fr 1fr 1fr}}
-footer.site .tag2{margin-top:24px; font-family:Fraunces,Georgia,serif; font-size:22px; line-height:1.35; color:rgba(251,241,228,.75)}
-footer.site .sub{margin-top:16px; font-size:15px; color:rgba(251,241,228,.5); max-width:20rem}
+footer.site .tag2{margin-top:24px; font-family:Fraunces,Georgia,serif; font-style:italic; font-size:24px; line-height:1.35; color:var(--gold)}
+footer.site .sub{margin-top:16px; font-size:15px; color:var(--ink-soft); max-width:20rem}
 footer.site ul{list-style:none; margin:20px 0 0; padding:0; display:flex; flex-direction:column; gap:10px}
-footer.site ul a{font-size:15px; color:rgba(251,241,228,.7)}
-footer.site ul a:hover{color:var(--cream)}
-footer.site .base{border-top:1px solid var(--line-dark); padding:28px 0 64px; font-size:13px;
-  color:rgba(251,241,228,.4); display:flex; flex-direction:column; gap:8px}
+footer.site ul a{font-size:15px; color:var(--ink-soft)}
+footer.site ul a:hover{color:var(--gold)}
+footer.site .base{border-top:1px solid var(--line); padding:28px 0 64px; font-size:13px;
+  color:var(--ink-faint); display:flex; flex-direction:column; gap:8px}
 @media(min-width:640px){footer.site .base{flex-direction:row; justify-content:space-between; align-items:center}}
 </style>
 
@@ -372,14 +479,13 @@ footer.site .base{border-top:1px solid var(--line-dark); padding:28px 0 64px; fo
   </nav>
 </header>
 
-<div id="ribbon"></div>
 <main id="app"></main>
 
 <footer class="site">
   <div class="wrap">
     <div class="cols">
       <div>
-        <span class="mark" style="color:var(--cream)">The Diine</span>
+        <span class="mark">The Diine</span>
         <p class="tag2">Food Made With Passion.</p>
         <p class="sub">Cooking for gatherings, hosting and celebrations across Egypt.</p>
       </div>
@@ -429,7 +535,6 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e
 function paint() {
   $("#cart-count").textContent = S.lines.reduce((n, l) => n + l.qty, 0);
   document.body.classList.toggle("in-event", S.mode === "event");
-  renderRibbon();
 }
 const EVENT_LABELS = { BIRTHDAY: "Birthday", ENGAGEMENT: "Engagement", WEDDING: "Wedding", OTHER: "Other" };
 
@@ -447,19 +552,67 @@ function minEventDate() {
   return d.toISOString().slice(0, 10);
 }
 
-/* ---------------------------------------------------------------- ribbon */
-function renderRibbon() {
-  const el = $("#ribbon");
-  if (S.mode !== "event") { el.innerHTML = ""; return; }
-  const e = S.event;
-  const bits = [
-    e.eventType ? (e.eventType === "OTHER" ? (e.eventTypeOther || "Other") : EVENT_LABELS[e.eventType]) : null,
-    e.guestCount ? e.guestCount + " guests" : null,
-    e.date || null
-  ].filter(Boolean);
-  el.innerHTML = '<div class="ribbon"><div class="wrap"><span class="eyebrow light">Event request</span>'
-    + (bits.length ? '<span class="meta">' + esc(bits.join(" \u00b7 ")) + '</span>' : '')
-    + '<a href="#/events/review">Review request \u2192</a></div></div>';
+/* ------------------------------------------------------------- validation */
+function minEventDate() {
+  const d = new Date(); d.setDate(d.getDate() + 5);
+  return d.toISOString().slice(0, 10);
+}
+const MAX_GUESTS = 100;
+const GUEST_MSG = "We currently cater events for up to " + MAX_GUESTS + " guests.";
+
+/* One validator for the whole journey, mirroring the server's rules. */
+function validateEvent(e) {
+  const errors = {};
+  if (!e.eventType) errors.eventType = "Please choose the occasion.";
+  if (e.eventType === "OTHER" && !e.eventTypeOther.trim()) errors.eventTypeOther = "Please tell us the occasion.";
+  const min = minEventDate();
+  if (!e.date) errors.date = "Please choose a date.";
+  else if (e.date < min) errors.date = "We need at least 5 days to prepare an event. The earliest date we can take is " + min + ".";
+  if (!e.time) errors.time = "Please choose a time.";
+  const g = /^\d+$/.test((e.guestCount || "").trim()) ? Number(e.guestCount.trim()) : null;
+  if (g === null) errors.guestCount = "Please tell us how many guests.";
+  else if (g < 1) errors.guestCount = "There must be at least one guest.";
+  else if (g > MAX_GUESTS) errors.guestCount = GUEST_MSG;
+  if (!e.venue.trim()) errors.venue = "Please tell us where we are coming to.";
+  return { ok: Object.keys(errors).length === 0, errors };
+}
+function firstError(e) { const v = validateEvent(e); return v.ok ? null : Object.values(v.errors)[0]; }
+function longDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+function shortDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+}
+function occasionLabel(e) {
+  return e.eventType === "OTHER" ? (e.eventTypeOther || "event")
+    : e.eventType ? EVENT_LABELS[e.eventType] : "event";
+}
+
+/*
+ * Guests is a TEXT field, digits only. A number input's stepper reacts to arrow
+ * keys and stray wheel scrolls, which is how a typed 153 silently became 152.
+ */
+function guestInputHTML(id) {
+  const over = /^\d+$/.test(S.event.guestCount) && Number(S.event.guestCount) > MAX_GUESTS;
+  return '<input type="text" inputmode="numeric" autocomplete="off" id="' + id + '" placeholder="40" value="'
+    + esc(S.event.guestCount) + '"' + (over ? ' class="bad" aria-invalid="true"' : '') + '>'
+    + (over ? '<p class="err">' + GUEST_MSG + '</p>' : '');
+}
+function bindGuestInput(id, after) {
+  const n = document.getElementById(id); if (!n) return;
+  n.addEventListener("keydown", (ev) => { if (ev.key === "ArrowUp" || ev.key === "ArrowDown") ev.preventDefault(); });
+  n.addEventListener("wheel", (ev) => n.blur());
+  n.addEventListener("input", (ev) => {
+    const pos = ev.target.selectionStart;
+    S.event.guestCount = ev.target.value.replace(/[^\d]/g, "").slice(0, 4);
+    save();
+    if (after) { after(); const again = document.getElementById(id);
+      if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (e) {} } }
+  });
 }
 
 /* ------------------------------------------------------------------ views */
@@ -475,95 +628,138 @@ function cardHTML(p) {
     + '<span class="go">Choose \u2192</span></div></a>';
 }
 
+function curve(fill, flip) {
+  const c = { cream: "#FBF1E4", warm: "#FFFAF3", deep: "#F4E5CE", toast: "#EBD7B4" }[fill];
+  return '<div class="curve' + (flip ? " flip" : "") + '" aria-hidden="true">'
+    + '<svg viewBox="0 0 1440 90" preserveAspectRatio="none">'
+    + '<path d="M0,90 C300,10 620,0 900,26 C1120,47 1290,72 1440,90 Z" fill="' + c + '"/></svg></div>';
+}
+const GOLD_ARC = '<svg viewBox="0 0 60 24" width="64" height="26" fill="none" aria-hidden="true" style="color:rgba(168,126,46,.7)">'
+  + '<path d="M1 23C1 11 14 1 30 1s29 10 29 22" stroke="currentColor" stroke-width="1.2"/>'
+  + '<circle cx="30" cy="1.5" r="1.8" fill="currentColor"/></svg>';
+const DOTS = '<svg viewBox="0 0 34 6" width="34" height="6" fill="currentColor" aria-hidden="true" style="color:var(--gold)">'
+  + '<circle cx="3" cy="3" r="2.2"/><circle cx="17" cy="3" r="2.2" opacity=".55"/><circle cx="31" cy="3" r="2.2" opacity=".3"/></svg>';
+
 function galleryHTML(heading, title, intro, showLink) {
-  // On the live site this whole section hides itself when there are no
-  // photographs. Here the frames show the layout awaiting the real images.
-  return '<section class="band-deep"><div class="wrap">'
+  /* On the live site this section hides itself entirely when there are no
+     photographs, so a customer never sees an empty frame. */
+  return '<section class="band-deep" style="position:relative">' + curve("deep", true)
+    + '<div class="wrap" style="padding-top:40px;padding-bottom:112px">'
     + '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">'
-    + '<div><p class="eyebrow">' + esc(heading) + '</p><h2 class="sec">' + esc(title) + '</h2>'
-    + (intro ? '<p style="margin-top:20px;max-width:34rem;font-size:17px;color:var(--ink-soft)">' + esc(intro) + '</p>' : '')
-    + '</div>' + (showLink ? '<a class="link-gold" href="#/our-work">See more of our work \u2192</a>' : '') + '</div>'
-    + '<div class="gallery"><div class="frame tall"><p>Photograph</p></div>'
-    + '<div class="sub">' + [1,2,3,4].map(() => '<div class="frame wide"><p>Photograph</p></div>').join("") + '</div>'
-    + '</div>'
+    + '<div style="max-width:36rem"><p class="label-rule">' + esc(heading) + '</p>'
+    + '<h2 class="sec">' + esc(title) + '</h2>'
+    + (intro ? '<p style="margin-top:20px;font-size:17px;color:var(--ink-soft)">' + esc(intro) + '</p>' : '')
+    + '</div>' + (showLink ? '<a class="link-sweep" href="#/our-work">See more of our work \u2192</a>' : DOTS) + '</div>'
+    + '<div class="gal"><div class="frame r45"><p>Photograph</p></div><div class="sub">'
+    + '<div class="frame r43"><p>Photograph</p></div>'
+    + '<div class="frame r11 m1"><p>Photograph</p></div>'
+    + '<div class="frame r11"><p>Photograph</p></div>'
+    + '<div class="frame r43 m3"><p>Photograph</p></div></div></div>'
     + '<p style="margin-top:24px;font-size:13.5px;color:var(--ink-faint)">Layout awaiting your photographs. '
-    + 'On the live site this section hides itself entirely until images are added, so customers never see empty frames.</p>'
-    + '</div></section>';
+    + 'On the live site this section hides itself until images are added.</p>'
+    + '</div>' + curve("toast") + '</section>';
 }
 
 function viewHome() {
   const featured = ["roast-fakhda","egyptian-fattah-moza","lebanese-fattah-chicken",
-                    "kunafa-cream","mushroom-rocca-salad","hawawshi"].map((s) => PRODUCTS[s]).filter(Boolean);
+                    "kunafa-cream","mushroom-rocca-salad"].map((x) => PRODUCTS[x]).filter(Boolean);
+  const spot = featured[0], rest = featured.slice(1);
   return ''
-  + '<section class="hero"><div class="wrap">'
-  +   '<div class="eyebrow-row"><span class="rule"></span><p class="eyebrow">Food Made With Passion</p></div>'
-  +   '<h1>For the tables that matter.</h1>'
+  + '<section class="hero" style="padding-bottom:0">'
+  +   '<svg class="rings" viewBox="0 0 600 600" aria-hidden="true">'
+  +   '<circle cx="300" cy="300" r="280" fill="none" stroke="currentColor"/>'
+  +   '<circle cx="300" cy="300" r="215" fill="none" stroke="currentColor"/>'
+  +   '<circle cx="300" cy="300" r="150" fill="none" stroke="currentColor"/></svg>'
+  +   '<div class="wrap" style="position:relative;padding-top:96px;padding-bottom:112px">'
+  +   '<p class="label-rule">Food Made With Passion</p>'
+  +   '<h1>For the tables<span class="ital" style="display:block;margin-left:.14em">that matter</span>'
+  +   '<span style="display:block">most.</span></h1>'
   +   '<p class="lede">Dishes made by hand and sent out by the tray \u2014 the warmth of food cooked at home, '
-  +   'prepared for the gatherings you would rather spend with your guests than in the kitchen.</p>'
+  +   'for the gatherings you would rather spend with your guests.</p>'
   +   '<div class="ctas"><a class="btn btn-primary" href="#/menu">Order from The Diine</a>'
   +   '<a class="btn btn-outline" href="#/events">Plan an Event</a></div>'
-  + '</div></section>'
+  +   '</div>' + curve("warm")
+  + '</section>'
 
-  + '<section class="band-dark"><div class="wrap">'
-  +   '<p class="eyebrow light">The menu</p><h2 class="sec">Four courses, cooked to order</h2>'
-  +   '<div class="cat-grid">' + DATA.categories.map((c, i) =>
-        '<a class="cat-cell" href="#/menu/' + c.slug + '"><span class="n tnum">0' + (i+1) + '</span>'
-        + '<div><h3>' + esc(c.name) + '</h3><p class="c">' + c.products.length + ' dishes</p></div></a>').join("")
-  +   '</div><a class="link-bright" style="display:inline-block;margin-top:32px" href="#/menu">Browse the full menu \u2192</a>'
-  + '</div></section>'
+  + '<section class="band-warm" style="padding-top:32px;padding-bottom:112px"><div class="wrap">'
+  +   '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px">'
+  +   '<div style="max-width:28rem"><p class="label-rule">The menu</p>'
+  +   '<h2 class="sec">Four courses,<span class="ital"> cooked to order</span></h2></div>' + DOTS + '</div>'
+  +   '<div class="cat-grid2">' + DATA.categories.map((c, i) =>
+        '<a class="cat-card' + (i % 2 === 1 ? " drop" : "") + '" href="#/menu/' + c.slug + '">'
+        + '<span class="n tnum">' + String(i + 1).padStart(2, "0") + '</span>'
+        + '<div><h3>' + esc(c.name) + '</h3><p class="c">' + c.products.length + ' dishes</p>'
+        + '<span class="u"></span></div></a>').join("")
+  +   '</div></div></section>'
 
-  + '<section><div class="wrap">'
+  + '<section class="band-warm" style="padding:0">' + curve("cream", true) + '</section>'
+  + '<section style="padding-top:16px;padding-bottom:112px"><div class="wrap">'
   +   '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">'
-  +   '<div><p class="eyebrow">A few favourites</p><h2 class="sec">Where most tables begin</h2></div>'
-  +   '<a class="link-gold" href="#/menu">See everything \u2192</a></div>'
-  +   '<div class="grid">' + featured.map(cardHTML).join("") + '</div>'
+  +   '<div><p class="label-rule">A few favourites</p><h2 class="sec">Where most tables begin</h2></div>'
+  +   '<a class="link-sweep" href="#/menu">See everything \u2192</a></div>'
+  +   '<div class="spotlight"><article class="spot bracket">' + GOLD_ARC
+  +     '<p class="cat">' + esc(spot.category.name) + '</p><h3>' + esc(spot.name) + '</h3>'
+  +     (spot.description ? '<p>' + esc(spot.description) + '</p>' : '')
+  +     '<a class="btn btn-outline" style="margin-top:36px" href="#/product/' + spot.slug + '">Choose this dish</a>'
+  +   '</article><div class="mini">' + rest.map(cardHTML).join("") + '</div></div>'
   + '</div></section>'
 
   + galleryHTML("Our work", "Tables we have set", "Photographs from real gatherings we have cooked for.", true)
 
-  + '<section class="band-toast"><div class="wrap"><div class="two-col">'
-  +   '<div><p class="eyebrow">Hosting &amp; events</p><h2 class="sec">Birthdays, engagements, weddings</h2>'
-  +   '<p style="margin-top:24px;font-size:17px;color:var(--ink-soft)">Tell us about the occasion, choose your '
-  +   'dishes, and let us know if you would like the table dressed, the setup handled, or staff on the day. '
-  +   'We come back to you personally to confirm every detail.</p>'
+  + '<section class="band-toast" style="padding-top:40px;padding-bottom:112px"><div class="wrap"><div class="two-col">'
+  +   '<div><p class="label-rule">Hosting &amp; events</p>'
+  +   '<h2 class="sec">Birthdays, engagements,<span class="ital"> weddings</span></h2>'
+  +   '<p style="margin-top:24px;max-width:28rem;font-size:17px;color:var(--ink-soft)">Tell us about the occasion, '
+  +   'choose your dishes, and let us know if you would like the table dressed, the setup handled, or staff on the day.</p>'
   +   '<a class="btn btn-primary" style="margin-top:36px" href="#/events">Plan an Event</a></div>'
-  +   '<ul class="occ" style="margin:0;padding:0">'
-  +   ["Birthdays","Engagements","Weddings","Every other occasion"].map((o) =>
-        '<li><span class="hair"></span><p>' + o + '</p></li>').join("")
-  +   '</ul></div></div></section>'
+  +   '<ul class="occ2" style="margin:0;padding:0">'
+  +   ["Birthdays","Engagements","Weddings","Every other occasion"].map((o, i) =>
+        '<li class="' + (i === 1 ? "d1" : i === 2 ? "d2" : "") + '"><span class="hair"></span><p>' + o + '</p></li>').join("")
+  +   '</ul></div></div>' + curve("cream") + '</section>'
 
-  + '<section><div class="wrap"><p class="eyebrow">How ordering works</p><h2 class="sec">Three steps</h2>'
-  +   '<ol class="how">'
+  + '<section style="padding-top:64px;padding-bottom:112px"><div class="wrap">'
+  +   '<p class="label-rule">How ordering works</p><h2 class="sec">Three steps</h2>'
+  +   '<ol class="steps3"><span class="thread"></span>'
   +   [["Choose your dishes","Build your table from the menu, dish by dish."],
        ["Tell us when","Your date, and whether we deliver or you collect."],
        ["We confirm with you","Personally, before a single pan goes on the heat."]]
-       .map((s, i) => '<li><span class="n tnum">0' + (i+1) + '</span><div class="bar"></div><h3>'
-         + esc(s[0]) + '</h3><p>' + esc(s[1]) + '</p></li>').join("")
+       .map((x, i) => '<li><span class="num tnum">' + (i+1) + '</span><h3>' + esc(x[0]) + '</h3><p>'
+         + esc(x[1]) + '</p></li>').join("")
   +   '</ol></div></section>'
 
-  + '<section class="band-dark"><div class="wrap" style="text-align:center">'
-  +   '<p class="eyebrow light">Follow along</p><h2 class="sec" style="max-width:30rem;margin:12px auto 0">'
-  +   'See what is coming out of the kitchen</h2>'
-  +   '<a class="btn btn-dark" style="margin-top:36px" href="https://www.instagram.com/thediine/" '
-  +   'target="_blank" rel="noreferrer">@thediine on Instagram</a>'
-  + '</div></section>';
+  + '<section class="band-deep" style="position:relative;padding-top:40px;padding-bottom:96px">' + curve("deep", true)
+  +   '<div class="wrap" style="text-align:center">' + GOLD_ARC
+  +   '<h2 class="sec" style="max-width:32rem;margin:24px auto 0">See what is coming'
+  +   '<span class="ital"> out of the kitchen</span></h2>'
+  +   '<a class="btn btn-outline" style="margin-top:36px" href="https://www.instagram.com/thediine/" '
+  +   'target="_blank" rel="noreferrer">@thediine on Instagram</a></div></section>';
+}
+
+/* ---------------------------------------------------- event note in header */
+function eventNoteHTML() {
+  if (S.mode !== "event") return "";
+  const e = S.event;
+  const bits = [e.guestCount ? e.guestCount + " guests" : null, e.date ? shortDate(e.date) : null].filter(Boolean);
+  return '<div class="event-note"><span class="dot"></span>'
+    + '<p class="who">Choosing dishes for your <strong>' + esc(occasionLabel(e)) + '</strong>'
+    + (bits.length ? '<span style="color:var(--ink-soft)"> \u00b7 ' + esc(bits.join(" \u00b7 ")) + '</span>' : '')
+    + '</p><a class="link-sweep" href="#/cart">Edit event details</a></div>';
 }
 
 /* ------------------------------------------------------------ menu browser */
 let MB = { cat: null, q: "" };
-
 function viewMenu(catSlug) {
   MB = { cat: catSlug || null, q: "" };
   const total = DATA.categories.reduce((n, c) => n + c.products.length, 0);
   const cat = catSlug ? DATA.categories.find((c) => c.slug === catSlug) : null;
-  return '<div class="page-head"><div class="wrap"><p class="eyebrow">Our menu</p>'
+  return '<div class="page-head" style="background:var(--cream-warm)"><div class="wrap">'
+    + '<p class="label-rule">Our menu</p>'
     + '<h1>' + (cat ? esc(cat.name) : "Everything we cook") + '</h1>'
     + '<p>' + (cat ? cat.products.length + " dishes"
         : total + ' dishes across four courses. Pick a course to narrow things down, or search if you '
-          + 'already know what you are after.') + '</p></div></div>'
-    + '<div id="browser"></div>';
+          + 'already know what you are after.') + '</p>'
+    + eventNoteHTML() + '</div></div><div id="browser"></div>';
 }
-
 function renderBrowser() {
   const el = $("#browser"); if (!el) return;
   const q = MB.q.trim().toLowerCase();
@@ -576,18 +772,16 @@ function renderBrowser() {
     body = '<section style="padding:48px 0 0"><p style="font-size:15px;color:var(--ink-soft)">'
       + (hits.length === 0 ? "Nothing matched that."
           : hits.length + (hits.length === 1 ? " dish" : " dishes") + ' matching "' + esc(MB.q.trim()) + '"')
-      + '</p>' + (hits.length ? '<div class="grid">' + hits.map(cardHTML).join("") + '</div>' : '')
-      + '</section>';
+      + '</p>' + (hits.length ? '<div class="grid">' + hits.map(cardHTML).join("") + '</div>' : '') + '</section>';
   } else {
     const shown = MB.cat ? DATA.categories.filter((c) => c.slug === MB.cat) : DATA.categories;
     body = shown.map((c) =>
       '<section style="padding:0"><div class="sec-title"><div style="display:flex;align-items:baseline">'
       + '<h2>' + esc(c.name) + '</h2><span class="n tnum">' + c.products.length + '</span></div>'
-      + (MB.cat ? '' : '<a class="link-gold" href="#/menu/' + c.slug + '">Only '
+      + (MB.cat ? '' : '<a class="link-sweep" href="#/menu/' + c.slug + '">Only '
           + esc(c.name.toLowerCase()) + ' \u2192</a>') + '</div><span class="hair" style="margin-top:12px"></span>'
       + '<div class="grid">' + c.products.map(cardHTML).join("") + '</div></section>').join("");
   }
-
   el.innerHTML = '<div class="browser-bar"><div class="wrap"><div class="inner">'
     + '<label class="search"><span class="sr">Search the menu</span>'
     + '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">'
@@ -598,16 +792,11 @@ function renderBrowser() {
     + DATA.categories.map((c) => '<button class="chip' + (MB.cat === c.slug ? " on" : "") + '" data-cat="'
         + c.slug + '">' + esc(c.name) + '<span class="c tnum">' + c.products.length + '</span></button>').join("")
     + '</div></div></div></div><div class="wrap" style="padding-bottom:40px">' + body + '</div>';
-
   const input = $("#q");
-  if (input) {
-    input.addEventListener("input", (e) => {
-      MB.q = e.target.value;
-      const pos = e.target.selectionStart;
-      renderBrowser();
-      const again = $("#q"); if (again) { again.focus(); again.setSelectionRange(pos, pos); }
-    });
-  }
+  if (input) input.addEventListener("input", (e) => {
+    MB.q = e.target.value; const pos = e.target.selectionStart; renderBrowser();
+    const again = $("#q"); if (again) { again.focus(); again.setSelectionRange(pos, pos); }
+  });
 }
 
 /* ---------------------------------------------------------- product detail */
@@ -617,8 +806,10 @@ function viewProduct(slug) {
   if (!p) return '<div class="narrow"><p style="padding:80px 0">Dish not found.</p></div>';
   PS = { slug: slug, variant: p.variants && p.variants.length ? p.variants[0].name : null,
          choices: {}, qty: 1, instr: "", added: false };
-  return '<div class="narrow"><nav class="crumb"><a href="#/menu">Menu</a> <span>/</span> '
-    + '<a href="#/menu/' + p.category.slug + '">' + esc(p.category.name) + '</a></nav>'
+  return '<div class="narrow"><div class="backnav">'
+    + '<button type="button" id="go-back"><span class="ar">\u2190</span> Back to ' + esc(p.category.name) + '</button>'
+    + '<span style="color:var(--ink-faint)">\u00b7</span>'
+    + '<a href="#/menu" style="font-size:15px;color:var(--ink-soft)">Full menu</a></div>'
     + '<div id="pd"></div></div>';
 }
 function renderPD() {
@@ -629,36 +820,32 @@ function renderPD() {
   if (PS.variant && p.variants) { const v = p.variants.find((x) => x.name === PS.variant); if (v) base = v.price; }
 
   let h = '<header class="pd-head"><span class="hair"></span>'
-    + '<p class="eyebrow" style="margin-top:20px">' + esc(p.category.name) + '</p>'
+    + '<p class="label-rule" style="margin-top:20px">' + esc(p.category.name) + '</p>'
     + '<h1>' + esc(p.name) + '</h1>'
     + (pr ? '<p class="price tnum">' + (pr.from
         ? '<span style="font-family:Karla;font-size:15px;font-weight:400;color:var(--ink-faint);margin-right:8px">from</span>' : '')
         + egp(pr.amount) + '</p>' : '')
-    + (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '')
-    + '</header>';
-
+    + (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '') + '</header>';
   if (p.allergens.length) {
-    h += '<div class="allergen-box"><p class="eyebrow">Allergens</p>'
+    h += '<div class="allergen-box"><p class="label-rule">Allergens</p>'
       + '<p style="margin-top:8px;font-size:15px;color:var(--ink-soft)">Contains '
       + p.allergens.map((a) => esc(a.toLowerCase())).join(", ")
       + '. Please tell us about any allergy when you order.</p></div>';
   }
-
   h += '<div style="margin-top:32px">';
   if (p.variants && p.variants.length) {
-    h += '<fieldset><legend class="eyebrow">Choose one</legend><div class="pills">'
+    h += '<fieldset><legend class="label-rule">Choose one</legend><div class="pills">'
       + p.variants.map((v) => '<button type="button" class="pill-opt' + (PS.variant === v.name ? " on" : "")
         + '" data-variant="' + esc(v.name) + '" aria-pressed="' + (PS.variant === v.name) + '">'
         + esc(v.name) + '<span class="p tnum">' + egp(v.price) + '</span></button>').join("") + '</div></fieldset>';
   }
   (p.options || []).forEach((g) => {
-    h += '<fieldset><legend class="eyebrow">' + esc(g.name) + '<span class="req">required</span></legend>'
-      + '<div class="opt-list">' + g.choices.map((c) =>
-        '<button type="button" class="opt' + (PS.choices[g.name] === c ? " on" : "") + '" data-group="'
-        + esc(g.name) + '" data-choice="' + esc(c) + '"><span class="dot"></span><span>' + esc(c)
-        + '</span></button>').join("") + '</div></fieldset>';
+    h += '<fieldset><legend class="label-rule">' + esc(g.name) + '</legend><div class="opt-list">'
+      + g.choices.map((c) => '<button type="button" class="opt' + (PS.choices[g.name] === c ? " on" : "")
+        + '" data-group="' + esc(g.name) + '" data-choice="' + esc(c) + '"><span class="dot"></span><span>'
+        + esc(c) + '</span></button>').join("") + '</div></fieldset>';
   });
-  h += '<fieldset><legend class="eyebrow">Special instructions<span class="req">optional</span></legend>'
+  h += '<fieldset><legend class="label-rule">Special instructions</legend>'
     + '<textarea id="instr" rows="3" placeholder="Anything we should know about this dish?">' + esc(PS.instr) + '</textarea></fieldset>'
     + '<div class="add-row"><div class="qty">'
     + '<button type="button" id="q-minus" aria-label="Reduce quantity"' + (PS.qty <= 1 ? " disabled" : "") + '>\u2212</button>'
@@ -667,19 +854,98 @@ function renderPD() {
     + '<button type="button" class="btn btn-primary" id="add"' + (missing.length ? " disabled" : "") + '>'
     + (PS.added ? "Added to cart" : "Add to cart") + ' <span class="tnum">' + egp(base * PS.qty) + '</span></button></div>';
   if (missing.length) h += '<p class="hint">Choose ' + missing.map((g) => esc(g.name.toLowerCase())).join(" and ") + ' to continue.</p>';
-  if (PS.added) h += '<p class="hint"><a href="#/cart" style="color:var(--gold);text-decoration:underline;text-underline-offset:4px">Go to cart</a> or keep browsing.</p>';
+  if (PS.added) {
+    h += '<div class="added"><p style="font-size:15px">Added to your order.</p><div class="row">'
+      + '<a class="link-sweep" href="#/menu/' + p.category.slug + '">\u2190 Back to ' + esc(p.category.name) + '</a>'
+      + '<a class="link-sweep" href="#/menu">Keep browsing</a>'
+      + '<a class="link-sweep" href="#/cart">Go to cart \u2192</a></div></div>';
+  }
   h += '</div>';
   el.innerHTML = h;
+}
+
+/* ------------------------------------- event details card, living in the cart */
+let EV_EDIT = false;
+function eventCardHTML() {
+  const e = S.event;
+  const extras = EXTRAS.filter((x) => e[x[0]]).map((x) => x[1]);
+  const err = firstError(e);
+
+  if (EV_EDIT) {
+    return '<section class="ev-card"><div class="head"><h2 class="label-rule">Event details</h2>'
+      + '<button type="button" class="link-sweep" id="ev-close">Close</button></div>'
+      + '<div class="ev-edit"><div class="full"><span class="lab">Occasion</span><div class="pills">'
+      + Object.keys(EVENT_LABELS).map((t) => '<button type="button" class="pill-opt'
+          + (e.eventType === t ? " on" : "") + '" data-etype2="' + t + '">' + EVENT_LABELS[t] + '</button>').join("")
+      + '</div>' + (e.eventType === "OTHER"
+          ? '<input type="text" id="ev-other" style="margin-top:12px" placeholder="Tell us the occasion" value="'
+            + esc(e.eventTypeOther) + '">' : '') + '</div>'
+      + '<div><span class="lab">Date</span><input type="date" id="ev-date" min="' + minEventDate()
+        + '" value="' + esc(e.date) + '"></div>'
+      + '<div><span class="lab">Time</span><input type="time" id="ev-time" value="' + esc(e.time) + '"></div>'
+      + '<div><span class="lab">Guests</span>' + guestInputHTML("ev-guests")
+        + '<p style="margin-top:8px;font-size:13px;color:var(--ink-faint)">Up to ' + MAX_GUESTS + '</p></div>'
+      + '<div class="full"><span class="lab">Venue or address</span>'
+        + '<input type="text" id="ev-venue" placeholder="Where should we bring the food?" value="' + esc(e.venue) + '"></div>'
+      + (err ? '<p class="err full">' + esc(err) + '</p>' : '')
+      + '<div class="full"><button type="button" class="btn btn-primary" id="ev-done">Done</button></div>'
+      + '</div></section>';
+  }
+
+  return '<section class="ev-card"><div class="head"><h2 class="label-rule">Event details</h2>'
+    + '<button type="button" class="link-sweep" id="ev-edit">Edit</button></div>'
+    + '<dl>' + evRow("Occasion", e.eventType === "OTHER" ? (e.eventTypeOther || "Other")
+        : e.eventType ? EVENT_LABELS[e.eventType] : null)
+    + evRow("Guests", e.guestCount ? e.guestCount + " people" : null)
+    + evRow("Date", e.date ? longDate(e.date) : null)
+    + evRow("Time", e.time)
+    + evRow("Venue", e.venue, true) + '</dl>'
+    + '<div class="extras"><p style="font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">'
+    + 'Extras requested</p>'
+    + (extras.length === 0
+        ? '<p style="margin-top:8px;font-size:15px;color:var(--ink-soft)">None yet. '
+          + '<a class="link-sweep" href="#/events/extras">Add table d\u00e9cor, setup or staff</a></p>'
+        : extras.map((x) => '<span class="ev-tag">' + x + '</span>').join("")
+          + '<p style="margin-top:12px;font-size:13.5px;color:var(--ink-soft)">Quoted separately when we confirm '
+          + '\u2014 not part of the total below. <a class="link-sweep" href="#/events/extras">Change</a></p>')
+    + (e.extrasNotes ? '<p style="margin-top:16px;border-top:1px solid rgba(168,126,46,.2);padding-top:16px;'
+        + 'font-size:14.5px;font-style:italic;color:var(--ink-soft)">' + esc(e.extrasNotes) + '</p>' : '')
+    + '</div>'
+    + (err ? '<p style="border-top:1px solid rgba(166,57,28,.25);background:rgba(166,57,28,.06);padding:16px 24px;'
+        + 'font-size:14.5px;color:var(--flag)">' + esc(err) + '</p>' : '')
+    + '<div class="foot"><button type="button" id="cancel-event" style="background:none;border:0;padding:0;'
+    + 'font-size:13.5px;color:var(--ink-faint);text-decoration:underline;text-underline-offset:4px">'
+    + 'Cancel this event request</button></div></section>';
+}
+function evRow(label, value, full) {
+  return '<div' + (full ? ' class="full"' : '') + '><dt>' + esc(label) + '</dt><dd>'
+    + (value ? esc(value) : '<span style="color:var(--ink-faint)">Not given</span>') + '</dd></div>';
+}
+function bindEventCard(rerender) {
+  const b = (id, key) => { const n = document.getElementById(id);
+    if (n) n.addEventListener("input", (ev) => { S.event[key] = ev.target.value; save(); rerender(); }); };
+  b("ev-date", "date"); b("ev-time", "time"); b("ev-venue", "venue"); b("ev-other", "eventTypeOther");
+  bindGuestInput("ev-guests", rerender);
 }
 
 /* ------------------------------------------------------------------- cart */
 function viewCart() {
   const isEvent = S.mode === "event";
+  const st = subtotal();
+  const head = '<div class="wrap"><p class="label-rule" style="padding-top:48px">'
+    + (isEvent ? "One request" : "Your order") + '</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:600;margin-top:12px">'
+    + (isEvent ? "Your event request" : "Cart") + '</h1>'
+    + (isEvent ? '<p style="margin-top:16px;max-width:34rem;font-size:16.5px;color:var(--ink-soft)">'
+        + 'Your occasion and your dishes together, in one request.</p>' : '');
+
   if (!S.lines.length) {
-    return '<div class="wrap"><div class="empty"><p>Nothing here yet</p>'
+    return head + '<div style="max-width:44rem;margin-top:40px">' + (isEvent ? eventCardHTML() : '')
+      + '<div class="empty"><p>' + (isEvent ? "No dishes chosen yet" : "Nothing here yet") + '</p>'
       + '<p style="margin-top:12px;color:var(--ink-soft)">Browse the menu and add the dishes you would like.</p>'
-      + '<a class="btn btn-primary" style="margin-top:32px" href="#/menu">Browse the menu</a></div></div>';
+      + '<a class="btn btn-primary" style="margin-top:32px" href="#/menu">Browse the menu</a></div></div></div>';
   }
+
   const lines = S.lines.map((l) => {
     const p = PRODUCTS[l.slug], u = unitPrice(l);
     return '<li class="cart-line"><div class="top"><div style="min-width:0">'
@@ -697,17 +963,18 @@ function viewCart() {
       + '<span class="each tnum">' + egp(u) + ' each</span></div></li>';
   }).join("");
 
-  const st = subtotal();
-  return '<div class="wrap"><p class="eyebrow" style="padding-top:48px">Your order</p>'
-    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:38px;font-weight:600;margin-top:12px">Cart</h1>'
-    + '<div class="cart-grid"><ul style="list-style:none;margin:0;padding:0">' + lines + '</ul><div>'
+  return head + '<div class="cart-grid"><div>'
+    + (isEvent ? '<div style="margin-bottom:40px">' + eventCardHTML() + '</div>'
+        + '<h2 style="font-family:Fraunces,Georgia,serif;font-size:22px;font-weight:600;margin-bottom:20px">'
+        + 'Dishes for your event</h2>' : '')
+    + '<ul style="list-style:none;margin:0;padding:0">' + lines + '</ul></div><div>'
     + '<div class="summary"><h2>' + (isEvent ? "Your event so far" : "Order summary") + '</h2>'
     + '<div class="row"><span class="muted">Food subtotal</span><span class="tnum" style="font-weight:500">' + egp(st) + '</span></div>'
     + (isEvent ? '' : '<div class="row"><span class="muted">Delivery</span><span style="font-size:14.5px;color:var(--ink-faint)">Calculated at checkout</span></div>')
     + '<div class="total"><span>Total so far</span><span class="tnum">' + egp(st) + '</span></div>'
     + (isEvent
         ? '<a class="btn btn-primary" style="width:100%;margin-top:24px" href="#/events/extras">Continue to event extras</a>'
-          + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">Table d\u00e9cor, setup and serving staff come next.</p>'
+          + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">Table d\u00e9cor, setup and serving staff.</p>'
         : '<button type="button" class="btn btn-primary" style="width:100%;margin-top:24px" disabled>Continue to checkout</button>'
           + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">Delivery or pickup, your date and payment come next.</p>')
     + '<a href="#/menu" style="display:block;margin-top:20px;text-align:center;font-size:14.5px;color:var(--gold);text-decoration:underline;text-underline-offset:4px">Keep browsing the menu</a></div>'
@@ -716,6 +983,7 @@ function viewCart() {
         : 'Orders need at least <strong>48 hours\u2019 notice</strong>. You will choose your date at checkout, and only available dates can be picked.')
     + '</div></div></div></div>';
 }
+function renderCart() { $("#app").innerHTML = viewCart(); if (EV_EDIT) bindEventCard(renderCart); }
 
 /* ----------------------------------------------------------- event journey */
 const STEPS = [["type","Occasion"],["details","Details"],["dishes","Dishes"],["extras","Extras"],["review","Review"]];
@@ -723,33 +991,34 @@ function progressHTML(cur) {
   const idx = STEPS.findIndex((s) => s[0] === cur);
   return '<nav class="progress" aria-label="Event request progress"><ol>'
     + STEPS.map((s, i) => '<li class="' + (i < idx ? "done" : i === idx ? "now" : "") + '">'
-        + '<span><span class="n tnum">0' + (i+1) + '</span>' + s[1] + '</span></li>').join("")
-    + '</ol></nav>';
+        + '<span><span class="n tnum">0' + (i+1) + '</span>' + s[1] + '</span></li>').join("") + '</ol></nav>';
 }
 const EVENT_NOTICE = 'Events need at least <strong>5 days\u2019 notice</strong>, and are sent as a request '
   + '\u2014 we confirm every event with you personally before it is booked.';
 
 function viewEvents() {
-  return '<section class="hero" style="background:radial-gradient(120% 100% at 85% -10%, #FFFDF8 0%, #F8EDDA 45%, #EFDDBE 100%)">'
-    + '<div class="wrap"><div class="eyebrow-row"><span class="rule"></span><p class="eyebrow">Event catering</p></div>'
-    + '<h1 style="font-size:42px">For the days you will remember.</h1>'
+  return '<section class="hero" style="padding-bottom:0;background:radial-gradient(120% 100% at 85% -10%, #FFFDF8 0%, #F8EDDA 45%, #EFDDBE 100%)">'
+    + '<div class="wrap" style="padding-top:96px;padding-bottom:112px"><p class="label-rule">Event catering</p>'
+    + '<h1 style="font-size:44px">For the days<span class="ital" style="display:block;margin-left:.14em">you will</span>'
+    + '<span style="display:block">remember.</span></h1>'
     + '<p class="lede">Larger gatherings deserve more than an order form. Tell us about the occasion and we will '
     + 'build the table around it.</p>'
     + '<div class="ctas"><a class="btn btn-primary" href="#/events/start">Start an event request</a></div>'
-    + '</div></section>'
-    + '<section class="band-dark"><div class="wrap"><p class="eyebrow light">How it works</p>'
-    + '<h2 class="sec">Five steps, and a conversation</h2><ol class="how five">'
+    + '</div>' + curve("warm") + '</section>'
+    + '<section class="band-warm" style="padding-top:32px;padding-bottom:112px"><div class="wrap">'
+    + '<p class="label-rule">How it works</p><h2 class="sec">Five steps, and<span class="ital"> a conversation</span></h2>'
+    + '<ol class="how5">'
     + [["Tell us the occasion","Birthday, engagement, wedding, or something else entirely."],
        ["Give us the details","Your date and time, how many guests, and where we are coming to."],
        ["Choose your dishes","The same menu, the same dishes, in the quantities an event needs."],
        ["Add what you need","Table d\u00e9cor, setup on the day, serving staff \u2014 we quote each one for you."],
        ["Send the request","We come back to you personally to confirm everything before it is booked."]]
-       .map((s, i) => '<li><span class="n tnum">0' + (i+1) + '</span><div class="bar"></div><h3>'
-         + esc(s[0]) + '</h3><p>' + esc(s[1]) + '</p></li>').join("")
+       .map((x, i) => '<li class="' + (i % 2 === 1 ? "drop" : "") + '"><span class="n tnum">'
+         + String(i+1).padStart(2,"0") + '</span><h3>' + esc(x[0]) + '</h3><p>' + esc(x[1]) + '</p></li>').join("")
     + '</ol></div></section>'
     + galleryHTML("Events we have catered", "Some of the tables we have set", "", false)
-    + '<section class="band-toast"><div class="wrap" style="text-align:center">'
-    + '<h2 class="sec" style="max-width:30rem;margin:0 auto">Ready when you are</h2>'
+    + '<section class="band-toast" style="padding-top:40px;padding-bottom:96px"><div class="wrap" style="text-align:center">'
+    + GOLD_ARC + '<h2 class="sec" style="max-width:30rem;margin:24px auto 0">Ready when you are</h2>'
     + '<p style="margin-top:16px;max-width:28rem;margin-left:auto;margin-right:auto;font-size:16px;color:var(--ink-soft)">'
     + 'Events need at least five days\u2019 notice. Everything you send is a request until we confirm it with you.</p>'
     + '<a class="btn btn-primary" style="margin-top:32px" href="#/events/start">Start an event request</a></div></section>';
@@ -759,15 +1028,11 @@ let ES = { step: "type", touched: false };
 function viewEventStart() { ES = { step: S.event.eventType ? "details" : "type", touched: false }; return '<div id="es"></div>'; }
 function renderES() {
   const el = $("#es"); if (!el) return;
-  const e = S.event, min = minEventDate();
-  const tooSoon = e.date !== "" && e.date < min;
-  const guests = Number(e.guestCount);
-  const valid = e.date && !tooSoon && e.time && guests > 0 && e.venue.trim()
-    && (e.eventType !== "OTHER" || e.eventTypeOther.trim());
+  const e = S.event, min = minEventDate(), v = validateEvent(e);
 
   if (ES.step === "type") {
     el.innerHTML = progressHTML("type") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-      + '<p class="eyebrow">Step one</p>'
+      + '<p class="label-rule">Step one</p>'
       + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">What are we celebrating?</h1>'
       + '<div class="step-grid">'
       + Object.keys(EVENT_LABELS).map((t) => '<button type="button" class="type-btn'
@@ -775,43 +1040,43 @@ function renderES() {
           + '<span class="lbl">' + EVENT_LABELS[t] + '</span></button>').join("")
       + '</div>'
       + (e.eventType === "OTHER"
-          ? '<div style="margin-top:32px"><label class="eyebrow" for="other" style="display:block;margin-bottom:12px">Tell us the occasion</label>'
-            + '<input type="text" id="other" value="' + esc(e.eventTypeOther) + '" placeholder="Graduation, baby shower, corporate lunch\u2026"></div>'
-          : '')
+          ? '<div style="margin-top:32px"><label class="lab" for="other" style="display:block;margin-bottom:12px;'
+            + 'font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">Tell us the occasion</label>'
+            + '<input type="text" id="other" value="' + esc(e.eventTypeOther) + '" placeholder="Graduation, baby shower, corporate lunch\u2026"></div>' : '')
       + '<div style="margin-top:40px"><button type="button" class="btn btn-primary" id="to-details"'
       + ((!e.eventType || (e.eventType === "OTHER" && !e.eventTypeOther.trim())) ? " disabled" : "") + '>Continue</button></div>'
       + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
     const o = $("#other");
     if (o) o.addEventListener("input", (ev) => { S.event.eventTypeOther = ev.target.value; save();
-      const btn = $("#to-details"); if (btn) btn.disabled = !ev.target.value.trim(); });
+      const b = $("#to-details"); if (b) b.disabled = !ev.target.value.trim(); });
   } else {
     el.innerHTML = progressHTML("details") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-      + '<p class="eyebrow">Step two</p>'
+      + '<p class="label-rule">Step two</p>'
       + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">Tell us about the day</h1>'
       + '<div class="fields">'
       + field("Event date", '<input type="date" id="e-date" min="' + min + '" value="' + esc(e.date) + '"'
-          + (ES.touched && (!e.date || tooSoon) ? ' class="bad"' : '') + '>', "Earliest available: " + min)
+          + (ES.touched && v.errors.date ? ' class="bad"' : '') + '>', "Earliest available: " + min)
       + field("Event time", '<input type="time" id="e-time" value="' + esc(e.time) + '"'
-          + (ES.touched && !e.time ? ' class="bad"' : '') + '>')
-      + field("Number of guests", '<input type="number" min="1" id="e-guests" placeholder="40" value="'
-          + esc(e.guestCount) + '"' + (ES.touched && !(guests > 0) ? ' class="bad"' : '') + '>')
+          + (ES.touched && v.errors.time ? ' class="bad"' : '') + '>')
+      + field("Number of guests", guestInputHTML("e-guests"), "We cater events for up to " + MAX_GUESTS + " guests")
       + field("Venue or address", '<input type="text" id="e-venue" placeholder="Where should we bring the food?" value="'
-          + esc(e.venue) + '"' + (ES.touched && !e.venue.trim() ? ' class="bad"' : '') + '>', null, true)
+          + esc(e.venue) + '"' + (ES.touched && v.errors.venue ? ' class="bad"' : '') + '>', null, true)
       + '</div>'
-      + (tooSoon ? '<p class="warn">We need at least 5 days to prepare an event. The earliest date we can take is ' + min + '.</p>' : '')
+      + ((ES.touched || e.date) && !v.ok ? '<p class="warn">' + esc(Object.values(v.errors)[0]) + '</p>' : '')
       + '<div style="margin-top:40px;display:flex;flex-wrap:wrap;gap:16px;align-items:center">'
       + '<button type="button" class="btn btn-primary" id="to-dishes">Choose your dishes</button>'
-      + '<button type="button" id="back-type" style="background:none;border:0;font-size:15px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:4px">Back</button></div>'
-      + (ES.touched && !valid && !tooSoon ? '<p class="hint">Please fill in every field so we can plan properly.</p>' : '')
+      + '<button type="button" id="back-type" style="background:none;border:0;font-size:15px;color:var(--ink-soft);'
+      + 'text-decoration:underline;text-underline-offset:4px">Back</button></div>'
       + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
-
-    const bind = (id, key) => { const n = $(id); if (n) n.addEventListener("input", (ev) => {
-      S.event[key] = ev.target.value; save(); if (key === "date") renderES(); }); };
-    bind("#e-date", "date"); bind("#e-time", "time"); bind("#e-guests", "guestCount"); bind("#e-venue", "venue");
+    const b = (id, key) => { const n = $(id);
+      if (n) n.addEventListener("input", (ev) => { S.event[key] = ev.target.value; save(); if (key === "date") renderES(); }); };
+    b("#e-date", "date"); b("#e-time", "time"); b("#e-venue", "venue");
+    bindGuestInput("e-guests", renderES);
   }
 }
 function field(label, input, hint, full) {
-  return '<div class="field' + (full ? " full" : "") + '"><label class="eyebrow">' + esc(label) + '</label>'
+  return '<div class="field' + (full ? " full" : "") + '"><label class="lab" style="display:block;margin-bottom:12px;'
+    + 'font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">' + esc(label) + '</label>'
     + input + (hint ? '<p class="h">' + esc(hint) + '</p>' : '') + '</div>';
 }
 
@@ -820,15 +1085,12 @@ const EXTRAS = [
   ["setupRequested", "Event setup", "We arrive early and set everything out ready for your guests."],
   ["servingStaffRequested", "Serving staff", "Our team stays to serve through the event."]
 ];
-function viewExtras() {
-  if (S.mode !== "event") return notInEvent();
-  return '<div id="ex"></div>';
-}
+function viewExtras() { return S.mode !== "event" ? notInEvent() : '<div id="ex"></div>'; }
 function renderExtras() {
   const el = $("#ex"); if (!el) return;
   const e = S.event;
   el.innerHTML = progressHTML("extras") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-    + '<p class="eyebrow">Step four</p>'
+    + '<p class="label-rule">Step four</p>'
     + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">Anything else for the day?</h1>'
     + '<p style="margin-top:20px;font-size:17px;color:var(--ink-soft)">Tell us what you would like and we will quote '
     + 'each one when we confirm your event. Nothing here is added to your total.</p>'
@@ -837,74 +1099,17 @@ function renderExtras() {
         + '<div style="min-width:0"><h2>' + x[1] + '</h2><p>' + x[2] + '</p></div>'
         + '<div class="toggle"><button type="button" data-x="' + x[0] + '" data-v="1" class="' + (e[x[0]] ? "on" : "") + '">Yes</button>'
         + '<button type="button" data-x="' + x[0] + '" data-v="0" class="' + (e[x[0]] ? "" : "on") + '">No</button></div></div>'
-        + (e[x[0]] ? '<p class="quoted">We will quote this when we confirm your event.</p>' : '')
-        + '</div>').join("")
-    + '</div>'
-    + '<div style="margin-top:32px"><label class="eyebrow" for="notes" style="display:block;margin-bottom:12px">'
-    + 'Anything we should know <span style="text-transform:none;letter-spacing:normal;color:var(--ink-faint)">optional</span></label>'
+        + (e[x[0]] ? '<p class="quoted">We will quote this when we confirm your event.</p>' : '') + '</div>').join("")
+    + '</div><div style="margin-top:32px"><label for="notes" style="display:block;margin-bottom:12px;font-size:11px;'
+    + 'text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">Anything we should know</label>'
     + '<textarea id="notes" rows="4" placeholder="Colours, timings, dietary needs, anything at all.">' + esc(e.extrasNotes) + '</textarea></div>'
     + '<div style="margin-top:40px;display:flex;flex-wrap:wrap;gap:16px;align-items:center">'
-    + '<a class="btn btn-primary" href="#/events/review">Review your request</a>'
-    + '<a href="#/menu" style="font-size:15px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:4px">Back to the menu</a></div>'
-    + '</div>';
+    + '<a class="btn btn-primary" href="#/cart">Back to your request</a>'
+    + '<a class="link-sweep" href="#/menu">Back to the menu</a></div></div>';
   const n = $("#notes");
   if (n) n.addEventListener("input", (ev) => { S.event.extrasNotes = ev.target.value; save(); });
 }
 
-function viewReview() {
-  if (S.mode !== "event") return notInEvent();
-  const e = S.event;
-  const occasion = e.eventType === "OTHER" ? (e.eventTypeOther || "Other")
-    : e.eventType ? EVENT_LABELS[e.eventType] : null;
-  const extras = EXTRAS.filter((x) => e[x[0]]).map((x) => x[1]);
-  const st = subtotal();
-
-  const food = S.lines.length === 0
-    ? '<div class="body"><p style="font-size:16px;color:var(--ink-soft)">No dishes chosen yet.</p>'
-      + '<a class="btn btn-primary" style="margin-top:20px" href="#/menu">Browse the menu</a></div>'
-    : '<ul style="list-style:none;margin:0;padding:0 24px">' + S.lines.map((l) => {
-        const p = PRODUCTS[l.slug], u = unitPrice(l);
-        return '<li style="display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line-soft);padding:16px 0">'
-          + '<div style="min-width:0"><p style="font-family:Fraunces,Georgia,serif;font-size:17px">'
-          + l.qty + ' \u00d7 ' + esc(p ? p.name : l.slug) + '</p>'
-          + (l.variant ? '<p style="font-size:14.5px;color:var(--ink-soft)">' + esc(l.variant) + '</p>' : '')
-          + (l.choiceLabels || []).map((cl) => '<p style="font-size:14px;color:var(--ink-soft)"><span style="color:var(--ink-faint)">'
-              + esc(cl[0]) + ':</span> ' + esc(cl[1]) + '</p>').join("")
-          + (l.instr ? '<p style="margin-top:4px;font-size:13.5px;font-style:italic;color:var(--ink-soft)">' + esc(l.instr) + '</p>' : '')
-          + '</div><p class="tnum" style="font-family:Fraunces,Georgia,serif;font-size:16px;white-space:nowrap">'
-          + egp(u * l.qty) + '</p></li>';
-      }).join("") + '</ul>'
-      + '<div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;border-top:1px solid var(--line);padding:20px 24px">'
-      + '<span style="font-family:Fraunces,Georgia,serif;font-size:18px;font-weight:600">Food subtotal</span>'
-      + '<span class="tnum" style="font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600">' + egp(st) + '</span></div>';
-
-  return progressHTML("review") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-    + '<p class="eyebrow">Step five</p>'
-    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">Your event request</h1>'
-    + '<div class="panel"><div class="head"><h2 class="eyebrow">The occasion</h2><a class="link-gold" href="#/events/start">Edit</a></div>'
-    + '<dl class="dl">' + row("Occasion", occasion) + row("Guests", e.guestCount ? e.guestCount + " people" : null)
-    + row("Date", e.date) + row("Time", e.time) + row("Venue", e.venue, true) + '</dl></div>'
-    + '<div class="panel"><div class="head"><h2 class="eyebrow">The food</h2><a class="link-gold" href="#/menu">Add more dishes</a></div>' + food + '</div>'
-    + '<div class="panel"><div class="head"><h2 class="eyebrow">Extras</h2><a class="link-gold" href="#/events/extras">Edit</a></div>'
-    + '<div class="body">' + (extras.length === 0
-        ? '<p style="font-size:16px;color:var(--ink-soft)">None requested.</p>'
-        : extras.map((x) => '<span class="tag">' + x + '</span>').join("")
-          + '<p style="margin-top:12px;font-size:14px;color:var(--ink-soft)">Quoted separately when we confirm your '
-          + 'event \u2014 not included in the subtotal above.</p>')
-    + (e.extrasNotes ? '<p style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;font-size:15px;font-style:italic;color:var(--ink-soft)">'
-        + esc(e.extrasNotes) + '</p>' : '') + '</div></div>'
-    + '<div style="margin-top:40px;border:1px solid var(--line);background:var(--cream-deep);border-radius:2px;padding:28px 24px">'
-    + '<p style="font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p>'
-    + '<button type="button" class="btn btn-primary" style="width:100%;margin-top:24px" disabled>Send event request</button>'
-    + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">Your contact details and how '
-    + 'you would like to pay come next.</p></div>'
-    + '<button type="button" id="cancel-event" style="margin-top:32px;background:none;border:0;font-size:14.5px;color:var(--ink-faint);text-decoration:underline;text-underline-offset:4px">Cancel this event request</button>'
-    + '</div>';
-}
-function row(label, value, full) {
-  return '<div' + (full ? ' class="full"' : '') + '><dt>' + esc(label) + '</dt><dd>'
-    + (value ? esc(value) : '<span style="color:var(--ink-faint)">Not given</span>') + '</dd></div>';
-}
 function notInEvent() {
   return '<div class="narrow" style="padding:96px 0;text-align:center">'
     + '<p style="font-family:Fraunces,Georgia,serif;font-size:24px">No event request in progress</p>'
@@ -913,12 +1118,12 @@ function notInEvent() {
 }
 
 function viewOurWork() {
-  return '<div class="page-head"><div class="wrap"><p class="eyebrow">Our work</p>'
-    + '<h1>Tables we have set</h1><p>Photographs from gatherings, celebrations and everyday tables '
-    + 'we have cooked for.</p></div></div>'
-    + '<div class="wrap" style="padding-top:64px;padding-bottom:64px">'
-    + '<div class="gallery"><div class="frame tall"><p>Photograph</p></div><div class="sub">'
-    + [1,2,3,4].map(() => '<div class="frame wide"><p>Photograph</p></div>').join("") + '</div></div>'
+  return '<div class="page-head" style="background:var(--cream-warm)"><div class="wrap"><p class="label-rule">Our work</p>'
+    + '<h1>Tables we have set</h1><p>Photographs from gatherings, celebrations and everyday tables we have cooked for.</p>'
+    + '</div></div><div class="wrap" style="padding-top:64px;padding-bottom:64px">'
+    + '<div class="gal"><div class="frame r45"><p>Photograph</p></div><div class="sub">'
+    + '<div class="frame r43"><p>Photograph</p></div><div class="frame r11 m1"><p>Photograph</p></div>'
+    + '<div class="frame r11"><p>Photograph</p></div><div class="frame r43 m3"><p>Photograph</p></div></div></div>'
     + '<p style="margin-top:24px;font-size:13.5px;color:var(--ink-faint)">Layout awaiting your photographs.</p></div>';
 }
 
@@ -930,12 +1135,12 @@ function render() {
   if (!parts.length) html = viewHome();
   else if (parts[0] === "menu") { html = viewMenu(parts[1]); after = renderBrowser; }
   else if (parts[0] === "product") { html = viewProduct(parts[1]); after = renderPD; }
-  else if (parts[0] === "cart") html = viewCart();
+  else if (parts[0] === "cart") { html = viewCart(); after = () => { if (EV_EDIT) bindEventCard(renderCart); }; }
   else if (parts[0] === "our-work") html = viewOurWork();
   else if (parts[0] === "events") {
     if (parts[1] === "start") { html = viewEventStart(); after = renderES; }
+    else if (parts[1] === "review") { location.hash = "#/cart"; return; }
     else if (parts[1] === "extras") { html = viewExtras(); after = renderExtras; }
-    else if (parts[1] === "review") html = viewReview();
     else html = viewEvents();
   } else html = viewHome();
 
@@ -955,6 +1160,11 @@ document.addEventListener("click", function (e) {
     t.setAttribute("aria-expanded", nav.classList.contains("open")); return;
   }
   if (t.dataset.cat !== undefined) { MB.cat = t.dataset.cat || null; MB.q = ""; renderBrowser(); return; }
+  if (t.id === "go-back") { history.back(); return; }
+
+  if (t.id === "ev-edit")  { EV_EDIT = true;  renderCart(); return; }
+  if (t.id === "ev-close" || t.id === "ev-done") { EV_EDIT = false; renderCart(); return; }
+  if (t.dataset.etype2) { S.event.eventType = t.dataset.etype2; save(); renderCart(); return; }
 
   if (t.dataset.variant) { PS.variant = t.dataset.variant; PS.added = false; renderPD(); return; }
   if (t.dataset.group)   { PS.choices[t.dataset.group] = t.dataset.choice; PS.added = false; renderPD(); return; }
@@ -979,14 +1189,19 @@ document.addEventListener("click", function (e) {
   if (t.id === "to-details") { ES.step = "details"; renderES(); return; }
   if (t.id === "back-type")  { ES.step = "type"; renderES(); return; }
   if (t.id === "to-dishes") {
-    const e2 = S.event, min = minEventDate(), guests = Number(e2.guestCount);
-    const valid = e2.date && e2.date >= min && e2.time && guests > 0 && e2.venue.trim();
+    // The same validator the server uses: the 100-guest ceiling is a rule,
+    // not a message on a form.
     ES.touched = true;
-    if (!valid) { renderES(); return; }
+    if (!validateEvent(S.event).ok) { renderES(); return; }
     S.mode = "event"; save(); location.hash = "#/menu"; return;
   }
-  if (t.dataset.x) { S.event[t.dataset.x] = t.dataset.v === "1"; save(); renderExtras(); return; }
+  if (t.dataset.x) {
+    S.event[t.dataset.x] = t.dataset.v === "1"; save();
+    if ($("#ex")) renderExtras(); else renderCart();
+    return;
+  }
   if (t.id === "cancel-event") {
+    EV_EDIT = false;
     S.mode = "normal";
     S.event = { eventType: null, eventTypeOther: "", date: "", time: "", guestCount: "", venue: "",
                 decorRequested: false, setupRequested: false, servingStaffRequested: false, extrasNotes: "" };
@@ -999,7 +1214,7 @@ document.addEventListener("click", function (e) {
     if (t.dataset.inc) S.lines[i].qty++;
     else if (t.dataset.dec) { S.lines[i].qty--; if (S.lines[i].qty <= 0) S.lines.splice(i, 1); }
     else S.lines.splice(i, 1);
-    save(); $("#app").innerHTML = viewCart();
+    save(); renderCart();
   }
 });
 

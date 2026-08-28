@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatEGP } from "@/lib/money";
 import { useCart } from "@/lib/cart";
@@ -22,6 +23,8 @@ export function ProductConfigurator({
   minQuantity,
   quantityStep,
   isAvailable,
+  categorySlug,
+  categoryName,
 }: {
   productId: string;
   basePrice: number | null;
@@ -30,6 +33,8 @@ export function ProductConfigurator({
   minQuantity: number;
   quantityStep: number;
   isAvailable: boolean;
+  categorySlug: string;
+  categoryName: string;
 }) {
   const router = useRouter();
   const { addLine } = useCart();
@@ -202,11 +207,22 @@ export function ProductConfigurator({
         )
       )}
 
+      {/* After adding, the three things a customer actually wants to do next. */}
       {added && (
-        <p className="mt-4 text-[14.5px]">
-          <a href="/cart" className="text-gold underline underline-offset-4">Go to cart</a>
-          <span className="text-ink-soft"> or keep browsing the menu.</span>
-        </p>
+        <div className="mt-6 rounded-sm border border-gold/35 bg-gold-pale/35 px-5 py-5">
+          <p className="text-[15px] text-ink">Added to your order.</p>
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+            <Link href={`/menu/${categorySlug}`} className="link-sweep text-[15px]">
+              &larr; Back to {categoryName}
+            </Link>
+            <Link href="/menu" className="link-sweep text-[15px]">
+              Keep browsing
+            </Link>
+            <Link href="/cart" className="link-sweep text-[15px]">
+              Go to cart &rarr;
+            </Link>
+          </div>
+        </div>
       )}
     </div>
   );

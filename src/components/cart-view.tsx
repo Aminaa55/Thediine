@@ -6,6 +6,7 @@ import { useCart } from "@/lib/cart";
 import { resolveCart, type ResolvedCart } from "@/app/actions";
 import { formatEGP } from "@/lib/money";
 import { RULES } from "@/lib/ordering";
+import { EventDetailsCard } from "./event-details-card";
 
 export function CartView() {
   const { lines, ready, mode, setQuantity, removeLine } = useCart();
@@ -26,12 +27,17 @@ export function CartView() {
 
   if (lines.length === 0) {
     return (
-      <div className="py-20 text-center">
-        <p className="font-display text-[24px] text-ink">Nothing here yet</p>
-        <p className="mx-auto mt-3 max-w-sm text-[16px] text-ink-soft">
-          Browse the menu and add the dishes you would like.
-        </p>
-        <Link href="/menu" className="btn-primary mt-8">Browse the menu</Link>
+      <div className="mx-auto max-w-2xl">
+        {isEvent && <EventDetailsCard />}
+        <div className="py-16 text-center">
+          <p className="font-display text-[24px] text-ink">
+            {isEvent ? "No dishes chosen yet" : "Nothing here yet"}
+          </p>
+          <p className="mx-auto mt-3 max-w-sm text-[16px] text-ink-soft">
+            Browse the menu and add the dishes you would like.
+          </p>
+          <Link href="/menu" className="btn-primary mt-8">Browse the menu</Link>
+        </div>
       </div>
     );
   }
@@ -41,7 +47,20 @@ export function CartView() {
 
   return (
     <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
-      <ul className={pending ? "opacity-60 transition-opacity" : "transition-opacity"}>
+      <div>
+        {isEvent && (
+          <div className="mb-10">
+            <EventDetailsCard />
+          </div>
+        )}
+
+        {isEvent && (
+          <h2 className="mb-5 font-display text-[22px] font-semibold text-ink">
+            Dishes for your event
+          </h2>
+        )}
+
+        <ul className={pending ? "opacity-60 transition-opacity" : "transition-opacity"}>
         {cart.lines.map((line) => (
           <li key={line.key} className="border-b border-line py-6 first:pt-0">
             <div className="flex items-start justify-between gap-5">
@@ -123,9 +142,10 @@ export function CartView() {
             </div>
           </li>
         ))}
-      </ul>
+        </ul>
+      </div>
 
-      <aside className="lg:sticky lg:top-32 lg:self-start">
+      <aside className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-sm border border-line bg-cream-warm p-6">
           <h2 className="font-display text-[21px] font-semibold text-ink">
             {isEvent ? "Your event so far" : "Order summary"}

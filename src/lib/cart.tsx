@@ -34,6 +34,14 @@ export type OrderMode = "normal" | "event";
 
 export type EventType = "BIRTHDAY" | "ENGAGEMENT" | "WEDDING" | "OTHER";
 
+/**
+ * guestCount is stored as the exact STRING the customer typed.
+ *
+ * It used to sit in an <input type="number">, where an arrow key or a stray
+ * mouse-wheel scroll silently steps the value — which is how 153 became 152.
+ * It is now a plain text field, digits only, parsed only when validated.
+ */
+
 /** Collected before dishes are chosen; extras are added after. */
 export type EventDraft = {
   eventType: EventType | null;

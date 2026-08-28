@@ -5,7 +5,6 @@
 @layer base {
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body { @apply bg-cream text-ink font-body antialiased; }
-  /* Logical properties throughout, so an Arabic RTL build needs no rework. */
   ::selection { background: #efe2be; color: #3b2310; }
   :focus-visible { outline: 2px solid #a87e2e; outline-offset: 3px; border-radius: 2px; }
 }
@@ -14,29 +13,40 @@
   .eyebrow {
     @apply font-body text-[11px] uppercase tracking-widest text-gold;
   }
-  .eyebrow-light {
-    @apply font-body text-[11px] uppercase tracking-widest text-gold-bright;
+  /* Small caps label with a gold rule running out of it. */
+  .label-rule {
+    @apply flex items-center gap-4 text-[11px] uppercase tracking-widest text-gold;
   }
-  /* A gold hairline with a centre notch — used to open sections and cards. */
+  .label-rule::after {
+    content: ""; @apply h-px flex-1 max-w-[80px] bg-gold/35;
+  }
   .hair {
     @apply block h-px w-full bg-gradient-to-r from-gold/50 via-gold/15 to-transparent;
   }
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
-           text-[15px] font-medium transition-colors duration-200;
+           text-[15px] font-medium transition-all duration-200;
   }
-  .btn-primary { @apply btn bg-ink text-cream hover:bg-ink-deep; }
+  .btn-primary { @apply btn bg-ink text-cream hover:bg-ink/90 hover:shadow-[0_10px_24px_-14px_rgba(59,35,16,.8)]; }
   .btn-gold { @apply btn bg-gold text-white hover:bg-gold/90; }
   .btn-outline {
-    @apply btn border border-ink/25 text-ink hover:border-ink/60 hover:bg-ink/[0.04];
+    @apply btn border border-ink/25 text-ink hover:border-gold hover:bg-gold/[0.06];
   }
-  .btn-on-dark {
-    @apply btn border border-gold-bright/50 text-cream hover:bg-gold-bright/10;
+  /* A link whose gold underline sweeps in from the left on hover. */
+  .link-sweep {
+    @apply relative inline-block text-gold;
   }
-  /* Section grounds. Alternating these is what gives the page its rhythm. */
-  .band-dark { @apply bg-ink-deep text-cream; }
-  .band-deep { @apply bg-cream-deep; }
-  .band-toast { @apply bg-cream-toast; }
+  .link-sweep::after {
+    content: ""; @apply absolute -bottom-0.5 left-0 h-px w-0 bg-gold transition-all duration-300;
+  }
+  .link-sweep:hover::after { @apply w-full; }
+  /* Gold corner brackets — a brand moment, used sparingly. */
+  .bracket { @apply relative; }
+  .bracket::before, .bracket::after {
+    content: ""; @apply pointer-events-none absolute h-5 w-5 border-gold/45;
+  }
+  .bracket::before { @apply left-0 top-0 border-l border-t; }
+  .bracket::after { @apply bottom-0 right-0 border-b border-r; }
 }
 
 @media (prefers-reduced-motion: reduce) {

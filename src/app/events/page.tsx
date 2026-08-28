@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getGallery } from "@/lib/gallery";
 import { OurWork } from "@/components/our-work";
+import { Curve, GoldArc } from "@/components/curve";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Plan an Event" };
@@ -25,14 +26,13 @@ export default async function EventsPage() {
           className="absolute inset-0"
           style={{ background: "radial-gradient(120% 100% at 85% -10%, #FFFDF8 0%, #F8EDDA 45%, #EFDDBE 100%)" }}
         />
-        <div className="relative mx-auto max-w-content px-5 py-24 sm:px-8 sm:py-32">
+        <div className="relative mx-auto max-w-content px-5 pb-28 pt-24 sm:px-8 sm:pb-36 sm:pt-32">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-4">
-              <span className="h-px w-14 bg-gold/50" aria-hidden="true" />
-              <p className="eyebrow">Event catering</p>
-            </div>
-            <h1 className="mt-8 font-display text-[42px] font-semibold leading-[1.04] tracking-tight text-ink sm:text-[58px]">
-              For the days you will remember.
+            <p className="label-rule">Event catering</p>
+            <h1 className="mt-8 font-display text-[44px] font-semibold leading-[1.0] tracking-tight text-ink sm:text-[62px]">
+              For the days
+              <span className="ms-[0.14em] block italic font-normal text-gold">you will</span>
+              <span className="block">remember.</span>
             </h1>
             <p className="mt-8 max-w-xl text-[18px] leading-relaxed text-ink-soft sm:text-[20px]">
               Larger gatherings deserve more than an order form. Tell us about the
@@ -43,24 +43,31 @@ export default async function EventsPage() {
             </Link>
           </div>
         </div>
+        <Curve to="cream-warm" />
       </section>
 
-      <section className="band-dark">
-        <div className="mx-auto max-w-content px-5 py-20 sm:px-8 sm:py-24">
-          <p className="eyebrow-light">How it works</p>
-          <h2 className="mt-3 font-display text-[30px] font-semibold leading-tight text-cream sm:text-[38px]">
-            Five steps, and a conversation
+      <section className="bg-cream-warm">
+        <div className="mx-auto max-w-content px-5 pb-24 pt-8 sm:px-8 sm:pb-32">
+          <p className="label-rule">How it works</p>
+          <h2 className="mt-4 font-display text-[32px] font-semibold leading-tight text-ink sm:text-[42px]">
+            Five steps, and
+            <span className="italic font-normal text-gold"> a conversation</span>
           </h2>
 
-          <ol className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
+          <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
             {HOW.map((s, i) => (
-              <li key={s.title}>
-                <span className="font-display text-[15px] font-semibold tabular-nums text-gold-bright">
-                  0{i + 1}
+              <li
+                key={s.title}
+                className={`rounded-sm border border-line bg-cream px-6 py-8 transition-transform duration-300 hover:-translate-y-1.5 ${
+                  i % 2 === 1 ? "lg:mt-8" : ""
+                }`}
+              >
+                <span className="font-display text-[15px] italic tabular-nums text-gold">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
-                <div className="mt-3 h-px w-full bg-line-dark" />
-                <h3 className="mt-5 font-display text-[19px] font-semibold text-cream">{s.title}</h3>
-                <p className="mt-2.5 text-[15px] leading-relaxed text-cream/60">{s.body}</p>
+                <span className="hair mt-3" aria-hidden="true" />
+                <h3 className="mt-5 font-display text-[19px] font-semibold text-ink">{s.title}</h3>
+                <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">{s.body}</p>
               </li>
             ))}
           </ol>
@@ -74,9 +81,11 @@ export default async function EventsPage() {
         showLink={false}
       />
 
-      <section className="band-toast border-y border-line">
-        <div className="mx-auto max-w-content px-5 py-16 text-center sm:px-8 sm:py-20">
-          <h2 className="mx-auto max-w-lg font-display text-[28px] font-semibold leading-tight text-ink sm:text-[36px]">
+      <section className="relative bg-cream-toast">
+        <Curve to="cream-toast" flip />
+        <div className="mx-auto max-w-content px-5 pb-20 pt-8 text-center sm:px-8 sm:pb-24">
+          <GoldArc className="mx-auto h-7 w-16 text-gold/70" />
+          <h2 className="mx-auto mt-6 max-w-lg font-display text-[30px] font-semibold leading-tight text-ink sm:text-[38px]">
             Ready when you are
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-ink-soft">

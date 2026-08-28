@@ -148,3 +148,36 @@ function missing(
     problem,
   };
 }
+
+/**
+ * Server-side validation of an event request.
+ *
+ * The 100-guest ceiling is a business rule, not a message on a form: a request
+ * over the limit is rejected here even if the browser is bypassed entirely.
+ * The ceiling is read from the `event_max_guests` setting so it can be changed
+ * from admin without a deploy.
+ */
+export async function validateEventRequest(input: {
+  eventType: string | null;
+  eventTypeOther: string;
+  date: string;
+  time: string;
+  guestCount: string;
+  venue: string;
+}): Promise<{ ok: boolean; errors: Record<string, string> }> {
+  const { validateEvent, EVENT_GUESTS, parseGuests } = await import("@/lib/ordering");
+
+  const result = validateEvent(input);
+
+  const setting = await db.setting.findUnique({ where: { key: "event_max_guests" } });
+  const max = setting ? Number(setting.value) : EVENT_GUESTS.max;
+  const guests = parseGuests(input.guestCount);
+
+  if (Number.isFinite(max) && guests !== null && guests > max) {
+    return {
+      ok: false,
+      errors: { ...result.errors, guestCount: `We currently cater events for up to ${max} guests.` },
+    };
+  }
+  return result;
+}

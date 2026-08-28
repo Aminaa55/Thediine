@@ -5,9 +5,9 @@ Replaces manual order-taking over Instagram DMs.
 
 ## Status
 
-**Customer website built through the cart.** Homepage, menu, product pages and cart
-are working against the real catalogue. Checkout, the event order form and the admin
-dashboard are the next phases.
+**Customer experience revised through the cart.** Homepage, menu, product pages,
+the five-step event journey and the cart all work against the real catalogue.
+Checkout and the admin dashboard are the next phases.
 
 | | |
 |---|---|
@@ -45,7 +45,9 @@ instruction. Verified end to end against a real PostgreSQL instance.
 | Late cancellation | 20%, calculated and recorded | 20%, calculated and recorded |
 | Minimum order value | none | none |
 
-Serving setup (returnable or disposable) is chosen on every order. Payment is
+Events take a maximum of **100 guests**, enforced by the shared validator used by
+both the browser and the server, and backed by the editable `event_max_guests`
+setting. Serving setup (returnable or disposable) is chosen on every order. Payment is
 recorded, never processed: cash and InstaPay live, card structured but off.
 InstaPay verification is separate from order confirmation, and payment status is
 independent of order status. Customers cannot self-cancel. English at launch,
@@ -55,6 +57,12 @@ with an Arabic field on every name and description.
 
 Nothing has been invented to fill a gap.
 
+- **The logo** — never recreated, redrawn or approximated. `LOGO_SRC` in
+  `src/lib/brand.ts` is null until the real asset is supplied; until then the
+  header and footer show the name set in the brand typeface.
+- **Our Work photographs** — the section and `GalleryImage` model exist and the
+  section hides itself entirely when there are none, so no empty frames reach a
+  customer.
 - **Selling units** — no product has one. Tray sizes, weights and piece counts
   were never supplied, so the field is empty and flagged in admin.
 - **Cut-off time, InstaPay details, serving-setup policy** — settings exist with

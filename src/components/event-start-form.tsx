@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart, EVENT_TYPE_LABELS, type EventType } from "@/lib/cart";
 import { EventProgress, EventNotice } from "./event-steps";
-import { earliestEventDate, toDateInput, RULES } from "@/lib/ordering";
+import { earliestEventDate, toDateInput, validateEvent, EVENT_GUESTS } from "@/lib/ordering";
+import { GuestInput } from "./event-details-card";
 
 /**
  * Steps one and two of the event request: the occasion, then the details.
@@ -26,16 +27,9 @@ export function EventStartForm() {
     if (t !== "OTHER") setStep("details");
   }
 
-  const dateTooSoon = event.date !== "" && event.date < min;
-  const guests = Number(event.guestCount);
-  const detailsValid =
-    event.date !== "" &&
-    !dateTooSoon &&
-    event.time !== "" &&
-    Number.isFinite(guests) &&
-    guests > 0 &&
-    event.venue.trim() !== "" &&
-    (event.eventType !== "OTHER" || event.eventTypeOther.trim() !== "");
+  // One validator, shared with the server, so the rules cannot drift apart.
+  const check = validateEvent(event);
+  const detailsValid = check.ok;
 
   function toDishes() {
     setTouched(true);
@@ -120,7 +114,7 @@ export function EventStartForm() {
                   value={event.date}
                   min={min}
                   onChange={(e) => updateEvent({ date: e.target.value })}
-                  className={input(touched && (event.date === "" || dateTooSoon))}
+                  className={input(touched && !!check.errors.date)}
                 />
               </Field>
 
@@ -130,21 +124,16 @@ export function EventStartForm() {
                   type="time"
                   value={event.time}
                   onChange={(e) => updateEvent({ time: e.target.value })}
-                  className={input(touched && event.time === "")}
+                  className={input(touched && !!check.errors.time)}
                 />
               </Field>
 
-              <Field label="Number of guests" htmlFor="guests">
-                <input
-                  id="guests"
-                  type="number"
-                  min={1}
-                  inputMode="numeric"
-                  value={event.guestCount}
-                  onChange={(e) => updateEvent({ guestCount: e.target.value })}
-                  placeholder="40"
-                  className={input(touched && !(guests > 0))}
-                />
+              <Field
+                label="Number of guests"
+                htmlFor="guests"
+                hint={`We cater events for up to ${EVENT_GUESTS.max} guests`}
+              >
+                <GuestInput />
               </Field>
 
               <Field label="Venue or address" htmlFor="venue" full>
@@ -153,15 +142,14 @@ export function EventStartForm() {
                   value={event.venue}
                   onChange={(e) => updateEvent({ venue: e.target.value })}
                   placeholder="Where should we bring the food?"
-                  className={input(touched && event.venue.trim() === "")}
+                  className={input(touched && !!check.errors.venue)}
                 />
               </Field>
             </div>
 
-            {dateTooSoon && (
+            {(touched || event.date) && !check.ok && (
               <p className="mt-5 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.07] px-5 py-4 text-[15px] text-[#A6391C]">
-                We need at least {RULES.event.noticeLabel} to prepare an event. The
-                earliest date we can take is {min}.
+                {Object.values(check.errors)[0]}
               </p>
             )}
 
@@ -177,12 +165,6 @@ export function EventStartForm() {
                 Back
               </button>
             </div>
-
-            {touched && !detailsValid && !dateTooSoon && (
-              <p className="mt-5 text-[15px] text-ink-soft">
-                Please fill in every field so we can plan properly.
-              </p>
-            )}
 
             <EventNotice className="mt-8" />
           </section>

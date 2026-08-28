@@ -27,6 +27,7 @@ const SETTINGS: Record<string, string> = {
 
   // Event orders
   event_notice_days: "5",
+  event_max_guests: "100", // hard ceiling, enforced server-side
   event_default_capacity_mode: "BLOCK_DAY",
 
   // Cancellation

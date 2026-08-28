@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct, displayPrice } from "@/lib/catalog";
 import { formatEGP } from "@/lib/money";
 import { ProductConfigurator } from "@/components/product-configurator";
+import { BackToCategory } from "@/components/product-nav";
 
 export const dynamic = "force-dynamic";
 
@@ -35,13 +35,10 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-3xl px-5 pb-16 sm:px-8">
-      <nav className="py-8 text-[14px] text-ink-faint">
-        <Link href="/menu" className="hover:text-ink">Menu</Link>
-        <span className="mx-2" aria-hidden="true">/</span>
-        <Link href={`/menu/${product.category.slug}`} className="hover:text-ink">
-          {product.category.nameEn}
-        </Link>
-      </nav>
+      <BackToCategory
+        categorySlug={product.category.slug}
+        categoryName={product.category.nameEn}
+      />
 
       {product.imageUrl && (
         <div className="mb-10 aspect-[16/10] overflow-hidden rounded-sm border border-line">
@@ -96,6 +93,8 @@ export default async function ProductPage({ params }: Props) {
         minQuantity={product.minQuantity}
         quantityStep={product.quantityStep}
         isAvailable={product.isAvailable}
+        categorySlug={product.category.slug}
+        categoryName={product.category.nameEn}
       />
     </article>
   );

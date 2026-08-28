@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getMenu } from "@/lib/catalog";
 import { MenuBrowser } from "@/components/menu-browser";
+import { EventContextBar } from "@/components/event-context-bar";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Menu" };
@@ -11,7 +12,7 @@ export default async function MenuPage() {
 
   return (
     <>
-      <div className="border-b border-line bg-cream-deep">
+      <div className="border-b border-line bg-cream-warm">
         <div className="mx-auto max-w-content px-5 py-14 sm:px-8 sm:py-20">
           <p className="eyebrow">Our menu</p>
           <h1 className="mt-3 font-display text-[36px] font-semibold leading-tight text-ink sm:text-[48px]">
@@ -21,6 +22,7 @@ export default async function MenuPage() {
             {total} dishes across four courses. Pick a course to narrow things down, or
             search if you already know what you are after.
           </p>
+          <EventContextBar />
         </div>
       </div>
 

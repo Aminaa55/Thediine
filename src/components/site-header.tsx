@@ -13,7 +13,7 @@ const NAV = [
 ];
 
 export function SiteHeader() {
-  const { count, ready, mode } = useCart();
+  const { count, ready } = useCart();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -87,29 +87,6 @@ export function SiteHeader() {
         )}
       </header>
 
-      {/* The customer must always know they are inside an event request. */}
-      {ready && mode === "event" && <EventRibbon />}
     </>
-  );
-}
-
-function EventRibbon() {
-  const { event } = useCart();
-  const bits = [
-    event.eventType ? event.eventType.charAt(0) + event.eventType.slice(1).toLowerCase() : null,
-    event.guestCount ? `${event.guestCount} guests` : null,
-    event.date || null,
-  ].filter(Boolean);
-
-  return (
-    <div className="sticky top-16 z-30 border-b border-line-dark bg-ink-deep text-cream sm:top-20">
-      <div className="mx-auto flex max-w-content flex-wrap items-center gap-x-4 gap-y-1 px-5 py-2.5 text-[13px] sm:px-8">
-        <span className="eyebrow-light">Event request</span>
-        {bits.length > 0 && <span className="text-cream/70">{bits.join(" · ")}</span>}
-        <Link href="/events/review" className="ms-auto text-gold-bright hover:underline">
-          Review request &rarr;
-        </Link>
-      </div>
-    </div>
   );
 }

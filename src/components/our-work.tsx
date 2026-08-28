@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Curve, Dots } from "./curve";
 
 export type GalleryItem = {
   id: string;
@@ -10,8 +11,10 @@ export type GalleryItem = {
 /**
  * Real photographs of The Diine's dishes, tables and events.
  *
- * If there are none, the whole section disappears — a customer never sees an
- * empty frame or a stand-in photograph.
+ * An editorial collage rather than a uniform grid: the lead image runs tall,
+ * the others sit at varied proportions with a slight stagger. If there are no
+ * photographs the whole section disappears, so a customer never sees an empty
+ * frame or a stand-in image.
  */
 export function OurWork({
   images,
@@ -31,58 +34,63 @@ export function OurWork({
   const [lead, ...rest] = images;
 
   return (
-    <section className="band-deep border-y border-line">
-      <div className="mx-auto max-w-content px-5 py-20 sm:px-8 sm:py-24">
+    <section className="relative bg-cream-deep">
+      <Curve to="cream-deep" flip />
+      <div className="mx-auto max-w-content px-5 pb-24 pt-10 sm:px-8 sm:pb-32">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="eyebrow">{heading}</p>
-            <h2 className="mt-3 font-display text-[30px] font-semibold leading-tight text-ink sm:text-[38px]">
+          <div className="max-w-xl">
+            <p className="label-rule">{heading}</p>
+            <h2 className="mt-4 font-display text-[32px] font-semibold leading-tight text-ink sm:text-[42px]">
               {title}
             </h2>
-            {intro && (
-              <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">{intro}</p>
-            )}
+            {intro && <p className="mt-5 text-[17px] leading-relaxed text-ink-soft">{intro}</p>}
           </div>
-          {showLink && (
-            <Link href="/our-work" className="text-[15px] text-gold hover:underline">
+          {showLink ? (
+            <Link href="/our-work" className="link-sweep text-[15px]">
               See more of our work &rarr;
             </Link>
+          ) : (
+            <Dots className="h-1.5 w-[34px] text-gold" />
           )}
         </div>
 
-        {/* One lead image, the rest in a mosaic — a grid of equal tiles reads
-            as a contact sheet rather than a portfolio. */}
-        <div className="mt-10 grid gap-4 lg:grid-cols-2">
-          <Figure item={lead} tall />
+        <div className="mt-12 grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+          <Figure item={lead} ratio="aspect-[4/5]" />
           {rest.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-2">
-              {rest.slice(0, 4).map((item) => (
-                <Figure key={item.id} item={item} />
+              {rest.slice(0, 4).map((item, i) => (
+                <Figure
+                  key={item.id}
+                  item={item}
+                  ratio={i === 0 ? "aspect-[4/3]" : i === 3 ? "aspect-[4/3]" : "aspect-square"}
+                  className={i === 1 ? "sm:mt-8" : i === 3 ? "sm:-mt-8" : ""}
+                />
               ))}
             </div>
           )}
         </div>
       </div>
+      <Curve to="cream-toast" />
     </section>
   );
 }
 
-function Figure({ item, tall = false }: { item: GalleryItem; tall?: boolean }) {
+function Figure({
+  item, ratio, className = "",
+}: { item: GalleryItem; ratio: string; className?: string }) {
   return (
     <figure
-      className={`group relative overflow-hidden rounded-sm border border-line bg-cream-warm ${
-        tall ? "aspect-[4/5] lg:aspect-auto lg:h-full" : "aspect-[4/3]"
-      }`}
+      className={`group relative overflow-hidden rounded-sm border border-line bg-cream-warm ${ratio} ${className}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={item.imageUrl}
         alt={item.altEn}
         loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+        className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
       />
       {item.captionEn && (
-        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-deep/80 to-transparent p-5 text-[14px] text-cream">
+        <figcaption className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-ink/85 to-transparent p-5 text-[14px] text-cream opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           {item.captionEn}
         </figcaption>
       )}

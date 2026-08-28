@@ -40,11 +40,12 @@ export default {
       letterSpacing: { widest: "0.22em" },
       keyframes: {
         rise: {
-          from: { opacity: "0", transform: "translateY(12px)" },
+          from: { opacity: "0", transform: "translateY(14px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
       },
-      animation: { rise: "rise .5s ease-out both" },
+      animation: { rise: "rise .6s cubic-bezier(.22,1,.36,1) both" },
+      rotate: { "1.5": "1.5deg", "-1.5": "-1.5deg" },
     },
   },
   plugins: [],
