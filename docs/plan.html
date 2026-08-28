@@ -1,0 +1,807 @@
+<title>The Diine Build Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --ground:#FAF1E6; --surface:#FFFAF3; --surface-2:#F4E7D6; --sunk:#F2E5D3;
+  --ink:#3B2310; --ink-2:#6E523A; --ink-3:#96795D;
+  --line:#E4D0B8; --line-soft:#EFDFCB;
+  --gold:#9C7023; --gold-soft:#C9A85C; --wash:rgba(156,112,35,.07);
+  --flag:#A6391C; --flag-wash:rgba(166,57,28,.08); --flag-line:rgba(166,57,28,.3);
+  --ok:#4C6B39; --ok-wash:rgba(76,107,57,.09);
+  --shadow:0 1px 2px rgba(59,35,16,.05), 0 8px 24px -16px rgba(59,35,16,.22);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#18110E; --surface:#211711; --surface-2:#2C2018; --sunk:#1E1511;
+    --ink:#F2E6D7; --ink-2:#C2AA92; --ink-3:#95806A;
+    --line:#3B2B21; --line-soft:#2F221A;
+    --gold:#D9B060; --gold-soft:#8C7038; --wash:rgba(217,176,96,.09);
+    --flag:#E3865F; --flag-wash:rgba(227,134,95,.1); --flag-line:rgba(227,134,95,.3);
+    --ok:#9BBC83; --ok-wash:rgba(155,188,131,.1);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#18110E; --surface:#211711; --surface-2:#2C2018; --sunk:#1E1511;
+  --ink:#F2E6D7; --ink-2:#C2AA92; --ink-3:#95806A;
+  --line:#3B2B21; --line-soft:#2F221A;
+  --gold:#D9B060; --gold-soft:#8C7038; --wash:rgba(217,176,96,.09);
+  --flag:#E3865F; --flag-wash:rgba(227,134,95,.1); --flag-line:rgba(227,134,95,.3);
+  --ok:#9BBC83; --ok-wash:rgba(155,188,131,.1);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:Karla,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px; margin:0 auto; padding:0 24px}
+.col{max-width:680px}
+h1,h2,h3,h4{font-family:Fraunces,Georgia,"Times New Roman",serif; text-wrap:balance; margin:0}
+p{margin:0}
+a{color:var(--gold); text-decoration-thickness:1px; text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ---- top bar ---- */
+.bar{
+  position:sticky; top:0; z-index:20; background:var(--ground);
+  background:color-mix(in srgb, var(--ground) 92%, transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft);
+}
+.bar .wrap{display:flex; align-items:center; gap:28px; height:54px}
+.mark{
+  font-family:Fraunces,Georgia,serif; font-weight:600; font-size:15px;
+  letter-spacing:.14em; text-transform:uppercase; white-space:nowrap; color:var(--ink);
+}
+.jump{display:flex; gap:20px; overflow-x:auto; scrollbar-width:none; margin-left:auto}
+.jump::-webkit-scrollbar{display:none}
+.jump a{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink-3); text-decoration:none; white-space:nowrap;
+  padding:4px 0; border-bottom:1.5px solid transparent; transition:color .18s, border-color .18s;
+}
+.jump a:hover{color:var(--gold); border-bottom-color:var(--gold)}
+@media(max-width:720px){ .mark{font-size:13px} .bar .wrap{gap:16px} }
+
+/* ---- masthead ---- */
+.mast{padding:76px 0 8px}
+.mast .kicker{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:20px;
+}
+.mast h1{font-size:clamp(38px,6.4vw,60px); line-height:1.04; font-weight:600; letter-spacing:-.015em}
+.mast .sub{margin-top:22px; font-size:19px; color:var(--ink-2); max-width:600px}
+.rule{height:1px; background:var(--line); border:0; margin:0}
+.mast .meta{
+  display:flex; flex-wrap:wrap; gap:8px 26px; margin-top:34px; padding-top:18px; border-top:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--ink-3);
+}
+
+/* ---- sections ---- */
+section{padding:60px 0; border-top:1px solid var(--line-soft)}
+section:first-of-type{border-top:0}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:14px; display:flex; align-items:center; gap:12px;
+}
+.eyebrow::after{content:""; flex:1; height:1px; background:var(--line); max-width:120px}
+h2{font-size:clamp(26px,3.6vw,34px); font-weight:600; line-height:1.15; letter-spacing:-.01em}
+h3{font-size:20px; font-weight:600; margin-top:34px}
+h4{font-size:16px; font-weight:600; letter-spacing:.01em}
+.lede{margin-top:16px; color:var(--ink-2); font-size:18px}
+section p + p{margin-top:16px}
+h3 + p, h4 + p{margin-top:10px}
+
+/* ---- notice ---- */
+.notice{
+  background:var(--flag-wash); border:1px solid var(--flag-line); border-radius:3px;
+  padding:22px 26px; margin:34px 0 0;
+}
+.notice .tag{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--flag); font-weight:500; margin-bottom:9px;
+}
+.notice h4{color:var(--ink); margin-bottom:8px}
+.notice p{color:var(--ink-2); font-size:16px}
+
+.ask{
+  border-left:2px solid var(--gold); background:var(--wash);
+  padding:16px 22px; margin-top:22px; border-radius:0 3px 3px 0;
+}
+.ask .tag{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:6px;
+}
+.ask p{font-size:16px; color:var(--ink-2)}
+.ask strong{color:var(--ink); font-weight:700}
+
+/* ---- gap list ---- */
+.gaps{list-style:none; padding:0; margin:30px 0 0; display:flex; flex-direction:column; gap:0}
+.gaps li{padding:20px 0; border-top:1px solid var(--line-soft); display:grid; grid-template-columns:26px 1fr; gap:16px}
+.gaps li:first-child{border-top:1px solid var(--line)}
+.gaps .n{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--gold-soft); padding-top:4px;
+  font-variant-numeric:tabular-nums;
+}
+.gaps h4{margin-bottom:5px}
+.gaps p{font-size:16px; color:var(--ink-2)}
+
+/* ---- scope table ---- */
+.scroller{overflow-x:auto; margin-top:30px; border:1px solid var(--line); border-radius:3px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:560px; font-size:15.5px}
+th,td{text-align:left; padding:13px 18px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+thead th{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:500; background:var(--sunk); border-bottom:1px solid var(--line);
+}
+tbody tr:last-child td{border-bottom:0}
+td.area{font-weight:700; color:var(--ink); white-space:nowrap}
+td small{display:block; color:var(--ink-3); font-size:13.5px; margin-top:3px}
+.pill{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; padding:3px 9px; border-radius:2px; white-space:nowrap;
+}
+.pill.now{background:var(--ok-wash); color:var(--ok); border:1px solid color-mix(in srgb,var(--ok) 35%, transparent)}
+.pill.later{background:var(--sunk); color:var(--ink-3); border:1px solid var(--line)}
+
+/* ---- journey ---- */
+.flow{margin-top:32px; display:flex; flex-direction:column}
+.step{display:grid; grid-template-columns:96px 1fr; gap:24px; padding:20px 0; border-top:1px solid var(--line-soft)}
+.step:first-child{border-top:1px solid var(--line)}
+.step .who{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); padding-top:4px;
+}
+.step h4{margin-bottom:5px}
+.step p{font-size:16px; color:var(--ink-2)}
+.status-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:26px}
+.status{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.05em; padding:6px 12px;
+  border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--ink-2);
+}
+.status.first{border-color:var(--gold); color:var(--gold)}
+.status.end{background:var(--sunk); color:var(--ink-3)}
+
+/* ---- entity cards ---- */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:14px; margin-top:26px}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:3px; padding:18px 20px; box-shadow:var(--shadow);
+}
+.card.ghost{background:transparent; box-shadow:none; border-style:dashed; opacity:.78}
+.card h4{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:500; letter-spacing:.04em;
+  color:var(--gold); margin-bottom:4px;
+}
+.card .what{font-size:14px; color:var(--ink-2); margin-bottom:11px}
+.card ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:5px}
+.card li{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3);
+  background:var(--sunk); border-radius:2px; padding:2px 7px; white-space:nowrap;
+}
+.card.ghost li{background:transparent; border:1px dashed var(--line)}
+.groupname{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin:38px 0 0;
+}
+
+/* ---- stack ---- */
+.stack{margin-top:28px; display:flex; flex-direction:column}
+.tech{display:grid; grid-template-columns:150px 1fr; gap:22px; padding:18px 0; border-top:1px solid var(--line-soft)}
+.tech:first-child{border-top:1px solid var(--line)}
+.tech .name{font-weight:700; color:var(--ink)}
+.tech .name small{
+  display:block; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:400; margin-top:3px;
+}
+.tech p{font-size:16px; color:var(--ink-2)}
+.cost{margin-top:30px; background:var(--sunk); border:1px solid var(--line); border-radius:3px; padding:20px 24px}
+.cost h4{margin-bottom:12px}
+.cost dl{margin:0; display:grid; grid-template-columns:1fr auto; gap:9px 20px; font-size:15px}
+.cost dt{color:var(--ink-2)}
+.cost dd{margin:0; font-family:"IBM Plex Mono",monospace; font-size:14px; text-align:right; font-variant-numeric:tabular-nums}
+.cost .tot{border-top:1px solid var(--line); padding-top:11px; margin-top:3px; font-weight:700; color:var(--ink)}
+
+/* ---- phases ---- */
+.phases{margin-top:32px; counter-reset:ph}
+.phase{
+  display:grid; grid-template-columns:44px 1fr; gap:22px; padding:24px 0; border-top:1px solid var(--line-soft);
+}
+.phase:first-child{border-top:1px solid var(--line)}
+.phase .num{
+  font-family:Fraunces,Georgia,serif; font-size:30px; font-weight:600; color:var(--gold-soft);
+  line-height:1; padding-top:2px; font-variant-numeric:tabular-nums;
+}
+.phase h4{font-size:18px; margin-bottom:7px}
+.phase .out{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+  margin-top:9px; padding-top:9px; border-top:1px dashed var(--line);
+}
+.phase p{font-size:16px; color:var(--ink-2)}
+
+/* ---- checklist ---- */
+.checks{margin-top:26px; border:1px solid var(--line); border-radius:3px; overflow:hidden; background:var(--surface)}
+.checks .head{
+  background:var(--sunk); padding:11px 20px; border-bottom:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3);
+  display:flex; justify-content:space-between; gap:12px;
+}
+.checks .head .count{color:var(--gold)}
+label.item{
+  display:grid; grid-template-columns:22px 1fr; gap:13px; padding:14px 20px;
+  border-bottom:1px solid var(--line-soft); cursor:pointer; transition:background .15s;
+}
+label.item:last-child{border-bottom:0}
+label.item:hover{background:var(--wash)}
+label.item input{
+  appearance:none; width:16px; height:16px; margin-top:4px; border:1.5px solid var(--gold-soft);
+  border-radius:2px; background:transparent; cursor:pointer; position:relative; flex:none;
+}
+label.item input:checked{background:var(--gold); border-color:var(--gold)}
+label.item input:checked::after{
+  content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  color:var(--surface); font-size:11px; line-height:1;
+}
+label.item input:checked ~ .txt{opacity:.45; text-decoration:line-through; text-decoration-color:var(--ink-3)}
+.txt{font-size:16px; transition:opacity .15s}
+.txt b{display:block; font-weight:700; color:var(--ink)}
+.txt span{color:var(--ink-2); font-size:15px}
+
+/* ---- qa ---- */
+.qa{margin-top:28px; display:flex; flex-direction:column; gap:0}
+.qblock{padding:22px 0; border-top:1px solid var(--line-soft)}
+.qblock:first-child{border-top:1px solid var(--line)}
+.qblock h4{color:var(--gold); font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.13em; text-transform:uppercase; margin-bottom:12px}
+.qblock ol{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:9px}
+.qblock li{font-size:16px; color:var(--ink-2)}
+.qblock li b{color:var(--ink)}
+
+footer{padding:56px 0 80px; border-top:1px solid var(--line); color:var(--ink-3); font-size:15px}
+footer .sig{font-family:Fraunces,Georgia,serif; font-size:17px; color:var(--ink-2); margin-bottom:8px}
+</style>
+
+<div class="bar"><div class="wrap">
+  <div class="mark">The Diine</div>
+  <nav class="jump">
+    <a href="#gaps">Gaps</a><a href="#scope">Scope</a><a href="#customer">Customer</a>
+    <a href="#admin">Admin</a><a href="#menu">Menu model</a><a href="#data">Data</a>
+    <a href="#stack">Stack</a><a href="#build">Build</a><a href="#need">I need</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+
+<header class="mast col">
+  <div class="kicker">Proposal · Before we build</div>
+  <h1>An ordering system for The&nbsp;Diine</h1>
+  <p class="sub">Everything I plan to build, why, in what order, and the business decisions only you can make. Nothing gets written into code until you've read this and corrected me.</p>
+  <div class="meta">
+    <span>Catering · Egypt</span><span>Instagram → website → kitchen</span><span>Read time ≈ 12 min</span>
+  </div>
+</header>
+
+<section id="missing">
+  <div class="col">
+    <div class="eyebrow">Start here</div>
+    <h2>One file didn't reach me</h2>
+    <p class="lede">The logo came through and I've used it to set the whole visual direction. The <strong>Full Buffet Menu PDF did not</strong> — the upload didn't attach.</p>
+
+    <div class="notice">
+      <div class="tag">Blocked · needs re-upload</div>
+      <h4>I can't propose the structured menu yet</h4>
+      <p>You asked me to show you the product structure — names, categories, descriptions, required choices — before anything goes into the database. I won't invent dishes or guess at what the choices are, so that one section is on hold until the PDF arrives. Please send it again and it's the first thing I'll do.</p>
+    </div>
+
+    <p style="margin-top:22px">Everything else in this plan stands on its own and doesn't depend on the menu file. The <a href="#menu">menu modelling section</a> explains the <em>rules</em> I'll apply to your dishes the moment I can read them.</p>
+  </div>
+</section>
+
+<section id="gaps">
+  <div class="col">
+    <div class="eyebrow">Section 01</div>
+    <h2>What's missing from the brief</h2>
+    <p class="lede">Your brief is unusually complete. These are the things that aren't in it and that a catering business gets hurt by — most of them are business rules, not features.</p>
+  </div>
+
+  <ol class="gaps col">
+    <li><span class="n">01</span><div>
+      <h4>Lead time and a cut-off</h4>
+      <p>Without it, someone orders a buffet for forty people at 11pm for tomorrow morning and you're contractually on the hook. Catering needs a rule like "orders close 48 hours before delivery." It may differ per dish. This is the single most important missing rule.</p>
+    </div></li>
+    <li><span class="n">02</span><div>
+      <h4>Daily capacity</h4>
+      <p>Your kitchen has a ceiling. The site must stop taking orders for a date once you've hit it, or a good day becomes a disaster. I'll build a simple cap: maximum orders per day, plus the ability to block out dates entirely.</p>
+    </div></li>
+    <li><span class="n">03</span><div>
+      <h4>Minimum order value</h4>
+      <p>Catering delivery only makes sense above a certain basket size. Most catering sites set one. Yours is currently unstated.</p>
+    </div></li>
+    <li><span class="n">04</span><div>
+      <h4>Serving guidance on every dish</h4>
+      <p>"Serves 8–10 people" is the piece of information your Instagram DMs are probably full of questions about. Putting it on each product is the highest-value thing on the whole menu page, and it needs to be a real database field, not a sentence buried in the description.</p>
+    </div></li>
+    <li><span class="n">05</span><div>
+      <h4>A deposit rule</h4>
+      <p>Large catering orders are usually confirmed with a deposit, because a cancelled 60-person order is a real loss. Decide whether you want one, and from what order value.</p>
+    </div></li>
+    <li><span class="n">06</span><div>
+      <h4>WhatsApp, not email</h4>
+      <p>In Egypt, email confirmations mostly go unread. The single most useful notification is a WhatsApp message. I can do a working version of this in the MVP for free — no API, no monthly cost — using a "Confirm on WhatsApp" button that opens a chat with your order summary already typed out. The automated version comes later.</p>
+    </div></li>
+    <li><span class="n">07</span><div>
+      <h4>Arabic</h4>
+      <p>A large share of your customers may prefer Arabic. Building it now roughly doubles the content work; building it <em>later</em> onto a site that never planned for it is a rewrite. My recommendation: launch in English, but structure the text and layout for Arabic from day one so adding it is a content job, not a rebuild.</p>
+    </div></li>
+    <li><span class="n">08</span><div>
+      <h4>Allergens</h4>
+      <p>You're feeding gatherings. One nut allergy is a serious incident. A simple allergen field per dish, shown on the product page, is cheap now.</p>
+    </div></li>
+    <li><span class="n">09</span><div>
+      <h4>How you find out an order arrived</h4>
+      <p>An admin dashboard nobody is looking at is worse than a DM. You need a push to your phone. MVP answer: every new order also lands as a WhatsApp message to your business number, and the dashboard opens on your phone browser.</p>
+    </div></li>
+    <li><span class="n">10</span><div>
+      <h4>Pickup</h4>
+      <p>Some customers will collect. It's nearly free to support and removes the delivery fee question entirely for those orders.</p>
+    </div></li>
+    <li><span class="n">11</span><div>
+      <h4>A cancellation policy</h4>
+      <p>Needed before you take a single deposit. It also needs somewhere to live on the site.</p>
+    </div></li>
+    <li><span class="n">12</span><div>
+      <h4>A kitchen prep view</h4>
+      <p>Not in your brief, but the thing you'll use most. One screen: pick a date, see every dish ordered for it, totalled across all orders — "42 portions of X, 9 trays of Y." That's your shopping list and your morning. I want it in the MVP.</p>
+    </div></li>
+  </ol>
+</section>
+
+<section id="scope">
+  <div class="col">
+    <div class="eyebrow">Section 02</div>
+    <h2>Recommended MVP scope</h2>
+    <p class="lede">The test I'm applying: can you switch off Instagram DM ordering the day this launches? Anything not needed for that is deferred — but nothing here is thrown away, it's sequenced.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Area</th><th>In the first launch</th><th>Deliberately later</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="area">Website</td>
+          <td><span class="pill now">Build now</span><small>Home, menu by category, product pages with choices, cart, checkout, confirmation. Mobile first.</small></td>
+          <td><small>Customer accounts, order history, reordering, blog, gallery</small></td>
+        </tr>
+        <tr>
+          <td class="area">Ordering</td>
+          <td><span class="pill now">Build now</span><small>Delivery date + time slot, lead time and cut-off enforced, daily capacity cap, delivery area fees, minimum order value, pickup option</small></td>
+          <td><small>Guest-count calculator, event quotes, recurring orders</small></td>
+        </tr>
+        <tr>
+          <td class="area">Payment</td>
+          <td><span class="pill now">Build now</span><small>Cash on delivery and/or bank transfer — recorded, not processed. Payment kept as its own separate layer.</small></td>
+          <td><small>Card payments, wallets, InstaPay integration, deposits taken online</small></td>
+        </tr>
+        <tr>
+          <td class="area">Notifications</td>
+          <td><span class="pill now">Build now</span><small>WhatsApp confirm button for the customer, WhatsApp alert to you on every new order</small></td>
+          <td><small>Automated WhatsApp Business API, status-change messages, email receipts</small></td>
+        </tr>
+        <tr>
+          <td class="area">Admin — orders</td>
+          <td><span class="pill now">Build now</span><small>Secure login, order list, filters and search, full order detail, status updates, kitchen prep view by date</small></td>
+          <td><small>Staff accounts, roles, task assignment, delivery tracking</small></td>
+        </tr>
+        <tr>
+          <td class="area">Admin — menu</td>
+          <td><span class="pill now">Build now</span><small>Add, edit, archive products; prices; photo upload; categories; option groups and add-ons; availability toggle</small></td>
+          <td><small>Bulk import, scheduled price changes, seasonal menus</small></td>
+        </tr>
+        <tr>
+          <td class="area">Admin — settings</td>
+          <td><span class="pill now">Build now</span><small>Delivery areas and fees, time slots, blocked dates, lead time, cut-off, minimum order, payment methods on/off</small></td>
+          <td><small>Multi-branch, multiple kitchens</small></td>
+        </tr>
+        <tr>
+          <td class="area">Dashboard</td>
+          <td><span class="pill now">Build now</span><small>Orders today, upcoming orders, revenue, order count, average order value, best sellers, cancellations — with a date filter</small></td>
+          <td><small>Cost and margin analysis, forecasting, exports</small></td>
+        </tr>
+        <tr>
+          <td class="area">Inventory</td>
+          <td><span class="pill later">Structure only</span><small>Database designed so ingredients, units, stock levels and recipes can be added without changing anything else. No screens built.</small></td>
+          <td><small>Ingredient tracking, recipe deduction, low-stock alerts, suppliers, purchasing</small></td>
+        </tr>
+        <tr>
+          <td class="area">Marketing</td>
+          <td><span class="pill later">Not now</span><small>—</small></td>
+          <td><small>Promo codes, loyalty, customer database marketing, abandoned cart</small></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col ask">
+    <div class="tag">Your call</div>
+    <p>If you want one thing moved from <strong>later</strong> into <strong>now</strong>, tell me and I'll tell you honestly what it costs in time. My recommendation is to resist it — a launched, simple system beats a perfect unlaunched one, and everything above is designed to be added without tearing anything down.</p>
+  </div>
+</section>
+
+<section id="customer">
+  <div class="col">
+    <div class="eyebrow">Section 03</div>
+    <h2>The customer journey</h2>
+    <p class="lede">From the link in your Instagram bio to a confirmed order in your kitchen. Nine steps, and I've noted where people usually drop out.</p>
+  </div>
+
+  <div class="flow col">
+    <div class="step"><div class="who">Instagram</div><div>
+      <h4>The link in your bio</h4>
+      <p>One link, straight to the site. Tagged so you can see how many orders came from Instagram versus anywhere else.</p>
+    </div></div>
+    <div class="step"><div class="who">Home</div><div>
+      <h4>Ten seconds to understand</h4>
+      <p>Photography of your actual food, "Food Made With Passion", and immediately clear that this is catering for gatherings and hosting — not single-portion delivery. <em>Order Now</em> is the primary button, <em>View Menu</em> the secondary.</p>
+    </div></div>
+    <div class="step"><div class="who">Menu</div><div>
+      <h4>Browse by category</h4>
+      <p>Main Courses, Side Dishes, Salads and anything else you add. Photo, name, serving size, price per card. Unavailable items shown but clearly marked, never silently hidden — seeing them builds the menu in the customer's head.</p>
+    </div></div>
+    <div class="step"><div class="who">Product</div><div>
+      <h4>Choose and configure</h4>
+      <p>Full description, what it serves, allergens, and any choices the dish requires — rice, sauce, side, filling. Required choices must be made before the button unlocks. Optional add-ons priced. Quantity respects the minimum. The price updates live as they choose. Special instructions box.</p>
+    </div></div>
+    <div class="step"><div class="who">Cart</div><div>
+      <h4>Survives leaving</h4>
+      <p>Saved in their browser, so closing the tab or going back to Instagram doesn't lose it. Every choice they made is shown on the line, quantities editable, running subtotal.</p>
+    </div></div>
+    <div class="step"><div class="who">Checkout</div><div>
+      <h4>When and where — before who</h4>
+      <p>Date and time slot come <em>first</em>, because they're the ones that can fail. Only dates that respect your lead time, aren't blocked, and aren't already full can be picked. Then area — which sets the delivery fee — then address, name, mobile, notes. Egyptian mobile format validated. Minimum order value checked here.</p>
+    </div></div>
+    <div class="step"><div class="who">Payment</div><div>
+      <h4>How they'll pay</h4>
+      <p>For launch: cash on delivery and/or bank transfer, whichever you enable. They choose, we record it, nothing is charged online. Built as a separate layer so card payments slot in later without touching any of the ordering flow.</p>
+    </div></div>
+    <div class="step"><div class="who">Submit</div><div>
+      <h4>Checked again, then saved</h4>
+      <p>The date is re-verified at the moment of submitting — someone else may have taken the last slot while they were typing. Then the order is written to the database and given a number like <code style="font-family:'IBM Plex Mono',monospace;font-size:14px">TD-260828-04</code>, short enough to say out loud on the phone.</p>
+    </div></div>
+    <div class="step"><div class="who">Confirmed</div><div>
+      <h4>The page that ends the anxiety</h4>
+      <p>Order number, full summary, total, delivery date and slot, address, payment method and status, current order status — and a <em>Confirm on WhatsApp</em> button that opens a chat with you, pre-filled. That button is what replaces the DM, and it means you can still talk to every customer.</p>
+    </div></div>
+  </div>
+</section>
+
+<section id="admin">
+  <div class="col">
+    <div class="eyebrow">Section 04</div>
+    <h2>The admin journey</h2>
+    <p class="lede">From a new order landing to the food going out the door — designed for a phone in a kitchen, not a desk.</p>
+  </div>
+
+  <div class="flow col">
+    <div class="step"><div class="who">Alert</div><div>
+      <h4>A new order arrives</h4>
+      <p>WhatsApp message to your business number, and the order shows at the top of the dashboard marked <strong>New</strong>.</p>
+    </div></div>
+    <div class="step"><div class="who">Review</div><div>
+      <h4>Open it and decide</h4>
+      <p>Customer, mobile, address and area, every item with its chosen options and instructions, delivery date and slot, total, payment method. You confirm the kitchen can do it — the system has already checked lead time and capacity, so this is a sanity check, not a calculation.</p>
+    </div></div>
+    <div class="step"><div class="who">Confirm</div><div>
+      <h4>Confirmed</h4>
+      <p>One tap. The customer's order page updates so they can see it. Later, this is where the automatic WhatsApp confirmation fires, and where inventory would be deducted — the design leaves room for both.</p>
+    </div></div>
+    <div class="step"><div class="who">Plan</div><div>
+      <h4>The prep view</h4>
+      <p>Pick a date and see every dish ordered across every order for that day, totalled. Your shopping list and your cooking order in one screen. This is the screen that actually replaces your notebook.</p>
+    </div></div>
+    <div class="step"><div class="who">Kitchen</div><div>
+      <h4>Preparing → Ready</h4>
+      <p>Status moves as the food does. Every change is logged with who changed it and when, so a disputed order has an answer.</p>
+    </div></div>
+    <div class="step"><div class="who">Delivery</div><div>
+      <h4>Out for Delivery → Delivered</h4>
+      <p>Marked as delivered, and if it was cash on delivery you mark the payment received at the same time. Later this is where a driver gets assigned.</p>
+    </div></div>
+  </div>
+
+  <div class="col">
+    <div class="status-row">
+      <span class="status first">New</span><span class="status">Confirmed</span><span class="status">Preparing</span>
+      <span class="status">Ready</span><span class="status">Out for Delivery</span><span class="status end">Delivered</span>
+      <span class="status end">Cancelled</span>
+    </div>
+    <p style="margin-top:20px"><strong>One thing worth understanding:</strong> order status and payment status are two separate things. A delivered order can still be unpaid; a paid order can still be in the kitchen. Keeping them apart is why you'll be able to answer "who owes me money" without reading through orders one by one.</p>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="col">
+    <div class="eyebrow">Section 05</div>
+    <h2>How dishes with choices get modelled</h2>
+    <p class="lede">You asked me not to turn every variation into its own product, and you're right. Here are the rules I'll apply to your menu once I can read it — please tell me if any of them contradict how you actually sell.</p>
+
+    <h3>The four rules</h3>
+    <p>Every line on your menu becomes exactly one of these:</p>
+
+    <div class="scroller">
+      <table>
+        <thead><tr><th>It becomes</th><th>When</th><th>Behaves like</th></tr></thead>
+        <tbody>
+          <tr><td class="area">A product</td><td>It can be ordered on its own, has its own price, and would have its own photo</td><td><small>Its own card on the menu, its own page</small></td></tr>
+          <tr><td class="area">A required choice</td><td>The customer must pick one before ordering, and it doesn't change the price — a rice type, a sauce, a filling</td><td><small>Pick one. Order button stays locked until they do.</small></td></tr>
+          <tr><td class="area">A variant</td><td>It changes the size or format <em>and</em> the price — small tray / large tray, 1kg / 2kg</td><td><small>Pick one, price updates. Effectively the size selector.</small></td></tr>
+          <tr><td class="area">An add-on</td><td>It's extra, optional, and usually costs more — extra sauce, added bread, an upgrade</td><td><small>Tick any number. Each adds to the price.</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The test I'll use</h3>
+    <p>One product equals one thing a customer would point at and one photograph. If two menu lines would share the same photo and differ only in a detail chosen at ordering time, they're one product with a choice — not two products.</p>
+
+    <h3>Two decisions this raises</h3>
+    <p><strong>Different choices, same dish.</strong> If a customer wants two trays of the same dish with different rice, that's two lines in the cart, not one line with quantity two. It's simple, it's honest, and the kitchen ticket is unambiguous.</p>
+    <p><strong>Prices live on the product and the variant.</strong> Required choices default to no extra cost, add-ons default to a cost. Any of those can be overridden per choice when you send prices.</p>
+
+    <div class="ask">
+      <div class="tag">I need this before I can build quantities</div>
+      <p>For each category — Main Courses, Side Dishes, Salads — how is it <strong>sold and priced</strong>? Per tray, per kilo, per person, per piece, per whole dish, or as a package? And if by tray, what sizes exist and how many people does each serve? This one answer changes the product structure, the cart maths and the inventory design, so I'd rather ask than guess.</p>
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="col">
+    <div class="eyebrow">Section 06</div>
+    <h2>What the database holds</h2>
+    <p class="lede">The shape of your business, written down. You'll never see this directly — but getting it right now is what makes every later feature cheap instead of impossible.</p>
+  </div>
+
+  <div class="col groupname">The menu</div>
+  <div class="grid">
+    <div class="card"><h4>Category</h4><p class="what">Main Courses, Side Dishes, Salads — and whatever you add.</p>
+      <ul><li>name</li><li>slug</li><li>image</li><li>sort_order</li><li>is_active</li></ul></div>
+    <div class="card"><h4>Product</h4><p class="what">A dish. Everything shown on its page, including how it's sold.</p>
+      <ul><li>name</li><li>description</li><li>category</li><li>base_price</li><li>price_unit</li><li>unit_label</li><li>serves_min</li><li>serves_max</li><li>min_quantity</li><li>quantity_step</li><li>lead_time_days</li><li>allergens</li><li>images</li><li>is_available</li><li>is_featured</li><li>sort_order</li><li>archived_at</li></ul></div>
+    <div class="card"><h4>OptionGroup</h4><p class="what">"Choose your rice." Belongs to a product, holds the choices.</p>
+      <ul><li>product</li><li>name</li><li>type</li><li>is_required</li><li>min_select</li><li>max_select</li><li>sort_order</li></ul></div>
+    <div class="card"><h4>OptionChoice</h4><p class="what">One option inside a group, with its own price effect and availability.</p>
+      <ul><li>group</li><li>name</li><li>price_delta</li><li>is_available</li><li>sort_order</li></ul></div>
+  </div>
+
+  <div class="col groupname">Orders</div>
+  <div class="grid">
+    <div class="card"><h4>Order</h4><p class="what">One order. Money, delivery, status and payment kept separate on purpose.</p>
+      <ul><li>order_number</li><li>customer</li><li>status</li><li>delivery_date</li><li>time_slot</li><li>fulfilment_type</li><li>area</li><li>address</li><li>subtotal</li><li>delivery_fee</li><li>discount</li><li>total</li><li>payment_method</li><li>payment_status</li><li>notes</li><li>source</li><li>created_at</li></ul></div>
+    <div class="card"><h4>OrderItem</h4><p class="what">One line. Copies the name and price at the time of ordering — see the note below.</p>
+      <ul><li>order</li><li>product</li><li>name_snapshot</li><li>unit_price_snapshot</li><li>quantity</li><li>line_total</li><li>instructions</li></ul></div>
+    <div class="card"><h4>OrderItemOption</h4><p class="what">The choices made on that line, also copied at the time.</p>
+      <ul><li>order_item</li><li>group_name</li><li>choice_name</li><li>price_delta</li></ul></div>
+    <div class="card"><h4>OrderStatusEvent</h4><p class="what">Every status change, who made it and when. Your audit trail.</p>
+      <ul><li>order</li><li>from_status</li><li>to_status</li><li>changed_by</li><li>created_at</li></ul></div>
+    <div class="card"><h4>Customer</h4><p class="what">Identified by mobile number. Created quietly at checkout — no account, no password. This is what makes order history and a customer database possible later without asking anyone to sign up now.</p>
+      <ul><li>name</li><li>mobile</li><li>email</li><li>created_at</li></ul></div>
+    <div class="card"><h4>Address</h4><p class="what">Kept apart from the customer so repeat orders to different places work.</p>
+      <ul><li>customer</li><li>area</li><li>line1</li><li>details</li><li>notes</li></ul></div>
+  </div>
+
+  <div class="col groupname">How you run the day</div>
+  <div class="grid">
+    <div class="card"><h4>DeliveryArea</h4><p class="what">Where you deliver and what it costs.</p>
+      <ul><li>name</li><li>fee</li><li>min_order_value</li><li>is_active</li></ul></div>
+    <div class="card"><h4>TimeSlot</h4><p class="what">The delivery windows you offer.</p>
+      <ul><li>label</li><li>start_time</li><li>end_time</li><li>is_active</li></ul></div>
+    <div class="card"><h4>DateAvailability</h4><p class="what">Days off, blocked dates, and the daily order cap.</p>
+      <ul><li>date</li><li>is_closed</li><li>max_orders</li><li>note</li></ul></div>
+    <div class="card"><h4>Setting</h4><p class="what">The business rules you can change without me — lead time, cut-off hour, minimum order, which payment methods are on.</p>
+      <ul><li>key</li><li>value</li></ul></div>
+    <div class="card"><h4>AdminUser</h4><p class="what">Who can log in. Roles are there from day one even though there's only one role now.</p>
+      <ul><li>name</li><li>email</li><li>password_hash</li><li>role</li><li>is_active</li></ul></div>
+  </div>
+
+  <div class="col groupname">Designed for, not built yet</div>
+  <div class="grid">
+    <div class="card ghost"><h4>Ingredient</h4><p class="what">Chicken, rice, sauce — with its unit and minimum stock level.</p>
+      <ul><li>name</li><li>unit</li><li>quantity_on_hand</li><li>min_level</li><li>cost_per_unit</li></ul></div>
+    <div class="card ghost"><h4>RecipeItem</h4><p class="what">Links a product to the ingredients one unit of it consumes. This is the piece that makes automatic deduction possible.</p>
+      <ul><li>product</li><li>ingredient</li><li>quantity</li></ul></div>
+    <div class="card ghost"><h4>StockMovement</h4><p class="what">Every in and out, so stock is a history rather than a number someone overwrote.</p>
+      <ul><li>ingredient</li><li>change</li><li>reason</li><li>order</li></ul></div>
+    <div class="card ghost"><h4>PromoCode</h4><p class="what">Discounts. The Order table already has a field waiting for it.</p>
+      <ul><li>code</li><li>type</li><li>value</li><li>valid_until</li><li>usage_limit</li></ul></div>
+    <div class="card ghost"><h4>Supplier · Expense</h4><p class="what">Purchasing and cost tracking, once inventory exists.</p>
+      <ul><li>later</li></ul></div>
+    <div class="card ghost"><h4>Staff · Shift · Assignment</h4><p class="what">Scheduling and assigning orders. AdminUser already carries a role field for this.</p>
+      <ul><li>later</li></ul></div>
+  </div>
+
+  <div class="col">
+    <h3>Three decisions worth explaining</h3>
+    <p><strong>Orders copy their own details.</strong> When an order is placed, the dish name, price and chosen options are written into the order itself — not just linked to the product. So when you raise a price next month, last month's orders still show what the customer actually paid. Without this, your revenue history quietly rewrites itself every time you edit the menu. This is the single most important structural decision here.</p>
+    <p><strong>Money is stored as whole piastres.</strong> Computers are bad at decimal arithmetic in a way that produces one-piastre errors on totals. Storing 250.00 EGP as 25000 avoids it entirely. You'll never see this — you'll type prices in pounds.</p>
+    <p><strong>Times are stored in Cairo time explicitly.</strong> The server is not in Egypt. A delivery date that shifts by a day because of a timezone assumption is the kind of bug that ruins a wedding, so it gets handled deliberately.</p>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="col">
+    <div class="eyebrow">Section 07</div>
+    <h2>What I'd build it with</h2>
+    <p class="lede">The goal is boring, cheap and widely known — so that if you ever hand this to another developer, they recognise it immediately. Nothing here is exotic.</p>
+  </div>
+
+  <div class="stack col">
+    <div class="tech"><div class="name">Next.js<small>The website itself</small></div>
+      <p>Runs the customer site and the admin dashboard from one project, so there's one thing to deploy and one thing to update. Pages load fast on Egyptian mobile networks, and Google can read the menu properly — which matters for being found outside Instagram.</p></div>
+    <div class="tech"><div class="name">Tailwind CSS<small>The look</small></div>
+      <p>How the brand — the cream, the brown, the gold, the type — gets defined once and applied everywhere consistently. Changing an accent colour later is one line, not fifty.</p></div>
+    <div class="tech"><div class="name">PostgreSQL<small>The database</small></div>
+      <p>Where orders, products and customers actually live. It's the standard serious database, it handles money and dates correctly, and it will not be the thing you outgrow. Hosted by Neon or Supabase — free to start.</p></div>
+    <div class="tech"><div class="name">Prisma<small>How code talks to the database</small></div>
+      <p>Keeps the entire database structure in one readable file and manages changes to it safely. It's also what makes adding inventory later a controlled change rather than a risk.</p></div>
+    <div class="tech"><div class="name">Auth.js<small>Admin login</small></div>
+      <p>Password login for the dashboard, with properly hashed passwords and sessions. Small, standard, and ready for staff accounts when you want them.</p></div>
+    <div class="tech"><div class="name">Vercel<small>Where it lives</small></div>
+      <p>Publishes the site to the internet. Free HTTPS, a global network so it's fast from Egypt, and automatic backups of every version — so a bad change can be undone in one click.</p></div>
+    <div class="tech"><div class="name">Cloud storage<small>Your photos</small></div>
+      <p>Product images uploaded from the dashboard, resized automatically so a 6MB phone photo doesn't make your menu slow to load on mobile data.</p></div>
+    <div class="tech"><div class="name">WhatsApp link<small>Notifications, for now</small></div>
+      <p>No API, no cost, no approval process. A button that opens WhatsApp with the message already written. The official Business API can replace it later without changing anything the customer sees.</p></div>
+  </div>
+
+  <div class="col cost">
+    <h4>What it costs to run</h4>
+    <dl>
+      <dt>Domain name (thediine.com or similar)</dt><dd>~$14 / year</dd>
+      <dt>Hosting — while building and testing</dt><dd>Free</dd>
+      <dt>Hosting — once taking real orders</dt><dd>$20 / month</dd>
+      <dt>Database — free tier is genuinely enough at first</dt><dd>$0 → $19 / month</dd>
+      <dt>Image storage</dt><dd>Included at first</dd>
+      <dt class="tot">Realistically, at launch</dt><dd class="tot">≈ $20 / month</dd>
+    </dl>
+    <p style="margin-top:14px; font-size:15px; color:var(--ink-2)">One note of honesty: the free hosting tier is licensed for personal projects only. It's fine while we build, but a business taking orders should be on the $20 plan. I'd rather tell you that now than have you find out later.</p>
+  </div>
+
+  <div class="col">
+    <h3>On security</h3>
+    <p>The admin dashboard is behind a password, and no page of it is reachable without one. Passwords are hashed, never stored readable. Nothing sensitive — database details, keys — ever goes into the code; it lives in a separate settings vault that only the running site can read. Order submission is rate-limited so nobody can flood you with fake orders. And no card details are ever stored, by anyone, at any point: when card payments are added, the payment provider handles that entirely, which is exactly how it should stay.</p>
+  </div>
+</section>
+
+<section id="build">
+  <div class="col">
+    <div class="eyebrow">Section 08</div>
+    <h2>The build, in order</h2>
+    <p class="lede">Each phase ends with something you can actually look at and react to. You'll never wait through a long stretch of nothing.</p>
+  </div>
+
+  <div class="phases col">
+    <div class="phase"><div class="num">0</div><div>
+      <h4>Agree this plan, gather what's needed</h4>
+      <p>You confirm or correct everything above, re-send the menu PDF, and answer the business questions at the end. In parallel you create three accounts — I'll walk you through each one, they take about ten minutes total.</p>
+      <div class="out">Ends with: an agreed plan and the menu confirmed dish by dish</div>
+    </div></div>
+    <div class="phase"><div class="num">1</div><div>
+      <h4>Foundations</h4>
+      <p>The project, the database, and the brand translated into a design system — the cream, the brown, the gold, the type, the spacing, taken from your logo and modernised.</p>
+      <div class="out">Ends with: a live URL with the homepage design on it</div>
+    </div></div>
+    <div class="phase"><div class="num">2</div><div>
+      <h4>The website people see</h4>
+      <p>Homepage in full, menu by category, product pages with all the choices working, and the cart. Your real dishes, with placeholders wherever prices and photos are still missing.</p>
+      <div class="out">Ends with: you can browse your menu on your phone and fill a cart</div>
+    </div></div>
+    <div class="phase"><div class="num">3</div><div>
+      <h4>Ordering</h4>
+      <p>Checkout with the delivery calendar, lead time, capacity, areas and fees. Order confirmation page, order numbers, the WhatsApp buttons.</p>
+      <div class="out">Ends with: a real order can be placed end to end</div>
+    </div></div>
+    <div class="phase"><div class="num">4</div><div>
+      <h4>The dashboard you'll live in</h4>
+      <p>Secure login, the order list with filters and search, order detail, status updates, and the kitchen prep view.</p>
+      <div class="out">Ends with: you can run a day's orders without touching Instagram</div>
+    </div></div>
+    <div class="phase"><div class="num">5</div><div>
+      <h4>Control of your own menu</h4>
+      <p>Add and edit products, change prices, upload photos, manage categories and options, mark things unavailable. Plus the settings screens — areas, slots, blocked dates, lead time, minimum order.</p>
+      <div class="out">Ends with: you never need me to change a price again</div>
+    </div></div>
+    <div class="phase"><div class="num">6</div><div>
+      <h4>Numbers, polish, launch</h4>
+      <p>The dashboard figures, a pass over every screen on a real phone, speed, a test order run end to end by you, and the link goes into your Instagram bio.</p>
+      <div class="out">Ends with: live</div>
+    </div></div>
+  </div>
+
+  <div class="col ask">
+    <div class="tag">After launch, in this order</div>
+    <p>Online payments · automated WhatsApp status updates · Arabic · customer accounts and reordering · promo codes · inventory and recipes · staff accounts. Each one is a separate, contained piece of work — none of them require going back and undoing anything from the list above. That's what the whole design has been protecting.</p>
+  </div>
+</section>
+
+<section id="need">
+  <div class="col">
+    <div class="eyebrow">Section 09</div>
+    <h2>What I need from you</h2>
+    <p class="lede">Tick these off as you gather them — the page remembers. Nothing in the second group blocks me from starting.</p>
+  </div>
+
+  <div class="col checks" data-list="blocking">
+    <div class="head"><span>Blocking — I can't build without these</span><span class="count"></span></div>
+    <label class="item"><input type="checkbox"><span class="txt"><b>The Full Buffet Menu PDF</b><span>It didn't attach. Everything about the menu waits on this.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>How each category is sold and priced</b><span>Per tray, kilo, person, piece, whole dish or package — for Main Courses, Side Dishes and Salads separately.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Prices</b><span>Per product, and per size if sizes exist. I will not invent any.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Serving sizes</b><span>How many people each dish or tray feeds.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Minimum quantities</b><span>Any dish with a minimum, and any minimum order value overall.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>How much notice you need</b><span>e.g. 48 hours. Plus a daily cut-off time, and whether any dish needs longer.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Delivery areas and fees</b><span>The areas you cover and what each costs — or a flat fee. Also whether pickup is an option.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Delivery time slots</b><span>The windows you offer, and which days you don't work.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Payment methods for launch</b><span>Cash on delivery, bank transfer, or both. And whether large orders need a deposit.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Your WhatsApp business number</b><span>Where new orders get sent, and where customers reach you.</span></span></label>
+  </div>
+
+  <div class="col checks" data-list="soon" style="margin-top:22px">
+    <div class="head"><span>Needed before launch, not before starting</span><span class="count"></span></div>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Food photography</b><span>The single biggest factor in how premium this feels. One good photo per dish beats a perfect website. Tell me if I may use your Instagram photos — I won't touch them without your word.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Product descriptions</b><span>A sentence or two per dish, in your voice.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>A short "about The Diine"</b><span>Three or four sentences for the homepage. Who cooks, and why.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Contact details</b><span>Phone, email, working hours, and an address if you want one shown.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Brand colours, if they're written down anywhere</b><span>Otherwise I'll take them from the logo — that's already done and shown on this page.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>A domain name</b><span>Tell me what you'd like and I'll check what's free.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Your cancellation policy</b><span>Needed before you take a deposit.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>Allergen notes</b><span>Which dishes contain nuts, dairy, gluten, egg.</span></span></label>
+    <label class="item"><input type="checkbox"><span class="txt"><b>The logo as a file</b><span>The original, ideally SVG, PDF or a large PNG — the version I have is a screenshot and will be soft at large sizes.</span></span></label>
+  </div>
+
+  <div class="col">
+    <h3>And three questions to answer in your own words</h3>
+    <div class="qa">
+      <div class="qblock"><h4>Language</h4>
+        <ol><li>English only for launch, or English and Arabic together? <b>My recommendation: English now, structured so Arabic is a content job later, not a rebuild.</b></li></ol></div>
+      <div class="qblock"><h4>Capacity</h4>
+        <ol><li>Roughly how many orders can the kitchen handle in one day? Even a rough number lets me stop the site overselling you.</li>
+        <li>Are there days you never deliver?</li></ol></div>
+      <div class="qblock"><h4>Scope</h4>
+        <ol><li>Looking at the scope table — is there anything in the <b>later</b> column you believe you cannot launch without? Tell me which, and I'll be straight with you about what it costs.</li></ol></div>
+    </div>
+  </div>
+</section>
+
+<footer class="col">
+  <p class="sig">Send me the menu PDF and the pricing answers, and I'll come back with the structured menu — every dish, its category, its required choices and its add-ons — for you to confirm line by line before a single thing is written into the database.</p>
+  <p>Nothing on this page is final. Correct anything that's wrong about how your business actually works — that's what it's for.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.checks').forEach(function(list){
+    var key = 'thediine.checks.' + list.dataset.list;
+    var boxes = Array.prototype.slice.call(list.querySelectorAll('input[type=checkbox]'));
+    var counter = list.querySelector('.count');
+    var saved = [];
+    try { saved = JSON.parse(localStorage.getItem(key)) || []; } catch (e) { saved = []; }
+    boxes.forEach(function(b,i){ if (saved.indexOf(i) !== -1) b.checked = true; });
+
+    function paint(){
+      var done = boxes.filter(function(b){ return b.checked; }).length;
+      counter.textContent = done + ' / ' + boxes.length;
+    }
+    function save(){
+      var on = [];
+      boxes.forEach(function(b,i){ if (b.checked) on.push(i); });
+      try { localStorage.setItem(key, JSON.stringify(on)); } catch (e) {}
+    }
+    boxes.forEach(function(b){ b.addEventListener('change', function(){ paint(); save(); }); });
+    paint();
+  });
+})();
+</script>
