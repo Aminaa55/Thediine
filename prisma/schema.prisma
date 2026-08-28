@@ -1,0 +1,504 @@
+// The Diine — data model
+//
+// Conventions:
+//  * All money is stored as INTEGER PIASTRES (1 EGP = 100). 1,250 EGP -> 125000.
+//    This removes floating-point rounding errors from order totals.
+//  * Every customer-facing name/description has an `...En` and a nullable `...Ar`
+//    field so Arabic can be switched on later without a schema change.
+//  * Orders SNAPSHOT names and prices at the time of ordering, so editing the
+//    menu never rewrites order history.
+//  * Fields the business has not yet confirmed are nullable and never guessed.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- catalogue
+
+model Category {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  nameEn        String
+  nameAr        String?
+  descriptionEn String?
+  descriptionAr String?
+  imageUrl      String?
+  sortOrder     Int       @default(0)
+  isActive      Boolean   @default(true)
+  products      Product[]
+
+  @@index([sortOrder])
+}
+
+model Product {
+  id            String  @id @default(cuid())
+  slug          String  @unique
+  nameEn        String
+  nameAr        String?
+  descriptionEn String?
+  descriptionAr String?
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  /// Price in piastres. NULL when the product sells through variants instead.
+  basePrice Int?
+
+  /// What one unit is: "tray (serves 8)", "1 kg", "12 pieces".
+  /// Deliberately empty until the business confirms it — never invented.
+  sellingUnitEn String?
+  sellingUnitAr String?
+  /// Surfaced in admin as a "needs confirming" badge while the unit is unknown.
+  unitConfirmed Boolean @default(false)
+
+  /// Optional; used for desserts, not required for savoury dishes.
+  servesMin Int?
+  servesMax Int?
+
+  minQuantity  Int @default(1)
+  quantityStep Int @default(1)
+
+  /// Overrides the global notice period for dishes needing longer.
+  leadTimeDaysOverride Int?
+
+  imageUrl    String?
+  isAvailable Boolean   @default(true)
+  isFeatured  Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  /// Archived rather than deleted, so past orders still read correctly.
+  archivedAt  DateTime?
+
+  /// Free-text note for anything still unresolved about this product.
+  reviewNote String?
+
+  variants     ProductVariant[]
+  optionGroups OptionGroup[]
+  allergens    ProductAllergen[]
+  orderItems   OrderItem[]
+  recipeItems  RecipeItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId, sortOrder])
+  @@index([archivedAt])
+}
+
+/// A priced variant, e.g. Noodles > with Chicken. Absolute price, not a delta,
+/// so admin types the real number.
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  nameEn      String
+  nameAr      String?
+  price       Int
+  isAvailable Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  orderItems OrderItem[]
+
+  @@index([productId, sortOrder])
+}
+
+enum OptionGroupType {
+  SINGLE
+  MULTI
+}
+
+/// A required or optional choice, e.g. "Served with" or "Sauce".
+model OptionGroup {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  nameEn     String
+  nameAr     String?
+  type       OptionGroupType @default(SINGLE)
+  isRequired Boolean         @default(true)
+  minSelect  Int             @default(1)
+  maxSelect  Int             @default(1)
+  sortOrder  Int             @default(0)
+
+  choices OptionChoice[]
+
+  @@index([productId, sortOrder])
+}
+
+model OptionChoice {
+  id      String      @id @default(cuid())
+  groupId String
+  group   OptionGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  nameEn      String
+  nameAr      String?
+  /// Piastres added to the line. Main-course accompaniments are all 0 —
+  /// the field exists so a charge can be added later without a migration.
+  priceDelta  Int     @default(0)
+  isAvailable Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  @@index([groupId, sortOrder])
+}
+
+/// Editable from admin; not a fixed enum, so new allergens can be added.
+model Allergen {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  nameEn   String
+  nameAr   String?
+  isActive Boolean @default(true)
+
+  products ProductAllergen[]
+}
+
+model ProductAllergen {
+  productId  String
+  allergenId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  allergen   Allergen @relation(fields: [allergenId], references: [id], onDelete: Cascade)
+
+  /// Pre-tagged from the menu text; must be checked by the business before launch.
+  reviewed Boolean @default(false)
+
+  @@id([productId, allergenId])
+}
+
+// ------------------------------------------------------------------- people
+
+model Customer {
+  id     String  @id @default(cuid())
+  name   String
+  mobile String  @unique
+  email  String?
+
+  orders    Order[]
+  addresses Address[]
+
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id         String    @id @default(cuid())
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  areaId String?
+  area   DeliveryArea? @relation(fields: [areaId], references: [id])
+
+  line1   String
+  details String?
+  notes   String?
+
+  @@index([customerId])
+}
+
+enum AdminRole {
+  OWNER
+  STAFF
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(OWNER)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+
+  statusEvents    OrderStatusEvent[]
+  cancelledOrders Order[]            @relation("CancelledBy")
+}
+
+// --------------------------------------------------------------- operations
+
+model DeliveryArea {
+  id        String  @id @default(cuid())
+  nameEn    String
+  nameAr    String?
+  /// Piastres.
+  fee       Int
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  addresses Address[]
+}
+
+model TimeSlot {
+  id        String  @id @default(cuid())
+  labelEn   String
+  labelAr   String?
+  /// "HH:mm" in Africa/Cairo.
+  startTime String
+  endTime   String
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  orders Order[]
+}
+
+/// Per-date overrides: closures, a different cap, or a day blocked by an event.
+model DateAvailability {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  isClosed  Boolean  @default(false)
+  /// NULL falls back to the global daily capacity setting.
+  maxOrders Int?
+  note      String?
+
+  /// Set when a confirmed event chose "Block Day".
+  blockedByOrderId String? @unique
+  blockedByOrder   Order?  @relation("BlocksDate", fields: [blockedByOrderId], references: [id], onDelete: SetNull)
+}
+
+/// Business rules the owner can change without a developer:
+/// cutoff time, notice periods, daily capacity, cancellation windows and
+/// percentage, serving-setup policy text, enabled payment methods.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ------------------------------------------------------------------- orders
+
+enum OrderType {
+  NORMAL
+  EVENT
+}
+
+enum OrderStatus {
+  REQUESTED // events only, before the business accepts
+  NEW
+  CONFIRMED
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY // skipped for pickup
+  DELIVERED
+  CANCELLED
+}
+
+enum FulfilmentType {
+  DELIVERY
+  PICKUP
+}
+
+enum ServingSetup {
+  RETURNABLE
+  DISPOSABLE
+}
+
+enum PaymentMethod {
+  CASH
+  INSTAPAY
+  CARD // structured, disabled until a gateway is integrated
+}
+
+/// Deliberately independent of OrderStatus: a delivered order can be unpaid.
+enum PaymentStatus {
+  UNPAID
+  AWAITING_VERIFICATION // InstaPay transfer claimed, not yet checked
+  PAID
+  REFUNDED
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  type        OrderType   @default(NORMAL)
+  status      OrderStatus @default(NEW)
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  // Snapshots — the order stays readable even if the customer record changes.
+  customerName   String
+  customerMobile String
+  customerEmail  String?
+
+  fulfilmentType FulfilmentType
+  deliveryDate   DateTime       @db.Date
+  timeSlotId     String?
+  timeSlot       TimeSlot?      @relation(fields: [timeSlotId], references: [id])
+  timeSlotLabel  String?
+
+  areaId         String?
+  areaName       String?
+  addressLine    String?
+  addressDetails String?
+
+  servingSetup ServingSetup
+
+  // All piastres.
+  subtotal    Int
+  deliveryFee Int @default(0)
+  discount    Int @default(0)
+  total       Int
+
+  paymentMethod     PaymentMethod
+  paymentStatus     PaymentStatus @default(UNPAID)
+  paymentReference  String?
+  paymentVerifiedAt DateTime?
+
+  notes  String?
+  source String  @default("website")
+
+  // Cancellation — recorded in full; the charge is calculated, never collected.
+  cancelledAt               DateTime?
+  cancelledById             String?
+  cancelledBy               AdminUser? @relation("CancelledBy", fields: [cancelledById], references: [id], onDelete: SetNull)
+  cancellationReason        String?
+  cancelledWithinFreeWindow Boolean?
+  cancellationCharge        Int?
+
+  items        OrderItem[]
+  statusEvents OrderStatusEvent[]
+  eventDetail  EventDetail?
+  blocksDate   DateAvailability?  @relation("BlocksDate")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deliveryDate, status])
+  @@index([type, status])
+  @@index([customerMobile])
+  @@index([createdAt])
+}
+
+enum EventType {
+  BIRTHDAY
+  ENGAGEMENT
+  WEDDING
+  OTHER
+}
+
+/// How much of the day a confirmed event consumes. Chosen by admin per event,
+/// defaulting to BLOCK_DAY.
+enum EventCapacityMode {
+  BLOCK_DAY
+  KEEP_DAY_OPEN
+}
+
+model EventDetail {
+  id      String @id @default(cuid())
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  eventType      EventType
+  /// Only set when eventType is OTHER; stored alongside, not instead of, the type.
+  eventTypeOther String?
+  guestCount     Int
+  eventTime      String?
+
+  /// Quote-based: carries no price and adds nothing to the order total.
+  decorRequested Boolean @default(false)
+  decorNotes     String?
+
+  venueName String?
+
+  capacityMode EventCapacityMode @default(BLOCK_DAY)
+  confirmedAt  DateTime?
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product   Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  // Snapshots.
+  productName String
+  variantName String?
+  unitPrice   Int
+  quantity    Int
+  lineTotal   Int
+
+  instructions String?
+
+  options OrderItemOption[]
+
+  @@index([orderId])
+}
+
+model OrderItemOption {
+  id          String    @id @default(cuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  groupName  String
+  choiceName String
+  priceDelta Int    @default(0)
+
+  @@index([orderItemId])
+}
+
+model OrderStatusEvent {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  fromStatus  OrderStatus?
+  toStatus    OrderStatus
+  changedById String?
+  changedBy   AdminUser?   @relation(fields: [changedById], references: [id], onDelete: SetNull)
+  note        String?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+// ------------------------------------------------- inventory (designed, unbuilt)
+// No screens in the MVP. Present so recipe-based stock deduction can be added
+// later without altering anything above.
+
+model Ingredient {
+  id             String  @id @default(cuid())
+  nameEn         String
+  nameAr         String?
+  unit           String // kg, g, litre, piece
+  quantityOnHand Decimal @default(0) @db.Decimal(12, 3)
+  minLevel       Decimal @default(0) @db.Decimal(12, 3)
+  /// Piastres per unit.
+  costPerUnit    Int?
+  isActive       Boolean @default(true)
+
+  recipeItems    RecipeItem[]
+  stockMovements StockMovement[]
+}
+
+model RecipeItem {
+  id           String     @id @default(cuid())
+  productId    String
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  /// Consumed per one unit of the product.
+  quantity     Decimal    @db.Decimal(12, 3)
+
+  @@unique([productId, ingredientId])
+}
+
+model StockMovement {
+  id           String     @id @default(cuid())
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  /// Negative for consumption, positive for a purchase.
+  change       Decimal    @db.Decimal(12, 3)
+  reason       String
+  orderId      String?
+  createdAt    DateTime   @default(now())
+
+  @@index([ingredientId, createdAt])
+}

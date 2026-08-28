@@ -5,44 +5,39 @@
 
 <style>
 :root{
-  --ground:#FAF1E6; --surface:#FFFAF3; --surface-2:#F4E7D6; --sunk:#F2E5D3;
+  --ground:#FAF1E6; --surface:#FFFAF3; --sunk:#F2E5D3;
   --ink:#3B2310; --ink-2:#6E523A; --ink-3:#96795D;
   --line:#E4D0B8; --line-soft:#EFDFCB;
   --gold:#9C7023; --gold-soft:#C9A85C; --wash:rgba(156,112,35,.07);
   --flag:#A6391C; --flag-wash:rgba(166,57,28,.08); --flag-line:rgba(166,57,28,.3);
   --ok:#4C6B39; --ok-wash:rgba(76,107,57,.09);
-  --ev:#5B4A7A; --ev-wash:rgba(91,74,122,.09); --ev-line:rgba(91,74,122,.28);
+  --ev:#5B4A7A; --ev-wash:rgba(91,74,122,.09);
   --shadow:0 1px 2px rgba(59,35,16,.05), 0 8px 24px -16px rgba(59,35,16,.22);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ground:#18110E; --surface:#211711; --surface-2:#2C2018; --sunk:#1E1511;
-    --ink:#F2E6D7; --ink-2:#C2AA92; --ink-3:#95806A;
-    --line:#3B2B21; --line-soft:#2F221A;
-    --gold:#D9B060; --gold-soft:#8C7038; --wash:rgba(217,176,96,.09);
-    --flag:#E3865F; --flag-wash:rgba(227,134,95,.1); --flag-line:rgba(227,134,95,.3);
-    --ok:#9BBC83; --ok-wash:rgba(155,188,131,.1);
-    --ev:#B3A0D4; --ev-wash:rgba(179,160,212,.1); --ev-line:rgba(179,160,212,.28);
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.7);
-  }
-}
-:root[data-theme="dark"]{
-  --ground:#18110E; --surface:#211711; --surface-2:#2C2018; --sunk:#1E1511;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#18110E; --surface:#211711; --sunk:#1E1511;
   --ink:#F2E6D7; --ink-2:#C2AA92; --ink-3:#95806A;
   --line:#3B2B21; --line-soft:#2F221A;
   --gold:#D9B060; --gold-soft:#8C7038; --wash:rgba(217,176,96,.09);
   --flag:#E3865F; --flag-wash:rgba(227,134,95,.1); --flag-line:rgba(227,134,95,.3);
   --ok:#9BBC83; --ok-wash:rgba(155,188,131,.1);
-  --ev:#B3A0D4; --ev-wash:rgba(179,160,212,.1); --ev-line:rgba(179,160,212,.28);
+  --ev:#B3A0D4; --ev-wash:rgba(179,160,212,.1);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --ground:#18110E; --surface:#211711; --sunk:#1E1511;
+  --ink:#F2E6D7; --ink-2:#C2AA92; --ink-3:#95806A;
+  --line:#3B2B21; --line-soft:#2F221A;
+  --gold:#D9B060; --gold-soft:#8C7038; --wash:rgba(217,176,96,.09);
+  --flag:#E3865F; --flag-wash:rgba(227,134,95,.1); --flag-line:rgba(227,134,95,.3);
+  --ok:#9BBC83; --ok-wash:rgba(155,188,131,.1);
+  --ev:#B3A0D4; --ev-wash:rgba(179,160,212,.1);
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.7);
 }
 
 *{box-sizing:border-box}
-body{
-  margin:0; background:var(--ground); color:var(--ink);
-  font-family:Karla,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-}
+body{margin:0; background:var(--ground); color:var(--ink);
+  font-family:Karla,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
 .wrap{max-width:1040px; margin:0 auto; padding:0 24px}
 .col{max-width:690px}
 h1,h2,h3,h4{font-family:Fraunces,Georgia,"Times New Roman",serif; text-wrap:balance; margin:0}
@@ -55,25 +50,23 @@ code{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.88em; backgr
 .bar{position:sticky; top:0; z-index:20; background:var(--ground);
   background:color-mix(in srgb, var(--ground) 92%, transparent);
   backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
-.bar .wrap{display:flex; align-items:center; gap:26px; height:54px}
-.mark{font-family:Fraunces,Georgia,serif; font-weight:600; font-size:15px; letter-spacing:.14em;
-  text-transform:uppercase; white-space:nowrap}
+.bar .wrap{display:flex; align-items:center; gap:24px; height:54px}
+.mark{font-family:Fraunces,Georgia,serif; font-weight:600; font-size:15px; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap}
 .mark em{font-style:normal; color:var(--ink-3); letter-spacing:.08em; font-size:11px; margin-left:8px}
-.jump{display:flex; gap:18px; overflow-x:auto; scrollbar-width:none; margin-left:auto}
+.jump{display:flex; gap:17px; overflow-x:auto; scrollbar-width:none; margin-left:auto}
 .jump::-webkit-scrollbar{display:none}
 .jump a{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;
-  color:var(--ink-3); text-decoration:none; white-space:nowrap; padding:4px 0;
-  border-bottom:1.5px solid transparent; transition:color .18s, border-color .18s}
+  color:var(--ink-3); text-decoration:none; white-space:nowrap; padding:4px 0; border-bottom:1.5px solid transparent;
+  transition:color .18s, border-color .18s}
 .jump a:hover{color:var(--gold); border-bottom-color:var(--gold)}
-@media(max-width:760px){.mark em{display:none} .bar .wrap{gap:14px}}
+@media(max-width:760px){.mark em{display:none}.bar .wrap{gap:14px}}
 
 .mast{padding:74px 0 6px}
-.mast .kicker{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.16em;
-  text-transform:uppercase; color:var(--gold); margin-bottom:20px}
+.mast .kicker{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:20px}
 .mast h1{font-size:clamp(36px,6vw,56px); line-height:1.05; font-weight:600; letter-spacing:-.015em}
-.mast .sub{margin-top:22px; font-size:19px; color:var(--ink-2); max-width:610px}
-.mast .meta{display:flex; flex-wrap:wrap; gap:8px 26px; margin-top:32px; padding-top:18px;
-  border-top:1px solid var(--line); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3)}
+.mast .sub{margin-top:22px; font-size:19px; color:var(--ink-2); max-width:615px}
+.mast .meta{display:flex; flex-wrap:wrap; gap:8px 26px; margin-top:32px; padding-top:18px; border-top:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3)}
 
 section{padding:58px 0; border-top:1px solid var(--line-soft)}
 .eyebrow{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
@@ -86,26 +79,31 @@ h4{font-size:16px; font-weight:600}
 section p + p{margin-top:15px}
 h3 + p, h4 + p{margin-top:9px}
 
-.notice{background:var(--flag-wash); border:1px solid var(--flag-line); border-radius:3px; padding:20px 24px; margin-top:28px}
-.notice .tag{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--flag); margin-bottom:8px}
+.notice{background:var(--flag-wash); border:1px solid var(--flag-line); border-radius:3px; padding:20px 24px; margin-top:26px}
+.notice .tag{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--flag); margin-bottom:8px}
 .notice h4{margin-bottom:7px}
 .notice p{color:var(--ink-2); font-size:16px}
 .ask{border-left:2px solid var(--gold); background:var(--wash); padding:15px 21px; margin-top:22px; border-radius:0 3px 3px 0}
-.ask .tag{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--gold); margin-bottom:5px}
+.ask .tag{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:5px}
 .ask p{font-size:16px; color:var(--ink-2)}
 .ask strong{color:var(--ink)}
+.settled{background:var(--ok-wash); border:1px solid color-mix(in srgb,var(--ok) 30%,transparent); border-radius:3px; padding:18px 22px; margin-top:26px}
+.settled .tag{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ok); margin-bottom:7px}
+.settled p{font-size:16px; color:var(--ink-2)}
 
 .scroller{overflow-x:auto; margin-top:26px; border:1px solid var(--line); border-radius:3px; background:var(--surface)}
-table{border-collapse:collapse; width:100%; min-width:580px; font-size:15.5px}
-th,td{text-align:left; padding:13px 17px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+table{border-collapse:collapse; width:100%; min-width:560px; font-size:15.5px}
+th,td{text-align:left; padding:12px 17px; border-bottom:1px solid var(--line-soft); vertical-align:top}
 thead th{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.13em; text-transform:uppercase;
   color:var(--ink-3); font-weight:500; background:var(--sunk); border-bottom:1px solid var(--line)}
 tbody tr:last-child td{border-bottom:0}
 td.area{font-weight:700; white-space:nowrap}
 td small{display:block; color:var(--ink-3); font-size:13.5px; margin-top:3px}
-th.ev, td.ev{background:var(--ev-wash)}
+th.ev,td.ev{background:var(--ev-wash)}
+td.p{text-align:right; font-family:"IBM Plex Mono",monospace; font-size:14.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
+th.p{text-align:right}
+tbody tr.sub td:first-child{padding-left:34px; color:var(--ink-2); font-weight:400}
+tbody tr.sub td:first-child::before{content:"↳ "; color:var(--gold-soft)}
 .pill{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
   text-transform:uppercase; padding:3px 9px; border-radius:2px; white-space:nowrap}
 .pill.now{background:var(--ok-wash); color:var(--ok); border:1px solid color-mix(in srgb,var(--ok) 35%,transparent)}
@@ -113,92 +111,67 @@ th.ev, td.ev{background:var(--ev-wash)}
 .pill.hold{background:var(--flag-wash); color:var(--flag); border:1px solid var(--flag-line)}
 
 .flow{margin-top:28px}
-.step{display:grid; grid-template-columns:104px 1fr; gap:22px; padding:19px 0; border-top:1px solid var(--line-soft)}
+.step{display:grid; grid-template-columns:104px 1fr; gap:22px; padding:18px 0; border-top:1px solid var(--line-soft)}
 .step:first-child{border-top:1px solid var(--line)}
-.step .who{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
-  color:var(--ink-3); padding-top:4px}
+.step .who{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); padding-top:4px}
 .step.evt .who{color:var(--ev)}
 .step h4{margin-bottom:5px}
 .step p{font-size:16px; color:var(--ink-2)}
-@media(max-width:620px){.step{grid-template-columns:1fr; gap:6px} .step .who{padding-top:0}}
+@media(max-width:620px){.step{grid-template-columns:1fr; gap:6px}.step .who{padding-top:0}}
 
-.rules{margin-top:26px; display:flex; flex-direction:column}
-.rule{display:grid; grid-template-columns:210px 1fr; gap:22px; padding:16px 0; border-top:1px solid var(--line-soft)}
+.rules{margin-top:26px}
+.rule{display:grid; grid-template-columns:220px 1fr; gap:22px; padding:15px 0; border-top:1px solid var(--line-soft)}
 .rule:first-child{border-top:1px solid var(--line)}
 .rule .k{font-weight:700; font-size:15.5px}
 .rule .v{font-size:16px; color:var(--ink-2)}
-.rule .v .conf{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
-  color:var(--ink-3); display:block; margin-top:4px}
 @media(max-width:620px){.rule{grid-template-columns:1fr; gap:4px}}
 
-.qreg{margin-top:26px; border:1px solid var(--line); border-radius:3px; overflow:hidden; background:var(--surface)}
+.qreg{margin-top:24px; border:1px solid var(--line); border-radius:3px; overflow:hidden; background:var(--surface)}
 .qhead{background:var(--sunk); padding:11px 20px; border-bottom:1px solid var(--line);
   font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3)}
-.q{display:grid; grid-template-columns:52px 1fr; gap:16px; padding:16px 20px; border-bottom:1px solid var(--line-soft)}
+.q{display:grid; grid-template-columns:48px 1fr; gap:15px; padding:15px 20px; border-bottom:1px solid var(--line-soft)}
 .q:last-child{border-bottom:0}
-.q .id{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--gold); padding-top:2px; font-variant-numeric:tabular-nums}
+.q .id{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--gold); padding-top:2px}
 .q h4{margin-bottom:5px; font-size:16.5px}
 .q p{font-size:15.5px; color:var(--ink-2)}
-.q .rec{margin-top:8px; font-size:15px; color:var(--ink-2); border-left:2px solid var(--gold-soft); padding-left:12px}
+.q .rec{margin-top:7px; font-size:15px; color:var(--ink-2); border-left:2px solid var(--gold-soft); padding-left:12px}
 .q .rec b{color:var(--ink)}
 
-.dish{padding:15px 0; border-top:1px solid var(--line-soft)}
-.dish:first-of-type{border-top:1px solid var(--line)}
-.dish .nm{font-weight:700; font-size:16.5px}
-.dish .fixed{font-size:15.5px; color:var(--ink-2); margin-top:3px}
-.grp{margin-top:9px; display:flex; flex-wrap:wrap; gap:7px; align-items:center}
-.grp .lbl{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
-  color:var(--gold); margin-right:2px}
-.opt{font-size:14px; background:var(--sunk); border:1px solid var(--line); border-radius:2px; padding:2px 9px; color:var(--ink-2)}
-.dflag{margin-top:8px; font-size:14.5px; color:var(--flag)}
-.dflag::before{content:"▲ "; font-size:10px; vertical-align:2px}
-.allerg{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.08em;
-  text-transform:uppercase; color:var(--ink-3); border:1px dashed var(--line); border-radius:2px; padding:1px 7px; margin-left:6px}
-.catcount{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3); margin-top:6px}
-.plain{margin-top:14px; display:flex; flex-wrap:wrap; gap:8px}
-.plain span{font-size:15px; background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:4px 11px}
+.grp{margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.grp .lbl{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--gold)}
+.opt{font-size:13.5px; background:var(--sunk); border:1px solid var(--line); border-radius:2px; padding:2px 8px; color:var(--ink-2)}
 
 footer{padding:54px 0 78px; border-top:1px solid var(--line); color:var(--ink-3); font-size:15px}
 footer .sig{font-family:Fraunces,Georgia,serif; font-size:17px; color:var(--ink-2); margin-bottom:8px}
 </style>
 
 <div class="bar"><div class="wrap">
-  <div class="mark">The Diine <em>Spec v2</em></div>
+  <div class="mark">The Diine <em>Spec v3</em></div>
   <nav class="jump">
-    <a href="#read">Read</a><a href="#normal">Normal</a><a href="#event">Event</a><a href="#menu">Menu</a>
-    <a href="#checkout">Checkout</a><a href="#cancel">Cancellation</a><a href="#admin">Admin</a>
-    <a href="#prep">Prep</a><a href="#scope">Scope</a><a href="#open">Open</a><a href="#appendix">Dishes</a>
+    <a href="#settled">Settled</a><a href="#normal">Normal</a><a href="#event">Event</a><a href="#catalogue">Catalogue</a>
+    <a href="#pricing">Pricing</a><a href="#rules">Rules</a><a href="#payment">Payment</a><a href="#admin">Admin</a>
+    <a href="#prep">Prep</a><a href="#scope">Scope</a><a href="#open">Open</a>
   </nav>
 </div></div>
 
 <div class="wrap">
 
 <header class="mast col">
-  <div class="kicker">Product specification · Revision 2</div>
+  <div class="kicker">Product specification · Revision 3</div>
   <h1>How ordering works at The&nbsp;Diine</h1>
-  <p class="sub">Your rules from this round, written into a full specification — two order types, the menu structure taken from your PDF, and every gap I found flagged rather than filled in.</p>
-  <div class="meta"><span>51 dishes read</span><span>3 categories</span><span>26 open questions</span><span>No assumptions made</span></div>
+  <p class="sub">À la carte, 72 products across four categories, priced. Two customer journeys over one catalogue. This revision folds in your corrections and drops everything now settled.</p>
+  <div class="meta"><span>72 products · 77 prices</span><span>4 categories</span><span>18 open items</span><span>0 architecture blockers</span></div>
 </header>
 
-<section id="read">
+<section id="settled">
   <div class="col">
-    <div class="eyebrow">First</div>
-    <h2>What I found in the menu</h2>
-    <p class="lede">The PDF came through. I read all eight pages — they have no text layer, so I read them as images. 21 main courses, 22 side dishes, 8 salads. Every dish is listed in the <a href="#appendix">appendix</a> for you to check.</p>
-
-    <div class="notice">
-      <div class="tag">Flag · likely incomplete</div>
-      <h4>Pages are missing, and there are no desserts</h4>
-      <p>The side dish and salad pages carry printed page numbers <strong>7, 8 and 9</strong>. The PDF has 8 sheets and the main-course pages aren't numbered, so printed pages 1–6 are only partly here. More to the point: there is <strong>no Desserts section</strong>, and no Appetizers, Breakfast, Platters or Catering Packages — all of which your first brief mentioned, and you've just told me desserts should carry serving sizes. Either those pages exist and didn't come through, or they live in a different document. Which is it?</p>
+    <div class="eyebrow">Changed in this revision</div>
+    <h2>The buffet question is closed</h2>
+    <div class="settled">
+      <div class="tag">Resolved</div>
+      <p><strong>The Full Buffet Menu is à la carte.</strong> Every dish is an individual product with its own price. There is no package builder, no "choose 3 mains", no per-person buffet — and no separate event menu. Both journeys use the same catalogue, the same cart and the same pricing. I've removed that uncertainty from this document entirely.</p>
     </div>
-
-    <div class="notice">
-      <div class="tag">Flag · blocks the cart</div>
-      <h4>Is this à la carte, or a buffet package?</h4>
-      <p>The document is titled <em>Full Buffet Menu</em>. That reads two completely different ways, and they need opposite systems. Either <strong>(a)</strong> each dish is ordered and priced on its own — a normal cart — or <strong>(b)</strong> the customer buys a buffet for a number of guests and then <em>chooses</em> which mains, sides and salads it includes — a package builder with rules like "pick 3 mains, 4 sides, 2 salads." I have not assumed either. This is the single biggest open question in this document.</p>
-    </div>
-
-    <p style="margin-top:22px">Everything below is written so that it holds either way, except where I've marked it. The <a href="#open">open questions register</a> at the end collects all 26 in one place, ranked.</p>
+    <p style="margin-top:22px">Also now settled: prices for all 77 rows, desserts as a fourth category, pickup counting toward the daily cap, a daily cut-off instead of rolling 48 hours, manual event confirmation with a per-event capacity choice, no customer self-cancellation, décor as a quote, and the payment structure. Each is written into the relevant section below.</p>
   </div>
 </section>
 
@@ -206,55 +179,29 @@ footer .sig{font-family:Fraunces,Georgia,serif; font-size:17px; color:var(--ink-
   <div class="col">
     <div class="eyebrow">Section 01</div>
     <h2>The normal ordering flow</h2>
-    <p class="lede">Everyday orders. Confirmed rules: 48 hours' notice, maximum 3 per day, no minimum order value, delivery or pickup, no deposit, confirmed over WhatsApp.</p>
+    <p class="lede">Browse, choose, cart, checkout. 48 hours' notice via a daily cut-off, three orders a day, delivery or pickup.</p>
   </div>
-
   <div class="flow col">
-    <div class="step"><div class="who">Entry</div><div>
-      <h4>Home → Order Now</h4>
-      <p>The homepage offers two paths from the start: <em>Order Now</em> for everyday orders, and a clearly separate <em>Plan an Event</em>. Nobody should reach the wrong form and discover the rules only at the end.</p>
-    </div></div>
-    <div class="step"><div class="who">Menu</div><div>
-      <h4>Browse Main Courses, Side Dishes, Salads</h4>
-      <p>Photo, name, price and any dietary flags per card. Unavailable dishes stay visible and marked.</p>
-    </div></div>
-    <div class="step"><div class="who">Dish</div><div>
-      <h4>Make the required choices</h4>
-      <p>Full description, allergens, and the dish's choices — sauce, rice, side. Required groups must be answered before the dish can be added. Price updates live. Quantity, and a special-instructions box.</p>
-    </div></div>
-    <div class="step"><div class="who">Cart</div><div>
-      <h4>Saved in the browser</h4>
-      <p>Survives closing the tab. Each line shows the choices made. Two trays of one dish with different sides are two lines, so the kitchen ticket is never ambiguous.</p>
-    </div></div>
-    <div class="step"><div class="who">Step 1</div><div>
-      <h4>Delivery or pickup</h4>
-      <p>Chosen first, because it changes what's asked next. Pickup skips address and delivery fee entirely.</p>
-    </div></div>
-    <div class="step"><div class="who">Step 2</div><div>
-      <h4>Date and time</h4>
-      <p>The calendar only offers dates at least <strong>48 hours</strong> ahead that aren't blocked and haven't already taken <strong>3 orders</strong>. A full or too-soon date is visibly unavailable, not merely rejected on submit.</p>
-    </div></div>
-    <div class="step"><div class="who">Step 3</div><div>
-      <h4>Serving setup</h4>
-      <p>Returnable serving dishes, or disposable. Asked once per order. The policy text underneath is admin-editable — and is currently <span class="pill hold">undefined</span>.</p>
-    </div></div>
-    <div class="step"><div class="who">Step 4</div><div>
-      <h4>Details</h4>
-      <p>Name, Egyptian mobile, optional email, and for delivery: area — which sets the fee — then address. Order notes.</p>
-    </div></div>
-    <div class="step"><div class="who">Step 5</div><div>
-      <h4>Review and submit</h4>
-      <p>Full summary, fee, total, and the cancellation terms shown before the button — not buried. The date is re-checked at the moment of submitting in case the last slot went while they were typing.</p>
-    </div></div>
-    <div class="step"><div class="who">Done</div><div>
-      <h4>Confirmation, then WhatsApp</h4>
-      <p>Order number, summary, date, setup choice, totals, and status <code>New</code> — with payment shown as <em>unpaid, to be arranged</em>. A prominent <strong>Confirm on WhatsApp</strong> button opens a chat with the summary pre-written. You get the same order as a WhatsApp alert.</p>
-    </div></div>
-  </div>
-
-  <div class="col ask">
-    <div class="tag">Deliberate</div>
-    <p>The order is <strong>not final until you confirm it on WhatsApp</strong> — that's what you asked for, and the site says so plainly on the confirmation page. It keeps a human in the loop while the business is small, and it means a mistaken order costs you a message, not a day's cooking.</p>
+    <div class="step"><div class="who">Entry</div><div><h4>Home → Order Now</h4>
+      <p>Two clear paths from the homepage: <em>Order Now</em> and <em>Plan an Event</em>. Nobody discovers the rules only at the end.</p></div></div>
+    <div class="step"><div class="who">Menu</div><div><h4>Four categories</h4>
+      <p>Main Courses, Side Dishes, Salads, Desserts. Photo, name, price and allergen flags per card. Unavailable dishes stay visible and marked.</p></div></div>
+    <div class="step"><div class="who">Dish</div><div><h4>Choose and configure</h4>
+      <p>Required choices — sauce, rice, accompaniment — must be answered before the dish can be added. Where a dish has priced variants, choosing one sets the price. Quantity and special instructions.</p></div></div>
+    <div class="step"><div class="who">Cart</div><div><h4>Saved in the browser</h4>
+      <p>Survives closing the tab. Each line carries its choices. The same dish with two different accompaniments is two lines, so the kitchen ticket is unambiguous.</p></div></div>
+    <div class="step"><div class="who">Step 1</div><div><h4>Delivery or pickup</h4>
+      <p>Asked first. Pickup skips address and delivery fee entirely — but still counts toward the day's three orders.</p></div></div>
+    <div class="step"><div class="who">Step 2</div><div><h4>Date and time</h4>
+      <p>The calendar offers only dates that clear the cut-off, aren't blocked, aren't taken by a confirmed event that blocked the day, and haven't already reached three orders. Unavailable dates look unavailable.</p></div></div>
+    <div class="step"><div class="who">Step 3</div><div><h4>Serving setup</h4>
+      <p>Returnable serving dishes, or disposable ones the customer keeps. The policy text beneath it is admin-editable and currently empty.</p></div></div>
+    <div class="step"><div class="who">Step 4</div><div><h4>Details and payment method</h4>
+      <p>Name, Egyptian mobile, optional email; for delivery, area then address. Payment method chosen here — nothing is charged online.</p></div></div>
+    <div class="step"><div class="who">Step 5</div><div><h4>Review and submit</h4>
+      <p>Full summary, fee, total, cancellation terms shown before the button. The date is re-checked at the moment of submitting.</p></div></div>
+    <div class="step"><div class="who">Done</div><div><h4>Confirmation, then WhatsApp</h4>
+      <p>Order number, summary, status <code>New</code>, payment <em>unpaid</em>, and a <strong>Confirm on WhatsApp</strong> button opening a chat to <code>+20 11 23030107</code> with the order pre-written. The same order reaches you as a WhatsApp alert.</p></div></div>
   </div>
 </section>
 
@@ -262,220 +209,278 @@ footer .sig{font-family:Fraunces,Georgia,serif; font-size:17px; color:var(--ink-
   <div class="col">
     <div class="eyebrow">Section 02</div>
     <h2>The event ordering flow</h2>
-    <p class="lede">You're right that this needs its own path. Different notice period, different cancellation terms, different questions. One important thing though: separate <em>flow</em>, not a separate system.</p>
-
-    <div class="ask">
-      <div class="tag">How I'd build it</div>
-      <p>Event orders live in the <strong>same orders table</strong> as normal ones, marked with a type. That way your revenue figures, dashboard, customer history and prep view include them automatically, and you never have to look in two places to answer "what's happening on Friday". The customer sees two separate journeys; you see one list you can filter.</p>
-    </div>
+    <p class="lede">Its own journey, the same catalogue underneath. Event details first, then the same menu and cart.</p>
   </div>
-
   <div class="flow col">
-    <div class="step evt"><div class="who">Entry</div><div>
-      <h4>Plan an Event</h4>
-      <p>Its own page explaining how event catering works — notice period, how confirmation happens, what you'll need from them.</p>
-    </div></div>
-    <div class="step evt"><div class="who">Step 1</div><div>
-      <h4>Event type</h4>
-      <p>Birthday · Engagement · Wedding · Other. Choosing <em>Other</em> reveals a free-text field, which is stored alongside the type rather than replacing it — so you can still count how many "other" events you get, and read what they were.</p>
-    </div></div>
-    <div class="step evt"><div class="who">Step 2</div><div>
-      <h4>Date, time and guests</h4>
-      <p>Calendar enforces <strong>5 days'</strong> minimum notice. Guest count is asked here — you didn't specify it this round, but your first brief did, and without it neither you nor the customer can size the order. <span class="pill hold">Confirm</span></p>
-    </div></div>
-    <div class="step evt"><div class="who">Step 3</div><div>
-      <h4>The food</h4>
-      <p>What goes here depends entirely on the buffet-versus-à-la-carte question. If à la carte, it's the same menu with the same cart. If it's a per-person buffet, this becomes a package builder. <span class="pill hold">Blocked</span></p>
-    </div></div>
-    <div class="step evt"><div class="who">Step 4</div><div>
-      <h4>Table décor</h4>
-      <p>Would you like table décor? Yes / No, plus a notes field. Whether it carries a price, is free, or is quoted by you afterwards is <span class="pill hold">undefined</span>.</p>
-    </div></div>
-    <div class="step evt"><div class="who">Step 5</div><div>
-      <h4>Serving setup</h4>
-      <p>Returnable or disposable, same as normal orders.</p>
-    </div></div>
-    <div class="step evt"><div class="who">Step 6</div><div>
-      <h4>Details and venue</h4>
-      <p>Name, mobile, email, and the delivery address or venue. Whether venue delivery uses the same area fees, and whether you offer setup or serving staff, is <span class="pill hold">undefined</span>.</p>
-    </div></div>
-    <div class="step evt"><div class="who">Submit</div><div>
-      <h4>A request, not a booking</h4>
-      <p>The event is submitted as a <strong>request</strong> with the date soft-held, and the customer is told clearly that you'll confirm. This is my recommendation and it's the safe answer to your capacity question — see below.</p>
-    </div></div>
-  </div>
-
-  <div class="col">
-    <h3>Your question: how should an event count against 3 orders a day?</h3>
-    <p>You're right not to let one event equal one normal order. I looked at three ways to do it and I'd recommend the third.</p>
-
-    <div class="scroller">
-      <table>
-        <thead><tr><th>Approach</th><th>How it works</th><th>Why not / why</th></tr></thead>
-        <tbody>
-          <tr><td class="area">Separate pools</td>
-            <td>Normal orders capped at 3. Events capped separately, say 1 a day.</td>
-            <td><small>Simple, but nothing stops an event <em>and</em> three normal orders landing on one day — which is the exact scenario you're worried about.</small></td></tr>
-          <tr><td class="area">Weighted points</td>
-            <td>Each day has a budget. A normal order costs 1. An event costs a number based on guest count — say 1 point per 25 guests.</td>
-            <td><small>Accurate in principle, but it needs a guests-to-kitchen-load ratio that nobody knows yet. Guessing it would be exactly the kind of assumption you asked me not to make.</small></td></tr>
-          <tr><td class="area">Manual confirmation <span class="pill now">Recommended</span></td>
-            <td>Events are submitted as requests. The date is soft-held. When you confirm, you decide how much of that day it takes — by default, the whole day.</td>
-            <td><small>No guesswork, and you cannot be oversold. You see the guest count and the dish list before committing. After a few months of real events you'll know the ratio, and we can switch on weighted points then.</small></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p style="margin-top:18px">The default matters here: I'd have a confirmed event <strong>block the day for normal orders</strong> unless you say otherwise, per event, with one tap. Safe by default, and you can always open the day back up. Tell me if you'd rather the default were the opposite.</p>
+    <div class="step evt"><div class="who">Entry</div><div><h4>Plan an Event</h4>
+      <p>Explains how event catering works before anything is asked: five days' notice, submitted as a request, confirmed by you.</p></div></div>
+    <div class="step evt"><div class="who">Step 1</div><div><h4>Event type</h4>
+      <p>Birthday · Engagement · Wedding · Other. Choosing <em>Other</em> reveals a free-text field stored <em>alongside</em> the type, so "Other" stays countable and readable.</p></div></div>
+    <div class="step evt"><div class="who">Step 2</div><div><h4>Date, time and guests</h4>
+      <p>Calendar enforces five days' minimum notice. <strong>Guest count is required.</strong></p></div></div>
+    <div class="step evt"><div class="who">Step 3</div><div><h4>Table décor</h4>
+      <p>Yes or No; Yes reveals a notes field. Recorded as a <strong>request to be quoted</strong> — it carries no price and adds nothing to the total.</p></div></div>
+    <div class="step evt"><div class="who">Step 4</div><div><h4>The food</h4>
+      <p>The same menu, the same product pages, the same cart as a normal order. No separate event menu.</p></div></div>
+    <div class="step evt"><div class="who">Step 5</div><div><h4>Serving setup</h4>
+      <p>Returnable or disposable, as with normal orders.</p></div></div>
+    <div class="step evt"><div class="who">Step 6</div><div><h4>Venue and details</h4>
+      <p>Venue or delivery address, name, mobile, email.</p></div></div>
+    <div class="step evt"><div class="who">Submit</div><div><h4>A request, with the date soft-held</h4>
+      <p>Status <code>Requested</code>. The customer is told plainly that you'll confirm. The date is held but not consumed until you accept.</p></div></div>
+    <div class="step evt"><div class="who">You</div><div><h4>Confirm, and choose the day</h4>
+      <p>On confirming you pick <strong>Block Day</strong> — no further normal orders — or <strong>Keep Day Open</strong>, leaving the normal three-order cap running. Block Day is the default; you can change it on any event, and change your mind afterwards.</p></div></div>
   </div>
 </section>
 
-<section id="menu">
+<section id="catalogue">
   <div class="col">
     <div class="eyebrow">Section 03</div>
-    <h2>Menu and product structure</h2>
-    <p class="lede">Every line of your PDF, sorted into products and choices. The rules below are what I applied; the results are in the <a href="#appendix">appendix</a>.</p>
-
-    <h3>What became what</h3>
-    <div class="scroller">
-      <table>
-        <thead><tr><th>Kind</th><th>Rule</th><th>Example from your menu</th></tr></thead>
-        <tbody>
-          <tr><td class="area">Product</td><td>Ordered on its own, own price, own photo</td><td><small>Roast Salmon side · Hawawshi · Fatoush salad</small></td></tr>
-          <tr><td class="area">Required choice</td><td>Must be picked; the "/" in your descriptions</td><td><small>Filleto meat — the sauce, and the side</small></td></tr>
-          <tr><td class="area">Variant</td><td>Changes size or format <em>and</em> price</td><td><small>None yet — appears once you tell me how dishes are sold</small></td></tr>
-          <tr><td class="area">Add-on</td><td>Optional extra at extra cost</td><td><small>None in this menu. Nothing here reads as an upsell.</small></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>What the slash marks turned out to mean</h3>
-    <p>Your descriptions use "/" consistently to mean <em>choose one</em>, and that's how I've read every one of them. Eleven of the 21 main courses have a single required choice, usually the accompaniment. Two — <strong>Filleto meat</strong> and <strong>Roast beef</strong> — have two independent required choices: a sauce from four, and a side from two. Eight are fixed with no choices at all.</p>
-
-    <h3>Three structural things worth knowing</h3>
-    <p><strong>Some things are both a dish and a choice.</strong> Basmati rice, coconut rice, noodles with vegetables and cream spinach all appear as side dishes you can order, and also as accompaniments inside main courses. Those are separate records — so changing the price of the Basmati rice side dish will not change any main course. That's correct, but it means two places to edit. I'd rather you knew now.</p>
-    <p><strong>Serving sizes are optional.</strong> As you asked: not required for savoury dishes, available for desserts. The field exists on every product and simply stays empty where it doesn't apply.</p>
-    <p><strong>Allergens are their own list, not a fixed set.</strong> Nuts and seafood to start, with dairy, gluten, egg, sesame and shellfish available, and room to add more. I can pre-tag from your own descriptions — almonds, walnuts, shrimps, salmon are all named in the text — but I'd want you to check every one before it goes live rather than trusting my reading of a PDF.</p>
-
-    <div class="notice">
-      <div class="tag">Still the number one blocker</div>
-      <h4>How is each category sold and priced?</h4>
-      <p>I asked last round and this is still open — it's the one answer I genuinely cannot work around. Per tray, per kilo, per person, per piece, or as a whole dish? Are Main Courses sold differently from Side Dishes and Salads? If by tray, what sizes are there? Until I know, I can't build quantity, the cart maths, or the price display — and I won't guess.</p>
-    </div>
+    <h2>The catalogue</h2>
+    <p class="lede">72 products across four categories, 77 price points. Three products carry priced variants; eleven main courses carry free required choices.</p>
   </div>
-</section>
-
-<section id="checkout">
-  <div class="col">
-    <div class="eyebrow">Section 04</div>
-    <h2>Checkout and scheduling rules</h2>
-    <p class="lede">Everything the system will enforce. Confirmed rules in full colour; anything still undefined is marked.</p>
-  </div>
-
   <div class="scroller">
     <table>
-      <thead><tr><th>Rule</th><th>Normal orders</th><th class="ev">Event orders</th></tr></thead>
+      <thead><tr><th>Category</th><th>Products</th><th>Price rows</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td class="area">Minimum notice</td><td>48 hours before the date</td><td class="ev">5 days before the event</td></tr>
-        <tr><td class="area">Daily capacity</td><td>3 orders per day</td><td class="ev">Manual confirmation; blocks the day by default</td></tr>
-        <tr><td class="area">Minimum order value</td><td>None</td><td class="ev">None stated <span class="pill hold">Confirm</span></td></tr>
-        <tr><td class="area">Fulfilment</td><td>Delivery or pickup</td><td class="ev">Delivery or venue <span class="pill hold">Confirm</span></td></tr>
-        <tr><td class="area">Delivery fee</td><td>By area — <span class="pill hold">areas and fees undefined</span></td><td class="ev">Same? <span class="pill hold">Confirm</span></td></tr>
-        <tr><td class="area">Serving setup</td><td>Returnable or disposable</td><td class="ev">Returnable or disposable</td></tr>
-        <tr><td class="area">Deposit</td><td>None</td><td class="ev">None stated <span class="pill hold">Confirm</span></td></tr>
-        <tr><td class="area">Payment</td><td>Arranged over WhatsApp; recorded, not processed</td><td class="ev">Same</td></tr>
-        <tr><td class="area">Confirmation</td><td>You confirm on WhatsApp</td><td class="ev">You confirm the request, then WhatsApp</td></tr>
-        <tr><td class="area">Time slots</td><td><span class="pill hold">Undefined</span></td><td class="ev"><span class="pill hold">Undefined</span></td></tr>
-        <tr><td class="area">Working days</td><td><span class="pill hold">Undefined</span></td><td class="ev"><span class="pill hold">Undefined</span></td></tr>
-        <tr><td class="area">Cut-off time</td><td><span class="pill hold">Undefined</span> — see below</td><td class="ev">n/a</td></tr>
+        <tr><td class="area">Main Courses</td><td class="p">21</td><td class="p">21</td><td><small>11 with one required choice, 2 with two, 8 fixed. No choice changes the price.</small></td></tr>
+        <tr><td class="area">Side Dishes</td><td class="p">19</td><td class="p">23</td><td><small>Noodles and Spring Rolls are one product each with three priced variants.</small></td></tr>
+        <tr><td class="area">Salads</td><td class="p">8</td><td class="p">8</td><td><small>No choices.</small></td></tr>
+        <tr><td class="area">Desserts</td><td class="p">24</td><td class="p">25</td><td><small>Tres Leches is one product with two priced flavours.</small></td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="col">
-    <h3>One thing to decide about the 48 hours</h3>
-    <p>Is it 48 hours to the <em>calendar date</em>, or to the delivery <em>slot</em>? If someone orders at 9pm on Monday, a strict 48-hour rule makes Wednesday evening legal but Wednesday morning not — so the same date is half-available. The clean alternative is a daily cut-off: <em>"order by 6pm and the day after tomorrow is available."</em> Simpler to explain and simpler to see on a calendar. I need your call; I'd suggest the cut-off.</p>
+    <h3>How the three kinds of choice work</h3>
+    <p><strong>Priced variants</strong> — Noodles, Spring Rolls, Tres Leches. One product, one photo, one page; choosing the variant sets the price. Admin types the actual price for each, not a difference.</p>
+    <p><strong>Free required choices</strong> — the accompaniments on main courses. Must be answered, never change the price. If you later want to charge for one, the field is already there.</p>
+    <p><strong>Add-ons</strong> — none in this menu. The structure supports them when you want them.</p>
+
+    <div class="ask">
+      <div class="tag">One instruction I had to reconcile</div>
+      <p>Your point 11 says to treat Noodles and Spring Rolls as one product with three priced choices; your point 12 says to leave that structure unresolved <em>until prices are confirmed</em>. Since point 11 confirms the prices, I've taken point 11 as the later instruction and built variants. <strong>Say the word if you meant the opposite.</strong></p>
+    </div>
   </div>
 </section>
 
-<section id="cancel">
+<section id="pricing">
   <div class="col">
-    <div class="eyebrow">Section 05</div>
-    <h2>Order and cancellation rules</h2>
+    <div class="eyebrow">Section 04</div>
+    <h2>Prices as entered</h2>
+    <p class="lede">Every price you gave, as it will be seeded. All editable from the dashboard — none of it is written into the code. Check this table against your own.</p>
   </div>
 
-  <div class="rules col">
-    <div class="rule"><div class="k">Normal — free cancellation</div><div class="v">Up to 24 hours before the delivery or pickup date</div></div>
-    <div class="rule"><div class="k">Normal — late cancellation</div><div class="v">Later than 24 hours: 20% charge</div></div>
-    <div class="rule"><div class="k">Event — free cancellation</div><div class="v">Up to 48 hours before the event</div></div>
-    <div class="rule"><div class="k">Event — late cancellation</div><div class="v">Later than 48 hours: 20% charge</div></div>
-    <div class="rule"><div class="k">Who can cancel</div><div class="v">You, from the dashboard. Whether the customer can cancel themselves from their order page is <span class="pill hold">undefined</span> <span class="conf">Needs your answer</span></div></div>
-    <div class="rule"><div class="k">What's recorded</div><div class="v">Cancellation time, who cancelled, whether it was inside or outside the free window, and the 20% figure calculated automatically</div></div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Main Courses</th><th class="p">EGP</th><th>Required choices</th></tr></thead>
+      <tbody>
+        <tr><td>Stuffed Pigeons</td><td class="p">1,250</td><td><small>Stuffing: freek, raisins &amp; nuts / rice, raisins &amp; nuts</small></td></tr>
+        <tr><td>Stuffed Chicken with Lesan Asfour</td><td class="p">1,400</td><td><small>—</small></td></tr>
+        <tr><td>Egyptian Fattah with Moza</td><td class="p">1,850</td><td><small>—</small></td></tr>
+        <tr><td>Lebanese Fattah with Chicken</td><td class="p">1,350</td><td><small>—</small></td></tr>
+        <tr><td>Sweet &amp; Sour Shrimps</td><td class="p">1,650</td><td><small>Served with: basmati rice / noodles with vegetables</small></td></tr>
+        <tr><td>Sweet &amp; Sour Chicken</td><td class="p">1,300</td><td><small>Served with: basmati rice / noodles with vegetables</small></td></tr>
+        <tr><td>Roast Fakhda</td><td class="p">3,750</td><td><small>Served with: 3 options</small></td></tr>
+        <tr><td>Roast Turkey</td><td class="p">4,500</td><td><small>Served with: 3 options</small></td></tr>
+        <tr><td>Roast Salmon Side</td><td class="p">2,700</td><td><small>Served with: 4 options</small></td></tr>
+        <tr><td>Grilled Shrimps</td><td class="p">2,400</td><td><small>Served with: 3 options</small></td></tr>
+        <tr><td>Duck Shanks</td><td class="p">2,100</td><td><small>Served with: 2 options</small></td></tr>
+        <tr><td>Filet Meat</td><td class="p">2,400</td><td><small>Sauce: 4 options · Served with: 2 options</small></td></tr>
+        <tr><td>Roast Beef</td><td class="p">2,300</td><td><small>Sauce: 4 options · Served with: 2 options</small></td></tr>
+        <tr><td>Roast Turkey Breasts</td><td class="p">2,000</td><td><small>Served with: 3 options</small></td></tr>
+        <tr><td>Grilled Kofta with Mini Chicken Shish</td><td class="p">1,750</td><td><small>Served with: 2 options</small></td></tr>
+        <tr><td>Swedish Meatballs</td><td class="p">1,450</td><td><small>—</small></td></tr>
+        <tr><td>Chicken Breast stuffed with Mushroom &amp; Mozzarella</td><td class="p">1,500</td><td><small>—</small></td></tr>
+        <tr><td>Lemon &amp; Butter Chicken</td><td class="p">1,350</td><td><small>—</small></td></tr>
+        <tr><td>Tagine Meammar with Pigeon Fillet</td><td class="p">1,500</td><td><small>—</small></td></tr>
+        <tr><td>Sharkasia</td><td class="p">1,500</td><td><small>—</small></td></tr>
+        <tr><td>Heart &amp; Kidneys with Sha'reya</td><td class="p">1,300</td><td><small>—</small></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Side Dishes</th><th class="p">EGP</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Sambousek with Minced Meat &amp; Mozzarella</td><td class="p">750</td><td><small>Separate product, as you listed it</small></td></tr>
+        <tr><td>Sambousek with White Cheese &amp; Mint</td><td class="p">650</td><td><small>Separate product, as you listed it</small></td></tr>
+        <tr><td>Mahshi</td><td class="p">800</td><td><small>Vegetable selection still to be decided</small></td></tr>
+        <tr><td>Noodles</td><td class="p">—</td><td><small>One product, three variants</small></td></tr>
+        <tr class="sub"><td>with Vegetables</td><td class="p">650</td><td></td></tr>
+        <tr class="sub"><td>with Chicken</td><td class="p">800</td><td></td></tr>
+        <tr class="sub"><td>with Shrimps</td><td class="p">1,050</td><td></td></tr>
+        <tr><td>Spring Rolls</td><td class="p">—</td><td><small>One product, three variants</small></td></tr>
+        <tr class="sub"><td>Plain</td><td class="p">600</td><td></td></tr>
+        <tr class="sub"><td>with Chicken</td><td class="p">750</td><td></td></tr>
+        <tr class="sub"><td>with Shrimps</td><td class="p">950</td><td></td></tr>
+        <tr><td>Basmati Rice</td><td class="p">600</td><td></td></tr>
+        <tr><td>Coconut Rice</td><td class="p">700</td><td></td></tr>
+        <tr><td>Cream Spinach with Chicken</td><td class="p">800</td><td></td></tr>
+        <tr><td>Eggplant Rolls stuffed with Avocado &amp; Mozzarella in Pink Sauce</td><td class="p">850</td><td></td></tr>
+        <tr><td>Mushroom Sauté with Caramelized Onions &amp; Parsley</td><td class="p">750</td><td></td></tr>
+        <tr><td>Rokak with Minced Meat</td><td class="p">900</td><td><small>Transliteration to confirm</small></td></tr>
+        <tr><td>Rokak Cones with Minced Meat, Mozzarella &amp; Tomatoes</td><td class="p">950</td><td><small>Transliteration to confirm</small></td></tr>
+        <tr><td>Lasagna</td><td class="p">1,000</td><td></td></tr>
+        <tr><td>Negresco</td><td class="p">950</td><td></td></tr>
+        <tr><td>Vine Leaves</td><td class="p">750</td><td></td></tr>
+        <tr><td>Potato Gratin</td><td class="p">700</td><td></td></tr>
+        <tr><td>Kobeba</td><td class="p">800</td><td></td></tr>
+        <tr><td>Mombar Pops</td><td class="p">850</td><td></td></tr>
+        <tr><td>Hawawshi</td><td class="p">850</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Salads</th><th class="p">EGP</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Fresh Mushroom Rocca Salad with Cherry Tomatoes, Apples &amp; Caramelized Walnuts</td><td class="p">650</td><td></td></tr>
+        <tr><td>Caesar Salad with Avocado, Apples, Chicken &amp; Caramelized Walnuts</td><td class="p">750</td><td><small>"cappouci" dropped — deliberate?</small></td></tr>
+        <tr><td>Eggplant Salad with Pomegranate &amp; Almonds</td><td class="p">650</td><td><small>"colored pepper" dropped — deliberate?</small></td></tr>
+        <tr><td>Blue Cheese Salad with Cherry Tomatoes, Apples &amp; Caramelized Walnuts</td><td class="p">750</td><td><small>"cappouci" dropped — deliberate?</small></td></tr>
+        <tr><td>Fattoush</td><td class="p">550</td><td></td></tr>
+        <tr><td>Tahini</td><td class="p">400</td><td></td></tr>
+        <tr><td>Baba Ganoush</td><td class="p">450</td><td></td></tr>
+        <tr><td>Coleslaw</td><td class="p">450</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Desserts</th><th class="p">EGP</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Tiramisu — Big Bowl</td><td class="p">1,400</td><td><small>Is "Big Bowl" a size, with others to come?</small></td></tr>
+        <tr><td>Batata Gratin</td><td class="p">1,050</td><td></td></tr>
+        <tr><td>Batata with Crème Brûlée</td><td class="p">1,250</td><td></td></tr>
+        <tr><td>Kunafa with Cream</td><td class="p">1,100</td><td></td></tr>
+        <tr><td>Cinnabon Cake</td><td class="p">1,250</td><td></td></tr>
+        <tr><td>12 Lotus Cinnabons</td><td class="p">1,350</td><td><small>Quantity is in the name — 12 pieces</small></td></tr>
+        <tr><td>Chocolate Cake</td><td class="p">1,350</td><td></td></tr>
+        <tr><td>Golden Basbousa Cake</td><td class="p">1,050</td><td></td></tr>
+        <tr><td>Cheesecake Crème Brûlée</td><td class="p">1,450</td><td></td></tr>
+        <tr><td>Cheesecake Maltesers</td><td class="p">1,450</td><td></td></tr>
+        <tr><td>Cheesecake Oreo</td><td class="p">1,350</td><td></td></tr>
+        <tr><td>San Sebastián Cheesecake</td><td class="p">1,450</td><td></td></tr>
+        <tr><td>Honey Cake</td><td class="p">1,300</td><td></td></tr>
+        <tr><td>Lotus Brownies</td><td class="p">1,100</td><td></td></tr>
+        <tr><td>Om Ali with Crème Brûlée</td><td class="p">1,150</td><td></td></tr>
+        <tr><td>Tres Leches</td><td class="p">—</td><td><small>One product, two flavours</small></td></tr>
+        <tr class="sub"><td>Caramel</td><td class="p">1,300</td><td></td></tr>
+        <tr class="sub"><td>Mango</td><td class="p">1,400</td><td></td></tr>
+        <tr><td>Profiteroles with Caramel Custard, Croquant &amp; Chocolate Sauce</td><td class="p">1,300</td><td></td></tr>
+        <tr><td>Profiteroles with Konafa &amp; Pistachio Sauce</td><td class="p">1,450</td><td></td></tr>
+        <tr><td>Mini Bites Baklava with Nutella</td><td class="p">1,200</td><td></td></tr>
+        <tr><td>Mini Bites Baklava with Lotus</td><td class="p">1,150</td><td></td></tr>
+        <tr><td>Mini Bites Baklava with Hazelnut</td><td class="p">1,250</td><td></td></tr>
+        <tr><td>Mini Baklava with Konafa</td><td class="p">1,150</td><td><small>"Mini" not "Mini Bites" — same family?</small></td></tr>
+        <tr><td>Bonbon Chocolate Box stuffed with Pistachio Konafa</td><td class="p">1,450</td><td></td></tr>
+        <tr><td>Cheesecake Crème Brûlée with Blueberries</td><td class="p">1,550</td><td></td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="col">
     <div class="notice">
-      <div class="tag">Conflict · needs your decision</div>
-      <h4>The 20% charge cannot be collected at launch</h4>
-      <p>There's no deposit and no online payment, so when someone cancels late there is <strong>no money in hand to deduct 20% from</strong>. As written, the policy is a statement rather than something the system can enforce. Three ways forward: state the policy, calculate the amount and chase it manually; or take a deposit on larger orders so there's something to deduct from; or leave it unenforced until online payments arrive. The system will compute and record the figure either way — what I need from you is which of those you actually intend.</p>
+      <div class="tag">Content gap · not an architecture blocker</div>
+      <h4>Selling units are missing on almost everything</h4>
+      <p>Roast Turkey at 4,500 — is that a whole turkey? Rokak at 900 — a tray, and how big? Mini Bites Baklava at 1,200 — how many pieces? I have not invented a single one. Every product has an empty, admin-editable <em>selling unit</em> field, and the menu simply shows the price without a unit until you fill them in. The build continues without them; the launch shouldn't.</p>
     </div>
+    <p style="margin-top:22px"><strong>Money is stored in piastres.</strong> 1,250 EGP is stored as 125000. It removes a whole class of rounding error from totals, and you'll never see it — you type pounds.</p>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="col">
+    <div class="eyebrow">Section 05</div>
+    <h2>Scheduling and cancellation</h2>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Rule</th><th>Normal</th><th class="ev">Event</th></tr></thead>
+      <tbody>
+        <tr><td class="area">Minimum notice</td><td>48 hours, applied as a daily cut-off</td><td class="ev">5 days</td></tr>
+        <tr><td class="area">Cut-off time</td><td>Admin-editable <span class="pill hold">value to confirm</span></td><td class="ev">n/a</td></tr>
+        <tr><td class="area">Daily capacity</td><td>3 orders — pickup included</td><td class="ev">Manual confirm; Block Day or Keep Day Open</td></tr>
+        <tr><td class="area">Minimum order value</td><td>None</td><td class="ev">None <span class="pill hold">confirm</span></td></tr>
+        <tr><td class="area">Fulfilment</td><td>Delivery or pickup</td><td class="ev">Delivery or venue</td></tr>
+        <tr><td class="area">Delivery fee</td><td>By area <span class="pill hold">areas and fees to come</span></td><td class="ev">Same? <span class="pill hold">confirm</span></td></tr>
+        <tr><td class="area">Serving setup</td><td>Returnable or disposable</td><td class="ev">Returnable or disposable</td></tr>
+        <tr><td class="area">Deposit</td><td>None</td><td class="ev">None</td></tr>
+        <tr><td class="area">Free cancellation until</td><td>24 hours before</td><td class="ev">48 hours before</td></tr>
+        <tr><td class="area">Late cancellation</td><td>20%, calculated and recorded</td><td class="ev">20%, calculated and recorded</td></tr>
+        <tr><td class="area">Who cancels</td><td>You, from the dashboard</td><td class="ev">You, from the dashboard</td></tr>
+        <tr><td class="area">Time slots</td><td><span class="pill hold">to come</span></td><td class="ev"><span class="pill hold">to come</span></td></tr>
+        <tr><td class="area">Working days</td><td><span class="pill hold">to come</span></td><td class="ev"><span class="pill hold">to come</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col">
+    <h3>Cancellation, precisely</h3>
+    <p>Customers cannot cancel themselves — they contact you, and you cancel from the dashboard. The system records the time, who did it, the reason you type, whether it fell inside or outside the free window, and the 20% figure calculated from the order total. Collection is yours to handle; nothing is taken automatically, and no deposit is introduced to enforce it.</p>
+  </div>
+</section>
+
+<section id="payment">
+  <div class="col">
+    <div class="eyebrow">Section 06</div>
+    <h2>Payment</h2>
+    <p class="lede">Three methods in the structure from day one. None of them charge a card online at launch.</p>
+  </div>
+  <div class="rules col">
+    <div class="rule"><div class="k">Cash</div><div class="v">On delivery, or on collection for pickup orders. Available now.</div></div>
+    <div class="rule"><div class="k">InstaPay</div><div class="v">Customer transfers and tells you. Available now — <strong>verification is a separate step from confirming the order</strong>, so you can accept an order and separately mark the money as actually received.</div></div>
+    <div class="rule"><div class="k">Card</div><div class="v">In the structure, switched off. Added later through a payment gateway. No card details ever touch the system — the gateway handles them, which is where they belong.</div></div>
+    <div class="rule"><div class="k">Order status</div><div class="v">New · Confirmed · Preparing · Ready · Out for Delivery · Delivered · Cancelled. Events add <em>Requested</em> at the front; pickup skips Out for Delivery.</div></div>
+    <div class="rule"><div class="k">Payment status</div><div class="v">Tracked entirely separately: unpaid · awaiting verification · paid · refunded. A delivered order can be unpaid; a paid order can still be cooking.</div></div>
   </div>
 </section>
 
 <section id="admin">
   <div class="col">
-    <div class="eyebrow">Section 06</div>
+    <div class="eyebrow">Section 07</div>
     <h2>Admin and dashboard</h2>
-    <p class="lede">Built for a phone in a kitchen. One order list covering both types, filterable.</p>
-
     <h3>Orders</h3>
-    <p>One list showing normal and event orders together, each clearly badged. Filter by date, status, order type, fulfilment (delivery or pickup) and serving setup; search by order number, customer name or mobile. Opening an order shows everything: items with their chosen options and instructions, customer and address, date and slot, serving setup, totals, payment method and status, and — for events — event type, guest count and décor.</p>
-    <p>Statuses run <code>New → Confirmed → Preparing → Ready → Out for Delivery → Delivered</code>, plus <code>Cancelled</code>. Pickup orders skip <em>Out for Delivery</em>. Event requests start at <code>Requested</code> and only become <code>Confirmed</code> when you accept and decide the day's capacity. Payment status is tracked separately throughout, because a delivered order can still be unpaid.</p>
-
+    <p>One list covering both types, each badged. Filter by date, status, type, fulfilment and payment status; search by order number, name or mobile. An order shows items with their variants, choices and instructions, the customer, the address or venue, date and slot, serving setup, totals, payment method and status — and for events, the type, guest count and décor request.</p>
     <h3>Menu management</h3>
-    <p>Add, edit and archive products; change prices; upload photos; manage categories; build option groups and their choices; set allergens; set serving sizes where relevant; mark anything unavailable. Archive rather than delete, so past orders keep making sense.</p>
-
+    <p>Add, edit and archive products; edit prices and variant prices; upload photos; manage the four categories; build required-choice groups; set allergens; set serving sizes and selling units; mark anything unavailable. Archive rather than delete, so past orders still read correctly.</p>
     <h3>Settings</h3>
-    <p>Delivery areas and fees, time slots, blocked dates, daily capacity, the two notice periods, cancellation windows and percentage, serving-setup policy text, and which payment methods are offered. All editable by you, none of it needing me.</p>
-
+    <p>Delivery areas and fees, time slots, working days, blocked dates, daily capacity, cut-off time, both notice periods, cancellation windows and percentage, the serving-setup policy text, allergen list, and which payment methods are on. All yours to change.</p>
     <h3>Dashboard</h3>
-    <p>Orders today, upcoming orders, revenue, order count, average order value, best-selling dishes and cancellations — with a date filter, and normal versus event split out. Written so cost and margin can be added once inventory exists.</p>
+    <p>Orders today, upcoming, revenue, order count, average order value, best sellers, cancellations — date-filtered, with normal and event split out.</p>
   </div>
 </section>
 
 <section id="prep">
   <div class="col">
-    <div class="eyebrow">Section 07</div>
+    <div class="eyebrow">Section 08</div>
     <h2>Kitchen prep view</h2>
-    <p class="lede">In the MVP, as you asked. Pick a date, see what has to be cooked.</p>
-    <p>The screen totals every dish ordered for a chosen date across all orders — <em>"3 × Roast Fakhda, 2 with mixed rice and 1 with grilled vegetables"</em> — so the choices are aggregated too, not just the dish names. Because option choices change what's actually cooked, that breakdown is the part that makes it useful rather than decorative.</p>
-    <p>Normal and event orders are shown as separate blocks with their own totals, and a combined total underneath. Events carry their guest count and décor note. You can also see it per order rather than aggregated, for packing.</p>
-    <p>It respects your rules: only <code>Confirmed</code> and later orders appear by default, with unconfirmed requests shown separately so a pending event doesn't get cooked by mistake.</p>
-    <div class="ask">
-      <div class="tag">Later, cheaply</div>
-      <p>Once ingredients and recipes exist, this same screen becomes the shopping list — the dish totals multiply through to quantities of chicken, rice and sauce. It's built with that in mind, which costs nothing now.</p>
-    </div>
+    <p class="lede">In the MVP. Pick a date, see what must be cooked.</p>
+    <p>Totals every dish for a date across all orders, aggregating the choices too — <em>"3 × Roast Fakhda: 2 mixed rice, 1 grilled vegetables"</em> — because the choices change what's actually cooked. Normal and event orders appear as separate blocks with their own totals plus a combined figure; events carry guest count and décor note.</p>
+    <p><strong>Unconfirmed event requests are excluded from the confirmed totals</strong> and shown separately, so nothing pending gets cooked by mistake.</p>
   </div>
 </section>
 
 <section id="scope">
   <div class="col">
-    <div class="eyebrow">Section 08</div>
-    <h2>In the MVP, and after</h2>
+    <div class="eyebrow">Section 09</div>
+    <h2>MVP boundary</h2>
   </div>
   <div class="scroller">
     <table>
       <thead><tr><th>Area</th><th>First launch</th><th>Later</th></tr></thead>
       <tbody>
-        <tr><td class="area">Normal orders</td><td><span class="pill now">In</span><small>Full flow, 48h notice, 3/day cap, delivery or pickup, serving setup</small></td><td><small>Repeat orders, saved addresses</small></td></tr>
-        <tr><td class="area">Event orders</td><td><span class="pill now">In</span><small>Separate flow, event type, 5-day notice, décor question, manual confirmation</small></td><td><small>Automatic capacity weighting, quotes, contracts, floor plans</small></td></tr>
-        <tr><td class="area">Menu</td><td><span class="pill now">In</span><small>3 categories, 51 dishes, required choices, allergens, optional serving sizes</small></td><td><small>Buffet package builder if that's the model, seasonal menus</small></td></tr>
-        <tr><td class="area">Serving setup</td><td><span class="pill now">In</span><small>The returnable-or-disposable choice, recorded on every order</small></td><td><small>Deposits, return tracking, chasing overdue dishes</small></td></tr>
-        <tr><td class="area">Cancellation</td><td><span class="pill now">In</span><small>Windows enforced, 20% calculated and recorded</small></td><td><small>Automatic collection, once payments exist</small></td></tr>
-        <tr><td class="area">Payment</td><td><span class="pill now">In</span><small>Recorded only; arranged over WhatsApp. Kept as a separate layer.</small></td><td><small>Card, wallets, InstaPay, deposits</small></td></tr>
-        <tr><td class="area">Notifications</td><td><span class="pill now">In</span><small>WhatsApp confirm button, WhatsApp alert to you</small></td><td><small>Automated WhatsApp API, status updates, email</small></td></tr>
-        <tr><td class="area">Admin</td><td><span class="pill now">In</span><small>Orders, menu management, settings, dashboard, prep view</small></td><td><small>Staff accounts and roles, delivery tracking</small></td></tr>
-        <tr><td class="area">Arabic</td><td><span class="pill later">Structured for</span><small>All text kept in translation files, product names and descriptions translatable, layout built to flip right-to-left. English at launch.</small></td><td><small>Turn on Arabic as a content job — no rebuild</small></td></tr>
+        <tr><td class="area">Catalogue</td><td><span class="pill now">In</span><small>4 categories, 72 products, variants, required choices, allergens, editable prices</small></td><td><small>Add-ons, seasonal menus, bulk import</small></td></tr>
+        <tr><td class="area">Normal orders</td><td><span class="pill now">In</span><small>Full flow, cut-off, 3/day incl. pickup, delivery or pickup, serving setup</small></td><td><small>Saved addresses, reordering</small></td></tr>
+        <tr><td class="area">Event orders</td><td><span class="pill now">In</span><small>Separate journey, same catalogue, guest count, décor quote, manual confirm with day control</small></td><td><small>Capacity weighting, quotes, contracts</small></td></tr>
+        <tr><td class="area">Cancellation</td><td><span class="pill now">In</span><small>Admin-only, windows enforced, 20% calculated and recorded</small></td><td><small>Automatic collection once payments exist</small></td></tr>
+        <tr><td class="area">Payment</td><td><span class="pill now">In</span><small>Cash and InstaPay recorded; verification separate; card structured but off</small></td><td><small>Card gateway, wallets</small></td></tr>
+        <tr><td class="area">Notifications</td><td><span class="pill now">In</span><small>WhatsApp confirm button and alert to +20 11 23030107</small></td><td><small>WhatsApp Business API, status updates, email</small></td></tr>
+        <tr><td class="area">Admin</td><td><span class="pill now">In</span><small>Orders, menu, settings, dashboard, prep view</small></td><td><small>Staff accounts and roles, delivery tracking</small></td></tr>
+        <tr><td class="area">Arabic</td><td><span class="pill later">Structured for</span><small>Every product name and description has an Arabic field; all interface text in translation files; layout built to flip right-to-left</small></td><td><small>Switch on as a content job — no rebuild</small></td></tr>
         <tr><td class="area">Inventory</td><td><span class="pill later">Structured for</span><small>Database ready, no screens</small></td><td><small>Ingredients, recipes, deduction, suppliers</small></td></tr>
       </tbody>
     </table>
@@ -484,156 +489,48 @@ footer .sig{font-family:Fraunces,Georgia,serif; font-size:17px; color:var(--ink-
 
 <section id="open">
   <div class="col">
-    <div class="eyebrow">Section 09 &amp; 10</div>
-    <h2>Open questions and conflicts</h2>
-    <p class="lede">Twenty-six things I have not decided for you. The seven blockers stop the build; the rest can run alongside it. Answer them in any form — a voice note works.</p>
+    <div class="eyebrow">Section 10</div>
+    <h2>What's still open</h2>
+    <p class="lede">Eighteen items. None of them stop the build — I've started the foundations. All of them stop the launch.</p>
   </div>
 
   <div class="qreg">
-    <div class="qhead">Blockers — I cannot build the ordering system without these</div>
-    <div class="q"><div class="id">B1</div><div><h4>À la carte, or buffet package?</h4><p>Is each dish priced and ordered individually, or does a customer buy a buffet for N guests and choose which dishes it includes?</p></div></div>
-    <div class="q"><div class="id">B2</div><div><h4>How is each category sold?</h4><p>Per tray, kilo, person, piece, or whole dish — separately for Main Courses, Side Dishes and Salads. If by tray, what sizes?</p></div></div>
-    <div class="q"><div class="id">B3</div><div><h4>Prices</h4><p>Per dish, and per size if sizes exist. Including whether any required choice changes the price — right now I've assumed none do, which is an assumption I'd like you to confirm or correct.</p></div></div>
-    <div class="q"><div class="id">B4</div><div><h4>Do events use the same menu and prices?</h4><p>Same dishes at the same prices, or a separate per-person package structure?</p></div></div>
-    <div class="q"><div class="id">B5</div><div><h4>Delivery areas and fees</h4><p>You've said customers pay the applicable fee, so fees exist — I need the list of areas and what each costs.</p></div></div>
-    <div class="q"><div class="id">B6</div><div><h4>Time slots and working days</h4><p>The delivery and pickup windows you offer, and any days you never work.</p></div></div>
-    <div class="q"><div class="id">B7</div><div><h4>The missing menu sections</h4><p>Desserts above all — you've referred to them and there are none in the PDF. Also Appetizers, Breakfast, Platters, Packages. Do they exist?</p></div></div>
+    <div class="qhead">Needed before launch — business information</div>
+    <div class="q"><div class="id">L1</div><div><h4>Selling units</h4><p>What a price buys: tray and its size, weight, piece count, or "serves N". Missing on almost every product. The biggest single content gap.</p></div></div>
+    <div class="q"><div class="id">L2</div><div><h4>Delivery areas and fees</h4><p>You said you'd send these separately.</p></div></div>
+    <div class="q"><div class="id">L3</div><div><h4>Time slots and working days</h4><p>Also promised separately.</p></div></div>
+    <div class="q"><div class="id">L4</div><div><h4>The cut-off time</h4><p>You'll confirm before launch. Editable from settings either way.</p></div></div>
+    <div class="q"><div class="id">L5</div><div><h4>Returnable dish policy</h4><p>Return window, who collects, any charge, damage or loss. Kept configurable and empty, as you asked.</p></div></div>
+    <div class="q"><div class="id">L6</div><div><h4>Food photography</h4><p>The single biggest factor in how premium this feels. And may I use your Instagram photos?</p></div></div>
+    <div class="q"><div class="id">L7</div><div><h4>InstaPay details</h4><p>The account name or number customers should transfer to.</p></div></div>
+    <div class="q"><div class="id">L8</div><div><h4>About text, contact details, working hours</h4><p>For the homepage and footer.</p></div></div>
+    <div class="q"><div class="id">L9</div><div><h4>Domain name, and the original logo file</h4><p>SVG or PDF ideally — what I have is a screenshot and will be soft at large sizes.</p></div></div>
   </div>
 
   <div class="qreg" style="margin-top:22px">
-    <div class="qhead">Decisions — needed before launch, not before starting</div>
-    <div class="q"><div class="id">D1</div><div><h4>Returnable dish policy</h4><p>How many days to return them? Who collects, and is there a charge for collection? A deposit? What happens if they're damaged or never come back? Is there a price difference between returnable and disposable?</p>
-      <div class="rec"><b>Flagged as you asked</b> — I've built the choice, not the policy.</div></div></div>
-    <div class="q"><div class="id">D2</div><div><h4>Returnable dishes on pickup orders</h4><p>If a customer collects, do they also bring the dishes back themselves? Or are returnable dishes delivery-only? This one has an operational cost either way.</p></div></div>
-    <div class="q"><div class="id">D3</div><div><h4>The 20% charge</h4><p>See the conflict above. State-and-chase, deposit, or leave unenforced?</p></div></div>
-    <div class="q"><div class="id">D4</div><div><h4>48 hours, or a daily cut-off?</h4><p>A rolling 48 hours makes some dates half-available. A cut-off time is easier to show and explain.</p>
-      <div class="rec"><b>My suggestion:</b> a cut-off.</div></div></div>
-    <div class="q"><div class="id">D5</div><div><h4>Does pickup count toward the 3 a day?</h4><p>It's still cooking, so I'd say yes — but it's your kitchen and I'm not assuming.</p></div></div>
-    <div class="q"><div class="id">D6</div><div><h4>Table décor — priced how?</h4><p>A fixed price, free, or quoted by you after the request comes in?</p></div></div>
-    <div class="q"><div class="id">D7</div><div><h4>Guest count on events</h4><p>Should the form ask for it, and should it be required?</p><div class="rec"><b>My suggestion:</b> required.</div></div></div>
-    <div class="q"><div class="id">D8</div><div><h4>Event venues</h4><p>Do you deliver to venues outside your normal areas? Same fees? Do you offer setup or serving staff?</p></div></div>
-    <div class="q"><div class="id">D9</div><div><h4>Noodles and spring rolls</h4><p>Each is listed three times — plain, with chicken, with shrimps. One product with a required choice, or three separate products? Depends on whether the prices differ.</p></div></div>
-    <div class="q"><div class="id">D10</div><div><h4>Ma7sh</h4><p>Listed as <em>(eggplant / zucchini / pepper / onion / potatoes / tomatoes)</em>. Does the customer pick one vegetable, pick several, or is it always a mixed assortment?</p></div></div>
-    <div class="q"><div class="id">D11</div><div><h4>Sambousk fillings</h4><p>The PDF says <em>"minced meat with mozzarella / white cheese with mint.."</em> — the two dots suggest there are more. What's the full list?</p></div></div>
-    <div class="q"><div class="id">D12</div><div><h4>Dish names written in chat-Arabic</h4><p><em>ro2a2</em>, <em>ma7sh</em>, <em>sh3ria</em>, <em>kobaba</em>, <em>Tageen Me3amr</em>. Keep them as your customers recognise them, or use English spellings, or show both? This also affects the Arabic version later.</p>
-      <div class="rec"><b>My suggestion:</b> keep the familiar name, add a short English description underneath.</div></div></div>
-    <div class="q"><div class="id">D13</div><div><h4>Per-dish minimum quantities</h4><p>You've confirmed no minimum order value. Does any individual dish have a minimum?</p></div></div>
-    <div class="q"><div class="id">D14</div><div><h4>Can side dishes and salads be ordered on their own?</h4><p>Or only alongside a main course?</p></div></div>
-    <div class="q"><div class="id">D15</div><div><h4>Can customers cancel themselves?</h4><p>From their order page, or must they message you?</p></div></div>
-    <div class="q"><div class="id">D16</div><div><h4>Your WhatsApp business number</h4><p>Where orders are sent and where customers reach you.</p></div></div>
+    <div class="qhead">Menu content — answer when convenient</div>
+    <div class="q"><div class="id">M1</div><div><h4>Sambousek fillings</h4><p>You priced two as separate products, so that's how I've built them. The full list is still outstanding — and when it arrives, should they stay separate products or become one Sambousek with priced fillings, like Noodles?</p></div></div>
+    <div class="q"><div class="id">M2</div><div><h4>Mahshi</h4><p>One vegetable, several, or always a mixed assortment? Built as one product; the selection rule is unset.</p></div></div>
+    <div class="q"><div class="id">M3</div><div><h4>"cappouci" has disappeared</h4><p>It was in the Caesar and Blue Cheese salads in the PDF, and it's absent from both in your price list. Deliberately removed, or just shortened for the table? Still not guessing what it is.</p></div></div>
+    <div class="q"><div class="id">M4</div><div><h4>"colored pepper" in the Eggplant Salad</h4><p>In the PDF, gone from your price list. Same question.</p></div></div>
+    <div class="q"><div class="id">M5</div><div><h4>Two transliterations left</h4><p>You asked for readable English rather than chat-Arabic, but your own list kept <em>Ro2a2</em> and <em>Ma7sh</em>. I've used <strong>Rokak</strong> and <strong>Mahshi</strong> as placeholders and flagged them — tell me the spellings you want and I'll change them everywhere.</p></div></div>
+    <div class="q"><div class="id">M6</div><div><h4>Kunafa or Konafa?</h4><p>Both spellings appear in your dessert list. One, please.</p></div></div>
+    <div class="q"><div class="id">M7</div><div><h4>"Mini Bites Baklava" vs "Mini Baklava with Konafa"</h4><p>Same family with an inconsistent name, or genuinely different products?</p></div></div>
+    <div class="q"><div class="id">M8</div><div><h4>Dessert serving sizes</h4><p>Where relevant, as you said. Optional field, ready when you are.</p></div></div>
+    <div class="q"><div class="id">M9</div><div><h4>Allergen review</h4><p>I'm pre-tagging from your own descriptions — almonds, walnuts, pistachio, hazelnut, shrimps, salmon, cheese are all named. Every tag needs your eyes before launch.</p></div></div>
+    <div class="q"><div class="id">M10</div><div><h4>Per-dish minimum quantities</h4><p>No minimum order value, confirmed. Does any single dish have one?</p></div></div>
   </div>
 
   <div class="qreg" style="margin-top:22px">
-    <div class="qhead">Confirmations — quick yes or no, but I won't act without them</div>
-    <div class="q"><div class="id">C1</div><div><h4>Spelling</h4><p>The PDF has typos I have deliberately not corrected: <em>rasinis</em>, <em>vegtables</em>, <em>muchroom</em>, <em>carmalized</em>, <em>Ceasar</em>, <em>avocad</em>, <em>pepperand</em>, <em>Col slow</em>, <em>Sweddish</em>, <em>spiach</em>. Shall I clean all of these up?</p></div></div>
-    <div class="q"><div class="id">C2</div><div><h4>Roast Turkey vs Roast Turkey breasts</h4><p>Two separate dishes on two separate pages, with different accompaniments. Genuinely two products?</p></div></div>
-    <div class="q"><div class="id">C3</div><div><h4>"cappouci"</h4><p>Appears in two salads. Is this cabbage? I have a guess and I'm not using it.</p></div></div>
-    <div class="q"><div class="id">C4</div><div><h4>Ma7sh ran across two bullets</h4><p>Your PDF splits the vegetable list over two bullet points. I've read it as one item. Correct?</p></div></div>
-    <div class="q"><div class="id">C5</div><div><h4>Sha'reya spelling</h4><p>Written <em>sh3ria</em> on one page and <em>she3ria</em> on another. Which?</p></div></div>
-    <div class="q"><div class="id">C6</div><div><h4>Allergen tagging</h4><p>I can pre-tag from your descriptions — almonds, walnuts, shrimps, salmon, cheese are all named. You'd then check every dish before launch. Agreed?</p></div></div>
-    <div class="q"><div class="id">C7</div><div><h4>Shared items</h4><p>Basmati rice, coconut rice and cream spinach exist both as side dishes and as accompaniments inside mains, managed separately. Fine?</p></div></div>
-  </div>
-</section>
-
-<section id="appendix">
-  <div class="col">
-    <div class="eyebrow">Appendix</div>
-    <h2>Every dish, as I read it</h2>
-    <p class="lede">Check this against your PDF. Names are exactly as printed, typos included. <span style="color:var(--flag)">▲</span> marks something I need you to resolve.</p>
-
-    <h3>Main Courses</h3>
-    <p class="catcount">21 dishes · 11 with one required choice · 2 with two · 8 fixed</p>
-  </div>
-
-  <div class="col">
-    <div class="dish"><div class="nm">Stuffed Pigeons</div>
-      <div class="grp"><span class="lbl">Choose one</span><span class="opt">Freek, rasinis &amp; nuts</span><span class="opt">Rice, raisins &amp; nuts</span></div>
-      <div class="dflag">"rasinis" in the first option, "raisins" in the second — same word, two spellings</div></div>
-    <div class="dish"><div class="nm">Stuffed Chicken</div><div class="fixed">with lesan asfour</div></div>
-    <div class="dish"><div class="nm">Egyptian Fattah with moza</div><div class="fixed">No choices</div></div>
-    <div class="dish"><div class="nm">Lebanese Fattah</div><div class="fixed">with chicken, yogurt, served with basmati rice, almonds &amp; fried Lebanese bread<span class="allerg">nuts · dairy · gluten</span></div></div>
-    <div class="dish"><div class="nm">Sweet &amp; Sour Shrimps</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Basmati rice</span><span class="opt">Noodles with vegetables</span></div>
-      <div class="fixed"><span class="allerg">seafood</span></div></div>
-    <div class="dish"><div class="nm">Sweet &amp; Sour Chicken</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Basmati rice</span><span class="opt">Noodles with vegetables</span></div></div>
-    <div class="dish"><div class="nm">Roast Fakhda</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Mixed rice, almonds &amp; raisins</span><span class="opt">Basmati rice, almonds &amp; raisins</span><span class="opt">Grilled vegetables</span></div>
-      <div class="fixed"><span class="allerg">nuts</span></div></div>
-    <div class="dish"><div class="nm">Roast Turkey</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Mixed rice, almonds &amp; raisins</span><span class="opt">Basmati rice, almonds &amp; raisins</span><span class="opt">Grilled vegetables</span></div>
-      <div class="dflag">Distinct from "Roast Turkey breasts" further down — confirm both exist</div></div>
-    <div class="dish"><div class="nm">Roast Salmon side</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Mixed rice, almonds &amp; cranberries</span><span class="opt">Coconut basmati rice</span><span class="opt">Grilled vegetables</span><span class="opt">Creamy spinach</span></div>
-      <div class="fixed"><span class="allerg">fish · nuts</span></div></div>
-    <div class="dish"><div class="nm">Grilled Shrimps</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Noodles</span><span class="opt">Basmati rice, almonds</span><span class="opt">Grilled vegetables</span></div>
-      <div class="fixed"><span class="allerg">seafood · nuts</span></div></div>
-    <div class="dish"><div class="nm">Duck shanks</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Freek &amp; vegetables, almonds</span><span class="opt">Sh3ria, almonds &amp; cranberries</span></div>
-      <div class="fixed"><span class="allerg">nuts</span></div></div>
-    <div class="dish"><div class="nm">Filleto meat</div>
-      <div class="grp"><span class="lbl">Sauce</span><span class="opt">Muchroom &amp; rosemary</span><span class="opt">Coffee</span><span class="opt">Pepper</span><span class="opt">Prunes</span></div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Potato puree</span><span class="opt">Grilled vegetables</span></div></div>
-    <div class="dish"><div class="nm">Roast beef</div>
-      <div class="grp"><span class="lbl">Sauce</span><span class="opt">Muchroom &amp; rosemary</span><span class="opt">Coffee</span><span class="opt">Pepper</span><span class="opt">Prunes</span></div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Potato puree</span><span class="opt">Grilled vegetables</span></div></div>
-    <div class="dish"><div class="nm">Roast Turkey breasts</div><div class="fixed">with special brown sauce</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Mixed rice, almonds &amp; raisins</span><span class="opt">Basmati rice, almonds</span><span class="opt">Grilled vegetables</span></div>
-      <div class="fixed"><span class="allerg">nuts</span></div></div>
-    <div class="dish"><div class="nm">Grilled Kofta with mini Chicken Shish</div>
-      <div class="grp"><span class="lbl">Served with</span><span class="opt">Basmati rice &amp; almonds</span><span class="opt">Potato wedges</span></div>
-      <div class="fixed"><span class="allerg">nuts</span></div></div>
-    <div class="dish"><div class="nm">Sweddish Meat Balls</div><div class="fixed">served with jasmine rice</div></div>
-    <div class="dish"><div class="nm">Chicken breasts stuffed with muchroom &amp; mozzarella in creamy spiach white sauce</div><div class="fixed">No choices<span class="allerg">dairy</span></div></div>
-    <div class="dish"><div class="nm">Lemon &amp; butter Chicken</div><div class="fixed">served with basmati rice<span class="allerg">dairy</span></div></div>
-    <div class="dish"><div class="nm">Tageen Me3amr with pigeon fillet</div><div class="fixed">No choices</div></div>
-    <div class="dish"><div class="nm">Sharkasia</div><div class="fixed">served with chicken, egyptian rice &amp; walnuts<span class="allerg">nuts</span></div></div>
-    <div class="dish"><div class="nm">Heart &amp; kidneys</div><div class="fixed">served with she3ria &amp; almonds<span class="allerg">nuts</span></div></div>
-  </div>
-
-  <div class="col">
-    <h3>Side Dishes</h3>
-    <p class="catcount">22 items · printed pages 7 and 8</p>
-    <div class="dish"><div class="nm">Sambousk with different filling</div>
-      <div class="grp"><span class="lbl">Filling</span><span class="opt">Minced meat with mozzarella</span><span class="opt">White cheese with mint</span><span class="opt">…?</span></div>
-      <div class="dflag">The PDF ends with ".." — the full list of fillings is missing</div></div>
-    <div class="dish"><div class="nm">Ma7sh</div>
-      <div class="grp"><span class="lbl">Vegetable</span><span class="opt">Eggplant</span><span class="opt">Zucchini</span><span class="opt">Pepper</span><span class="opt">Onion</span><span class="opt">Potatoes</span><span class="opt">Tomatoes</span></div>
-      <div class="dflag">Pick one, pick several, or always a mixed assortment? And the list ran across two bullets in the PDF — I merged it</div></div>
-    <div class="dish"><div class="nm">Noodles</div>
-      <div class="grp"><span class="lbl">Listed separately as</span><span class="opt">with vegtables</span><span class="opt">with chicken</span><span class="opt">with shrimps</span></div>
-      <div class="dflag">One product with a choice, or three products? Depends on the prices</div></div>
-    <div class="dish"><div class="nm">Spring rolls</div>
-      <div class="grp"><span class="lbl">Listed separately as</span><span class="opt">plain</span><span class="opt">with chicken</span><span class="opt">with shrimps</span></div>
-      <div class="dflag">Same question as noodles</div></div>
-
-    <p style="margin-top:26px; color:var(--ink-2); font-size:16px">The remaining side dishes have no choices:</p>
-    <div class="plain">
-      <span>Basmati rice</span><span>Coconut rice</span><span>Cream spinach with chicken</span>
-      <span>Eggplant rolls stuffed with avocado &amp; mozzarella in pink sauce</span>
-      <span>Muchroom sauté with carmalized onions &amp; parsley</span>
-      <span>Ro2a2 with minced meat</span><span>Ro2a2 cones with minced meat, mozzarella &amp; tomatoes</span>
-      <span>Lazanya</span><span>Negresco</span><span>Vine leaves</span><span>Potato gratin</span>
-      <span>Kobaba</span><span>Mombar pops</span><span>Hawawshi</span>
-    </div>
-
-    <h3>Salads</h3>
-    <p class="catcount">8 items · printed page 9 · no choices on any of them</p>
-    <div class="plain">
-      <span>Fresh muchroom rocca salad with cherry tomatoes, apples and caramelized walnuts</span>
-      <span>Ceasar salad with avocad, apples, cappouci, grilled chicken &amp; caramelized walnuts</span>
-      <span>Eggplant salad with pomegranate, colored pepperand &amp; almonds</span>
-      <span>Blue cheese salad with cherry tomatoes, cappouci, apples &amp; caramelized walnuts</span>
-      <span>Fatoush salad</span><span>Tehini</span><span>Baba ganoush</span><span>Col slow</span>
-    </div>
-    <p style="margin-top:16px; color:var(--ink-2); font-size:16px">Four of the eight contain nuts by their own description. <em>cappouci</em> appears twice and I don't want to guess what it is.</p>
+    <div class="qhead">Event details</div>
+    <div class="q"><div class="id">E1</div><div><h4>Venues outside your delivery areas</h4><p>Do you go further for events, and at what fee?</p></div></div>
+    <div class="q"><div class="id">E2</div><div><h4>Setup or serving staff</h4><p>Offered at events? If so, it needs a place in the form.</p></div></div>
   </div>
 </section>
 
 <footer class="col">
-  <p class="sig">Answer the seven blockers and I can start building. The other nineteen can be answered while I work — none of them change the foundations.</p>
-  <p>Nothing here is settled. If I've read a dish wrong, or a rule doesn't match how you actually work, say so and I'll correct the spec before any of it becomes code.</p>
+  <p class="sig">Nothing above was invented. Where you haven't told me, the field is empty and flagged rather than filled with a guess.</p>
+  <p>If a price, a name or a rule here doesn't match what you meant, say so — it's all still just a document.</p>
 </footer>
 
 </div>
