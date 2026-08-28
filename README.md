@@ -53,16 +53,19 @@ InstaPay verification is separate from order confirmation, and payment status is
 independent of order status. Customers cannot self-cancel. English at launch,
 with an Arabic field on every name and description.
 
+## Assets
+
+The official logo (`public/brand/`) and four real photographs (`public/gallery/`)
+are in place, supplied by the business. The logo is used exactly as given —
+never recreated or redrawn — with its flat background keyed out so it sits on any
+cream. The photographs are seeded as `GalleryImage` rows with alt text, captions
+and ordering, all editable from admin. Our Work hides itself entirely when there
+are no images, so a customer never sees an empty frame.
+
 ## Deliberately absent
 
 Nothing has been invented to fill a gap.
 
-- **The logo** — never recreated, redrawn or approximated. `LOGO_SRC` in
-  `src/lib/brand.ts` is null until the real asset is supplied; until then the
-  header and footer show the name set in the brand typeface.
-- **Our Work photographs** — the section and `GalleryImage` model exist and the
-  section hides itself entirely when there are none, so no empty frames reach a
-  customer.
 - **Selling units** — no product has one. Tray sizes, weights and piece counts
   were never supplied, so the field is empty and flagged in admin.
 - **Cut-off time, InstaPay details, serving-setup policy** — settings exist with

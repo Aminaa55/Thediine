@@ -3,6 +3,7 @@ import { Fraunces, Karla } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart";
 import { SiteHeader } from "@/components/site-header";
+import { BackLink } from "@/components/back-link";
 import { SiteFooter } from "@/components/site-footer";
 
 const display = Fraunces({
@@ -35,6 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <CartProvider>
           <SiteHeader />
+          {/* One consistent back arrow, top-left, on every inner page. */}
+          <BackLink />
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </CartProvider>

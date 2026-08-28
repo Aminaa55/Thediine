@@ -94,8 +94,8 @@ export function EventExtrasForm() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <button type="button" onClick={() => router.push("/events/review")} className="btn-primary">
-            Review your request
+          <button type="button" onClick={() => router.push("/cart")} className="btn-primary">
+            Back to your request
           </button>
           <Link href="/menu" className="text-[15px] text-ink-soft underline underline-offset-4 hover:text-ink">
             Back to the menu

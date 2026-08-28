@@ -7,7 +7,7 @@ export const EVENT_STEPS = [
   { key: "details", label: "Details", href: "/events/start" },
   { key: "dishes", label: "Dishes", href: "/menu" },
   { key: "extras", label: "Extras", href: "/events/extras" },
-  { key: "review", label: "Review", href: "/events/review" },
+  { key: "review", label: "Review", href: "/cart" },
 ] as const;
 
 export type StepKey = (typeof EVENT_STEPS)[number]["key"];

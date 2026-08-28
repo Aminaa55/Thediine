@@ -69,10 +69,22 @@ export const EMPTY_EVENT: EventDraft = {
   extrasNotes: "",
 };
 
-type CartState = { lines: CartLine[]; mode: OrderMode; event: EventDraft };
+/**
+ * Normal and event lines are kept in SEPARATE lists.
+ *
+ * Starting an event can therefore never sweep up dishes that were added as a
+ * normal order — the two journeys cannot mix by construction, not merely by
+ * convention. Moving items across is an explicit, offered choice.
+ */
+type CartState = {
+  normalLines: CartLine[];
+  eventLines: CartLine[];
+  mode: OrderMode;
+  event: EventDraft;
+};
 
-const STORAGE_KEY = "thediine.cart.v2";
-const EMPTY: CartState = { lines: [], mode: "normal", event: EMPTY_EVENT };
+const STORAGE_KEY = "thediine.cart.v3";
+const EMPTY: CartState = { normalLines: [], eventLines: [], mode: "normal", event: EMPTY_EVENT };
 
 export function lineKey(
   productId: string,
@@ -84,37 +96,60 @@ export function lineKey(
 }
 
 type CartContextValue = {
+  /** The active list, decided by mode. */
   lines: CartLine[];
   mode: OrderMode;
   event: EventDraft;
   count: number;
   ready: boolean;
+  /** Dishes waiting in the OTHER journey — used to offer the customer a choice. */
+  normalCount: number;
+  eventCount: number;
   addLine: (line: Omit<CartLine, "key">) => void;
   setQuantity: (key: string, quantity: number) => void;
   removeLine: (key: string) => void;
   clear: () => void;
-  setMode: (mode: OrderMode) => void;
+  /**
+   * Enters the event journey. Never touches the normal order.
+   * `moveExistingItems` copies the normal dishes across, and is only ever
+   * called because the customer chose it.
+   */
+  startEvent: (moveExistingItems?: boolean) => void;
+  /** Leaves the event journey. Event dishes stay put, waiting. */
+  leaveEvent: () => void;
+  /** Abandons the event request entirely and discards its dishes. */
+  cancelEvent: () => void;
   updateEvent: (patch: Partial<EventDraft>) => void;
-  /** Leaves the event journey and returns to normal ordering. */
-  exitEvent: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
+
+function clean(lines: unknown): CartLine[] {
+  if (!Array.isArray(lines)) return [];
+  return (lines as CartLine[]).filter((l) => l && l.productId && l.quantity > 0);
+}
 
 function read(): CartState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY;
     const parsed = JSON.parse(raw) as Partial<CartState>;
-    if (!Array.isArray(parsed.lines)) return EMPTY;
     return {
-      lines: parsed.lines.filter((l) => l && l.productId && l.quantity > 0),
+      normalLines: clean(parsed.normalLines),
+      eventLines: clean(parsed.eventLines),
       mode: parsed.mode === "event" ? "event" : "normal",
       event: { ...EMPTY_EVENT, ...(parsed.event ?? {}) },
     };
   } catch {
     return EMPTY;
   }
+}
+
+/** Applies an update to whichever list the customer is currently building. */
+function onActive(s: CartState, fn: (lines: CartLine[]) => CartLine[]): CartState {
+  return s.mode === "event"
+    ? { ...s, eventLines: fn(s.eventLines) }
+    : { ...s, normalLines: fn(s.normalLines) };
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -137,63 +172,74 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addLine = useCallback((line: Omit<CartLine, "key">) => {
     const key = lineKey(line.productId, line.variantId, line.choiceIds, line.instructions);
-    setState((s) => {
-      const existing = s.lines.find((l) => l.key === key);
-      if (existing) {
-        return {
-          ...s,
-          lines: s.lines.map((l) =>
-            l.key === key ? { ...l, quantity: l.quantity + line.quantity } : l,
-          ),
-        };
-      }
-      return { ...s, lines: [...s.lines, { ...line, key }] };
-    });
+    setState((s) =>
+      onActive(s, (lines) => {
+        const existing = lines.find((l) => l.key === key);
+        return existing
+          ? lines.map((l) => (l.key === key ? { ...l, quantity: l.quantity + line.quantity } : l))
+          : [...lines, { ...line, key }];
+      }),
+    );
   }, []);
 
   const setQuantity = useCallback((key: string, quantity: number) => {
-    setState((s) => ({
-      ...s,
-      lines:
+    setState((s) =>
+      onActive(s, (lines) =>
         quantity <= 0
-          ? s.lines.filter((l) => l.key !== key)
-          : s.lines.map((l) => (l.key === key ? { ...l, quantity } : l)),
-    }));
+          ? lines.filter((l) => l.key !== key)
+          : lines.map((l) => (l.key === key ? { ...l, quantity } : l)),
+      ),
+    );
   }, []);
 
   const removeLine = useCallback((key: string) => {
-    setState((s) => ({ ...s, lines: s.lines.filter((l) => l.key !== key) }));
+    setState((s) => onActive(s, (lines) => lines.filter((l) => l.key !== key)));
   }, []);
 
-  const clear = useCallback(() => setState((s) => ({ ...EMPTY, mode: s.mode, event: s.event })), []);
-  const setMode = useCallback((mode: OrderMode) => setState((s) => ({ ...s, mode })), []);
-  const updateEvent = useCallback(
-    (patch: Partial<EventDraft>) =>
-      setState((s) => ({ ...s, event: { ...s.event, ...patch } })),
-    [],
-  );
-  const exitEvent = useCallback(
-    () => setState((s) => ({ ...s, mode: "normal", event: EMPTY_EVENT })),
+  const clear = useCallback(() => setState((s) => onActive(s, () => [])), []);
+
+  const startEvent = useCallback((moveExistingItems = false) => {
+    setState((s) => ({
+      ...s,
+      mode: "event",
+      eventLines: moveExistingItems ? [...s.eventLines, ...s.normalLines] : s.eventLines,
+      normalLines: moveExistingItems ? [] : s.normalLines,
+    }));
+  }, []);
+
+  const leaveEvent = useCallback(() => setState((s) => ({ ...s, mode: "normal" })), []);
+
+  const cancelEvent = useCallback(
+    () => setState((s) => ({ ...s, mode: "normal", eventLines: [], event: EMPTY_EVENT })),
     [],
   );
 
-  const value = useMemo<CartContextValue>(
-    () => ({
-      lines: state.lines,
+  const updateEvent = useCallback(
+    (patch: Partial<EventDraft>) => setState((s) => ({ ...s, event: { ...s.event, ...patch } })),
+    [],
+  );
+
+  const value = useMemo<CartContextValue>(() => {
+    const lines = state.mode === "event" ? state.eventLines : state.normalLines;
+    const total = (ls: CartLine[]) => ls.reduce((n, l) => n + l.quantity, 0);
+    return {
+      lines,
       mode: state.mode,
       event: state.event,
-      count: state.lines.reduce((n, l) => n + l.quantity, 0),
+      count: total(lines),
+      normalCount: total(state.normalLines),
+      eventCount: total(state.eventLines),
       ready,
       addLine,
       setQuantity,
       removeLine,
       clear,
-      setMode,
+      startEvent,
+      leaveEvent,
+      cancelEvent,
       updateEvent,
-      exitEvent,
-    }),
-    [state, ready, addLine, setQuantity, removeLine, clear, setMode, updateEvent, exitEvent],
-  );
+    };
+  }, [state, ready, addLine, setQuantity, removeLine, clear, startEvent, leaveEvent, cancelEvent, updateEvent]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

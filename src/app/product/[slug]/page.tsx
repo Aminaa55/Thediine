@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getProduct, displayPrice } from "@/lib/catalog";
 import { formatEGP } from "@/lib/money";
 import { ProductConfigurator } from "@/components/product-configurator";
-import { BackToCategory } from "@/components/product-nav";
 
 export const dynamic = "force-dynamic";
 
@@ -35,10 +34,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-3xl px-5 pb-16 sm:px-8">
-      <BackToCategory
-        categorySlug={product.category.slug}
-        categoryName={product.category.nameEn}
-      />
+      <div className="pt-6" />
 
       {product.imageUrl && (
         <div className="mb-10 aspect-[16/10] overflow-hidden rounded-sm border border-line">

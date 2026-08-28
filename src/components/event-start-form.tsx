@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCart, EVENT_TYPE_LABELS, type EventType } from "@/lib/cart";
 import { EventProgress, EventNotice } from "./event-steps";
 import { earliestEventDate, toDateInput, validateEvent, EVENT_GUESTS } from "@/lib/ordering";
-import { GuestInput } from "./event-details-card";
+import { GuestInput } from "./event-request-panel";
 
 /**
  * Steps one and two of the event request: the occasion, then the details.
@@ -15,7 +15,8 @@ import { GuestInput } from "./event-details-card";
  */
 export function EventStartForm() {
   const router = useRouter();
-  const { event, updateEvent, setMode } = useCart();
+  const { event, updateEvent, startEvent, leaveEvent, mode, normalCount, ready } = useCart();
+  const [choiceMade, setChoiceMade] = useState(mode === "event");
   const [step, setStep] = useState<"type" | "details">("type");
   const [touched, setTouched] = useState(false);
 
@@ -23,7 +24,7 @@ export function EventStartForm() {
 
   function chooseType(t: EventType) {
     updateEvent({ eventType: t });
-    setMode("event");
+    startEvent(); // never touches the normal order
     if (t !== "OTHER") setStep("details");
   }
 
@@ -34,8 +35,64 @@ export function EventStartForm() {
   function toDishes() {
     setTouched(true);
     if (!detailsValid) return;
-    setMode("event");
+    startEvent();
     router.push("/menu");
+  }
+
+  // A normal order already in progress is never silently swallowed by an event.
+  if (ready && !choiceMade && mode !== "event" && normalCount > 0) {
+    return (
+      <div className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-20">
+        <p className="eyebrow">Before we start</p>
+        <h1 className="mt-3 font-display text-[30px] font-semibold leading-tight text-ink sm:text-[38px]">
+          You already have a regular order
+        </h1>
+        <p className="mt-5 text-[17px] leading-relaxed text-ink-soft">
+          There {normalCount === 1 ? "is" : "are"} {normalCount}{" "}
+          {normalCount === 1 ? "dish" : "dishes"} in your regular order. An event request
+          is a separate thing — what would you like to do?
+        </p>
+
+        <div className="mt-10 grid gap-3">
+          <button
+            type="button"
+            onClick={() => { startEvent(false); setChoiceMade(true); }}
+            className="rounded-sm border border-line bg-cream-warm px-6 py-6 text-start transition-colors hover:border-gold"
+          >
+            <span className="hair" aria-hidden="true" />
+            <span className="mt-4 block font-display text-[20px] text-ink">
+              Start a fresh event request
+            </span>
+            <span className="mt-2 block text-[15px] text-ink-soft">
+              Your regular order stays exactly as it is, waiting for you.
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { startEvent(true); setChoiceMade(true); }}
+            className="rounded-sm border border-line bg-cream-warm px-6 py-6 text-start transition-colors hover:border-gold"
+          >
+            <span className="hair" aria-hidden="true" />
+            <span className="mt-4 block font-display text-[20px] text-ink">
+              Move those dishes into the event
+            </span>
+            <span className="mt-2 block text-[15px] text-ink-soft">
+              Your regular order is emptied and those {normalCount === 1 ? "dish becomes" : "dishes become"}{" "}
+              part of the event request.
+            </span>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => { leaveEvent(); router.push("/cart"); }}
+          className="mt-8 text-[14.5px] text-ink-faint underline underline-offset-4 hover:text-ink"
+        >
+          Never mind, take me back to my order
+        </button>
+      </div>
+    );
   }
 
   return (

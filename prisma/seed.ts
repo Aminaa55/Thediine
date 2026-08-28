@@ -9,6 +9,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { ALLERGENS, CATALOGUE } from "./catalogue";
+import { GALLERY } from "./gallery-seed";
 import { poundsToPiastres } from "../src/lib/money";
 
 const prisma = new PrismaClient();
@@ -72,6 +73,21 @@ async function main() {
     });
   }
   console.log(`  settings         ${Object.keys(SETTINGS).length}`);
+
+  // --- gallery -------------------------------------------------------------
+  // Real photographs supplied by the business. Ordering, captions and
+  // placement are all editable from admin.
+  for (const [i, g] of GALLERY.entries()) {
+    await prisma.galleryImage.upsert({
+      where: { id: g.id },
+      update: { imageUrl: g.imageUrl, altEn: g.alt, captionEn: g.caption, sortOrder: i },
+      create: {
+        id: g.id, imageUrl: g.imageUrl, altEn: g.alt, captionEn: g.caption,
+        placement: "BOTH", sortOrder: i,
+      },
+    });
+  }
+  console.log(`  gallery images   ${GALLERY.length}`);
 
   // --- catalogue -----------------------------------------------------------
   const allergenIds = new Map(

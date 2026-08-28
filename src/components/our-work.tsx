@@ -54,17 +54,14 @@ export function OurWork({
           )}
         </div>
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-          <Figure item={lead} ratio="aspect-[4/5]" />
+        {/* Lead image tall on the left, a matching block beside it, so the
+            collage locks together instead of leaving a ragged gap. */}
+        <div className="mt-12 grid gap-4 lg:grid-cols-[1.12fr_1fr] lg:items-stretch">
+          <Figure item={lead} ratio="aspect-[4/5] lg:aspect-auto lg:min-h-[34rem]" />
           {rest.length > 0 && (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {rest.slice(0, 4).map((item, i) => (
-                <Figure
-                  key={item.id}
-                  item={item}
-                  ratio={i === 0 ? "aspect-[4/3]" : i === 3 ? "aspect-[4/3]" : "aspect-square"}
-                  className={i === 1 ? "sm:mt-8" : i === 3 ? "sm:-mt-8" : ""}
-                />
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:auto-rows-fr">
+              {rest.slice(0, 4).map((item) => (
+                <Figure key={item.id} item={item} ratio="aspect-[4/3] lg:aspect-auto" />
               ))}
             </div>
           )}

@@ -12,7 +12,7 @@
  * To switch it on: put the file in `public/brand/` and set this to its path,
  * e.g. "/brand/the-diine-logo.svg".
  */
-export const LOGO_SRC: string | null = null;
+export const LOGO_SRC: string | null = "/brand/the-diine-logo.png";
 
 export const BRAND = {
   name: "The Diine",

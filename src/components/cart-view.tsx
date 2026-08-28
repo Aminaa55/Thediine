@@ -6,7 +6,7 @@ import { useCart } from "@/lib/cart";
 import { resolveCart, type ResolvedCart } from "@/app/actions";
 import { formatEGP } from "@/lib/money";
 import { RULES } from "@/lib/ordering";
-import { EventDetailsCard } from "./event-details-card";
+import { EventRequestPanel } from "./event-request-panel";
 
 export function CartView() {
   const { lines, ready, mode, setQuantity, removeLine } = useCart();
@@ -25,19 +25,28 @@ export function CartView() {
 
   const isEvent = mode === "event";
 
+  if (isEvent) {
+    return (
+      <div className="grid gap-10 lg:grid-cols-[1.7fr_1fr] lg:gap-14 lg:items-start">
+        <EventRequestPanel
+          cart={resolved ?? { lines: [], subtotal: 0 }}
+          pending={pending}
+          onQuantity={setQuantity}
+          onRemove={removeLine}
+        />
+        <EventSummary subtotal={resolved?.subtotal ?? 0} hasLines={lines.length > 0} />
+      </div>
+    );
+  }
+
   if (lines.length === 0) {
     return (
-      <div className="mx-auto max-w-2xl">
-        {isEvent && <EventDetailsCard />}
-        <div className="py-16 text-center">
-          <p className="font-display text-[24px] text-ink">
-            {isEvent ? "No dishes chosen yet" : "Nothing here yet"}
-          </p>
-          <p className="mx-auto mt-3 max-w-sm text-[16px] text-ink-soft">
-            Browse the menu and add the dishes you would like.
-          </p>
-          <Link href="/menu" className="btn-primary mt-8">Browse the menu</Link>
-        </div>
+      <div className="py-16 text-center">
+        <p className="font-display text-[24px] text-ink">Nothing here yet</p>
+        <p className="mx-auto mt-3 max-w-sm text-[16px] text-ink-soft">
+          Browse the menu and add the dishes you would like.
+        </p>
+        <Link href="/menu" className="btn-primary mt-8">Browse the menu</Link>
       </div>
     );
   }
@@ -48,18 +57,6 @@ export function CartView() {
   return (
     <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
       <div>
-        {isEvent && (
-          <div className="mb-10">
-            <EventDetailsCard />
-          </div>
-        )}
-
-        {isEvent && (
-          <h2 className="mb-5 font-display text-[22px] font-semibold text-ink">
-            Dishes for your event
-          </h2>
-        )}
-
         <ul className={pending ? "opacity-60 transition-opacity" : "transition-opacity"}>
         {cart.lines.map((line) => (
           <li key={line.key} className="border-b border-line py-6 first:pt-0">
@@ -147,21 +144,17 @@ export function CartView() {
 
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-sm border border-line bg-cream-warm p-6">
-          <h2 className="font-display text-[21px] font-semibold text-ink">
-            {isEvent ? "Your event so far" : "Order summary"}
-          </h2>
+          <h2 className="font-display text-[21px] font-semibold text-ink">Order summary</h2>
 
           <dl className="mt-6 space-y-3 text-[15.5px]">
             <div className="flex items-baseline justify-between gap-4">
               <dt className="text-ink-soft">Food subtotal</dt>
               <dd className="font-medium tabular-nums">{formatEGP(cart.subtotal)}</dd>
             </div>
-            {!isEvent && (
-              <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-ink-soft">Delivery</dt>
-                <dd className="text-[14.5px] text-ink-faint">Calculated at checkout</dd>
-              </div>
-            )}
+            <div className="flex items-baseline justify-between gap-4">
+              <dt className="text-ink-soft">Delivery</dt>
+              <dd className="text-[14.5px] text-ink-faint">Calculated at checkout</dd>
+            </div>
           </dl>
 
           <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-5">
@@ -177,25 +170,12 @@ export function CartView() {
             </p>
           )}
 
-          {isEvent ? (
-            <>
-              <Link href="/events/extras" className="btn-primary mt-6 w-full">
-                Continue to event extras
-              </Link>
-              <p className="mt-3 text-center text-[13.5px] text-ink-faint">
-                Table décor, setup and serving staff come next.
-              </p>
-            </>
-          ) : (
-            <>
-              <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
-                Continue to checkout
-              </button>
-              <p className="mt-3 text-center text-[13.5px] text-ink-faint">
-                Delivery or pickup, your date and payment come next.
-              </p>
-            </>
-          )}
+          <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
+            Continue to checkout
+          </button>
+          <p className="mt-3 text-center text-[13.5px] text-ink-faint">
+            Delivery or pickup, your date and payment come next.
+          </p>
 
           <Link href="/menu" className="mt-5 block text-center text-[14.5px] text-gold underline underline-offset-4">
             Keep browsing the menu
@@ -205,21 +185,57 @@ export function CartView() {
         {/* Notice periods appear here, in context — never both at once, and
             never on the homepage. */}
         <div className="mt-5 rounded-sm border border-line bg-cream-deep px-5 py-4">
-          {isEvent ? (
-            <p className="text-[14px] leading-relaxed text-ink-soft">
-              Events need at least{" "}
-              <strong className="font-semibold text-ink">{RULES.event.noticeLabel}&rsquo; notice</strong>.
-              Your request is confirmed by us personally before it is booked.
-            </p>
-          ) : (
-            <p className="text-[14px] leading-relaxed text-ink-soft">
-              Orders need at least{" "}
-              <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>.
-              You will choose your date at checkout, and only available dates can be picked.
-            </p>
-          )}
+          <p className="text-[14px] leading-relaxed text-ink-soft">
+            Orders need at least{" "}
+            <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>.
+            You will choose your date at checkout, and only available dates can be picked.
+          </p>
         </div>
       </aside>
     </div>
+  );
+}
+
+/** The event's running total, alongside the request itself. */
+function EventSummary({ subtotal, hasLines }: { subtotal: number; hasLines: boolean }) {
+  return (
+    <aside className="lg:sticky lg:top-28">
+      <div className="rounded-sm border border-line bg-cream-warm p-6">
+        <h2 className="font-display text-[21px] font-semibold text-ink">Your event so far</h2>
+        <dl className="mt-6 space-y-3 text-[15.5px]">
+          <div className="flex items-baseline justify-between gap-4">
+            <dt className="text-ink-soft">Food subtotal</dt>
+            <dd className="font-medium tabular-nums">{formatEGP(subtotal)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-4">
+            <dt className="text-ink-soft">Extras</dt>
+            <dd className="text-[14.5px] text-ink-faint">Quoted separately</dd>
+          </div>
+        </dl>
+        <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-5">
+          <span className="font-display text-[19px] font-semibold text-ink">Total so far</span>
+          <span className="font-display text-[21px] font-semibold tabular-nums text-ink">
+            {formatEGP(subtotal)}
+          </span>
+        </div>
+
+        <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
+          Send event request
+        </button>
+        <p className="mt-3 text-center text-[13.5px] text-ink-faint">
+          {hasLines
+            ? "Your contact details and how you would like to pay come next."
+            : "Add some dishes to your event first."}
+        </p>
+      </div>
+
+      <div className="mt-5 rounded-sm border border-line bg-cream-deep px-5 py-4">
+        <p className="text-[14px] leading-relaxed text-ink-soft">
+          Events need at least{" "}
+          <strong className="font-semibold text-ink">{RULES.event.noticeLabel}&rsquo; notice</strong>.
+          Your request is confirmed by us personally before it is booked.
+        </p>
+      </div>
+    </aside>
   );
 }
