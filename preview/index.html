@@ -1,0 +1,737 @@
+<title>The Diine Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap">
+
+<style>
+/* The Diine brand system &mdash; cream grounds, brown ink, gold accents, from the logo.
+   Deliberately single-theme: this mirrors a real brand with a fixed palette,
+   so every colour is painted explicitly rather than inherited. */
+:root{
+  --cream:#FBF1E4; --cream-deep:#F5E7D4; --cream-warm:#FFFAF3;
+  --ink:#3B2310; --ink-soft:#6E523A; --ink-faint:#9A7E62;
+  --gold:#A87E2E; --gold-pale:#EFE2BE;
+  --line:#E7D5BE; --line-soft:#F0E3D1;
+  --flag:#A6391C;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--cream); color:var(--ink);
+  font-family:Karla,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:Fraunces,Georgia,serif; margin:0; text-wrap:balance}
+p{margin:0}
+a{color:inherit; text-decoration:none}
+button{font:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.wrap{max-width:1180px; margin:0 auto; padding:0 20px}
+@media(min-width:640px){.wrap{padding:0 32px}}
+.eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--gold)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* header */
+header.site{position:sticky; top:0; z-index:40; background:rgba(251,241,228,.93);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
+header.site .wrap{display:flex; align-items:center; gap:16px; height:64px}
+@media(min-width:640px){header.site .wrap{height:80px; gap:24px}}
+.brand{display:flex; align-items:center; gap:10px}
+.brand .mark{font-family:Fraunces,Georgia,serif; font-weight:600; text-transform:uppercase;
+  letter-spacing:.2em; font-size:15px; white-space:nowrap}
+@media(min-width:640px){.brand .mark{font-size:17px}}
+.preview-chip{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
+  border:1px solid var(--line); border-radius:999px; padding:2px 8px; white-space:nowrap}
+nav.main{display:none; gap:30px; margin-left:24px}
+@media(min-width:900px){nav.main{display:flex}}
+nav.main a{font-size:15px; color:var(--ink-soft)}
+nav.main a:hover{color:var(--ink)}
+.head-right{margin-left:auto; display:flex; align-items:center; gap:12px}
+.cart-btn{display:flex; align-items:center; gap:8px; border:1px solid rgba(59,35,16,.2);
+  border-radius:999px; padding:8px 15px; font-size:14px}
+.cart-btn:hover{border-color:rgba(59,35,16,.5)}
+.burger{display:block; background:none; border:0; padding:8px; margin-left:-8px; color:var(--ink)}
+@media(min-width:900px){.burger{display:none}}
+.mobile-nav{display:none; border-top:1px solid var(--line-soft); background:var(--cream-warm); padding:4px 20px}
+.mobile-nav.open{display:block}
+@media(min-width:900px){.mobile-nav.open{display:none}}
+.mobile-nav a{display:block; padding:13px 0; border-bottom:1px solid var(--line-soft)}
+.mobile-nav a:last-child{border-bottom:0}
+
+/* buttons */
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border-radius:999px; padding:14px 28px; font-size:15px; font-weight:500; border:1px solid transparent;
+  transition:background-color .2s, border-color .2s}
+.btn-primary{background:var(--ink); color:var(--cream)}
+.btn-primary:hover{background:#2d1a0c}
+.btn-primary[disabled]{background:rgba(59,35,16,.25); cursor:not-allowed}
+.btn-outline{border-color:rgba(59,35,16,.25); color:var(--ink)}
+.btn-outline:hover{border-color:rgba(59,35,16,.6); background:rgba(59,35,16,.04)}
+.btn-gold{background:var(--gold); color:#fff}
+.btn-gold:hover{background:#96701f}
+
+/* hero */
+.hero{position:relative; border-bottom:1px solid var(--line); overflow:hidden;
+  background:radial-gradient(120% 90% at 15% 0%, #FFF8EE 0%, #FBF1E4 45%, #F3E5D0 100%)}
+.hero .wrap{display:grid; gap:48px; padding-top:72px; padding-bottom:72px; align-items:center}
+@media(min-width:1024px){.hero .wrap{grid-template-columns:1.05fr 1fr; gap:72px; padding-top:120px; padding-bottom:120px}}
+.hero h1{font-size:42px; font-weight:600; line-height:1.05; letter-spacing:-.02em; margin-top:26px}
+@media(min-width:640px){.hero h1{font-size:56px}}
+@media(min-width:1024px){.hero h1{font-size:66px}}
+.hero .lede{margin-top:26px; font-size:17px; color:var(--ink-soft); max-width:33rem}
+@media(min-width:640px){.hero .lede{font-size:19px}}
+.hero .ctas{margin-top:38px; display:flex; flex-direction:column; gap:12px}
+@media(min-width:640px){.hero .ctas{flex-direction:row; gap:16px}}
+.hero .note{margin-top:26px; font-size:14px; color:var(--ink-faint)}
+.eyebrow-row{display:flex; align-items:center; gap:12px}
+.eyebrow-row .rule{height:1px; width:48px; background:rgba(168,126,46,.4)}
+.hero-panel{display:none}
+@media(min-width:1024px){.hero-panel{display:block}}
+.hero-panel .inner{position:relative; aspect-ratio:4/5; border:1px solid var(--line); border-radius:2px;
+  background:linear-gradient(155deg,#F7E7CE 0%,#E6CDA2 100%); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:24px; padding:0 40px; text-align:center}
+.hero-panel p{font-family:Fraunces,Georgia,serif; font-size:24px; line-height:1.35; color:rgba(59,35,16,.6)}
+
+/* sections */
+section{padding:72px 0}
+@media(min-width:640px){section{padding:88px 0}}
+.band{background:var(--cream-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+h2.sec{font-size:30px; font-weight:600; line-height:1.15; margin-top:12px}
+@media(min-width:640px){h2.sec{font-size:38px}}
+.sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px}
+.link-gold{color:var(--gold); font-size:15px}
+.link-gold:hover{text-decoration:underline}
+
+/* grids */
+.grid{display:grid; gap:20px; margin-top:40px}
+@media(min-width:640px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+.grid-4{display:grid; gap:16px; margin-top:40px}
+@media(min-width:640px){.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid-4{grid-template-columns:repeat(4,1fr)}}
+
+/* product card */
+.card{display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--line);
+  border-radius:2px; background:var(--cream-warm); transition:border-color .2s}
+.card:hover{border-color:rgba(168,126,46,.6)}
+.card .ph{aspect-ratio:4/3; position:relative; overflow:hidden}
+.card .body{padding:20px; display:flex; flex-direction:column; flex:1}
+.card h3{font-size:19px; font-weight:600; line-height:1.3}
+.card .desc{margin-top:8px; font-size:14.5px; color:var(--ink-soft);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.card .allerg{margin-top:12px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint)}
+.card .price{margin-top:auto; padding-top:20px; display:flex; align-items:baseline; gap:8px}
+.card .price .amt{font-family:Fraunces,Georgia,serif; font-size:19px; font-weight:600}
+.card .price .from{font-size:13px; color:var(--ink-faint)}
+
+/* placeholder art */
+.ph-art{position:absolute; inset:0; display:flex; align-items:center; justify-content:center}
+.ph-art svg{position:absolute; inset:0; width:100%; height:100%}
+.ph-art span{position:relative; font-family:Fraunces,Georgia,serif; font-size:48px; font-weight:600; color:rgba(59,35,16,.25)}
+
+/* category chips */
+.chips{position:sticky; top:64px; z-index:30; background:rgba(251,241,228,.96);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
+@media(min-width:640px){.chips{top:80px}}
+.chips .row{display:flex; gap:8px; overflow-x:auto; padding:12px 0; scrollbar-width:none}
+.chips .row::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap; border:1px solid var(--line); background:var(--cream-warm); color:var(--ink-soft);
+  border-radius:999px; padding:8px 20px; font-size:14.5px; transition:border-color .2s}
+.chip:hover{border-color:rgba(59,35,16,.4)}
+.chip.active{background:var(--ink); border-color:var(--ink); color:var(--cream)}
+
+/* product page */
+.pd{display:grid; gap:40px; padding:40px 0}
+@media(min-width:1024px){.pd{grid-template-columns:1fr 1fr; gap:64px; padding:56px 0}}
+.pd .art{position:relative; aspect-ratio:4/3; border:1px solid var(--line); border-radius:2px; overflow:hidden}
+.pd h1{font-size:32px; font-weight:600; line-height:1.15}
+@media(min-width:640px){.pd h1{font-size:40px}}
+.pd .price{margin-top:20px; font-family:Fraunces,Georgia,serif; font-size:26px; font-weight:600}
+.pd .desc{margin-top:24px; font-size:17px; color:var(--ink-soft)}
+.crumb{font-size:14px; color:var(--ink-faint); padding-top:32px}
+.crumb a:hover{color:var(--ink)}
+.allergen-box{margin-top:28px; border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:16px 20px}
+fieldset{border:0; margin:0 0 32px; padding:0}
+legend{padding:0; margin-bottom:12px}
+legend .req{text-transform:none; letter-spacing:normal; color:var(--ink-faint); margin-left:8px; font-size:13px}
+.opt-list{display:flex; flex-direction:column; gap:8px}
+.opt{display:flex; align-items:center; gap:12px; border:1px solid var(--line); background:var(--cream-warm);
+  border-radius:2px; padding:12px 16px; font-size:15px; cursor:pointer; transition:border-color .2s, background-color .2s; text-align:left; width:100%}
+.opt:hover{border-color:rgba(59,35,16,.3)}
+.opt.on{border-color:var(--gold); background:rgba(168,126,46,.07)}
+.dot{flex:none; width:16px; height:16px; border-radius:999px; border:1px solid rgba(59,35,16,.3);
+  display:flex; align-items:center; justify-content:center}
+.opt.on .dot{border-color:var(--gold)}
+.opt.on .dot::after{content:""; width:8px; height:8px; border-radius:999px; background:var(--gold)}
+.opt .vprice{margin-left:auto; font-size:14px; color:var(--ink-soft)}
+.pills{display:flex; flex-wrap:wrap; gap:10px}
+.pill-opt{border:1px solid var(--line); background:var(--cream-warm); color:var(--ink-soft);
+  border-radius:999px; padding:10px 20px; font-size:14.5px; transition:border-color .2s}
+.pill-opt:hover{border-color:rgba(59,35,16,.4)}
+.pill-opt.on{background:var(--ink); border-color:var(--ink); color:var(--cream)}
+.pill-opt .p{margin-left:8px; opacity:.7}
+textarea{width:100%; border:1px solid var(--line); background:var(--cream-warm); border-radius:2px;
+  padding:12px 16px; font:inherit; font-size:15px; color:var(--ink); resize:vertical}
+textarea::placeholder{color:var(--ink-faint)}
+textarea:focus{outline:none; border-color:var(--gold)}
+.qty{display:flex; align-items:center; border:1px solid var(--line); background:var(--cream-warm); border-radius:999px}
+.qty button{background:none; border:0; padding:12px 16px; color:var(--ink-soft); font-size:16px}
+.qty button[disabled]{opacity:.3; cursor:not-allowed}
+.qty .n{min-width:40px; text-align:center; font-size:16px}
+.add-row{display:flex; flex-wrap:wrap; align-items:center; gap:16px}
+.add-row .btn{flex:1}
+.hint{margin-top:16px; font-size:14px; color:var(--ink-soft)}
+
+/* cart */
+.cart-grid{display:grid; gap:48px; padding:48px 0}
+@media(min-width:1024px){.cart-grid{grid-template-columns:1.6fr 1fr; gap:64px}}
+.cart-line{border-bottom:1px solid var(--line); padding:24px 0}
+.cart-line:first-child{padding-top:0}
+.cart-line .top{display:flex; justify-content:space-between; gap:20px; align-items:flex-start}
+.cart-line h2{font-size:19px; font-weight:600; line-height:1.3}
+.cart-line .opts{margin-top:8px}
+.cart-line .opts li{font-size:14.5px; color:var(--ink-soft); list-style:none}
+.cart-line .opts .g{color:var(--ink-faint)}
+.cart-line ul{margin:0; padding:0}
+.cart-line .instr{margin-top:8px; border-left:2px solid var(--line); padding-left:12px; font-size:14px; font-style:italic; color:var(--ink-soft)}
+.cart-line .lt{font-family:Fraunces,Georgia,serif; font-size:18px; font-weight:600; white-space:nowrap}
+.cart-line .ctrls{margin-top:16px; display:flex; align-items:center; gap:16px}
+.rm{background:none; border:0; padding:0; font-size:14px; color:var(--ink-faint); text-decoration:underline; text-underline-offset:4px}
+.rm:hover{color:var(--ink)}
+.each{margin-left:auto; font-size:13.5px; color:var(--ink-faint)}
+.summary{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:24px}
+@media(min-width:1024px){.summary-wrap{position:sticky; top:110px}}
+.summary h2{font-size:21px; font-weight:600}
+.summary .row{display:flex; justify-content:space-between; gap:16px; align-items:baseline; font-size:15.5px; margin-top:12px}
+.summary .row .muted{color:var(--ink-soft)}
+.summary .total{display:flex; justify-content:space-between; gap:16px; align-items:baseline;
+  border-top:1px solid var(--line); margin-top:20px; padding-top:20px}
+.summary .total span:first-child{font-family:Fraunces,Georgia,serif; font-size:19px; font-weight:600}
+.summary .total span:last-child{font-family:Fraunces,Georgia,serif; font-size:21px; font-weight:600}
+.empty{padding:80px 0; text-align:center}
+.empty p:first-child{font-family:Fraunces,Georgia,serif; font-size:24px}
+
+/* events */
+.two-col{display:grid; gap:48px}
+@media(min-width:1024px){.two-col{grid-template-columns:1fr 1.1fr; gap:72px}}
+.occasion{display:flex; align-items:center; gap:16px; border-bottom:1px solid var(--line); padding-bottom:16px}
+.occasion:last-child{border-bottom:0}
+.occasion span{font-family:Fraunces,Georgia,serif; font-size:21px}
+.step{display:flex; gap:20px}
+.step .n{font-family:Fraunces,Georgia,serif; font-size:15px; font-weight:600; color:var(--gold)}
+.step h3{font-size:20px; font-weight:600}
+.step p{margin-top:8px; font-size:15.5px; color:var(--ink-soft)}
+.steps{display:flex; flex-direction:column; gap:32px; margin-top:24px}
+ol.how{list-style:none; margin:48px 0 0; padding:0; display:grid; gap:40px}
+@media(min-width:640px){ol.how{grid-template-columns:repeat(3,1fr); gap:32px}}
+ol.how .n{font-family:Fraunces,Georgia,serif; font-size:15px; font-weight:600; color:var(--gold)}
+ol.how .bar{height:1px; background:var(--line); margin-top:12px}
+ol.how h3{margin-top:20px; font-size:21px; font-weight:600}
+ol.how p{margin-top:10px; font-size:15.5px; color:var(--ink-soft)}
+.cat-link{display:flex; align-items:center; justify-content:space-between; gap:16px;
+  border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:28px 24px; transition:border-color .2s}
+.cat-link:hover{border-color:rgba(168,126,46,.6)}
+.cat-link h3{font-family:Fraunces,Georgia,serif; font-size:21px; font-weight:600}
+.cat-link .c{margin-top:4px; font-size:13.5px; color:var(--ink-faint)}
+
+/* footer */
+footer.site{margin-top:96px; border-top:1px solid var(--line); background:var(--cream-deep)}
+footer.site .cols{display:grid; gap:48px; padding:64px 0}
+@media(min-width:640px){footer.site .cols{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){footer.site .cols{grid-template-columns:2fr 1fr 1fr}}
+footer.site .tag{margin-top:20px; font-family:Fraunces,Georgia,serif; font-size:20px; line-height:1.35;
+  color:var(--ink-soft); max-width:20rem}
+footer.site ul{list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:10px}
+footer.site ul a{font-size:15px; color:var(--ink-soft)}
+footer.site ul a:hover{color:var(--ink)}
+footer.site .base{border-top:1px solid var(--line); padding:28px 0 64px; font-size:13px; color:var(--ink-faint);
+  display:flex; flex-direction:column; gap:8px}
+@media(min-width:640px){footer.site .base{flex-direction:row; justify-content:space-between; align-items:center}}
+.section-title{display:flex; align-items:baseline; gap:16px; padding-top:64px}
+.section-title h2{font-family:Fraunces,Georgia,serif; font-size:27px; font-weight:600}
+@media(min-width:640px){.section-title h2{font-size:33px}}
+.section-title .n{font-size:13.5px; color:var(--ink-faint)}
+.bar-line{height:1px; background:var(--line); margin-top:12px}
+.sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+</style>
+
+<header class="site">
+  <div class="wrap">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
+        <path d="M0 1h20M0 7h20M0 13h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <a class="brand" href="#/">
+      <svg width="32" height="32" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--gold)">
+        <circle cx="24" cy="24" r="22.5" stroke="currentColor" stroke-opacity=".45"/>
+        <circle cx="24" cy="24" r="19" stroke="currentColor" stroke-opacity=".2"/>
+        <ellipse cx="30.5" cy="20" rx="5.5" ry="3.6" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M25 20H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M14 27h18M17 27v-3.2M20 27v-3.2M23 27v-3.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span class="mark">The Diine</span>
+    </a>
+    <span class="preview-chip">Preview</span>
+    <nav class="main">
+      <a href="#/menu">Menu</a>
+      <a href="#/events">Events</a>
+    </nav>
+    <div class="head-right">
+      <a class="cart-btn" href="#/cart">
+        <svg width="15" height="16" viewBox="0 0 15 16" fill="none" aria-hidden="true">
+          <path d="M1 4.5h13l-1.1 9.2a1 1 0 01-1 .8H3.1a1 1 0 01-1-.8L1 4.5zM5 4.5V3a2.5 2.5 0 015 0v1.5"
+                stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        <span class="tnum" id="cart-count">0</span>
+        <span class="sr">items in cart</span>
+      </a>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="#/menu">Menu</a>
+    <a href="#/events">Events</a>
+    <a href="#/cart">Cart</a>
+  </nav>
+</header>
+
+<main id="app"></main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="brand">
+          <svg width="34" height="34" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--gold)">
+            <circle cx="24" cy="24" r="22.5" stroke="currentColor" stroke-opacity=".45"/>
+            <circle cx="24" cy="24" r="19" stroke="currentColor" stroke-opacity=".2"/>
+            <ellipse cx="30.5" cy="20" rx="5.5" ry="3.6" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M25 20H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M14 27h18M17 27v-3.2M20 27v-3.2M23 27v-3.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <span class="mark">The Diine</span>
+        </div>
+        <p class="tag">Food made with passion, for the people you gather.</p>
+      </div>
+      <div>
+        <h3 class="eyebrow">Menu</h3>
+        <ul id="footer-cats"></ul>
+      </div>
+      <div>
+        <h3 class="eyebrow">Order</h3>
+        <ul>
+          <li><a href="#/menu">Order from The Diine</a></li>
+          <li><a href="#/events">Plan an event</a></li>
+          <li><a href="https://www.instagram.com/thediine/" target="_blank" rel="noreferrer">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="base">
+      <p>&copy; 2026 The Diine. Cairo, Egypt.</p>
+      <p>Orders are confirmed by WhatsApp before they are prepared.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DATA = {"allergens":[{"slug":"nuts","name":"Nuts"},{"slug":"seafood","name":"Seafood / shellfish"},{"slug":"fish","name":"Fish"},{"slug":"dairy","name":"Dairy"},{"slug":"gluten","name":"Gluten"},{"slug":"egg","name":"Egg"},{"slug":"sesame","name":"Sesame"},{"slug":"soy","name":"Soy"}],"categories":[{"slug":"main-courses","name":"Main Courses","products":[{"slug":"stuffed-pigeons","name":"Stuffed Pigeons","description":null,"price":1250,"variants":null,"options":[{"name":"Stuffing","choices":["Freek, raisins & nuts","Rice, raisins & nuts"]}],"allergens":["nuts"]},{"slug":"stuffed-chicken-lesan-asfour","name":"Stuffed Chicken with Lesan Asfour","description":null,"price":1400,"variants":null,"options":null,"allergens":[]},{"slug":"egyptian-fattah-moza","name":"Egyptian Fattah with Moza","description":null,"price":1850,"variants":null,"options":null,"allergens":[]},{"slug":"lebanese-fattah-chicken","name":"Lebanese Fattah with Chicken","description":"With chicken and yogurt, served with basmati rice, almonds & fried Lebanese bread.","price":1350,"variants":null,"options":null,"allergens":["nuts","dairy","gluten"]},{"slug":"sweet-sour-shrimps","name":"Sweet & Sour Shrimps","description":null,"price":1650,"variants":null,"options":[{"name":"Served with","choices":["Basmati rice","Noodles with vegetables"]}],"allergens":["seafood"]},{"slug":"sweet-sour-chicken","name":"Sweet & Sour Chicken","description":null,"price":1300,"variants":null,"options":[{"name":"Served with","choices":["Basmati rice","Noodles with vegetables"]}],"allergens":[]},{"slug":"roast-fakhda","name":"Roast Fakhda","description":null,"price":3750,"variants":null,"options":[{"name":"Served with","choices":["Mixed rice, almonds & raisins","Basmati rice, almonds & raisins","Grilled vegetables"]}],"allergens":["nuts"]},{"slug":"roast-turkey","name":"Roast Turkey","description":null,"price":4500,"variants":null,"options":[{"name":"Served with","choices":["Mixed rice, almonds & raisins","Basmati rice, almonds & raisins","Grilled vegetables"]}],"allergens":["nuts"]},{"slug":"roast-salmon-side","name":"Roast Salmon Side","description":null,"price":2700,"variants":null,"options":[{"name":"Served with","choices":["Mixed rice, almonds & cranberries","Coconut basmati rice","Grilled vegetables","Creamy spinach"]}],"allergens":["fish","nuts"]},{"slug":"grilled-shrimps","name":"Grilled Shrimps","description":null,"price":2400,"variants":null,"options":[{"name":"Served with","choices":["Noodles","Basmati rice, almonds","Grilled vegetables"]}],"allergens":["seafood","nuts"]},{"slug":"duck-shanks","name":"Duck Shanks","description":null,"price":2100,"variants":null,"options":[{"name":"Served with","choices":["Freek & vegetables, almonds","Sha'reya, almonds & cranberries"]}],"allergens":["nuts"]},{"slug":"filet-meat","name":"Filet Meat","description":null,"price":2400,"variants":null,"options":[{"name":"Sauce","choices":["Mushroom & rosemary sauce","Coffee sauce","Pepper sauce","Prunes sauce"]},{"name":"Served with","choices":["Potato pur\u00e9e","Grilled vegetables"]}],"allergens":[]},{"slug":"roast-beef","name":"Roast Beef","description":null,"price":2300,"variants":null,"options":[{"name":"Sauce","choices":["Mushroom & rosemary sauce","Coffee sauce","Pepper sauce","Prunes sauce"]},{"name":"Served with","choices":["Potato pur\u00e9e","Grilled vegetables"]}],"allergens":[]},{"slug":"roast-turkey-breasts","name":"Roast Turkey Breasts","description":"With special brown sauce.","price":2000,"variants":null,"options":[{"name":"Served with","choices":["Mixed rice, almonds & raisins","Basmati rice, almonds","Grilled vegetables"]}],"allergens":["nuts"]},{"slug":"grilled-kofta-mini-chicken-shish","name":"Grilled Kofta with Mini Chicken Shish","description":null,"price":1750,"variants":null,"options":[{"name":"Served with","choices":["Basmati rice & almonds","Potato wedges"]}],"allergens":["nuts"]},{"slug":"swedish-meatballs","name":"Swedish Meatballs","description":"Served with jasmine rice.","price":1450,"variants":null,"options":null,"allergens":[]},{"slug":"chicken-breast-mushroom-mozzarella","name":"Chicken Breast stuffed with Mushroom & Mozzarella in Creamy Spinach White Sauce","description":null,"price":1500,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"lemon-butter-chicken","name":"Lemon & Butter Chicken","description":"Served with basmati rice.","price":1350,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"tagine-meammar-pigeon-fillet","name":"Tagine Meammar with Pigeon Fillet","description":null,"price":1500,"variants":null,"options":null,"allergens":[]},{"slug":"sharkasia","name":"Sharkasia","description":"Served with chicken, Egyptian rice & walnuts.","price":1500,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"heart-kidneys-shareya","name":"Heart & Kidneys with Sha'reya","description":"Served with sha'reya & almonds.","price":1300,"variants":null,"options":null,"allergens":["nuts"]}]},{"slug":"side-dishes","name":"Side Dishes","products":[{"slug":"sambousek-minced-meat-mozzarella","name":"Sambousek with Minced Meat & Mozzarella","description":null,"price":750,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"sambousek-white-cheese-mint","name":"Sambousek with White Cheese & Mint","description":null,"price":650,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"mahshi","name":"Mahshi","description":"Eggplant, zucchini, pepper, onion, potatoes, tomatoes.","price":800,"variants":null,"options":null,"allergens":[]},{"slug":"noodles","name":"Noodles","description":null,"price":null,"variants":[{"name":"With vegetables","price":650},{"name":"With chicken","price":800},{"name":"With shrimps","price":1050}],"options":null,"allergens":["seafood"]},{"slug":"spring-rolls","name":"Spring Rolls","description":null,"price":null,"variants":[{"name":"Plain","price":600},{"name":"With chicken","price":750},{"name":"With shrimps","price":950}],"options":null,"allergens":["seafood"]},{"slug":"basmati-rice","name":"Basmati Rice","description":null,"price":600,"variants":null,"options":null,"allergens":[]},{"slug":"coconut-rice","name":"Coconut Rice","description":null,"price":700,"variants":null,"options":null,"allergens":[]},{"slug":"cream-spinach-chicken","name":"Cream Spinach with Chicken","description":null,"price":800,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"eggplant-rolls-avocado-mozzarella","name":"Eggplant Rolls stuffed with Avocado & Mozzarella in Pink Sauce","description":null,"price":850,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"mushroom-saute","name":"Mushroom Saut\u00e9 with Caramelized Onions & Parsley","description":null,"price":750,"variants":null,"options":null,"allergens":[]},{"slug":"rokak-minced-meat","name":"Rokak with Minced Meat","description":null,"price":900,"variants":null,"options":null,"allergens":[]},{"slug":"rokak-cones","name":"Rokak Cones with Minced Meat, Mozzarella & Tomatoes","description":null,"price":950,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"lasagna","name":"Lasagna","description":null,"price":1000,"variants":null,"options":null,"allergens":["dairy","gluten"]},{"slug":"negresco","name":"Negresco","description":null,"price":950,"variants":null,"options":null,"allergens":[]},{"slug":"vine-leaves","name":"Vine Leaves","description":null,"price":750,"variants":null,"options":null,"allergens":[]},{"slug":"potato-gratin","name":"Potato Gratin","description":null,"price":700,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"kobeba","name":"Kobeba","description":null,"price":800,"variants":null,"options":null,"allergens":[]},{"slug":"mombar-pops","name":"Mombar Pops","description":null,"price":850,"variants":null,"options":null,"allergens":[]},{"slug":"hawawshi","name":"Hawawshi","description":null,"price":850,"variants":null,"options":null,"allergens":[]}]},{"slug":"salads","name":"Salads","products":[{"slug":"mushroom-rocca-salad","name":"Fresh Mushroom Rocca Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","description":null,"price":650,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"caesar-salad","name":"Caesar Salad with Avocado, Apples, Chicken & Caramelized Walnuts","description":null,"price":750,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"eggplant-salad","name":"Eggplant Salad with Pomegranate & Almonds","description":null,"price":650,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"blue-cheese-salad","name":"Blue Cheese Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","description":null,"price":750,"variants":null,"options":null,"allergens":["nuts","dairy"]},{"slug":"fattoush","name":"Fattoush","description":null,"price":550,"variants":null,"options":null,"allergens":[]},{"slug":"tahini","name":"Tahini","description":null,"price":400,"variants":null,"options":null,"allergens":["sesame"]},{"slug":"baba-ganoush","name":"Baba Ganoush","description":null,"price":450,"variants":null,"options":null,"allergens":[]},{"slug":"coleslaw","name":"Coleslaw","description":null,"price":450,"variants":null,"options":null,"allergens":[]}]},{"slug":"desserts","name":"Desserts","products":[{"slug":"tiramisu","name":"Tiramisu \u2014 Big Bowl","description":null,"price":1400,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"batata-gratin","name":"Batata Gratin","description":null,"price":1050,"variants":null,"options":null,"allergens":[]},{"slug":"batata-creme-brulee","name":"Batata with Cr\u00e8me Br\u00fbl\u00e9e","description":null,"price":1250,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"kunafa-cream","name":"Kunafa with Cream","description":null,"price":1100,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"cinnabon-cake","name":"Cinnabon Cake","description":null,"price":1250,"variants":null,"options":null,"allergens":[]},{"slug":"lotus-cinnabons-12","name":"12 Lotus Cinnabons","description":null,"price":1350,"variants":null,"options":null,"allergens":[]},{"slug":"chocolate-cake","name":"Chocolate Cake","description":null,"price":1350,"variants":null,"options":null,"allergens":[]},{"slug":"golden-basbousa-cake","name":"Golden Basbousa Cake","description":null,"price":1050,"variants":null,"options":null,"allergens":[]},{"slug":"cheesecake-creme-brulee","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e","description":null,"price":1450,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"cheesecake-maltesers","name":"Cheesecake Maltesers","description":null,"price":1450,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"cheesecake-oreo","name":"Cheesecake Oreo","description":null,"price":1350,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"san-sebastian-cheesecake","name":"San Sebasti\u00e1n Cheesecake","description":null,"price":1450,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"honey-cake","name":"Honey Cake","description":null,"price":1300,"variants":null,"options":null,"allergens":[]},{"slug":"lotus-brownies","name":"Lotus Brownies","description":null,"price":1100,"variants":null,"options":null,"allergens":[]},{"slug":"om-ali-creme-brulee","name":"Om Ali with Cr\u00e8me Br\u00fbl\u00e9e","description":null,"price":1150,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"tres-leches","name":"Tres Leches","description":null,"price":null,"variants":[{"name":"Caramel","price":1300},{"name":"Mango","price":1400}],"options":null,"allergens":["dairy"]},{"slug":"profiteroles-caramel-custard","name":"Profiteroles with Caramel Custard, Croquant & Chocolate Sauce","description":null,"price":1300,"variants":null,"options":null,"allergens":["dairy"]},{"slug":"profiteroles-kunafa-pistachio","name":"Profiteroles with Kunafa & Pistachio Sauce","description":null,"price":1450,"variants":null,"options":null,"allergens":["nuts","dairy"]},{"slug":"mini-bites-baklava-nutella","name":"Mini Bites Baklava with Nutella","description":null,"price":1200,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"mini-bites-baklava-lotus","name":"Mini Bites Baklava with Lotus","description":null,"price":1150,"variants":null,"options":null,"allergens":[]},{"slug":"mini-bites-baklava-hazelnut","name":"Mini Bites Baklava with Hazelnut","description":null,"price":1250,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"mini-baklava-kunafa","name":"Mini Baklava with Kunafa","description":null,"price":1150,"variants":null,"options":null,"allergens":[]},{"slug":"bonbon-chocolate-box-pistachio-kunafa","name":"Bonbon Chocolate Box stuffed with Pistachio Kunafa","description":null,"price":1450,"variants":null,"options":null,"allergens":["nuts"]},{"slug":"cheesecake-creme-brulee-blueberries","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e with Blueberries","description":null,"price":1550,"variants":null,"options":null,"allergens":["dairy"]}]}]};
+</script>
+<script>
+/* ---------------------------------------------------------------- helpers */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const egp = (n) => n.toLocaleString("en-US") + " EGP";
+
+const PRODUCTS = {};
+DATA.categories.forEach((c) =>
+  c.products.forEach((p) => { PRODUCTS[p.slug] = Object.assign({}, p, { category: c }); }));
+
+function lowestPrice(p) {
+  if (p.price != null) return { amount: p.price, from: false };
+  if (p.variants && p.variants.length)
+    return { amount: Math.min.apply(null, p.variants.map((v) => v.price)), from: p.variants.length > 1 };
+  return null;
+}
+
+const WASHES = [["#F7E7CE","#EBD3A8"],["#F3E4D2","#E4CBA6"],["#F8EBDA","#E8D2B0"],["#F1E2C9","#E0C79C"]];
+function hash(t){ let h=0; for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))>>>0; return h; }
+function art(name){
+  const s = hash(name), w = WASHES[s % WASHES.length], rot = (s % 30) - 15;
+  return '<div class="ph-art" role="img" aria-label="' + esc(name) + '" style="background:linear-gradient(150deg,'
+    + w[0] + ' 0%,' + w[1] + ' 100%)">'
+    + '<svg viewBox="0 0 200 200" aria-hidden="true" style="transform:rotate(' + rot + 'deg) scale(1.15)">'
+    + '<circle cx="100" cy="100" r="72" fill="none" stroke="#A87E2E" stroke-opacity=".22"/>'
+    + '<circle cx="100" cy="100" r="60" fill="none" stroke="#A87E2E" stroke-opacity=".14"/>'
+    + '<circle cx="46" cy="100" r="2.4" fill="#3B2310" fill-opacity=".3"/>'
+    + '<circle cx="154" cy="100" r="2.4" fill="#3B2310" fill-opacity=".3"/></svg>'
+    + '<span aria-hidden="true">' + esc(name.trim().charAt(0).toUpperCase()) + '</span></div>';
+}
+
+/* ------------------------------------------------------------------- cart */
+const KEY = "thediine.preview.cart.v1";
+let CART = [];
+try { CART = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { CART = []; }
+function saveCart(){ try { localStorage.setItem(KEY, JSON.stringify(CART)); } catch (e) {} paintCount(); }
+function paintCount(){
+  $("#cart-count").textContent = CART.reduce((n, l) => n + l.qty, 0);
+}
+function lineKey(slug, variant, choices, instr){
+  return [slug, variant || "-", choices.slice().sort().join(","), (instr || "").trim()].join("|");
+}
+function addToCart(line){
+  const k = lineKey(line.slug, line.variant, line.choices, line.instr);
+  const found = CART.find((l) => l.k === k);
+  if (found) found.qty += line.qty;
+  else CART.push(Object.assign({ k: k }, line));
+  saveCart();
+}
+function unitPrice(slug, variant, choices){
+  const p = PRODUCTS[slug];
+  if (!p) return 0;
+  let base = p.price != null ? p.price : 0;
+  if (variant && p.variants) {
+    const v = p.variants.find((x) => x.name === variant);
+    if (v) base = v.price;
+  }
+  let delta = 0;
+  (p.options || []).forEach((g) => {
+    const c = g.choices.find((ch) => choices.indexOf(ch) > -1);
+    if (c) delta += 0; // every accompaniment is included at no extra cost
+  });
+  return base + delta;
+}
+
+/* ------------------------------------------------------------------ views */
+function cardHTML(p){
+  const pr = lowestPrice(p);
+  return '<a class="card" href="#/product/' + p.slug + '">'
+    + '<div class="ph">' + art(p.name) + '</div>'
+    + '<div class="body"><h3>' + esc(p.name) + '</h3>'
+    + (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '')
+    + (p.allergens.length ? '<p class="allerg">Contains ' + p.allergens.map(esc).join(" &middot; ") + '</p>' : '')
+    + '<div class="price">' + (pr
+        ? (pr.from ? '<span class="from">from</span>' : '') + '<span class="amt tnum">' + egp(pr.amount) + '</span>'
+        : '') + '</div></div></a>';
+}
+
+function viewHome(){
+  const featured = ["roast-fakhda","egyptian-fattah-moza","lebanese-fattah-chicken",
+                    "kunafa-cream","mushroom-rocca-salad","hawawshi"]
+    .map((s) => PRODUCTS[s]).filter(Boolean);
+  return ''
+  + '<section class="hero"><div class="wrap"><div>'
+  +   '<div class="eyebrow-row"><span class="rule"></span><p class="eyebrow">Food Made With Passion</p></div>'
+  +   '<h1>Food for the people you gather.</h1>'
+  +   '<p class="lede">The Diine is a home kitchen in Egypt cooking for gatherings, hosting and celebrations '
+  +   '&mdash; full trays of the food you would make yourself, if you had the day free.</p>'
+  +   '<div class="ctas"><a class="btn btn-primary" href="#/menu">Order from The Diine</a>'
+  +   '<a class="btn btn-outline" href="#/events">Plan an Event</a></div>'
+  +   '<p class="note">Orders need at least 48 hours&rsquo; notice &middot; Events at least 5 days</p>'
+  + '</div><div class="hero-panel"><div class="inner">'
+  +   '<svg width="80" height="80" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--gold)">'
+  +   '<circle cx="24" cy="24" r="22.5" stroke="currentColor" stroke-opacity=".45"/>'
+  +   '<circle cx="24" cy="24" r="19" stroke="currentColor" stroke-opacity=".2"/>'
+  +   '<ellipse cx="30.5" cy="20" rx="5.5" ry="3.6" stroke="currentColor" stroke-width="1.3"/>'
+  +   '<path d="M25 20H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>'
+  +   '<path d="M14 27h18M17 27v-3.2M20 27v-3.2M23 27v-3.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'
+  +   '<p>Trays of food, cooked to order, for tables full of people.</p>'
+  + '</div></div></div></section>'
+
+  + '<section><div class="wrap"><div class="sec-head"><div>'
+  +   '<p class="eyebrow">A few favourites</p><h2 class="sec">From our table to yours</h2></div>'
+  +   '<a class="link-gold" href="#/menu">See the full menu &rarr;</a></div>'
+  +   '<div class="grid">' + featured.map(cardHTML).join("") + '</div></div></section>'
+
+  + '<section class="band"><div class="wrap"><p class="eyebrow">Explore our menu</p>'
+  +   '<h2 class="sec">Everything is cooked to order, by the tray</h2><div class="grid-4">'
+  +   DATA.categories.map((c) => '<a class="cat-link" href="#/menu/' + c.slug + '"><div><h3>'
+        + esc(c.name) + '</h3><p class="c">' + c.products.length + ' dishes</p></div>'
+        + '<span style="color:var(--gold)" aria-hidden="true">&rarr;</span></a>').join("")
+  +   '</div></div></section>'
+
+  + '<section><div class="wrap"><div class="two-col"><div>'
+  +   '<p class="eyebrow">Hosting &amp; events</p><h2 class="sec">Birthdays, engagements, weddings</h2>'
+  +   '<p style="margin-top:24px;font-size:17px;color:var(--ink-soft)">Event catering works a little differently. '
+  +   'Tell us about the occasion and how many people you are feeding, choose your dishes from the same menu, '
+  +   'and we will come back to you personally to confirm every detail.</p>'
+  +   '<p style="margin-top:16px;font-size:17px;color:var(--ink-soft)">You can also choose whether you would like '
+  +   'your food in our returnable serving dishes, or in disposable ones you keep.</p>'
+  +   '<a class="btn btn-gold" href="#/events" style="margin-top:32px">Plan an Event</a></div>'
+  +   '<div style="position:relative;aspect-ratio:5/4;border:1px solid var(--line);border-radius:2px;'
+  +   'background:linear-gradient(155deg,#F7E7CE 0%,#E6CDA2 100%);display:flex;align-items:center;'
+  +   'justify-content:center"><p style="font-family:Fraunces,Georgia,serif;font-size:22px;'
+  +   'color:rgba(59,35,16,.7);max-width:18rem;text-align:center;padding:0 32px">&ldquo;Food made with passion&rdquo;</p>'
+  +   '</div></div></div></section>'
+
+  + '<section class="band"><div class="wrap"><p class="eyebrow">How ordering works</p>'
+  +   '<h2 class="sec">Three steps</h2><ol class="how">'
+  +   [["Choose your dishes","Browse the menu and build your order &mdash; mains, sides, salads and desserts, with the choices each dish offers."],
+       ["Pick your date","Tell us when you need it and whether you would like delivery or to collect. We ask for at least 48 hours."],
+       ["We confirm on WhatsApp","Every order is confirmed personally before we start cooking, so nothing is ever left to a machine."]]
+       .map((s, i) => '<li><span class="n tnum">0' + (i+1) + '</span><div class="bar"></div><h3>'
+         + esc(s[0]) + '</h3><p>' + esc(s[1]) + '</p></li>').join("")
+  +   '</ol></div></section>';
+}
+
+function chipsHTML(active){
+  return '<div class="chips"><div class="wrap"><div class="row">'
+    + '<a class="chip' + (active === "all" ? " active" : "") + '" href="#/menu">All</a>'
+    + DATA.categories.map((c) => '<a class="chip' + (active === c.slug ? " active" : "")
+        + '" href="#/menu/' + c.slug + '">' + esc(c.name) + '</a>').join("")
+    + '</div></div></div>';
+}
+
+function viewMenu(){
+  return '<div class="wrap" style="padding-top:56px"><p class="eyebrow">Our menu</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:600;line-height:1.15;margin-top:12px">Everything we cook</h1>'
+    + '<p style="margin-top:20px;max-width:34rem;font-size:17px;color:var(--ink-soft)">Choose whatever you like '
+    + '&mdash; there is no minimum order. Dishes with a choice of rice, sauce or accompaniment let you pick when you add them.</p></div>'
+    + '<div style="margin-top:40px">' + chipsHTML("all") + '</div>'
+    + '<div class="wrap">' + DATA.categories.map((c) =>
+        '<section style="padding:0"><div class="section-title"><h2>' + esc(c.name)
+        + '</h2><span class="n tnum">' + c.products.length + '</span></div><div class="bar-line"></div>'
+        + '<div class="grid">' + c.products.map(cardHTML).join("") + '</div></section>').join("")
+    + '</div>';
+}
+
+function viewCategory(slug){
+  const c = DATA.categories.find((x) => x.slug === slug);
+  if (!c) return viewMenu();
+  return '<div class="wrap" style="padding-top:56px"><p class="eyebrow">Our menu</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:600;line-height:1.15;margin-top:12px">'
+    + esc(c.name) + '</h1></div>'
+    + '<div style="margin-top:40px">' + chipsHTML(slug) + '</div>'
+    + '<div class="wrap" style="padding-top:48px"><div class="grid" style="margin-top:0">'
+    + c.products.map(cardHTML).join("") + '</div></div>';
+}
+
+/* product page state */
+let PS = null;
+
+function viewProduct(slug){
+  const p = PRODUCTS[slug];
+  if (!p) return '<div class="wrap"><p style="padding:80px 0">Dish not found.</p></div>';
+  PS = {
+    slug: slug,
+    variant: p.variants && p.variants.length ? p.variants[0].name : null,
+    choices: {},
+    qty: 1,
+    instr: "",
+    added: false
+  };
+  return '<div class="wrap">' + productInner(p) + '</div>';
+}
+
+function productInner(p){
+  const pr = lowestPrice(p);
+  return '<nav class="crumb"><a href="#/menu">Menu</a> <span aria-hidden="true">/</span> '
+    + '<a href="#/menu/' + p.category.slug + '">' + esc(p.category.name) + '</a></nav>'
+    + '<div class="pd"><div class="art">' + art(p.name) + '</div><div id="pd-right">'
+    + productRight(p) + '</div></div>';
+}
+
+function productRight(p){
+  const missing = (p.options || []).filter((g) => !PS.choices[g.name]);
+  const canAdd = missing.length === 0;
+  const unit = unitPriceFromState(p);
+  let h = '<h1>' + esc(p.name) + '</h1>';
+  const pr = lowestPrice(p);
+  if (pr) h += '<p class="price tnum">' + (pr.from ? '<span style="font-size:15px;font-weight:400;color:var(--ink-faint);margin-right:8px">from</span>' : '') + egp(pr.amount) + '</p>';
+  if (p.description) h += '<p class="desc">' + esc(p.description) + '</p>';
+  if (p.allergens.length) {
+    h += '<div class="allergen-box"><p class="eyebrow">Allergens</p>'
+      + '<p style="margin-top:8px;font-size:15px;color:var(--ink-soft)">Contains '
+      + p.allergens.map((a) => esc(a.toLowerCase())).join(", ") + '.</p>'
+      + '<p style="margin-top:8px;font-size:13.5px;color:var(--ink-faint)">Please tell us about any allergy when you order.</p></div>';
+  }
+  h += '<div style="margin-top:32px">';
+
+  if (p.variants && p.variants.length) {
+    h += '<fieldset><legend class="eyebrow">Choose one</legend><div class="pills">'
+      + p.variants.map((v) => '<button type="button" class="pill-opt' + (PS.variant === v.name ? " on" : "")
+        + '" data-variant="' + esc(v.name) + '" aria-pressed="' + (PS.variant === v.name) + '">'
+        + esc(v.name) + '<span class="p tnum">' + egp(v.price) + '</span></button>').join("")
+      + '</div></fieldset>';
+  }
+
+  (p.options || []).forEach((g) => {
+    h += '<fieldset><legend class="eyebrow">' + esc(g.name) + '<span class="req">required</span></legend>'
+      + '<div class="opt-list">'
+      + g.choices.map((c) => '<button type="button" class="opt' + (PS.choices[g.name] === c ? " on" : "")
+          + '" data-group="' + esc(g.name) + '" data-choice="' + esc(c) + '">'
+          + '<span class="dot" aria-hidden="true"></span><span>' + esc(c) + '</span></button>').join("")
+      + '</div></fieldset>';
+  });
+
+  h += '<fieldset><legend class="eyebrow">Special instructions<span class="req">optional</span></legend>'
+    + '<textarea id="instr" rows="3" placeholder="Anything we should know about this dish?">' + esc(PS.instr) + '</textarea></fieldset>';
+
+  h += '<div class="add-row"><div class="qty">'
+    + '<button type="button" id="q-minus" aria-label="Reduce quantity"' + (PS.qty <= 1 ? " disabled" : "") + '>&minus;</button>'
+    + '<span class="n tnum" aria-live="polite">' + PS.qty + '</span>'
+    + '<button type="button" id="q-plus" aria-label="Increase quantity">+</button></div>'
+    + '<button type="button" class="btn btn-primary" id="add"' + (canAdd ? "" : " disabled") + '>'
+    + (PS.added ? "Added to cart" : "Add to cart") + ' <span class="tnum">' + egp(unit * PS.qty) + '</span></button></div>';
+
+  if (missing.length) {
+    h += '<p class="hint">Choose ' + missing.map((g) => esc(g.name.toLowerCase())).join(" and ") + ' to continue.</p>';
+  }
+  if (PS.added) {
+    h += '<p class="hint"><a href="#/cart" style="color:var(--gold);text-decoration:underline;text-underline-offset:4px">Go to cart</a> or keep browsing the menu.</p>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function unitPriceFromState(p){
+  let base = p.price != null ? p.price : 0;
+  if (PS.variant && p.variants) {
+    const v = p.variants.find((x) => x.name === PS.variant);
+    if (v) base = v.price;
+  }
+  return base;
+}
+
+function viewCart(){
+  if (!CART.length) {
+    return '<div class="wrap"><div class="empty"><p>Your cart is empty</p>'
+      + '<p style="margin-top:12px;color:var(--ink-soft)">Browse the menu and add the dishes you would like.</p>'
+      + '<a class="btn btn-primary" href="#/menu" style="margin-top:32px">Browse the menu</a></div></div>';
+  }
+  let subtotal = 0;
+  const lines = CART.map((l) => {
+    const p = PRODUCTS[l.slug];
+    const unit = unitPrice(l.slug, l.variant, l.choices);
+    const total = unit * l.qty;
+    subtotal += total;
+    return '<li class="cart-line"><div class="top"><div style="min-width:0">'
+      + '<h2><a href="#/product/' + l.slug + '">' + esc(p ? p.name : l.slug) + '</a></h2>'
+      + (l.variant ? '<p style="margin-top:4px;font-size:15px;color:var(--ink-soft)">' + esc(l.variant) + '</p>' : '')
+      + (l.choiceLabels && l.choiceLabels.length
+          ? '<ul class="opts">' + l.choiceLabels.map((cl) => '<li><span class="g">'
+              + esc(cl[0]) + ':</span> ' + esc(cl[1]) + '</li>').join("") + '</ul>' : '')
+      + (l.instr ? '<p class="instr">' + esc(l.instr) + '</p>' : '')
+      + '</div><p class="lt tnum">' + egp(total) + '</p></div>'
+      + '<div class="ctrls"><div class="qty">'
+      + '<button type="button" data-dec="' + esc(l.k) + '" aria-label="Reduce quantity">&minus;</button>'
+      + '<span class="n tnum">' + l.qty + '</span>'
+      + '<button type="button" data-inc="' + esc(l.k) + '" aria-label="Increase quantity">+</button></div>'
+      + '<button type="button" class="rm" data-rm="' + esc(l.k) + '">Remove</button>'
+      + '<span class="each tnum">' + egp(unit) + ' each</span></div></li>';
+  }).join("");
+
+  return '<div class="wrap"><p class="eyebrow" style="padding-top:48px">Your order</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:38px;font-weight:600;margin-top:12px">Cart</h1>'
+    + '<div class="cart-grid"><ul style="list-style:none;margin:0;padding:0">' + lines + '</ul>'
+    + '<div class="summary-wrap"><div class="summary"><h2>Order summary</h2>'
+    + '<div class="row"><span class="muted">Subtotal</span><span class="tnum" style="font-weight:500">' + egp(subtotal) + '</span></div>'
+    + '<div class="row"><span class="muted">Delivery</span><span style="font-size:14.5px;color:var(--ink-faint)">Calculated at checkout</span></div>'
+    + '<div class="total"><span>Total so far</span><span class="tnum">' + egp(subtotal) + '</span></div>'
+    + '<button type="button" class="btn btn-primary" style="width:100%;margin-top:24px" disabled>Continue to checkout</button>'
+    + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">Delivery or pickup, your date and payment come next.</p>'
+    + '<a href="#/menu" style="display:block;margin-top:20px;text-align:center;font-size:14.5px;color:var(--gold);text-decoration:underline;text-underline-offset:4px">Keep browsing the menu</a>'
+    + '</div><p style="margin-top:20px;font-size:13.5px;color:var(--ink-faint)">There is no minimum order. '
+    + 'Orders need at least 48 hours&rsquo; notice, and every order is confirmed by WhatsApp before we start cooking.</p>'
+    + '</div></div></div>';
+}
+
+function viewEvents(){
+  return '<section class="hero" style="background:radial-gradient(110% 90% at 80% 0%, #FFF8EE 0%, #F7EADA 50%, #EFDFC8 100%)">'
+    + '<div class="wrap" style="display:block"><div style="max-width:42rem">'
+    + '<div class="eyebrow-row"><span class="rule"></span><p class="eyebrow">Event catering</p></div>'
+    + '<h1 style="font-size:44px;font-weight:600;line-height:1.06;margin-top:26px">For the days that matter most</h1>'
+    + '<p class="lede">Larger gatherings need a little more planning, so events work differently from an everyday order. '
+    + 'We ask for at least five days, and we confirm every event personally before it is booked.</p>'
+    + '<div class="ctas"><a class="btn btn-primary" href="#/menu">Browse the menu</a></div></div></div></section>'
+    + '<section><div class="wrap"><div class="two-col"><div><p class="eyebrow">What we cater</p>'
+    + '<div style="margin-top:24px;display:flex;flex-direction:column;gap:16px">'
+    + ["Birthdays","Engagements","Weddings","Anything else"].map((o) =>
+        '<div class="occasion"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--gold);flex:none">'
+        + '<circle cx="24" cy="24" r="22.5" stroke="currentColor" stroke-opacity=".45"/>'
+        + '<ellipse cx="30.5" cy="20" rx="5.5" ry="3.6" stroke="currentColor" stroke-width="1.3"/>'
+        + '<path d="M25 20H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>'
+        + '<path d="M14 27h18M17 27v-3.2M20 27v-3.2M23 27v-3.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'
+        + '<span>' + o + '</span></div>').join("")
+    + '</div></div><div><p class="eyebrow">How an event order works</p><div class="steps">'
+    + [["Tell us about the occasion","What you are celebrating, the date, and how many people you are feeding."],
+       ["Choose your dishes","The same menu, the same dishes &mdash; you simply order the quantities an event needs."],
+       ["We confirm personally","Event orders are a request, not an instant booking. We come back to you to confirm everything before anything is final."]]
+       .map((s, i) => '<div class="step"><span class="n tnum">0' + (i+1) + '</span><div><h3>' + esc(s[0])
+         + '</h3><p>' + esc(s[1]) + '</p></div></div>').join("")
+    + '</div></div></div></div></section>';
+}
+
+/* ----------------------------------------------------------------- router */
+function render(){
+  const h = location.hash.replace(/^#/, "") || "/";
+  const parts = h.split("/").filter(Boolean);
+  let html;
+  if (!parts.length) html = viewHome();
+  else if (parts[0] === "menu") html = parts[1] ? viewCategory(parts[1]) : viewMenu();
+  else if (parts[0] === "product") html = viewProduct(parts[1]);
+  else if (parts[0] === "cart") html = viewCart();
+  else if (parts[0] === "events") html = viewEvents();
+  else html = viewHome();
+  $("#app").innerHTML = html;
+  $("#mobile-nav").classList.remove("open");
+  $("#burger").setAttribute("aria-expanded", "false");
+  window.scrollTo(0, 0);
+  paintCount();
+}
+
+function repaintProduct(){
+  const p = PRODUCTS[PS.slug];
+  $("#pd-right").innerHTML = productRight(p);
+}
+
+document.addEventListener("click", function (e) {
+  const t = e.target.closest("button");
+  if (!t) return;
+
+  if (t.id === "burger") {
+    const nav = $("#mobile-nav");
+    nav.classList.toggle("open");
+    t.setAttribute("aria-expanded", nav.classList.contains("open"));
+    return;
+  }
+
+  if (t.dataset.variant) { PS.variant = t.dataset.variant; PS.added = false; repaintProduct(); return; }
+  if (t.dataset.group)   { PS.choices[t.dataset.group] = t.dataset.choice; PS.added = false; repaintProduct(); return; }
+  if (t.id === "q-minus"){ if (PS.qty > 1) PS.qty--; repaintProduct(); return; }
+  if (t.id === "q-plus") { PS.qty++; repaintProduct(); return; }
+
+  if (t.id === "add") {
+    const p = PRODUCTS[PS.slug];
+    const instrEl = $("#instr");
+    PS.instr = instrEl ? instrEl.value : "";
+    const labels = (p.options || []).map((g) => [g.name, PS.choices[g.name]]).filter((x) => x[1]);
+    addToCart({
+      slug: PS.slug, variant: PS.variant,
+      choices: labels.map((x) => x[1]), choiceLabels: labels,
+      qty: PS.qty, instr: PS.instr.trim()
+    });
+    PS.added = true;
+    repaintProduct();
+    return;
+  }
+
+  if (t.dataset.inc || t.dataset.dec || t.dataset.rm) {
+    const k = t.dataset.inc || t.dataset.dec || t.dataset.rm;
+    const i = CART.findIndex((l) => l.k === k);
+    if (i < 0) return;
+    if (t.dataset.inc) CART[i].qty++;
+    else if (t.dataset.dec) { CART[i].qty--; if (CART[i].qty <= 0) CART.splice(i, 1); }
+    else CART.splice(i, 1);
+    saveCart();
+    $("#app").innerHTML = viewCart();
+  }
+});
+
+$("#footer-cats").innerHTML = DATA.categories
+  .map((c) => '<li><a href="#/menu/' + c.slug + '">' + esc(c.name) + '</a></li>').join("");
+
+window.addEventListener("hashchange", render);
+render();
+</script>

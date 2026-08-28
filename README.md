@@ -17,6 +17,7 @@ dashboard are the next phases.
 | [`prisma/schema.prisma`](prisma/schema.prisma) | Data model |
 | [`prisma/catalogue.ts`](prisma/catalogue.ts) | The menu as data — readable, reviewable |
 | [`src/app`](src/app) | Customer website — home, menu, product, cart |
+| [`preview/index.html`](preview/index.html) | Static clickable preview of the site, for review before deployment |
 
 ## The catalogue
 
