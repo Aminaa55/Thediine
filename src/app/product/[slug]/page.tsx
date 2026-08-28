@@ -89,8 +89,6 @@ export default async function ProductPage({ params }: Props) {
         minQuantity={product.minQuantity}
         quantityStep={product.quantityStep}
         isAvailable={product.isAvailable}
-        categorySlug={product.category.slug}
-        categoryName={product.category.nameEn}
       />
     </article>
   );

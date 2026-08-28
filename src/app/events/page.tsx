@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getGallery } from "@/lib/gallery";
 import { OurWork } from "@/components/our-work";
+import { EventEntry } from "@/components/event-entry";
 import { Curve, GoldArc } from "@/components/curve";
 
 export const dynamic = "force-dynamic";
@@ -38,9 +39,7 @@ export default async function EventsPage() {
               Larger gatherings deserve more than an order form. Tell us about the
               occasion and we will build the table around it.
             </p>
-            <Link href="/events/start" className="btn-primary mt-11">
-              Start an event request
-            </Link>
+            <EventEntry />
           </div>
         </div>
         <Curve to="cream-warm" />
@@ -92,7 +91,7 @@ export default async function EventsPage() {
             Events need at least five days&rsquo; notice. Everything you send is a request
             until we confirm it with you.
           </p>
-          <Link href="/events/start" className="btn-primary mt-8">Start an event request</Link>
+          <EventEntry compact />
         </div>
       </section>
     </>

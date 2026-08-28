@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { CartHeading } from "@/components/cart-heading";
 import { CartView } from "@/components/cart-view";
 
 export const metadata: Metadata = { title: "Your cart" };
@@ -7,7 +6,10 @@ export const metadata: Metadata = { title: "Your cart" };
 export default function CartPage() {
   return (
     <div className="mx-auto max-w-content px-5 py-12 sm:px-8 sm:py-16">
-      <CartHeading />
+      <p className="eyebrow">Your cart</p>
+      <h1 className="mt-3 font-display text-[34px] font-semibold leading-tight text-ink sm:text-[44px]">
+        Everything so far
+      </h1>
       <div className="mt-12">
         <CartView />
       </div>

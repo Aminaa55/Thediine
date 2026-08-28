@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { EventStartForm } from "@/components/event-start-form";
+import { EventOccasionForm } from "@/components/event-occasion-form";
 
 export const metadata: Metadata = { title: "Plan an Event" };
 
 export default function EventStartPage() {
-  return <EventStartForm />;
+  return <EventOccasionForm />;
 }

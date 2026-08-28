@@ -10,13 +10,13 @@ import { displayPrice, type ListedProduct } from "@/lib/catalog";
  * photograph is uploaded the card grows an image; nothing else changes, and
  * nothing here ever implies a missing picture.
  */
-export function ProductCard({ product }: { product: ListedProduct }) {
+export function ProductCard({ product, forEvent = false }: { product: ListedProduct; forEvent?: boolean }) {
   const price = displayPrice(product);
   const allergens = product.allergens.map((a) => a.allergen.nameEn);
 
   return (
     <Link
-      href={`/product/${product.slug}`}
+      href={`/product/${product.slug}${forEvent ? "?for=event" : ""}`}
       className="group relative flex flex-col overflow-hidden rounded-sm border border-line bg-cream-warm transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-[0_12px_28px_-20px_rgba(59,35,16,.5)]"
     >
       {product.imageUrl && (

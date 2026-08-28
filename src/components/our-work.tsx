@@ -72,6 +72,7 @@ export function OurWork({
   );
 }
 
+/** No caption. The photography speaks for itself; alt text stays for screen readers. */
 function Figure({
   item, ratio, className = "",
 }: { item: GalleryItem; ratio: string; className?: string }) {
@@ -86,11 +87,6 @@ function Figure({
         loading="lazy"
         className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
       />
-      {item.captionEn && (
-        <figcaption className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-ink/85 to-transparent p-5 text-[14px] text-cream opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-          {item.captionEn}
-        </figcaption>
-      )}
     </figure>
   );
 }

@@ -20,7 +20,7 @@ import type { ResolvedCart } from "@/app/actions";
  * panel — not an event card sitting on top of a separate shopping cart.
  * Everything is editable in place.
  */
-export function EventRequestPanel({
+export function EventRequestSection({
   cart,
   pending,
   onQuantity,
@@ -50,11 +50,16 @@ export function EventRequestPanel({
 
   return (
     <section className="overflow-hidden rounded-sm border border-gold/45 bg-cream-warm">
-      <header className="flex flex-wrap items-baseline justify-between gap-4 bg-gold-pale/45 px-6 py-5 sm:px-8">
+      <header className="flex flex-wrap items-baseline justify-between gap-4 border-b border-gold/25 bg-gold-pale/45 px-6 py-5 sm:px-8">
         <div>
           <p className="text-[11px] uppercase tracking-widest text-gold">Event request</p>
           <h2 className="mt-1.5 font-display text-[24px] font-semibold leading-tight text-ink">
             {occasion ?? "Your event"}
+            {event.date && (
+              <span className="font-body text-[16px] font-normal text-ink-soft">
+                {" "}&middot; {longDate(event.date)}
+              </span>
+            )}
           </h2>
         </div>
         <button type="button" onClick={() => setEditing((v) => !v)} className="link-sweep text-[14.5px]">
@@ -89,7 +94,7 @@ export function EventRequestPanel({
         {cart.lines.length === 0 ? (
           <div className="mt-4">
             <p className="text-[16px] text-ink-soft">No dishes chosen yet.</p>
-            <Link href="/menu" className="btn-primary mt-5">Browse the menu</Link>
+            <Link href="/menu?for=event" className="btn-primary mt-5">Choose dishes for this event</Link>
           </div>
         ) : (
           <>
@@ -161,8 +166,8 @@ export function EventRequestPanel({
                 </li>
               ))}
             </ul>
-            <Link href="/menu" className="link-sweep mt-5 inline-block text-[14.5px]">
-              Add more dishes
+            <Link href="/menu?for=event" className="link-sweep mt-5 inline-block text-[14.5px]">
+              Add more dishes to this event
             </Link>
           </>
         )}
@@ -205,10 +210,31 @@ export function EventRequestPanel({
           </p>
         )}
 
+        <div className="mt-7 flex flex-wrap items-baseline justify-between gap-4 border-t border-line pt-6">
+          <span className="font-display text-[19px] font-semibold text-ink">Food subtotal</span>
+          <span className="font-display text-[22px] font-semibold tabular-nums text-ink">
+            {formatEGP(cart.subtotal)}
+          </span>
+        </div>
+        <p className="mt-1.5 text-[14px] text-ink-faint">Extras are quoted separately.</p>
+
+        <button
+          type="button"
+          disabled
+          className="btn-primary mt-6 w-full disabled:bg-ink/25 sm:w-auto"
+        >
+          Send this event request
+        </button>
+        <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
+          Events need at least{" "}
+          <strong className="font-semibold text-ink">5 days&rsquo; notice</strong> and are
+          confirmed by us personally before they are booked.
+        </p>
+
         <button
           type="button"
           onClick={cancelEvent}
-          className="mt-7 text-[13.5px] text-ink-faint underline underline-offset-4 hover:text-ink"
+          className="mt-6 block text-[13.5px] text-ink-faint underline underline-offset-4 hover:text-ink"
         >
           Cancel this event request
         </button>

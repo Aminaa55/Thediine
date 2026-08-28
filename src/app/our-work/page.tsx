@@ -40,11 +40,6 @@ export default async function OurWorkPage() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img.imageUrl} alt={img.altEn} loading="lazy" className="w-full" />
-                {img.captionEn && (
-                  <figcaption className="bg-cream-warm px-5 py-3 text-[14px] text-ink-soft">
-                    {img.captionEn}
-                  </figcaption>
-                )}
               </figure>
             ))}
           </div>

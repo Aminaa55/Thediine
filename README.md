@@ -47,7 +47,10 @@ instruction. Verified end to end against a real PostgreSQL instance.
 
 Events take a maximum of **100 guests**, enforced by the shared validator used by
 both the browser and the server, and backed by the editable `event_max_guests`
-setting. Serving setup (returnable or disposable) is chosen on every order. Payment is
+setting. A normal order and an event request can exist **at the same time** in one cart,
+as separate sections with separate rules — they never merge, and each checks out
+under its own terms. Serving setup (returnable or disposable) is chosen on every
+order. Payment is
 recorded, never processed: cash and InstaPay live, card structured but off.
 InstaPay verification is separate from order confirmation, and payment status is
 independent of order status. Customers cannot self-cancel. English at launch,

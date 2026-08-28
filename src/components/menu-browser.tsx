@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ProductCard } from "./product-card";
 import type { ListedProduct } from "@/lib/catalog";
@@ -23,6 +24,9 @@ export function MenuBrowser({
 }) {
   const [active, setActive] = useState<string | null>(initialCategory);
   const [query, setQuery] = useState("");
+  // Carry the event context through every link, so the journey is never lost.
+  const forEvent = useSearchParams().get("for") === "event";
+  const q = forEvent ? "?for=event" : "";
 
   const all = useMemo(
     () => categories.flatMap((c) => c.products.map((p) => ({ p, cat: c }))),
@@ -90,7 +94,7 @@ export function MenuBrowser({
             {results.length > 0 && (
               <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {results.map(({ p }) => (
-                  <ProductCard key={p.id} product={p} />
+                  <ProductCard key={p.id} product={p} forEvent={forEvent} />
                 ))}
               </div>
             )}
@@ -117,7 +121,7 @@ export function MenuBrowser({
                   </span>
                 </div>
                 {!active && (
-                  <Link href={`/menu/${category.slug}`} className="text-[14.5px] text-gold hover:underline">
+                  <Link href={`/menu/${category.slug}${q}`} className="text-[14.5px] text-gold hover:underline">
                     Only {category.nameEn.toLowerCase()} &rarr;
                   </Link>
                 )}
@@ -126,7 +130,7 @@ export function MenuBrowser({
 
               <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {category.products.map((p) => (
-                  <ProductCard key={p.id} product={p} />
+                  <ProductCard key={p.id} product={p} forEvent={forEvent} />
                 ))}
               </div>
             </section>

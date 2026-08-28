@@ -2,44 +2,40 @@
 
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
-import { useCart } from "@/lib/cart";
-import { resolveCart, type ResolvedCart } from "@/app/actions";
+import { useCart, type CartLine } from "@/lib/cart";
+import { resolveCart, type ResolvedCart, type ResolvedLine } from "@/app/actions";
 import { formatEGP } from "@/lib/money";
 import { RULES } from "@/lib/ordering";
-import { EventRequestPanel } from "./event-request-panel";
+import { EventRequestSection } from "./event-request-panel";
 
+/**
+ * One cart, two order types.
+ *
+ * A normal order and an event request can exist side by side. They are shown as
+ * separate sections, edited independently, and stay separate all the way to
+ * checkout, where each follows its own rules.
+ */
 export function CartView() {
-  const { lines, ready, mode, setQuantity, removeLine } = useCart();
-  const [resolved, setResolved] = useState<ResolvedCart | null>(null);
+  const { normalLines, eventLines, hasEvent, ready, setQuantity, removeLine } = useCart();
+  const [normal, setNormal] = useState<ResolvedCart | null>(null);
+  const [event, setEvent] = useState<ResolvedCart | null>(null);
   const [pending, startTransition] = useTransition();
 
   // Prices always come from the database, never from what the browser stored.
   useEffect(() => {
     if (!ready) return;
-    startTransition(async () => setResolved(await resolveCart(lines)));
-  }, [lines, ready]);
+    startTransition(async () => {
+      const [n, e] = await Promise.all([resolveCart(normalLines), resolveCart(eventLines)]);
+      setNormal(n);
+      setEvent(e);
+    });
+  }, [normalLines, eventLines, ready]);
 
-  if (!ready || (!resolved && lines.length > 0)) {
+  if (!ready || !normal || !event) {
     return <p className="py-20 text-center text-[15px] text-ink-faint">Loading your cart…</p>;
   }
 
-  const isEvent = mode === "event";
-
-  if (isEvent) {
-    return (
-      <div className="grid gap-10 lg:grid-cols-[1.7fr_1fr] lg:gap-14 lg:items-start">
-        <EventRequestPanel
-          cart={resolved ?? { lines: [], subtotal: 0 }}
-          pending={pending}
-          onQuantity={setQuantity}
-          onRemove={removeLine}
-        />
-        <EventSummary subtotal={resolved?.subtotal ?? 0} hasLines={lines.length > 0} />
-      </div>
-    );
-  }
-
-  if (lines.length === 0) {
+  if (normalLines.length === 0 && !hasEvent) {
     return (
       <div className="py-16 text-center">
         <p className="font-display text-[24px] text-ink">Nothing here yet</p>
@@ -51,191 +47,157 @@ export function CartView() {
     );
   }
 
-  const cart = resolved!;
-  const hasProblems = cart.lines.some((l) => l.problem);
-
   return (
-    <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
-      <div>
-        <ul className={pending ? "opacity-60 transition-opacity" : "transition-opacity"}>
-        {cart.lines.map((line) => (
-          <li key={line.key} className="border-b border-line py-6 first:pt-0">
-            <div className="flex items-start justify-between gap-5">
-              <div className="min-w-0">
-                <h2 className="font-display text-[19px] font-semibold leading-snug text-ink">
-                  {line.slug ? (
-                    <Link href={`/product/${line.slug}`} className="hover:text-gold">
-                      {line.productName}
-                    </Link>
-                  ) : (
-                    line.productName
-                  )}
-                </h2>
+    <div className="flex flex-col gap-14">
+      {normalLines.length > 0 && (
+        <NormalOrderSection
+          cart={normal}
+          pending={pending}
+          onQuantity={(k, q) => setQuantity("normal", k, q)}
+          onRemove={(k) => removeLine("normal", k)}
+        />
+      )}
 
-                {line.variantName && (
-                  <p className="mt-1 text-[15px] text-ink-soft">{line.variantName}</p>
-                )}
+      {hasEvent && (
+        <EventRequestSection
+          cart={event}
+          pending={pending}
+          onQuantity={(k, q) => setQuantity("event", k, q)}
+          onRemove={(k) => removeLine("event", k)}
+        />
+      )}
 
-                {line.options.length > 0 && (
-                  <ul className="mt-2 space-y-0.5">
-                    {line.options.map((o) => (
-                      <li key={o.groupName} className="text-[14.5px] text-ink-soft">
-                        <span className="text-ink-faint">{o.groupName}:</span> {o.choiceName}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {line.instructions && (
-                  <p className="mt-2 border-s-2 border-line ps-3 text-[14px] italic text-ink-soft">
-                    {line.instructions}
-                  </p>
-                )}
-
-                {line.problem && (
-                  <p className="mt-2 text-[14px] text-[#A6391C]">{line.problem}</p>
-                )}
-              </div>
-
-              <p className="whitespace-nowrap font-display text-[18px] font-semibold tabular-nums text-ink">
-                {formatEGP(line.lineTotal)}
-              </p>
-            </div>
-
-            <div className="mt-4 flex items-center gap-4">
-              <div className="flex items-center rounded-full border border-line bg-cream-warm">
-                <button
-                  type="button"
-                  onClick={() => setQuantity(line.key, line.quantity - line.quantityStep)}
-                  aria-label={`Reduce quantity of ${line.productName}`}
-                  className="px-3.5 py-2 text-ink-soft"
-                >
-                  &minus;
-                </button>
-                <span className="min-w-[2rem] text-center text-[15px] tabular-nums">{line.quantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity(line.key, line.quantity + line.quantityStep)}
-                  aria-label={`Increase quantity of ${line.productName}`}
-                  className="px-3.5 py-2 text-ink-soft"
-                >
-                  +
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => removeLine(line.key)}
-                className="text-[14px] text-ink-faint underline underline-offset-4 hover:text-ink"
-              >
-                Remove
-              </button>
-
-              {!line.problem && (
-                <span className="ms-auto text-[13.5px] tabular-nums text-ink-faint">
-                  {formatEGP(line.unitPrice)} each
-                </span>
-              )}
-            </div>
-          </li>
-        ))}
-        </ul>
-      </div>
-
-      <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="rounded-sm border border-line bg-cream-warm p-6">
-          <h2 className="font-display text-[21px] font-semibold text-ink">Order summary</h2>
-
-          <dl className="mt-6 space-y-3 text-[15.5px]">
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-ink-soft">Food subtotal</dt>
-              <dd className="font-medium tabular-nums">{formatEGP(cart.subtotal)}</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-ink-soft">Delivery</dt>
-              <dd className="text-[14.5px] text-ink-faint">Calculated at checkout</dd>
-            </div>
-          </dl>
-
-          <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-5">
-            <span className="font-display text-[19px] font-semibold text-ink">Total so far</span>
-            <span className="font-display text-[21px] font-semibold tabular-nums text-ink">
-              {formatEGP(cart.subtotal)}
-            </span>
-          </div>
-
-          {hasProblems && (
-            <p className="mt-5 text-[14px] text-[#A6391C]">
-              Please remove the unavailable items before continuing.
-            </p>
-          )}
-
-          <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
-            Continue to checkout
-          </button>
-          <p className="mt-3 text-center text-[13.5px] text-ink-faint">
-            Delivery or pickup, your date and payment come next.
-          </p>
-
-          <Link href="/menu" className="mt-5 block text-center text-[14.5px] text-gold underline underline-offset-4">
-            Keep browsing the menu
-          </Link>
-        </div>
-
-        {/* Notice periods appear here, in context — never both at once, and
-            never on the homepage. */}
-        <div className="mt-5 rounded-sm border border-line bg-cream-deep px-5 py-4">
-          <p className="text-[14px] leading-relaxed text-ink-soft">
-            Orders need at least{" "}
-            <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>.
-            You will choose your date at checkout, and only available dates can be picked.
-          </p>
-        </div>
-      </aside>
+      {normalLines.length === 0 && hasEvent && (
+        <p className="text-[15px] text-ink-soft">
+          Nothing in your regular order.{" "}
+          <Link href="/menu" className="link-sweep">Browse the menu</Link> to add dishes to one.
+        </p>
+      )}
     </div>
   );
 }
 
-/** The event's running total, alongside the request itself. */
-function EventSummary({ subtotal, hasLines }: { subtotal: number; hasLines: boolean }) {
+function NormalOrderSection({
+  cart, pending, onQuantity, onRemove,
+}: {
+  cart: ResolvedCart;
+  pending: boolean;
+  onQuantity: (key: string, q: number) => void;
+  onRemove: (key: string) => void;
+}) {
   return (
-    <aside className="lg:sticky lg:top-28">
-      <div className="rounded-sm border border-line bg-cream-warm p-6">
-        <h2 className="font-display text-[21px] font-semibold text-ink">Your event so far</h2>
-        <dl className="mt-6 space-y-3 text-[15.5px]">
-          <div className="flex items-baseline justify-between gap-4">
-            <dt className="text-ink-soft">Food subtotal</dt>
-            <dd className="font-medium tabular-nums">{formatEGP(subtotal)}</dd>
-          </div>
-          <div className="flex items-baseline justify-between gap-4">
-            <dt className="text-ink-soft">Extras</dt>
-            <dd className="text-[14.5px] text-ink-faint">Quoted separately</dd>
-          </div>
-        </dl>
-        <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-5">
-          <span className="font-display text-[19px] font-semibold text-ink">Total so far</span>
-          <span className="font-display text-[21px] font-semibold tabular-nums text-ink">
-            {formatEGP(subtotal)}
+    <section className="overflow-hidden rounded-sm border border-line bg-cream-warm">
+      <header className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line bg-cream-deep px-6 py-5 sm:px-8">
+        <div>
+          <p className="text-[11px] uppercase tracking-widest text-ink-faint">Normal order</p>
+          <h2 className="mt-1.5 font-display text-[24px] font-semibold leading-tight text-ink">
+            Your regular order
+          </h2>
+        </div>
+        <Link href="/menu" className="link-sweep text-[14.5px]">Add more dishes</Link>
+      </header>
+
+      <div className="px-6 py-6 sm:px-8">
+        <ul className={pending ? "opacity-60 transition-opacity" : "transition-opacity"}>
+          {cart.lines.map((line) => (
+            <CartRow key={line.key} line={line} onQuantity={onQuantity} onRemove={onRemove} />
+          ))}
+        </ul>
+
+        <div className="mt-7 flex flex-wrap items-baseline justify-between gap-4 border-t border-line pt-6">
+          <span className="font-display text-[19px] font-semibold text-ink">Subtotal</span>
+          <span className="font-display text-[22px] font-semibold tabular-nums text-ink">
+            {formatEGP(cart.subtotal)}
           </span>
         </div>
+        <p className="mt-1.5 text-[14px] text-ink-faint">Delivery calculated at checkout.</p>
 
-        <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25">
-          Send event request
+        <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25 sm:w-auto">
+          Check out this order
         </button>
-        <p className="mt-3 text-center text-[13.5px] text-ink-faint">
-          {hasLines
-            ? "Your contact details and how you would like to pay come next."
-            : "Add some dishes to your event first."}
+        <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
+          Regular orders need at least{" "}
+          <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>,
+          with delivery or pickup and your date chosen at checkout.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export function CartRow({
+  line, onQuantity, onRemove,
+}: {
+  line: ResolvedLine;
+  onQuantity: (key: string, q: number) => void;
+  onRemove: (key: string) => void;
+}) {
+  return (
+    <li className="border-b border-line-soft py-5 first:pt-0 last:border-0">
+      <div className="flex items-start justify-between gap-5">
+        <div className="min-w-0">
+          <h3 className="font-display text-[18px] font-semibold leading-snug text-ink">
+            {line.slug ? (
+              <Link href={`/product/${line.slug}`} className="hover:text-gold">
+                {line.productName}
+              </Link>
+            ) : (
+              line.productName
+            )}
+          </h3>
+          {line.variantName && (
+            <p className="mt-1 text-[14.5px] text-ink-soft">{line.variantName}</p>
+          )}
+          {line.options.map((o) => (
+            <p key={o.groupName} className="text-[14px] text-ink-soft">
+              <span className="text-ink-faint">{o.groupName}:</span> {o.choiceName}
+            </p>
+          ))}
+          {line.instructions && (
+            <p className="mt-1.5 border-s-2 border-line ps-3 text-[13.5px] italic text-ink-soft">
+              {line.instructions}
+            </p>
+          )}
+          {line.problem && <p className="mt-1.5 text-[14px] text-[#A6391C]">{line.problem}</p>}
+        </div>
+        <p className="whitespace-nowrap font-display text-[17px] font-semibold tabular-nums text-ink">
+          {formatEGP(line.lineTotal)}
         </p>
       </div>
 
-      <div className="mt-5 rounded-sm border border-line bg-cream-deep px-5 py-4">
-        <p className="text-[14px] leading-relaxed text-ink-soft">
-          Events need at least{" "}
-          <strong className="font-semibold text-ink">{RULES.event.noticeLabel}&rsquo; notice</strong>.
-          Your request is confirmed by us personally before it is booked.
-        </p>
+      <div className="mt-3.5 flex items-center gap-4">
+        <div className="flex items-center rounded-full border border-line bg-cream">
+          <button
+            type="button"
+            onClick={() => onQuantity(line.key, line.quantity - line.quantityStep)}
+            aria-label={`Reduce quantity of ${line.productName}`}
+            className="px-3.5 py-1.5 text-ink-soft"
+          >
+            &minus;
+          </button>
+          <span className="min-w-[2rem] text-center text-[15px] tabular-nums">{line.quantity}</span>
+          <button
+            type="button"
+            onClick={() => onQuantity(line.key, line.quantity + line.quantityStep)}
+            aria-label={`Increase quantity of ${line.productName}`}
+            className="px-3.5 py-1.5 text-ink-soft"
+          >
+            +
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={() => onRemove(line.key)}
+          className="text-[14px] text-ink-faint underline underline-offset-4 hover:text-ink"
+        >
+          Remove
+        </button>
+        {!line.problem && (
+          <span className="ms-auto text-[13.5px] tabular-nums text-ink-faint">
+            {formatEGP(line.unitPrice)} each
+          </span>
+        )}
       </div>
-    </aside>
+    </li>
   );
 }

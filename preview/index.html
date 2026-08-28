@@ -45,13 +45,18 @@ header.site .wrap{display:flex; align-items:center; gap:16px; height:64px}
 #logo-header{height:44px; width:auto; display:block}
 @media(min-width:640px){#logo-header{height:52px}}
 #logo-footer{height:76px; width:auto; display:block}
-.backbar{max-width:1180px; margin:0 auto; padding:24px 20px 0}
-@media(min-width:640px){.backbar{padding:24px 32px 0}}
-.backbar button{background:none; border:0; padding:4px 8px; margin-left:-8px; display:flex; align-items:center;
-  gap:8px; font-size:15px; color:var(--ink-soft)}
+/* Sticky, so it stays reachable down a long page without scrolling back up. */
+.backbar{position:sticky; top:64px; z-index:20; background:rgba(251,241,228,.95);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
+@media(min-width:640px){.backbar{top:80px}}
+.backbar.inflow{position:static; top:auto}
+.backbar button{background:none; border:0; padding:10px 12px 10px 8px; margin-left:-8px; display:flex;
+  align-items:center; gap:8px; font-size:14.5px; color:var(--ink-soft)}
 .backbar button:hover{color:var(--ink)}
 .backbar .ar{font-size:17px; line-height:1; transition:transform .2s}
 .backbar button:hover .ar{transform:translateX(-4px)}
+.stepwrap{position:sticky; top:64px; z-index:20}
+@media(min-width:640px){.stepwrap{top:80px}}
 .chip-preview{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
   border:1px solid var(--line); border-radius:999px; padding:2px 8px; white-space:nowrap}
 nav.main{display:none; gap:32px; margin-left:36px}
@@ -203,9 +208,28 @@ section{padding:72px 0}
   letter-spacing:.22em; color:var(--ink-faint)}
 .err{margin-top:8px; font-size:14px; color:var(--flag)}
 /* post-add actions on a product page */
+.dest{display:flex; flex-direction:column; gap:8px}
+@media(min-width:640px){.dest{flex-direction:row}}
+.dest .btn{flex:1}
+.ord-sec{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; overflow:hidden; padding:0}
+.ord-sec.event{border-color:rgba(168,126,46,.45)}
+.ord-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:16px;
+  border-bottom:1px solid var(--line); padding:20px 24px}
+@media(min-width:640px){.ord-head{padding:20px 32px}}
+.ord-head.normal{background:var(--cream-deep)}
+.ord-head.event{background:rgba(239,226,190,.45); border-bottom-color:rgba(168,126,46,.25)}
+.ord-head h2{margin-top:6px; font-size:24px; font-weight:600; line-height:1.2}
+.ord-head h2 .sub{font-family:Karla,sans-serif; font-size:16px; font-weight:400; color:var(--ink-soft)}
+.ord-kicker{font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--ink-faint)}
+.ord-kicker.gold{color:var(--gold)}
+.ord-body{padding:24px}
+@media(min-width:640px){.ord-body{padding:24px 32px}}
+.ord-total{display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  border-top:1px solid var(--line); margin-top:28px; padding-top:24px}
+.ord-total span:first-child{font-family:Fraunces,Georgia,serif; font-size:19px; font-weight:600}
+.ord-total span:last-child{font-family:Fraunces,Georgia,serif; font-size:22px; font-weight:600}
 .added{margin-top:24px; border:1px solid rgba(168,126,46,.35); background:rgba(239,226,190,.35);
-  border-radius:2px; padding:20px}
-.added .row{margin-top:16px; display:flex; flex-wrap:wrap; gap:12px 24px}
+  border-radius:2px; padding:16px 20px; font-size:15px}
 .backnav{display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px; padding:28px 0}
 .backnav button{background:none; border:0; padding:0; font-size:15px; color:var(--ink);
   display:flex; align-items:center; gap:8px}
@@ -227,17 +251,11 @@ section{padding:72px 0}
 .gfig img{width:100%; height:100%; object-fit:cover; display:block;
   transition:transform .9s cubic-bezier(.22,1,.36,1)}
 .gfig:hover img{transform:scale(1.05)}
-.gfig figcaption{position:absolute; inset-inline:0; bottom:0; padding:20px; font-size:14px; color:var(--cream);
-  background:linear-gradient(to top, rgba(59,35,16,.85), transparent);
-  opacity:0; transform:translateY(8px); transition:opacity .3s, transform .3s}
-.gfig:hover figcaption{opacity:1; transform:translateY(0)}
 .masonry{columns:1; column-gap:16px}
 @media(min-width:640px){.masonry{columns:2}}
 @media(min-width:1024px){.masonry{columns:3}}
 .masonry .gfig{break-inside:avoid; margin-bottom:16px}
-.masonry .gfig figcaption{opacity:1; transform:none; position:static; background:var(--cream-warm);
-  color:var(--ink-soft); padding:12px 20px}
-.r45{aspect-ratio:4/5}
+.masonry .r45{aspect-ratio:4/5}
 @media(min-width:1024px){.gal > .r45{aspect-ratio:auto; min-height:34rem}}
 
 h2.sec{font-size:30px; font-weight:600; line-height:1.15; margin-top:12px}
@@ -297,8 +315,6 @@ h2.sec{font-size:30px; font-weight:600; line-height:1.15; margin-top:12px}
 .browser-bar{position:sticky; top:64px; z-index:29; background:rgba(251,241,228,.96);
   backdrop-filter:blur(10px); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft)}
 @media(min-width:640px){.browser-bar{top:80px}}
-body.in-event .browser-bar{top:104px}
-@media(min-width:640px){body.in-event .browser-bar{top:120px}}
 .browser-bar .inner{display:flex; flex-direction:column; gap:12px; padding:16px 0}
 @media(min-width:1024px){.browser-bar .inner{flex-direction:row; align-items:center; gap:24px}}
 .search{position:relative; flex:1}
@@ -569,36 +585,47 @@ function lowest(p) {
 }
 
 /* ------------------------------------------------------------------ state */
-const KEY = "thediine.preview.v4";
+const KEY = "thediine.preview.v5";
 const EMPTY_EVENT = { eventType: null, eventTypeOther: "", date: "", time: "", guestCount: "", venue: "",
   decorRequested: false, setupRequested: false, servingStaffRequested: false, extrasNotes: "" };
 
 /*
- * Normal and event dishes live in SEPARATE lists, so starting an event can
- * never sweep up an existing normal order. Moving items across is an explicit
- * choice the customer makes.
+ * ONE cart holding TWO order types. There is no global "event mode": which part
+ * a dish joins comes from the journey the customer is in, carried in the URL as
+ * ?for=event, so starting an event never changes what every Add to Cart means.
  */
-let S = { normalLines: [], eventLines: [], mode: "normal", event: Object.assign({}, EMPTY_EVENT) };
+let S = { normalLines: [], eventLines: [], event: Object.assign({}, EMPTY_EVENT) };
 try {
   const r = JSON.parse(localStorage.getItem(KEY));
   if (r && Array.isArray(r.normalLines)) S = Object.assign(S, r, { event: Object.assign({}, EMPTY_EVENT, r.event || {}) });
 } catch (e) {}
 
-function activeLines() { return S.mode === "event" ? S.eventLines : S.normalLines; }
-function setActiveLines(ls) { if (S.mode === "event") S.eventLines = ls; else S.normalLines = ls; }
+function hasEvent() { return S.event.eventType !== null || S.eventLines.length > 0; }
+function linesFor(scope) { return scope === "event" ? S.eventLines : S.normalLines; }
 function countOf(ls) { return ls.reduce((n, l) => n + l.qty, 0); }
+function subtotalOf(ls) { return ls.reduce((n, l) => n + unitPrice(l) * l.qty, 0); }
+
+/* The current route's scope, read from the hash query, never from state. */
+function routeScope() { return /[?&]for=event/.test(location.hash) ? "event" : null; }
 
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} paint(); }
 function paint() {
-  $("#cart-count").textContent = countOf(activeLines());
-  document.body.classList.toggle("in-event", S.mode === "event");
+  $("#cart-count").textContent = countOf(S.normalLines) + countOf(S.eventLines);
   renderBackBar();
 }
 function renderBackBar() {
   const el = $("#backbar"); if (!el) return;
-  const h = location.hash.replace(/^#/, "") || "/";
-  el.innerHTML = (h === "/" || history.length <= 1) ? ""
-    : '<div class="backbar"><button type="button" id="go-back"><span class="ar">\u2190</span> Back</button></div>';
+  const h = hashPath();
+  /* Event steps render their own Back beneath the progress bar. */
+  const hide = h === "/" || h.indexOf("/events/") === 0 || history.length <= 1;
+  el.innerHTML = hide ? "" : backBarHTML();
+}
+function backBarHTML(inFlow) {
+  return '<div class="backbar' + (inFlow ? " inflow" : "") + '"><div class="wrap">'
+    + '<button type="button" class="go-back"><span class="ar">\u2190</span> Back</button></div></div>';
+}
+function hashPath() {
+  return (location.hash.replace(/^#/, "").split("?")[0]) || "/";
 }
 const EVENT_LABELS = { BIRTHDAY: "Birthday", ENGAGEMENT: "Engagement", WEDDING: "Wedding", OTHER: "Other" };
 
@@ -608,7 +635,7 @@ function unitPrice(l) {
   if (l.variant && p.variants) { const v = p.variants.find((x) => x.name === l.variant); if (v) base = v.price; }
   return base; // required accompaniments are included at no extra cost
 }
-function subtotal() { return activeLines().reduce((n, l) => n + unitPrice(l) * l.qty, 0); }
+
 
 /* five days ahead, as a yyyy-mm-dd string */
 function minEventDate() {
@@ -682,7 +709,7 @@ function bindGuestInput(id, after) {
 /* ------------------------------------------------------------------ views */
 function cardHTML(p) {
   const pr = lowest(p);
-  return '<a class="card" href="#/product/' + p.slug + '"><span class="hair"></span>'
+  return '<a class="card" href="#/product/' + p.slug + (routeScope() === "event" ? "?for=event" : "") + '"><span class="hair"></span>'
     + '<h3>' + esc(p.name) + '</h3>'
     + (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '')
     + (p.allergens.length ? '<p class="allerg">' + p.allergens.map(esc).join(" \u00b7 ") + '</p>' : '')
@@ -712,7 +739,7 @@ function galleryHTML(heading, title, intro, showLink) {
   const fig = (item, ratio, cls) =>
     '<figure class="gfig ' + ratio + (cls ? " " + cls : "") + '">'
     + '<img src="' + item.src + '" alt="' + esc(item.alt) + '" loading="lazy">'
-    + '<figcaption>' + esc(item.caption) + '</figcaption></figure>';
+    + '</figure>';
 
   return '<section class="band-deep" style="position:relative">' + curve("deep", true)
     + '<div class="wrap" style="padding-top:40px;padding-bottom:112px">'
@@ -803,7 +830,7 @@ function viewHome() {
 
 /* ---------------------------------------------------- event note in header */
 function eventNoteHTML() {
-  if (S.mode !== "event") return "";
+  if (routeScope() !== "event" || !hasEvent()) return "";
   const e = S.event;
   const bits = [e.guestCount ? e.guestCount + " guests" : null, e.date ? shortDate(e.date) : null].filter(Boolean);
   return '<div class="event-note"><span class="dot"></span>'
@@ -844,7 +871,7 @@ function renderBrowser() {
     body = shown.map((c) =>
       '<section style="padding:0"><div class="sec-title"><div style="display:flex;align-items:baseline">'
       + '<h2>' + esc(c.name) + '</h2><span class="n tnum">' + c.products.length + '</span></div>'
-      + (MB.cat ? '' : '<a class="link-sweep" href="#/menu/' + c.slug + '">Only '
+      + (MB.cat ? '' : '<a class="link-sweep" href="#/menu/' + c.slug + (routeScope() === "event" ? "?for=event" : "") + '">Only '
           + esc(c.name.toLowerCase()) + ' \u2192</a>') + '</div><span class="hair" style="margin-top:12px"></span>'
       + '<div class="grid">' + c.products.map(cardHTML).join("") + '</div></section>').join("");
   }
@@ -871,7 +898,7 @@ function viewProduct(slug) {
   const p = PRODUCTS[slug];
   if (!p) return '<div class="narrow"><p style="padding:80px 0">Dish not found.</p></div>';
   PS = { slug: slug, variant: p.variants && p.variants.length ? p.variants[0].name : null,
-         choices: {}, qty: 1, instr: "", added: false };
+         choices: {}, qty: 1, instr: "", added: false, addedTo: null };
   return '<div class="narrow" style="padding-top:8px"><div id="pd"></div></div>';
 }
 function renderPD() {
@@ -908,28 +935,45 @@ function renderPD() {
         + esc(c) + '</span></button>').join("") + '</div></fieldset>';
   });
   h += '<fieldset><legend class="label-rule">Special instructions</legend>'
-    + '<textarea id="instr" rows="3" placeholder="Anything we should know about this dish?">' + esc(PS.instr) + '</textarea></fieldset>'
-    + '<div class="add-row"><div class="qty">'
+    + '<textarea id="instr" rows="3" placeholder="Anything we should know about this dish?">' + esc(PS.instr) + '</textarea></fieldset>';
+
+  /* Where the dish goes comes from the journey, not a global mode. From a
+     neutral menu with an event open we do not guess: we ask. */
+  const forced = routeScope();
+  const mustAsk = hasEvent() && !forced;
+  const occ = S.event.eventType === "OTHER" ? (S.event.eventTypeOther || "event")
+    : S.event.eventType ? EVENT_LABELS[S.event.eventType] : "event";
+
+  h += '<div class="add-row"><div class="qty">'
     + '<button type="button" id="q-minus" aria-label="Reduce quantity"' + (PS.qty <= 1 ? " disabled" : "") + '>\u2212</button>'
     + '<span class="n tnum">' + PS.qty + '</span>'
-    + '<button type="button" id="q-plus" aria-label="Increase quantity">+</button></div>'
-    + '<button type="button" class="btn btn-primary" id="add"' + (missing.length ? " disabled" : "") + '>'
-    + (PS.added ? "Added to cart" : "Add to cart") + ' <span class="tnum">' + egp(base * PS.qty) + '</span></button></div>';
-  if (missing.length) h += '<p class="hint">Choose ' + missing.map((g) => esc(g.name.toLowerCase())).join(" and ") + ' to continue.</p>';
-  if (PS.added) {
-    h += '<div class="added"><p style="font-size:15px">Added to your order.</p><div class="row">'
-      + '<a class="link-sweep" href="#/menu/' + p.category.slug + '">\u2190 Back to ' + esc(p.category.name) + '</a>'
-      + '<a class="link-sweep" href="#/menu">Keep browsing</a>'
-      + '<a class="link-sweep" href="#/cart">Go to cart \u2192</a></div></div>';
+    + '<button type="button" id="q-plus" aria-label="Increase quantity">+</button></div>';
+
+  if (mustAsk) {
+    h += '<div style="flex:1"><p style="margin-bottom:12px;font-size:14px;color:var(--ink-soft)">Add this to '
+      + '<span class="tnum">' + egp(base * PS.qty) + '</span></p>'
+      + '<div class="dest"><button type="button" class="btn btn-primary" data-add="normal"'
+      + (missing.length ? " disabled" : "") + '>Your normal order</button>'
+      + '<button type="button" class="btn btn-outline" data-add="event"' + (missing.length ? " disabled" : "") + '>'
+      + esc(occ) + (S.event.date ? ' \u00b7 ' + esc(shortDate(S.event.date)) : '') + '</button></div></div>';
+  } else {
+    h += '<button type="button" class="btn btn-primary" data-add="' + (forced || "normal") + '"'
+      + (missing.length ? " disabled" : "") + '>'
+      + (PS.added ? "Added" : forced === "event" ? "Add to your event" : "Add to cart")
+      + ' <span class="tnum">' + egp(base * PS.qty) + '</span></button>';
   }
+  h += '</div>';
+
+  if (missing.length) h += '<p class="hint">Choose ' + missing.map((g) => esc(g.name.toLowerCase())).join(" and ") + ' to continue.</p>';
+  if (PS.added) h += '<p class="added">Added to your ' + (PS.addedTo === "event" ? esc(occ.toLowerCase()) : "order") + '.</p>';
   h += '</div>';
   el.innerHTML = h;
 }
 
 /* ------------------------------------------------------------------- cart */
-function lineRowHTML(l, compact) {
+function lineRowHTML(l, scope) {
   const p = PRODUCTS[l.slug], u = unitPrice(l);
-  return '<li class="cart-line' + (compact ? " compact" : "") + '"><div class="top"><div style="min-width:0">'
+  return '<li class="cart-line compact"><div class="top"><div style="min-width:0">'
     + '<h2><a href="#/product/' + l.slug + '">' + esc(p ? p.name : l.slug) + '</a></h2>'
     + (l.variant ? '<p style="margin-top:4px;font-size:14.5px;color:var(--ink-soft)">' + esc(l.variant) + '</p>' : '')
     + (l.choiceLabels && l.choiceLabels.length ? '<ul>' + l.choiceLabels.map((cl) =>
@@ -937,17 +981,31 @@ function lineRowHTML(l, compact) {
     + (l.instr ? '<p class="instr">' + esc(l.instr) + '</p>' : '')
     + '</div><p class="lt tnum">' + egp(u * l.qty) + '</p></div>'
     + '<div class="ctrls"><div class="qty">'
-    + '<button type="button" data-dec="' + esc(l.k) + '" aria-label="Reduce quantity">\u2212</button>'
+    + '<button type="button" data-dec="' + esc(l.k) + '" data-scope="' + scope + '" aria-label="Reduce quantity">\u2212</button>'
     + '<span class="n tnum">' + l.qty + '</span>'
-    + '<button type="button" data-inc="' + esc(l.k) + '" aria-label="Increase quantity">+</button></div>'
-    + '<button type="button" class="rm" data-rm="' + esc(l.k) + '">Remove</button>'
+    + '<button type="button" data-inc="' + esc(l.k) + '" data-scope="' + scope + '" aria-label="Increase quantity">+</button></div>'
+    + '<button type="button" class="rm" data-rm="' + esc(l.k) + '" data-scope="' + scope + '">Remove</button>'
     + '<span class="each tnum">' + egp(u) + ' each</span></div></li>';
 }
 
-/* One panel: the occasion, the dishes and the extras are three sections of a
-   single event request, not a card sitting on top of a shopping cart. */
-function eventPanelHTML() {
-  const e = S.event, err = firstError(e);
+function normalSectionHTML() {
+  const st = subtotalOf(S.normalLines);
+  return '<section class="ord-sec"><header class="ord-head normal">'
+    + '<div><p class="ord-kicker">Normal order</p><h2>Your regular order</h2></div>'
+    + '<a class="link-sweep" href="#/menu">Add more dishes</a></header>'
+    + '<div class="ord-body"><ul style="list-style:none;margin:0;padding:0">'
+    + S.normalLines.map((l) => lineRowHTML(l, "normal")).join("") + '</ul>'
+    + '<div class="ord-total"><span>Subtotal</span><span class="tnum">' + egp(st) + '</span></div>'
+    + '<p style="margin-top:6px;font-size:14px;color:var(--ink-faint)">Delivery calculated at checkout.</p>'
+    + '<button type="button" class="btn btn-primary" style="margin-top:24px" disabled>Check out this order</button>'
+    + '<p style="margin-top:16px;font-size:14px;color:var(--ink-soft)">Regular orders need at least '
+    + '<strong>48 hours\u2019 notice</strong>, with delivery or pickup and your date chosen at checkout.</p>'
+    + '</div></section>';
+}
+
+/* The event request: occasion, dishes and extras as one section of the cart. */
+function eventSectionHTML() {
+  const e = S.event, err = firstError(e), st = subtotalOf(S.eventLines);
   const extras = EXTRAS.filter((x) => e[x[0]]).map((x) => x[1]);
   const occasion = e.eventType === "OTHER" ? (e.eventTypeOther || "Other")
     : e.eventType ? EVENT_LABELS[e.eventType] : "Your event";
@@ -978,18 +1036,18 @@ function eventPanelHTML() {
 
   const dishes = S.eventLines.length === 0
     ? '<p style="margin-top:16px;font-size:16px;color:var(--ink-soft)">No dishes chosen yet.</p>'
-      + '<a class="btn btn-primary" style="margin-top:20px" href="#/menu">Browse the menu</a>'
-    : '<ul style="list-style:none;margin:16px 0 0;padding:0">' + S.eventLines.map((l) => lineRowHTML(l, true)).join("") + '</ul>'
-      + '<a class="link-sweep" style="display:inline-block;margin-top:20px;font-size:14.5px" href="#/menu">Add more dishes</a>';
+      + '<a class="btn btn-primary" style="margin-top:20px" href="#/menu?for=event">Choose dishes for this event</a>'
+    : '<ul style="list-style:none;margin:16px 0 0;padding:0">' + S.eventLines.map((l) => lineRowHTML(l, "event")).join("") + '</ul>'
+      + '<a class="link-sweep" style="display:inline-block;margin-top:20px;font-size:14.5px" href="#/menu?for=event">Add more dishes to this event</a>';
 
-  return '<section class="ev-panel"><header class="ev-head">'
-    + '<div><p style="font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--gold)">Event request</p>'
-    + '<h2>' + esc(occasion) + '</h2></div>'
+  return '<section class="ord-sec event"><header class="ord-head event">'
+    + '<div><p class="ord-kicker gold">Event request</p><h2>' + esc(occasion)
+    + (e.date ? '<span class="sub"> \u00b7 ' + esc(longDate(e.date)) + '</span>' : '') + '</h2></div>'
     + '<button type="button" class="link-sweep" id="' + (EV_EDIT ? "ev-close" : "ev-edit") + '">'
     + (EV_EDIT ? "Close" : "Edit details") + '</button></header>'
     + details
     + (err && !EV_EDIT ? '<p class="ev-err">' + esc(err) + '</p>' : '')
-    + '<div class="ev-sec"><h3 class="ev-h3">Dishes for your event</h3>' + dishes + '</div>'
+    + '<div class="ev-sec"><h3 class="ev-h3">Dishes for this event</h3>' + dishes + '</div>'
     + '<div class="ev-sec last"><h3 class="ev-h3">Anything else for the day?</h3>'
     + (extras.length === 0
         ? '<p style="margin-top:12px;font-size:16px;color:var(--ink-soft)">Nothing requested yet. '
@@ -999,7 +1057,12 @@ function eventPanelHTML() {
           + 'your event. Nothing here is added to your total. <a class="link-sweep" href="#/events/extras">Change</a></p>')
     + (e.extrasNotes ? '<p style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;'
         + 'font-size:15px;font-style:italic;color:var(--ink-soft)">' + esc(e.extrasNotes) + '</p>' : '')
-    + '<button type="button" id="cancel-event" style="margin-top:28px;background:none;border:0;padding:0;'
+    + '<div class="ord-total"><span>Food subtotal</span><span class="tnum">' + egp(st) + '</span></div>'
+    + '<p style="margin-top:6px;font-size:14px;color:var(--ink-faint)">Extras are quoted separately.</p>'
+    + '<button type="button" class="btn btn-primary" style="margin-top:24px" disabled>Send this event request</button>'
+    + '<p style="margin-top:16px;font-size:14px;color:var(--ink-soft)">Events need at least <strong>5 days\u2019 notice</strong> '
+    + 'and are confirmed by us personally before they are booked.</p>'
+    + '<button type="button" id="cancel-event" style="display:block;margin-top:24px;background:none;border:0;padding:0;'
     + 'font-size:13.5px;color:var(--ink-faint);text-decoration:underline;text-underline-offset:4px">'
     + 'Cancel this event request</button></div></section>';
 }
@@ -1015,68 +1078,52 @@ function bindEventCard(rerender) {
 }
 
 function viewCart() {
-  const isEvent = S.mode === "event";
-  const st = subtotal();
-  const head = '<div class="wrap"><p class="label-rule" style="padding-top:48px">'
-    + (isEvent ? "One request" : "Your order") + '</p>'
-    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:600;margin-top:12px">'
-    + (isEvent ? "Your event request" : "Cart") + '</h1>'
-    + (isEvent ? '<p style="margin-top:16px;max-width:34rem;font-size:16.5px;color:var(--ink-soft)">'
-        + 'Your occasion and your dishes together, in one request.</p>' : '');
+  const head = '<div class="wrap"><p class="label-rule" style="padding-top:48px">Your cart</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:600;margin-top:12px">Everything so far</h1>';
 
-  if (isEvent) {
-    return head + '<div class="cart-grid">' + eventPanelHTML() + '<div>'
-      + '<div class="summary"><h2>Your event so far</h2>'
-      + '<div class="row"><span class="muted">Food subtotal</span><span class="tnum" style="font-weight:500">' + egp(st) + '</span></div>'
-      + '<div class="row"><span class="muted">Extras</span><span style="font-size:14.5px;color:var(--ink-faint)">Quoted separately</span></div>'
-      + '<div class="total"><span>Total so far</span><span class="tnum">' + egp(st) + '</span></div>'
-      + '<button type="button" class="btn btn-primary" style="width:100%;margin-top:24px" disabled>Send event request</button>'
-      + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">'
-      + (S.eventLines.length ? "Your contact details and how you would like to pay come next."
-                             : "Add some dishes to your event first.") + '</p></div>'
-      + '<div class="notice-box">Events need at least <strong>5 days\u2019 notice</strong>. Your request is confirmed '
-      + 'by us personally before it is booked.</div>'
-      + (S.normalLines.length ? '<div class="notice-box">You also have <strong>' + countOf(S.normalLines)
-          + '</strong> ' + (countOf(S.normalLines) === 1 ? "dish" : "dishes") + ' waiting in a separate regular order. '
-          + 'It is untouched.</div>' : '')
-      + '</div></div></div>';
-  }
-
-  if (!S.normalLines.length) {
+  if (!S.normalLines.length && !hasEvent()) {
     return head + '<div class="empty"><p>Nothing here yet</p>'
       + '<p style="margin-top:12px;color:var(--ink-soft)">Browse the menu and add the dishes you would like.</p>'
       + '<a class="btn btn-primary" style="margin-top:32px" href="#/menu">Browse the menu</a></div></div>';
   }
 
-  return head + '<div class="cart-grid"><ul style="list-style:none;margin:0;padding:0">'
-    + S.normalLines.map((l) => lineRowHTML(l, false)).join("") + '</ul><div>'
-    + '<div class="summary"><h2>Order summary</h2>'
-    + '<div class="row"><span class="muted">Food subtotal</span><span class="tnum" style="font-weight:500">' + egp(st) + '</span></div>'
-    + '<div class="row"><span class="muted">Delivery</span><span style="font-size:14.5px;color:var(--ink-faint)">Calculated at checkout</span></div>'
-    + '<div class="total"><span>Total so far</span><span class="tnum">' + egp(st) + '</span></div>'
-    + '<button type="button" class="btn btn-primary" style="width:100%;margin-top:24px" disabled>Continue to checkout</button>'
-    + '<p style="margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-faint)">Delivery or pickup, your date and payment come next.</p>'
-    + '<a href="#/menu" style="display:block;margin-top:20px;text-align:center;font-size:14.5px;color:var(--gold);text-decoration:underline;text-underline-offset:4px">Keep browsing the menu</a></div>'
-    + '<div class="notice-box">Orders need at least <strong>48 hours\u2019 notice</strong>. You will choose your date '
-    + 'at checkout, and only available dates can be picked.</div>'
-    + (S.eventLines.length ? '<div class="notice-box">You also have an event request in progress with <strong>'
-        + countOf(S.eventLines) + '</strong> ' + (countOf(S.eventLines) === 1 ? "dish" : "dishes") + '. '
-        + '<a class="link-sweep" href="#/events/start">Go back to it</a></div>' : '')
-    + '</div></div></div>';
+  return head + '<div style="display:flex;flex-direction:column;gap:56px;margin-top:48px;padding-bottom:24px">'
+    + (S.normalLines.length ? normalSectionHTML() : '')
+    + (hasEvent() ? eventSectionHTML() : '')
+    + (!S.normalLines.length && hasEvent()
+        ? '<p style="font-size:15px;color:var(--ink-soft)">Nothing in your regular order. '
+          + '<a class="link-sweep" href="#/menu">Browse the menu</a> to add dishes to one.</p>' : '')
+    + '</div></div>';
 }
 function renderCart() { $("#app").innerHTML = viewCart(); if (EV_EDIT) bindEventCard(renderCart); }
 let EV_EDIT = false;
 
 /* ----------------------------------------------------------- event journey */
-const STEPS = [["type","Occasion"],["details","Details"],["dishes","Dishes"],["extras","Extras"],["review","Review"]];
+const STEPS = [["type","Occasion","#/events/start"],["details","Details","#/events/details"],
+               ["dishes","Dishes","#/menu?for=event"],["extras","Extras","#/events/extras"],
+               ["review","Review","#/cart"]];
+/* Progress bar, then the Back control beneath it. */
 function progressHTML(cur) {
   const idx = STEPS.findIndex((s) => s[0] === cur);
-  return '<nav class="progress" aria-label="Event request progress"><ol>'
-    + STEPS.map((s, i) => '<li class="' + (i < idx ? "done" : i === idx ? "now" : "") + '">'
-        + '<span><span class="n tnum">0' + (i+1) + '</span>' + s[1] + '</span></li>').join("") + '</ol></nav>';
+  return '<div class="stepwrap"><nav class="progress" aria-label="Event request progress"><ol>'
+    + STEPS.map((s, i) => {
+        const state = i < idx ? "done" : i === idx ? "now" : "";
+        const body = '<span><span class="n tnum">0' + (i+1) + '</span>' + s[1] + '</span>';
+        return '<li class="' + state + '">' + (state === "done" ? '<a href="' + s[2] + '">' + body + '</a>' : body) + '</li>';
+      }).join("")
+    + '</ol></nav>' + backBarHTML(true) + '</div>';
 }
 const EVENT_NOTICE = 'Events need at least <strong>5 days\u2019 notice</strong>, and are sent as a request '
   + '\u2014 we confirm every event with you personally before it is booked.';
+
+/* Continuing an existing request and starting a new one are different actions. */
+function eventEntryHTML() {
+  if (!hasEvent()) return '<a class="btn btn-primary" href="#/events/start">Start an event request</a>';
+  const occ = S.event.eventType === "OTHER" ? (S.event.eventTypeOther || "event")
+    : S.event.eventType ? EVENT_LABELS[S.event.eventType].toLowerCase() : "event";
+  return '<a class="btn btn-primary" href="#/cart">Continue your ' + esc(occ) + ' request</a>'
+    + '<button type="button" class="btn btn-outline" id="ev-new">Start a new request</button>';
+}
 
 function viewEvents() {
   return '<section class="hero" style="padding-bottom:0;background:radial-gradient(120% 100% at 85% -10%, #FFFDF8 0%, #F8EDDA 45%, #EFDDBE 100%)">'
@@ -1103,89 +1150,71 @@ function viewEvents() {
     + GOLD_ARC + '<h2 class="sec" style="max-width:30rem;margin:24px auto 0">Ready when you are</h2>'
     + '<p style="margin-top:16px;max-width:28rem;margin-left:auto;margin-right:auto;font-size:16px;color:var(--ink-soft)">'
     + 'Events need at least five days\u2019 notice. Everything you send is a request until we confirm it with you.</p>'
-    + '<a class="btn btn-primary" style="margin-top:32px" href="#/events/start">Start an event request</a></div></section>';
+    + '<div style="margin-top:32px;display:flex;justify-content:center">' + eventEntryHTML() + '</div></div></section>';
 }
 
-let ES = { step: "type", touched: false };
-function viewEventStart() {
-  ES = { step: S.event.eventType ? "details" : "type", touched: false, choiceMade: S.mode === "event" };
-  return '<div id="es"></div>';
+let ES = { touched: false };
+
+/* Step one. ALWAYS shows the picker; it never skips ahead because a type was
+   chosen earlier, so coming back to change the occasion works. */
+function viewOccasion() { ES = { touched: false }; return '<div id="es"></div>'; }
+function renderOccasion() {
+  const el = $("#es"); if (!el) return;
+  const e = S.event;
+  const canGo = e.eventType && (e.eventType !== "OTHER" || e.eventTypeOther.trim());
+  el.innerHTML = progressHTML("type") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
+    + '<p class="label-rule">Step one</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">What are we celebrating?</h1>'
+    + '<div class="step-grid">'
+    + Object.keys(EVENT_LABELS).map((t) => '<button type="button" class="type-btn'
+        + (e.eventType === t ? " on" : "") + '" data-etype="' + t + '" aria-pressed="' + (e.eventType === t)
+        + '"><span class="hair"></span><span class="lbl">' + EVENT_LABELS[t] + '</span></button>').join("")
+    + '</div>'
+    + (e.eventType === "OTHER"
+        ? '<div style="margin-top:32px"><label for="other" style="display:block;margin-bottom:12px;font-size:11px;'
+          + 'text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">Tell us the occasion</label>'
+          + '<input type="text" id="other" value="' + esc(e.eventTypeOther) + '" placeholder="Graduation, baby shower, corporate lunch\u2026"></div>' : '')
+    + '<div style="margin-top:40px"><button type="button" class="btn btn-primary" id="to-details"'
+    + (canGo ? "" : " disabled") + '>Continue</button></div>'
+    + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
+  const o = $("#other");
+  if (o) o.addEventListener("input", (ev) => { S.event.eventTypeOther = ev.target.value; save();
+    const b = $("#to-details"); if (b) b.disabled = !ev.target.value.trim(); });
 }
-function renderES() {
+
+/* Step two. */
+function viewDetails() { ES = { touched: false }; return '<div id="es"></div>'; }
+function renderDetails() {
   const el = $("#es"); if (!el) return;
   const e = S.event, min = minEventDate(), v = validateEvent(e);
-
-  /* A normal order already in progress is never silently swallowed. */
-  const waiting = countOf(S.normalLines);
-  if (!ES.choiceMade && S.mode !== "event" && waiting > 0) {
-    el.innerHTML = '<div class="narrow" style="padding-top:64px;padding-bottom:80px">'
-      + '<p class="label-rule">Before we start</p>'
-      + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:32px;font-weight:600;margin-top:12px">'
-      + 'You already have a regular order</h1>'
-      + '<p style="margin-top:20px;font-size:17px;color:var(--ink-soft)">There ' + (waiting === 1 ? "is" : "are") + " "
-      + waiting + " " + (waiting === 1 ? "dish" : "dishes") + ' in your regular order. An event request is a '
-      + 'separate thing \u2014 what would you like to do?</p>'
-      + '<div style="display:grid;gap:12px;margin-top:40px">'
-      + '<button type="button" class="type-btn" id="ev-fresh"><span class="hair"></span>'
-      + '<span class="lbl">Start a fresh event request</span>'
-      + '<span style="display:block;margin-top:8px;font-size:15px;color:var(--ink-soft)">'
-      + 'Your regular order stays exactly as it is, waiting for you.</span></button>'
-      + '<button type="button" class="type-btn" id="ev-move"><span class="hair"></span>'
-      + '<span class="lbl">Move those dishes into the event</span>'
-      + '<span style="display:block;margin-top:8px;font-size:15px;color:var(--ink-soft)">'
-      + 'Your regular order is emptied and ' + (waiting === 1 ? "that dish becomes" : "those dishes become")
-      + ' part of the event request.</span></button></div>'
-      + '<a href="#/cart" style="display:inline-block;margin-top:32px;font-size:14.5px;color:var(--ink-faint);'
-      + 'text-decoration:underline;text-underline-offset:4px">Never mind, take me back to my order</a></div>';
+  if (!e.eventType) {
+    el.innerHTML = progressHTML("details") + '<div class="narrow" style="padding:64px 0;text-align:center">'
+      + '<p style="font-family:Fraunces,Georgia,serif;font-size:22px">Let us start with the occasion</p>'
+      + '<a class="btn btn-primary" style="margin-top:24px" href="#/events/start">Choose the occasion</a></div>';
     return;
   }
-
-  if (ES.step === "type") {
-    el.innerHTML = progressHTML("type") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-      + '<p class="label-rule">Step one</p>'
-      + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">What are we celebrating?</h1>'
-      + '<div class="step-grid">'
-      + Object.keys(EVENT_LABELS).map((t) => '<button type="button" class="type-btn'
-          + (e.eventType === t ? " on" : "") + '" data-etype="' + t + '"><span class="hair"></span>'
-          + '<span class="lbl">' + EVENT_LABELS[t] + '</span></button>').join("")
-      + '</div>'
-      + (e.eventType === "OTHER"
-          ? '<div style="margin-top:32px"><label class="lab" for="other" style="display:block;margin-bottom:12px;'
-            + 'font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">Tell us the occasion</label>'
-            + '<input type="text" id="other" value="' + esc(e.eventTypeOther) + '" placeholder="Graduation, baby shower, corporate lunch\u2026"></div>' : '')
-      + '<div style="margin-top:40px"><button type="button" class="btn btn-primary" id="to-details"'
-      + ((!e.eventType || (e.eventType === "OTHER" && !e.eventTypeOther.trim())) ? " disabled" : "") + '>Continue</button></div>'
-      + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
-    const o = $("#other");
-    if (o) o.addEventListener("input", (ev) => { S.event.eventTypeOther = ev.target.value; save();
-      const b = $("#to-details"); if (b) b.disabled = !ev.target.value.trim(); });
-  } else {
-    el.innerHTML = progressHTML("details") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-      + '<p class="label-rule">Step two</p>'
-      + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">Tell us about the day</h1>'
-      + '<div class="fields">'
-      + field("Event date", '<input type="date" id="e-date" min="' + min + '" value="' + esc(e.date) + '"'
-          + (ES.touched && v.errors.date ? ' class="bad"' : '') + '>', "Earliest available: " + min)
-      + field("Event time", '<input type="time" id="e-time" value="' + esc(e.time) + '"'
-          + (ES.touched && v.errors.time ? ' class="bad"' : '') + '>')
-      + field("Number of guests", guestInputHTML("e-guests"), "We cater events for up to " + MAX_GUESTS + " guests")
-      + field("Venue or address", '<input type="text" id="e-venue" placeholder="Where should we bring the food?" value="'
-          + esc(e.venue) + '"' + (ES.touched && v.errors.venue ? ' class="bad"' : '') + '>', null, true)
-      + '</div>'
-      + ((ES.touched || e.date) && !v.ok ? '<p class="warn">' + esc(Object.values(v.errors)[0]) + '</p>' : '')
-      + '<div style="margin-top:40px;display:flex;flex-wrap:wrap;gap:16px;align-items:center">'
-      + '<button type="button" class="btn btn-primary" id="to-dishes">Choose your dishes</button>'
-      + '<button type="button" id="back-type" style="background:none;border:0;font-size:15px;color:var(--ink-soft);'
-      + 'text-decoration:underline;text-underline-offset:4px">Back</button></div>'
-      + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
-    const b = (id, key) => { const n = $(id);
-      if (n) n.addEventListener("input", (ev) => { S.event[key] = ev.target.value; save(); if (key === "date") renderES(); }); };
-    b("#e-date", "date"); b("#e-time", "time"); b("#e-venue", "venue");
-    bindGuestInput("e-guests", renderES);
-  }
+  el.innerHTML = progressHTML("details") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
+    + '<p class="label-rule">Step two</p>'
+    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">Tell us about the day</h1>'
+    + '<div class="fields">'
+    + field("Event date", '<input type="date" id="e-date" min="' + min + '" value="' + esc(e.date) + '"'
+        + (ES.touched && v.errors.date ? ' class="bad"' : '') + '>', "Earliest available: " + min)
+    + field("Event time", '<input type="time" id="e-time" value="' + esc(e.time) + '"'
+        + (ES.touched && v.errors.time ? ' class="bad"' : '') + '>')
+    + field("Number of guests", guestInputHTML("e-guests"), "We cater events for up to " + MAX_GUESTS + " guests")
+    + field("Venue or address", '<input type="text" id="e-venue" placeholder="Where should we bring the food?" value="'
+        + esc(e.venue) + '"' + (ES.touched && v.errors.venue ? ' class="bad"' : '') + '>', null, true)
+    + '</div>'
+    + ((ES.touched || e.date) && !v.ok ? '<p class="warn">' + esc(Object.values(v.errors)[0]) + '</p>' : '')
+    + '<div style="margin-top:40px"><button type="button" class="btn btn-primary" id="to-dishes">Choose your dishes</button></div>'
+    + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
+  const b = (id, key) => { const n = $(id);
+    if (n) n.addEventListener("input", (ev) => { S.event[key] = ev.target.value; save(); if (key === "date") renderDetails(); }); };
+  b("#e-date", "date"); b("#e-time", "time"); b("#e-venue", "venue");
+  bindGuestInput("e-guests", renderDetails);
 }
 function field(label, input, hint, full) {
-  return '<div class="field' + (full ? " full" : "") + '"><label class="lab" style="display:block;margin-bottom:12px;'
+  return '<div class="field' + (full ? " full" : "") + '"><label style="display:block;margin-bottom:12px;'
     + 'font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">' + esc(label) + '</label>'
     + input + (hint ? '<p class="h">' + esc(hint) + '</p>' : '') + '</div>';
 }
@@ -1195,7 +1224,7 @@ const EXTRAS = [
   ["setupRequested", "Event setup", "We arrive early and set everything out ready for your guests."],
   ["servingStaffRequested", "Serving staff", "Our team stays to serve through the event."]
 ];
-function viewExtras() { return S.mode !== "event" ? notInEvent() : '<div id="ex"></div>'; }
+function viewExtras() { return hasEvent() ? '<div id="ex"></div>' : notInEvent(); }
 function renderExtras() {
   const el = $("#ex"); if (!el) return;
   const e = S.event;
@@ -1232,23 +1261,23 @@ function viewOurWork() {
   return '<div class="page-head" style="background:var(--cream-warm)"><div class="wrap"><p class="label-rule">Our work</p>'
     + '<h1>Tables we have set</h1><p>Photographs from gatherings, celebrations and everyday tables we have cooked for.</p>'
     + '</div></div><div class="wrap" style="padding-top:64px;padding-bottom:64px"><div class="masonry">'
-    + g.map((it) => '<figure class="gfig"><img src="' + it.src + '" alt="' + esc(it.alt) + '" loading="lazy">'
-        + '<figcaption>' + esc(it.caption) + '</figcaption></figure>').join("")
+    + g.map((it) => '<figure class="gfig"><img src="' + it.src + '" alt="' + esc(it.alt) + '" loading="lazy"></figure>').join("")
     + '</div></div>';
 }
 
 /* ----------------------------------------------------------------- router */
 function render() {
-  const h = location.hash.replace(/^#/, "") || "/";
+  const h = hashPath();
   const parts = h.split("/").filter(Boolean);
   let html, after = null;
   if (!parts.length) html = viewHome();
-  else if (parts[0] === "menu") { html = viewMenu(parts[1]); after = renderBrowser; }
-  else if (parts[0] === "product") { html = viewProduct(parts[1]); after = renderPD; }
+  else if (parts[0] === "menu") { html = viewMenu((parts[1] || "").split("?")[0] || undefined); after = renderBrowser; }
+  else if (parts[0] === "product") { html = viewProduct((parts[1] || "").split("?")[0]); after = renderPD; }
   else if (parts[0] === "cart") { html = viewCart(); after = () => { if (EV_EDIT) bindEventCard(renderCart); }; }
   else if (parts[0] === "our-work") html = viewOurWork();
   else if (parts[0] === "events") {
-    if (parts[1] === "start") { html = viewEventStart(); after = renderES; }
+    if (parts[1] === "start") { html = viewOccasion(); after = renderOccasion; }
+    else if (parts[1] === "details") { html = viewDetails(); after = renderDetails; }
     else if (parts[1] === "review") { location.hash = "#/cart"; return; }
     else if (parts[1] === "extras") { html = viewExtras(); after = renderExtras; }
     else html = viewEvents();
@@ -1265,7 +1294,7 @@ function render() {
 document.addEventListener("click", function (e) {
   const t = e.target.closest("button"); if (!t) return;
 
-  if (t.id === "go-back") { history.back(); return; }
+  if (t.classList.contains("go-back")) { history.back(); return; }
   if (t.id === "burger") {
     const nav = $("#mobile-nav"); nav.classList.toggle("open");
     t.setAttribute("aria-expanded", nav.classList.contains("open")); return;
@@ -1281,39 +1310,37 @@ document.addEventListener("click", function (e) {
   if (t.dataset.group)   { PS.choices[t.dataset.group] = t.dataset.choice; PS.added = false; renderPD(); return; }
   if (t.id === "q-minus"){ if (PS.qty > 1) PS.qty--; renderPD(); return; }
   if (t.id === "q-plus") { PS.qty++; renderPD(); return; }
-  if (t.id === "add") {
+  if (t.dataset.add) {
+    const scope = t.dataset.add;
     const p = PRODUCTS[PS.slug], el = $("#instr");
     PS.instr = el ? el.value : "";
     const labels = (p.options || []).map((g) => [g.name, PS.choices[g.name]]).filter((x) => x[1]);
     const k = [PS.slug, PS.variant || "-", labels.map((x) => x[1]).sort().join(","), PS.instr.trim()].join("|");
-    const ls = activeLines();
+    const ls = linesFor(scope);
     const found = ls.find((l) => l.k === k);
     if (found) found.qty += PS.qty;
     else ls.push({ k: k, slug: PS.slug, variant: PS.variant, choiceLabels: labels, qty: PS.qty, instr: PS.instr.trim() });
-    setActiveLines(ls);
-    PS.added = true; save(); renderPD(); return;
+    PS.added = true; PS.addedTo = scope; save(); renderPD(); return;
   }
 
-  if (t.id === "ev-fresh") { S.mode = "event"; ES.choiceMade = true; save(); renderES(); return; }
-  if (t.id === "ev-move") {
-    S.mode = "event";
-    S.eventLines = S.eventLines.concat(S.normalLines);
-    S.normalLines = [];
-    ES.choiceMade = true; save(); renderES(); return;
+  if (t.id === "ev-new") {
+    /* A new request clears the previous draft and its dishes. */
+    S.event = Object.assign({}, EMPTY_EVENT); S.eventLines = [];
+    save(); location.hash = "#/events/start"; return;
   }
   if (t.dataset.etype) {
-    S.event.eventType = t.dataset.etype; S.mode = "event"; save();
-    if (t.dataset.etype !== "OTHER") ES.step = "details";
-    renderES(); return;
+    S.event.eventType = t.dataset.etype;
+    if (t.dataset.etype !== "OTHER") {
+      S.event.eventTypeOther = ""; save(); location.hash = "#/events/details"; return;
+    }
+    save(); renderOccasion(); return;
   }
-  if (t.id === "to-details") { ES.step = "details"; renderES(); return; }
-  if (t.id === "back-type")  { ES.step = "type"; renderES(); return; }
+  if (t.id === "to-details") { location.hash = "#/events/details"; return; }
   if (t.id === "to-dishes") {
-    // The same validator the server uses: the 100-guest ceiling is a rule,
-    // not a message on a form.
+    /* The same validator the server uses: the 100-guest ceiling is a rule. */
     ES.touched = true;
-    if (!validateEvent(S.event).ok) { renderES(); return; }
-    S.mode = "event"; save(); location.hash = "#/menu"; return;
+    if (!validateEvent(S.event).ok) { renderDetails(); return; }
+    save(); location.hash = "#/menu?for=event"; return;
   }
   if (t.dataset.x) {
     S.event[t.dataset.x] = t.dataset.v === "1"; save();
@@ -1322,19 +1349,17 @@ document.addEventListener("click", function (e) {
   }
   if (t.id === "cancel-event") {
     /* Abandons the event and its dishes. The normal order is untouched. */
-    EV_EDIT = false; S.mode = "normal"; S.eventLines = [];
-    S.event = Object.assign({}, EMPTY_EVENT);
+    EV_EDIT = false; S.eventLines = []; S.event = Object.assign({}, EMPTY_EVENT);
     save(); renderCart(); return;
   }
 
   if (t.dataset.inc || t.dataset.dec || t.dataset.rm) {
     const k = t.dataset.inc || t.dataset.dec || t.dataset.rm;
-    const ls = activeLines();
+    const ls = linesFor(t.dataset.scope || "normal");
     const i = ls.findIndex((l) => l.k === k); if (i < 0) return;
     if (t.dataset.inc) ls[i].qty++;
     else if (t.dataset.dec) { ls[i].qty--; if (ls[i].qty <= 0) ls.splice(i, 1); }
     else ls.splice(i, 1);
-    setActiveLines(ls);
     save(); renderCart();
   }
 });
@@ -1347,3 +1372,4 @@ $("#footer-cats").innerHTML = DATA.categories
 window.addEventListener("hashchange", render);
 render();
 </script>
+

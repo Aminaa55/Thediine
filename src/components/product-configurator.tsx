@@ -1,10 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatEGP } from "@/lib/money";
-import { useCart } from "@/lib/cart";
+import { useCart, EVENT_TYPE_LABELS, type OrderScope } from "@/lib/cart";
 
 type Choice = { id: string; nameEn: string; priceDelta: number };
 type Group = { id: string; nameEn: string; isRequired: boolean; choices: Choice[] };
@@ -23,8 +22,6 @@ export function ProductConfigurator({
   minQuantity,
   quantityStep,
   isAvailable,
-  categorySlug,
-  categoryName,
 }: {
   productId: string;
   basePrice: number | null;
@@ -33,11 +30,29 @@ export function ProductConfigurator({
   minQuantity: number;
   quantityStep: number;
   isAvailable: boolean;
-  categorySlug: string;
-  categoryName: string;
 }) {
   const router = useRouter();
-  const { addLine } = useCart();
+  const params = useSearchParams();
+  const { addLine, event, hasEvent, ready } = useCart();
+
+  /**
+   * Where does this dish go?
+   *
+   * The journey decides, not a global mode. A link carrying `?for=event` means
+   * the customer is choosing dishes for their event. From a neutral menu with
+   * an event already open we do not guess — we ask.
+   */
+  const forcedScope: OrderScope | null = params.get("for") === "event" ? "event" : null;
+  const mustAsk = ready && hasEvent && forcedScope === null;
+  const [chosen, setChosen] = useState<OrderScope | null>(null);
+  const scope: OrderScope = forcedScope ?? (mustAsk ? (chosen ?? "normal") : "normal");
+
+  const occasion =
+    event.eventType === "OTHER"
+      ? event.eventTypeOther || "event"
+      : event.eventType
+        ? EVENT_TYPE_LABELS[event.eventType]
+        : "event";
 
   const [variantId, setVariantId] = useState<string | null>(variants[0]?.id ?? null);
   const [selected, setSelected] = useState<Record<string, string>>({});
@@ -59,9 +74,9 @@ export function ProductConfigurator({
     return base + delta;
   }, [variantId, variants, basePrice, groups, selected]);
 
-  function handleAdd() {
+  function handleAdd(target: OrderScope) {
     if (!canAdd) return;
-    addLine({
+    addLine(target, {
       productId,
       variantId,
       choiceIds: Object.values(selected),
@@ -69,6 +84,7 @@ export function ProductConfigurator({
       instructions: instructions.trim(),
     });
     setAdded(true);
+    setChosen(target);
     router.refresh();
   }
 
@@ -184,15 +200,42 @@ export function ProductConfigurator({
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAdd}
-          disabled={!canAdd}
-          className="btn-primary flex-1 disabled:cursor-not-allowed disabled:bg-ink/25"
-        >
-          {added ? "Added to cart" : "Add to cart"}
-          <span className="tabular-nums">{formatEGP(unitPrice * quantity)}</span>
-        </button>
+        {mustAsk ? (
+          <div className="flex-1">
+            <p className="mb-3 text-[14px] text-ink-soft">
+              Add this to <span className="tabular-nums">{formatEGP(unitPrice * quantity)}</span>
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => handleAdd("normal")}
+                disabled={!canAdd}
+                className="btn-primary flex-1 disabled:cursor-not-allowed disabled:bg-ink/25"
+              >
+                Your normal order
+              </button>
+              <button
+                type="button"
+                onClick={() => handleAdd("event")}
+                disabled={!canAdd}
+                className="btn-outline flex-1 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {occasion}
+                {event.date ? ` · ${shortDate(event.date)}` : ""}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => handleAdd(scope)}
+            disabled={!canAdd}
+            className="btn-primary flex-1 disabled:cursor-not-allowed disabled:bg-ink/25"
+          >
+            {added ? "Added" : forcedScope === "event" ? "Add to your event" : "Add to cart"}
+            <span className="tabular-nums">{formatEGP(unitPrice * quantity)}</span>
+          </button>
+        )}
       </div>
 
       {!isAvailable ? (
@@ -207,23 +250,17 @@ export function ProductConfigurator({
         )
       )}
 
-      {/* After adding, the three things a customer actually wants to do next. */}
       {added && (
-        <div className="mt-6 rounded-sm border border-gold/35 bg-gold-pale/35 px-5 py-5">
-          <p className="text-[15px] text-ink">Added to your order.</p>
-          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
-            <Link href={`/menu/${categorySlug}`} className="link-sweep text-[15px]">
-              &larr; Back to {categoryName}
-            </Link>
-            <Link href="/menu" className="link-sweep text-[15px]">
-              Keep browsing
-            </Link>
-            <Link href="/cart" className="link-sweep text-[15px]">
-              Go to cart &rarr;
-            </Link>
-          </div>
-        </div>
+        <p className="mt-6 rounded-sm border border-gold/35 bg-gold-pale/35 px-5 py-4 text-[15px] text-ink">
+          Added to your {chosen === "event" || forcedScope === "event" ? occasion.toLowerCase() : "order"}.
+        </p>
       )}
     </div>
   );
+}
+
+function shortDate(iso: string) {
+  const d = new Date(iso + "T00:00:00");
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }

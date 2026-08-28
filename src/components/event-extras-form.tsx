@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart";
-import { EventProgress } from "./event-steps";
+import { EventHeader } from "./event-steps";
 
 /**
  * Step four: the extras.
@@ -31,13 +31,13 @@ const EXTRAS = [
 
 export function EventExtrasForm() {
   const router = useRouter();
-  const { event, updateEvent, mode } = useCart();
+  const { event, updateEvent, hasEvent, ready } = useCart();
 
-  if (mode !== "event") return <NotInEvent />;
+  if (ready && !hasEvent) return <NotInEvent />;
 
   return (
     <>
-      <EventProgress current="extras" />
+      <EventHeader current="extras" />
 
       <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8 sm:py-16">
         <p className="eyebrow">Step four</p>
@@ -95,10 +95,10 @@ export function EventExtrasForm() {
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <button type="button" onClick={() => router.push("/cart")} className="btn-primary">
-            Back to your request
+            Review your request
           </button>
-          <Link href="/menu" className="text-[15px] text-ink-soft underline underline-offset-4 hover:text-ink">
-            Back to the menu
+          <Link href="/menu?for=event" className="text-[15px] text-ink-soft underline underline-offset-4 hover:text-ink">
+            Add more dishes
           </Link>
         </div>
       </div>
