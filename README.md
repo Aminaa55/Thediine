@@ -273,6 +273,44 @@ with no code change.
 browser; every name and price is resolved from the database each time the cart is
 shown, so a stale cart can never display an old price.
 
+## Deploying
+
+The first deployment sets the database up by itself. Vercel runs the
+`vercel-build` script, which does four things in order:
+
+```
+prisma generate        # the database client
+prisma db push         # create any missing tables
+tsx prisma/bootstrap.ts  # add any missing data
+next build             # build the site
+```
+
+`prisma db push` is used WITHOUT `--accept-data-loss`, so it will refuse and fail
+the deployment rather than drop a column that holds data.
+
+### The bootstrap only ever adds
+
+[`prisma/bootstrap.ts`](prisma/bootstrap.ts) fills an empty database with the
+menu, the categories, the prices, the product options, the allergens, the event
+pricing ladder, the settings and the photograph records. It **never updates,
+never deletes and never overwrites**, so running it again — on every redeploy —
+does nothing at all once the database is set up:
+
+- the menu cannot be duplicated;
+- a price, a setting or a caption edited in admin is not reverted;
+- a dish added in admin is left alone;
+- no real order, order line, customer or payment is touched;
+- **no test orders, customers or payments are ever created.**
+
+It is deliberately not the same thing as `npm run db:seed`. The development seed
+syncs a local database to `catalogue.ts` by replacing each product's variants and
+options wholesale — which gives them new ids and would unpick the link from a
+real order that referenced one. That is fine on a laptop and unacceptable on a
+live database, which is why deployment has its own path.
+
+The photographs themselves are files in [`public/gallery`](public/gallery) and
+ship with the site; the bootstrap only creates the rows that place them.
+
 ## Running it locally
 
 ```bash
@@ -283,8 +321,10 @@ npm run db:seed               # load the catalogue
 npm run dev                   # http://localhost:3000
 ```
 
-`npm run db:seed` is idempotent — products are matched on slug, so re-running
-updates rather than duplicates, and never overwrites a setting you have edited.
+`npm run db:seed` syncs a LOCAL database to `catalogue.ts`. It never overwrites a
+setting you have edited, but it does replace each product's variants and options,
+so it is for development only — a deployed database is set up by
+`npm run db:bootstrap`, which only ever adds what is missing.
 
 ## Notes on the data model
 

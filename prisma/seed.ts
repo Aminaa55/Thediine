@@ -1,59 +1,26 @@
 /**
- * Seeds the catalogue, the allergen list and the business-rule settings.
+ * The DEVELOPMENT seed.
  *
- * Idempotent: safe to run repeatedly. Products are matched on slug, so a
- * re-run updates rather than duplicates.
+ * Syncs a database to `catalogue.ts`: products are matched on slug and updated,
+ * and their variants, options and allergens are replaced wholesale so a local
+ * database always matches the file exactly.
+ *
+ * That last part is why this is not what a deployment runs. Replacing a
+ * product's variants gives them new ids, which would unpick the link from any
+ * real order that referenced one. A deployed database is set up by
+ * `bootstrap.ts` instead, which only ever adds what is missing.
  *
  * Settings left as an empty string are values the business has not yet
- * supplied. They are NOT given invented defaults.
+ * supplied. They are NOT given invented defaults, and are never overwritten.
  */
 import { PrismaClient } from "@prisma/client";
 import { ALLERGENS, CATALOGUE } from "./catalogue";
+import { SETTINGS } from "./settings";
 import { GALLERY } from "./gallery-seed";
 import { poundsToPiastres } from "../src/lib/money";
 import { DEFAULT_EVENT_TIERS, MULTIPLIER_SCALE } from "../src/lib/event-pricing";
 
 const prisma = new PrismaClient();
-
-/** Confirmed business rules. Everything here is editable from admin. */
-const SETTINGS: Record<string, string> = {
-  currency: "EGP",
-  timezone: "Africa/Cairo",
-
-  // Normal orders
-  normal_notice_hours: "48",
-  normal_cutoff_time: "", // TO CONFIRM — no default invented
-  normal_daily_capacity: "3",
-  pickup_counts_toward_capacity: "true",
-  minimum_order_value_piastres: "0", // confirmed: no minimum
-
-  // Event orders
-  event_notice_days: "5",
-  event_max_guests: "100", // hard ceiling, enforced server-side
-  event_default_capacity_mode: "BLOCK_DAY",
-
-  // Cancellation
-  normal_free_cancellation_hours: "24",
-  event_free_cancellation_hours: "48",
-  late_cancellation_percent: "20",
-  customer_self_cancel_enabled: "false", // confirmed: admin cancels only
-
-  // Payment
-  payment_cash_enabled: "true",
-  payment_instapay_enabled: "true",
-  // The owner's switch. Card is offered only when this is not "false" AND a
-  // payment provider is configured in the environment; configuring the provider
-  // is the deliberate act that turns card on.
-  payment_card_enabled: "true",
-  instapay_account_details: "", // TO CONFIRM
-
-  // Contact
-  whatsapp_number: "+201123030107",
-
-  // Serving setup — the choice is live, the policy text is not yet written.
-  serving_setup_policy_en: "", // TO CONFIRM
-  serving_setup_policy_ar: "",
-};
 
 async function main() {
   console.log("Seeding The Diine…\n");
