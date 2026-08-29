@@ -8,6 +8,13 @@ It mirrors the real site's design and carries the same catalogue, exported from
 `prisma/catalogue.ts`. It is **not** the application: there is no database, no
 server-side price resolution, and no checkout.
 
+Checkout is mirrored as well, including both order types, the payment methods and
+the confirmation. Orders placed in the preview are kept in the browser's own
+storage so the confirmation page works; the real site writes them to the database.
+Two rules the preview cannot enforce are enforced by the real site: it resolves
+every price from the database again before writing, and it counts the orders a
+day already holds before accepting another.
+
 Event pricing is mirrored too: `EVENT_TIERS` in the script is the same guest-count
 ladder that `EventPriceTier` holds in the real site, and `scaled()` is the same
 integer arithmetic as `eventUnitPrice`. The difference is that the real site reads

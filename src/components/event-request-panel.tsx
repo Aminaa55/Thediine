@@ -243,13 +243,17 @@ export function EventRequestSection({
         )}
         <p className="mt-1.5 text-[14px] text-ink-faint">Extras are quoted separately.</p>
 
-        <button
-          type="button"
-          disabled
-          className="btn-primary mt-6 w-full disabled:bg-ink/25 sm:w-auto"
+        {/* Goes to the event's own review; it never joins the normal order. */}
+        <Link
+          href="/checkout/event"
+          aria-disabled={!check.ok || cart.lines.length === 0}
+          onClick={(e) => { if (!check.ok || cart.lines.length === 0) e.preventDefault(); }}
+          className={`btn-primary mt-6 w-full sm:w-auto ${
+            !check.ok || cart.lines.length === 0 ? "pointer-events-none bg-ink/25" : ""
+          }`}
         >
-          Send this event request
-        </button>
+          Review and send this request
+        </Link>
         <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
           Events need at least{" "}
           <strong className="font-semibold text-ink">5 days&rsquo; notice</strong> and are

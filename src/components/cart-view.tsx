@@ -125,9 +125,9 @@ function NormalOrderSection({
         </div>
         <p className="mt-1.5 text-[14px] text-ink-faint">Delivery calculated at checkout.</p>
 
-        <button type="button" disabled className="btn-primary mt-6 w-full disabled:bg-ink/25 sm:w-auto">
+        <Link href="/checkout" className="btn-primary mt-6 w-full sm:w-auto">
           Check out this order
-        </button>
+        </Link>
         <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
           Regular orders need at least{" "}
           <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>,

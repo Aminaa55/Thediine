@@ -170,6 +170,87 @@ button.link-sweep{background:none; border:0; padding:0; cursor:pointer; font:inh
 /* Why the prices on this menu differ. Full width, under the occasion line. */
 .ev-price-note{flex-basis:100%; margin-top:12px; border-top:1px solid rgba(168,126,46,.25);
   padding-top:12px; font-size:14px; line-height:1.6; color:var(--ink-soft)}
+/* ------------------------------------------------------------- checkout */
+.co-h1{font-family:Fraunces,Georgia,serif; font-size:38px; font-weight:600; margin-top:12px; line-height:1.1}
+.co-layout{display:grid; gap:48px; margin-top:48px; align-items:start}
+@media(min-width:1024px){.co-layout{grid-template-columns:minmax(0,1fr) 360px; gap:64px}
+  .co-layout aside{position:sticky; top:96px}}
+.co-layout section{padding:0}
+.co-h{font-family:Fraunces,Georgia,serif; font-size:26px; font-weight:600; margin-top:8px}
+.co-rule{margin:48px 0; border-top:1px solid var(--line-soft)}
+.co-rule-note{margin-top:20px; font-size:14px; line-height:1.6; color:var(--ink-soft)}
+.co-fields{display:grid; gap:24px; margin-top:28px}
+@media(min-width:640px){.co-fields{grid-template-columns:1fr 1fr} .co-fields .full{grid-column:1/-1}}
+.co-field label{display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase;
+  letter-spacing:.22em; color:var(--ink-faint)}
+.co-field label .co-opt{margin-left:8px; text-transform:none; letter-spacing:normal; color:var(--ink-faint)}
+.co-field .h{margin-top:8px; font-size:13px; color:var(--ink-faint)}
+.bad-msg{margin-top:8px; font-size:13.5px; color:#A6391C}
+.bad-box{margin-top:20px; border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.07);
+  border-radius:2px; padding:12px 16px; font-size:14px; color:#A6391C}
+.co-note{border:1px solid var(--line); background:var(--cream); border-radius:2px; padding:16px 20px;
+  font-size:14.5px; line-height:1.6; color:var(--ink-soft)}
+.co-grid2{display:grid; gap:12px; margin-top:28px}
+@media(min-width:640px){.co-grid2{grid-template-columns:1fr 1fr}}
+.co-choice{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px;
+  padding:20px; text-align:left; transition:border-color .2s, background-color .2s}
+.co-choice:hover{border-color:var(--gold)}
+.co-choice.on{border-color:var(--gold); background:rgba(239,226,190,.4)}
+.co-choice .t{display:block; font-family:Fraunces,Georgia,serif; font-size:18px; font-weight:600}
+.co-choice .b{display:block; margin-top:6px; font-size:14.5px; line-height:1.5; color:var(--ink-soft)}
+.pay-list{display:grid; gap:12px; margin-top:28px}
+.pay-opt{display:flex; align-items:flex-start; gap:16px; width:100%; border:1px solid var(--line);
+  background:var(--cream-warm); border-radius:2px; padding:20px; text-align:left;
+  transition:border-color .2s, background-color .2s}
+.pay-opt:hover{border-color:var(--gold)}
+.pay-opt.on{border-color:var(--gold); background:rgba(239,226,190,.4)}
+.pay-opt.off{background:var(--cream); border-color:var(--line-soft); opacity:.6; cursor:not-allowed}
+.pay-opt .dot{flex:none; margin-top:4px; width:16px; height:16px; border-radius:999px;
+  border:1px solid rgba(59,35,16,.25)}
+.pay-opt.on .dot{border-color:var(--gold); box-shadow:inset 0 0 0 4px var(--gold)}
+.pay-opt .t{display:block; font-family:Fraunces,Georgia,serif; font-size:18px; font-weight:600}
+.pay-opt .b{display:block; margin-top:4px; font-size:14.5px; line-height:1.5; color:var(--ink-soft)}
+.instapay{margin-top:20px; border:1px solid rgba(168,126,46,.4); background:rgba(239,226,190,.35);
+  border-radius:2px; padding:20px}
+.instapay .d{margin-top:12px; font-size:15.5px; line-height:1.6; color:var(--ink-soft)}
+.instapay .warn2{margin-top:16px; border-top:1px solid rgba(168,126,46,.3); padding-top:16px;
+  font-size:14.5px; line-height:1.6; color:var(--ink-soft)}
+.instapay .co-field{margin-top:20px}
+.co-sum{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:24px}
+.co-sum h2{font-family:Fraunces,Georgia,serif; font-size:21px; font-weight:600}
+.co-lines{list-style:none; margin:20px 0 0; padding:0}
+.co-lines li{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+  border-bottom:1px solid var(--line-soft); padding:12px 0; font-size:15px}
+.co-lines li:last-child{border-bottom:0}
+.co-lines .q{color:var(--ink-faint)}
+.co-lines .v{color:var(--ink-soft)}
+.co-dl{margin-top:20px; border-top:1px solid var(--line); padding-top:8px}
+.co-dl div{display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+  border-bottom:1px solid var(--line-soft); padding:12px 0}
+.co-dl div:last-child{border-bottom:0}
+.co-dl dt{font-size:13px; text-transform:uppercase; letter-spacing:.14em; color:var(--ink-faint)}
+.co-dl dd{font-size:15.5px}
+.co-total{margin-top:16px; border-top:1px solid var(--line); padding-top:16px; display:flex;
+  align-items:baseline; justify-content:space-between; gap:16px;
+  font-family:Fraunces,Georgia,serif; font-weight:600}
+.co-total span:first-child{font-size:19px}
+.co-total span:last-child{font-size:22px}
+.co-fine{margin-top:6px; font-size:13.5px; line-height:1.6; color:var(--ink-soft)}
+/* the confirmation */
+.ord-num{margin-top:32px; border:1px solid rgba(168,126,46,.45); background:rgba(239,226,190,.35);
+  border-radius:2px; padding:24px}
+.ord-num .n{margin-top:8px; font-family:Fraunces,Georgia,serif; font-size:30px; font-weight:600}
+.ord-num .d{margin-top:12px; font-size:15px; line-height:1.6; color:var(--ink-soft)}
+.stat{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:20px}
+.stat .v{margin-top:8px; font-family:Fraunces,Georgia,serif; font-size:19px; font-weight:600}
+.stat .d{margin-top:8px; font-size:14px; line-height:1.6; color:var(--ink-soft)}
+.ord-card{margin-top:24px; border:1px solid var(--line); background:var(--cream-warm);
+  border-radius:2px; padding:24px}
+.ord-card h2{font-family:Fraunces,Georgia,serif; font-size:21px; font-weight:600}
+.next{list-style:none; margin:16px 0 0; padding:0; display:grid; gap:12px}
+.next li{display:flex; gap:16px}
+.next .n{color:var(--gold); font-family:Fraunces,Georgia,serif; font-size:15px}
+.next span:last-child{font-size:15px; line-height:1.6; color:var(--ink-soft)}
 .ev-panel{border:1px solid rgba(168,126,46,.45); background:var(--cream-warm); border-radius:2px; overflow:hidden; padding:0}
 .ev-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:16px;
   background:rgba(239,226,190,.45); padding:20px 24px}
@@ -620,7 +701,10 @@ function renderBackBar() {
   const el = $("#backbar"); if (!el) return;
   const h = hashPath();
   /* Event steps render their own Back beneath the progress bar. */
-  const hide = h === "/" || h.indexOf("/events/") === 0 || history.length <= 1;
+  /* The event steps draw their own Back beneath the progress bar, and the
+     review is one of them even though it lives under /checkout. */
+  const hide = h === "/" || h.indexOf("/events/") === 0 || h === "/checkout/event"
+    || history.length <= 1;
   el.innerHTML = hide ? "" : backBarHTML();
 }
 function backBarHTML(inFlow) {
@@ -1071,7 +1155,7 @@ function normalSectionHTML() {
     + S.normalLines.map((l) => lineRowHTML(l, "normal")).join("") + '</ul>'
     + '<div class="ord-total"><span>Subtotal</span><span class="tnum">' + egp(st) + '</span></div>'
     + '<p style="margin-top:6px;font-size:14px;color:var(--ink-faint)">Delivery calculated at checkout.</p>'
-    + '<button type="button" class="btn btn-primary" style="margin-top:24px" disabled>Check out this order</button>'
+    + '<a class="btn btn-primary" style="margin-top:24px" href="#/checkout">Check out this order</a>'
     + '<p style="margin-top:16px;font-size:14px;color:var(--ink-soft)">Regular orders need at least '
     + '<strong>48 hours\u2019 notice</strong>, with delivery or pickup and your date chosen at checkout.</p>'
     + '</div></section>';
@@ -1141,7 +1225,7 @@ function eventSectionHTML() {
           + eventGuests() + ' guests</strong> at ' + multLabel(evTier) + ' the regular menu price. '
           + 'Change the guest count above and this recalculates.</p>' : '')
     + '<p style="margin-top:6px;font-size:14px;color:var(--ink-faint)">Extras are quoted separately.</p>'
-    + '<button type="button" class="btn btn-primary" style="margin-top:24px" disabled>Send this event request</button>'
+    + '<a class="btn btn-primary" style="margin-top:24px" href="#/checkout/event">Review and send this request</a>'
     + '<p style="margin-top:16px;font-size:14px;color:var(--ink-soft)">Events need at least <strong>5 days\u2019 notice</strong> '
     + 'and are confirmed by us personally before they are booked.</p>'
     + '<button type="button" id="cancel-event" style="display:block;margin-top:24px;background:none;border:0;padding:0;'
@@ -1350,6 +1434,494 @@ function viewOurWork() {
     + '</div></div>';
 }
 
+/* ------------------------------------------------------------- checkout
+   Mirrors the real checkout. The real site does three things this file
+   cannot: it resolves every price from the database again, it counts how
+   many orders a day already holds before accepting another, and it writes
+   the order. Everything the customer sees, and every rule they meet on the
+   way, is the same. */
+
+const EMPTY_CO = { fulfilment: "DELIVERY", date: "", time: "", area: "", addr: "", details: "",
+                   setup: "DISPOSABLE", name: "", mobile: "", email: "", notes: "",
+                   method: null, ref: "", touched: false };
+let CO = Object.assign({}, EMPTY_CO);
+let EVC = Object.assign({}, EMPTY_CO);
+
+/* No delivery areas have been supplied, so the fee is unknown, not zero. */
+const AREAS = [];
+/* No time slots supplied either: the real site lists them when they exist
+   and shows a plain time field until then. */
+const SLOTS = [];
+const INSTAPAY_DETAILS = "";     /* supplied separately by the business */
+const CARD_ENABLED = false;      /* structured, off until a gateway is live */
+
+/* 48 hours ahead, floored to the day, as yyyy-mm-dd */
+function minNormalDate() {
+  const d = new Date(); d.setHours(d.getHours() + 48); d.setHours(0, 0, 0, 0);
+  return d.toISOString().slice(0, 10);
+}
+function validMobile(x) { return /^01[0125]\d{8}$/.test(x.replace(/[^\d]/g, "")); }
+function normMobile(x) {
+  const d = x.replace(/[^\d]/g, "");
+  if (d.indexOf("0020") === 0) return "0" + d.slice(4);
+  if (d.indexOf("20") === 0 && d.length === 12) return "0" + d.slice(2);
+  return d;
+}
+function validEmail(x) { return x.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x.trim()); }
+
+function customerErrors(c) {
+  const e = {};
+  if (!c.name.trim()) e.name = "Please tell us your name.";
+  else if (c.name.trim().length < 2) e.name = "Please give your full name.";
+  if (!c.mobile.trim()) e.mobile = "We need a mobile number to confirm your order.";
+  else if (!validMobile(c.mobile)) e.mobile = "That does not look like an Egyptian mobile number.";
+  if (!validEmail(c.email)) e.email = "Please check the email address.";
+  if (!c.method) e.method = "Please choose how you would like to pay.";
+  return e;
+}
+function normalErrors() {
+  const e = customerErrors(CO), min = minNormalDate();
+  if (!CO.date) e.date = "Please choose a date.";
+  else if (CO.date < min) e.date = "We need at least 48 hours. The earliest date we can take is " + min + ".";
+  if (!CO.time) e.time = "Please choose a time.";
+  if (CO.fulfilment === "DELIVERY") {
+    if (!CO.addr.trim()) e.addr = "Please give the delivery address.";
+    if (AREAS.length && !CO.area) e.area = "Please choose your area.";
+  }
+  return e;
+}
+function eventCheckoutErrors() {
+  const e = customerErrors(EVC);
+  const v = validateEvent(S.event);
+  if (!v.ok) e.event = Object.values(v.errors)[0];
+  if (!S.eventLines.length) e.items = "Please choose the dishes for your event.";
+  return e;
+}
+
+/* ------------------------------------------------------- shared bits */
+function coField(label, id, html, opts) {
+  opts = opts || {};
+  return '<div class="co-field' + (opts.full ? " full" : "") + '">'
+    + '<label for="' + id + '">' + esc(label)
+    + (opts.optional ? '<span class="co-opt">optional</span>' : '') + '</label>' + html
+    + (opts.err ? '<p class="bad-msg">' + esc(opts.err) + '</p>'
+        : opts.hint ? '<p class="h">' + esc(opts.hint) + '</p>' : '')
+    + '</div>';
+}
+function coChoice(on, data, title, body) {
+  return '<button type="button" class="co-choice' + (on ? " on" : "") + '" ' + data
+    + ' aria-pressed="' + (on ? "true" : "false") + '"><span class="t">' + title + '</span>'
+    + '<span class="b">' + body + '</span></button>';
+}
+function servingSetupHTML(cur, attr) {
+  return '<div class="co-grid2">'
+    + coChoice(cur === "RETURNABLE", 'data-' + attr + '="RETURNABLE"', "Returnable dishes",
+        "Served in our own dishes, which we collect afterwards.")
+    + coChoice(cur === "DISPOSABLE", 'data-' + attr + '="DISPOSABLE"', "Disposable dishes",
+        "Served in disposable containers \u2014 nothing to return.") + '</div>';
+}
+/* Cash reads differently for delivery and pickup. Card is present but never
+   offered as working. Choosing InstaPay never means the money has arrived. */
+function paymentHTML(state, attr, fulfilment, err) {
+  const cash = fulfilment === "PICKUP" ? "Payment on pickup" : "Cash on delivery";
+  const cashBody = fulfilment === "PICKUP"
+    ? "Pay in cash when you collect your order."
+    : "Pay in cash when your order is handed to you.";
+  let h = '<div class="pay-list">'
+    + payOpt(state.method === "CASH", 'data-' + attr + '="CASH"', cash, cashBody)
+    + payOpt(state.method === "INSTAPAY", 'data-' + attr + '="INSTAPAY"', "InstaPay",
+        "Transfer to us, and we confirm once we have seen the payment arrive.")
+    + (CARD_ENABLED
+        ? payOpt(state.method === "CARD", 'data-' + attr + '="CARD"', "Card payment", "Pay by card.")
+        : '<div class="pay-opt off"><span class="dot"></span><span><span class="t">Card payment</span>'
+          + '<span class="b">Coming soon.</span></span></div>')
+    + '</div>';
+  if (err) h += '<p class="bad-msg" style="margin-top:12px">' + esc(err) + '</p>';
+  if (state.method === "INSTAPAY") {
+    h += '<div class="instapay"><p class="label-rule">Transfer details</p>'
+      + (INSTAPAY_DETAILS
+          ? '<p class="d">' + esc(INSTAPAY_DETAILS) + '</p>'
+          : '<p class="d">We will send you the transfer details on WhatsApp as soon as we have '
+            + 'your order.</p>')
+      + '<p class="warn2">Choosing InstaPay does <strong>not</strong> mark your order as paid. '
+      + 'Your payment shows as <strong>awaiting verification</strong> until we have checked that '
+      + 'the transfer arrived, and we confirm it with you.</p>'
+      + '<div class="co-field"><label for="ref">Transfer reference<span class="co-opt">optional, if '
+      + 'you have already sent it</span></label>'
+      + '<input type="text" id="ref" value="' + esc(state.ref) + '"></div></div>';
+  }
+  return h;
+}
+function payOpt(on, data, title, body) {
+  return '<button type="button" class="pay-opt' + (on ? " on" : "") + '" ' + data
+    + ' aria-pressed="' + (on ? "true" : "false") + '"><span class="dot"></span>'
+    + '<span><span class="t">' + title + '</span><span class="b">' + body + '</span></span></button>';
+}
+
+/* ------------------------------------------------- normal order checkout */
+function viewCheckout() {
+  if (!S.normalLines.length) {
+    return '<div class="narrow" style="padding:96px 0;text-align:center">'
+      + '<p style="font-family:Fraunces,Georgia,serif;font-size:24px">There is nothing to check out</p>'
+      + '<p style="margin-top:12px;color:var(--ink-soft)">Your regular order is empty.</p>'
+      + '<a class="btn btn-primary" style="margin-top:32px" href="#/menu">Browse the menu</a></div>';
+  }
+  CO.touched = false;
+  return '<div id="co"></div>';
+}
+function renderCheckout() {
+  const el = $("#co"); if (!el) return;
+  const e = CO.touched ? normalErrors() : {};
+  const min = minNormalDate();
+  const st = subtotalOf(S.normalLines, "normal");
+
+  el.innerHTML = '<div class="wrap" style="padding-top:48px;padding-bottom:64px">'
+    + '<p class="label-rule">Checkout</p>'
+    + '<h1 class="co-h1">Your regular order</h1>'
+    + '<div class="co-layout">'
+
+    + '<div>'
+    + '<section><p class="label-rule">Step one</p><h2 class="co-h">How would you like it?</h2>'
+    + '<div class="co-grid2">'
+    + coChoice(CO.fulfilment === "DELIVERY", 'data-ful="DELIVERY"', "Delivery", "We bring it to you.")
+    + coChoice(CO.fulfilment === "PICKUP", 'data-ful="PICKUP"', "Pickup", "You collect it from us.")
+    + '</div>'
+    + (CO.fulfilment === "DELIVERY"
+        ? '<div class="co-fields" style="margin-top:24px">'
+          + coField("Address", "addr", '<input type="text" id="addr" placeholder="Street, building, '
+              + 'floor, flat" value="' + esc(CO.addr) + '"' + (e.addr ? ' class="bad"' : '') + '>',
+              { full: true, err: e.addr })
+          + coField("Landmark or directions", "details",
+              '<input type="text" id="details" value="' + esc(CO.details) + '">',
+              { full: true, optional: true })
+          + '<p class="co-note full"><strong>Delivery fee</strong> \u2014 confirmed with you when we '
+          + 'call about this order, and added then. It is not in the total below.</p>'
+          + '</div>'
+        : '')
+    + '</section>'
+
+    + '<div class="co-rule"></div>'
+    + '<section><p class="label-rule">Step two</p><h2 class="co-h">When do you need it?</h2>'
+    + '<div class="co-fields">'
+    + coField("Date", "co-date", '<input type="date" id="co-date" min="' + min + '" value="'
+        + esc(CO.date) + '"' + (e.date ? ' class="bad"' : '') + '>',
+        { err: e.date, hint: "Earliest available: " + min })
+    + coField("Time", "co-time", '<input type="time" id="co-time" value="' + esc(CO.time) + '"'
+        + (e.time ? ' class="bad"' : '') + '>',
+        { err: e.time, hint: "We confirm the exact time with you." })
+    + '</div>'
+    + '<p class="co-rule-note">Regular orders need at least <strong>48 hours\u2019 notice</strong>, '
+    + 'and we cook 3 orders a day \u2014 pickup included. Full days cannot be chosen.</p>'
+    + '</section>'
+
+    + '<div class="co-rule"></div>'
+    + '<section><p class="label-rule">Step three</p><h2 class="co-h">How should it be served?</h2>'
+    + servingSetupHTML(CO.setup, "setup") + '</section>'
+
+    + '<div class="co-rule"></div>'
+    + '<section><p class="label-rule">Step four</p><h2 class="co-h">Who is it for?</h2>'
+    + '<div class="co-fields">'
+    + coField("Your name", "cname", '<input type="text" id="cname" value="' + esc(CO.name) + '"'
+        + (e.name ? ' class="bad"' : '') + '>', { err: e.name })
+    + coField("Mobile number", "cmob", '<input type="text" id="cmob" inputmode="tel" '
+        + 'placeholder="01x xxxx xxxx" value="' + esc(CO.mobile) + '"'
+        + (e.mobile ? ' class="bad"' : '') + '>',
+        { err: e.mobile, hint: "We confirm every order on WhatsApp." })
+    + coField("Email", "cmail", '<input type="email" id="cmail" value="' + esc(CO.email) + '"'
+        + (e.email ? ' class="bad"' : '') + '>', { full: true, optional: true, err: e.email })
+    + coField("Anything we should know", "cnotes", '<textarea id="cnotes" rows="3">'
+        + esc(CO.notes) + '</textarea>', { full: true, optional: true })
+    + '</div></section>'
+
+    + '<div class="co-rule"></div>'
+    + '<section><p class="label-rule">Step five</p><h2 class="co-h">How would you like to pay?</h2>'
+    + paymentHTML(CO, "pay", CO.fulfilment, e.method) + '</section>'
+    + '</div>'
+
+    + '<aside><div class="co-sum"><h2>Your order</h2><ul class="co-lines">'
+    + S.normalLines.map((l) => {
+        const p = PRODUCTS[l.slug];
+        return '<li><span><span class="q tnum">' + l.qty + '\u00d7</span> '
+          + esc(p ? p.name : l.slug) + (l.variant ? ' <span class="v">\u00b7 ' + esc(l.variant) + '</span>' : '')
+          + '</span><span class="tnum">' + egp(unitPrice(l, "normal") * l.qty) + '</span></li>';
+      }).join("")
+    + '</ul>'
+    + '<dl class="co-dl"><div><dt>Subtotal</dt><dd class="tnum">' + egp(st) + '</dd></div>'
+    + '<div><dt>' + (CO.fulfilment === "PICKUP" ? "Pickup" : "Delivery") + '</dt><dd>'
+    + (CO.fulfilment === "PICKUP" ? "No charge" : "Confirmed with you") + '</dd></div></dl>'
+    + '<div class="co-total"><span>Total</span><span class="tnum">' + egp(st) + '</span></div>'
+    + (CO.fulfilment === "DELIVERY" ? '<p class="co-fine">Before the delivery fee.</p>' : '')
+    + (CO.touched && Object.keys(e).length
+        ? '<p class="bad-box">' + esc(Object.values(e)[0]) + '</p>' : '')
+    + '<button type="button" class="btn btn-primary" id="place-order" style="margin-top:24px;width:100%">'
+    + 'Place this order</button>'
+    + '<p class="co-fine" style="margin-top:16px">Nothing is charged now. We confirm every order '
+    + 'with you personally before we cook.</p>'
+    + (hasEvent() ? '<p class="co-fine" style="margin-top:20px;border-top:1px solid var(--line);'
+        + 'padding-top:16px">Your event request is separate and is not part of this order. You can '
+        + 'send it from <a class="link-sweep" href="#/cart">your cart</a> afterwards.</p>' : '')
+    + '</div></aside>'
+    + '</div></div>';
+
+  const b = (id, key) => { const n = $(id); if (n) n.addEventListener("input", (x) => { CO[key] = x.target.value; }); };
+  b("#addr", "addr"); b("#details", "details"); b("#co-date", "date"); b("#co-time", "time");
+  b("#cname", "name"); b("#cmob", "mobile"); b("#cmail", "email"); b("#cnotes", "notes"); b("#ref", "ref");
+}
+
+/* ---------------------------------------------- event request checkout */
+function viewEventCheckout() { EVC.touched = false; return hasEvent() ? '<div id="evc"></div>' : notInEvent(); }
+function renderEventCheckout() {
+  const el = $("#evc"); if (!el) return;
+  const e = EVC.touched ? eventCheckoutErrors() : {};
+  const ev = S.event, st = subtotalOf(S.eventLines, "event");
+  const tier = S.eventLines.length ? eventTier(eventGuests()) : null;
+  const extras = EXTRAS.filter((x) => ev[x[0]]).map((x) => x[1]);
+
+  el.innerHTML = progressHTML("review")
+    + '<div class="wrap" style="padding-top:48px;padding-bottom:64px">'
+    + '<p class="label-rule">Last step</p>'
+    + '<h1 class="co-h1">Everything for your ' + esc(occasionLabel(ev).toLowerCase()) + '</h1>'
+    + '<p style="margin-top:16px;max-width:34rem;font-size:16.5px;color:var(--ink-soft)">Check it '
+    + 'over, tell us who you are, and send it. We come back to you personally to confirm before '
+    + 'anything is booked.</p>'
+    + '<div class="co-layout">'
+
+    + '<div>'
+    + '<section><p class="label-rule">Step one</p><h2 class="co-h">How should it be served?</h2>'
+    + servingSetupHTML(EVC.setup, "evsetup") + '</section>'
+    + '<div class="co-rule"></div>'
+    + '<section><p class="label-rule">Step two</p><h2 class="co-h">Who should we speak to?</h2>'
+    + '<div class="co-fields">'
+    + coField("Your name", "ename", '<input type="text" id="ename" value="' + esc(EVC.name) + '"'
+        + (e.name ? ' class="bad"' : '') + '>', { err: e.name })
+    + coField("Mobile number", "emob", '<input type="text" id="emob" inputmode="tel" '
+        + 'placeholder="01x xxxx xxxx" value="' + esc(EVC.mobile) + '"'
+        + (e.mobile ? ' class="bad"' : '') + '>',
+        { err: e.mobile, hint: "We confirm every event on WhatsApp." })
+    + coField("Email", "email2", '<input type="email" id="email2" value="' + esc(EVC.email) + '"'
+        + (e.email ? ' class="bad"' : '') + '>', { full: true, optional: true, err: e.email })
+    + coField("Anything we should know", "enotes", '<textarea id="enotes" rows="3">'
+        + esc(EVC.notes) + '</textarea>', { full: true, optional: true })
+    + '</div></section>'
+    + '<div class="co-rule"></div>'
+    + '<section><p class="label-rule">Step three</p><h2 class="co-h">How would you like to pay?</h2>'
+    + paymentHTML(EVC, "evpay", "DELIVERY", e.method)
+    + '<p class="co-rule-note">Nothing is taken now. We agree the payment with you when we confirm '
+    + 'the event.</p></section>'
+    + '</div>'
+
+    + '<aside><div class="ev-panel"><header class="ev-head"><div>'
+    + '<p class="ord-kicker gold">Event request</p><h2>' + esc(occasionLabel(ev)) + '</h2>'
+    + '</div></header>'
+    + '<div class="ev-sec"><dl class="ev-dl">'
+    + evRow("Date", ev.date ? longDate(ev.date) : null) + evRow("Time", ev.time)
+    + evRow("Guests", ev.guestCount ? ev.guestCount + " people" : null)
+    + evRow("Venue", ev.venue, true) + '</dl></div>'
+    + '<div class="ev-sec"><h3 class="ev-h3">Dishes</h3><ul class="co-lines">'
+    + S.eventLines.map((l) => {
+        const p = PRODUCTS[l.slug];
+        return '<li><span><span class="q tnum">' + l.qty + '\u00d7</span> '
+          + esc(p ? p.name : l.slug) + '</span><span class="tnum">'
+          + egp(unitPrice(l, "event") * l.qty) + '</span></li>';
+      }).join("")
+    + '</ul><div class="ord-total"><span>Food subtotal</span><span class="tnum">' + egp(st) + '</span></div>'
+    + (tier ? '<p class="co-fine">Priced for ' + eventGuests() + ' guests at ' + multLabel(tier)
+        + ' the regular menu price.</p>' : '')
+    + '</div>'
+    + '<div class="ev-sec"><h3 class="ev-h3">Anything else for the day?</h3>'
+    + (extras.length
+        ? extras.map((x) => '<span class="ev-tag">' + x + '</span>').join("")
+          + '<p class="co-fine" style="margin-top:12px">Quoted separately when we confirm the event. '
+          + 'Not included in the food subtotal.</p>'
+        : '<p style="margin-top:12px;font-size:15px;color:var(--ink-soft)">Nothing requested.</p>')
+    + (ev.extrasNotes ? '<p style="margin-top:12px;font-size:14px;font-style:italic;'
+        + 'color:var(--ink-soft)">' + esc(ev.extrasNotes) + '</p>' : '')
+    + '<p style="margin-top:16px"><a class="link-sweep" href="#/cart">Change anything above</a></p>'
+    + '</div>'
+    + '<div class="ev-sec last">'
+    + (EVC.touched && Object.keys(e).length
+        ? '<p class="bad-box" style="margin-top:0">' + esc(Object.values(e)[0]) + '</p>' : '')
+    + '<button type="button" class="btn btn-primary" id="send-event" style="width:100%">'
+    + 'Send this event request</button>'
+    + '<p class="co-fine" style="margin-top:16px">This is a <strong>request</strong>, not a booking. '
+    + 'Nothing is reserved until we confirm it with you.</p>'
+    + '</div></div></aside>'
+    + '</div></div>';
+
+  const b = (id, key) => { const n = $(id); if (n) n.addEventListener("input", (x) => { EVC[key] = x.target.value; }); };
+  b("#ename", "name"); b("#emob", "mobile"); b("#email2", "email"); b("#enotes", "notes"); b("#ref", "ref");
+}
+
+/* ---------------------------------------------------------- the orders */
+const ORDERS_KEY = "thediine.orders.v1";
+function readOrders() {
+  try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || "{}"); } catch (e) { return {}; }
+}
+function saveOrder(o) {
+  const all = readOrders(); all[o.number] = o;
+  try { localStorage.setItem(ORDERS_KEY, JSON.stringify(all)); } catch (e) {}
+}
+/* TD- for a normal order, EV- for an event: two series, never one. */
+function newOrderNumber(kind) {
+  const d = new Date();
+  const stem = kind + "-" + String(d.getFullYear()).slice(2)
+    + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-";
+  const used = Object.keys(readOrders()).filter((k) => k.indexOf(stem) === 0);
+  return stem + String(used.length + 1).padStart(2, "0");
+}
+/* Cash is simply unpaid. InstaPay waits for someone to check the transfer. */
+function startingPaymentStatus(method) {
+  return method === "INSTAPAY" ? "AWAITING_VERIFICATION" : "UNPAID";
+}
+const ORDER_STATUS_TEXT = {
+  REQUESTED: ["Requested", "We have your request. Nothing is booked until we confirm it with you personally."],
+  NEW: ["Received", "We have your order and will confirm it with you shortly."]
+};
+const PAY_STATUS_TEXT = {
+  UNPAID: ["Unpaid", "Nothing has been charged."],
+  AWAITING_VERIFICATION: ["Awaiting verification",
+    "We check the transfer and confirm it with you. Until then this is not marked as paid."],
+  PAID: ["Paid", "We have received your payment."]
+};
+
+function placeNormalOrder() {
+  CO.touched = true;
+  const e = normalErrors();
+  if (Object.keys(e).length) { renderCheckout(); return; }
+  const st = subtotalOf(S.normalLines, "normal");
+  const o = {
+    number: newOrderNumber("TD"), kind: "NORMAL", status: "NEW",
+    paymentStatus: startingPaymentStatus(CO.method), method: CO.method, ref: CO.ref.trim(),
+    fulfilment: CO.fulfilment, date: CO.date, time: CO.time, setup: CO.setup,
+    name: CO.name.trim(), mobile: normMobile(CO.mobile), email: CO.email.trim(),
+    addr: CO.addr.trim(), details: CO.details.trim(), notes: CO.notes.trim(),
+    lines: S.normalLines.map((l) => ({ name: (PRODUCTS[l.slug] || {}).name || l.slug,
+      variant: l.variant, qty: l.qty, total: unitPrice(l, "normal") * l.qty })),
+    subtotal: st, total: st
+  };
+  saveOrder(o);
+  /* Only the regular order is emptied. The event request is untouched. */
+  S.normalLines = []; CO = Object.assign({}, EMPTY_CO); save();
+  location.hash = "#/order/" + o.number;
+}
+
+function sendEventRequest() {
+  EVC.touched = true;
+  const e = eventCheckoutErrors();
+  if (Object.keys(e).length) { renderEventCheckout(); return; }
+  const ev = S.event, st = subtotalOf(S.eventLines, "event");
+  const tier = eventTier(eventGuests());
+  const o = {
+    number: newOrderNumber("EV"), kind: "EVENT", status: "REQUESTED",
+    paymentStatus: startingPaymentStatus(EVC.method), method: EVC.method, ref: EVC.ref.trim(),
+    fulfilment: "DELIVERY", occasion: occasionLabel(ev), date: ev.date, time: ev.time,
+    guests: ev.guestCount, venue: ev.venue, setup: EVC.setup,
+    name: EVC.name.trim(), mobile: normMobile(EVC.mobile), email: EVC.email.trim(),
+    notes: EVC.notes.trim(),
+    extras: EXTRAS.filter((x) => ev[x[0]]).map((x) => x[1]), extrasNotes: ev.extrasNotes,
+    multiplier: tier ? multLabel(tier) : null,
+    lines: S.eventLines.map((l) => ({ name: (PRODUCTS[l.slug] || {}).name || l.slug,
+      variant: l.variant, qty: l.qty, total: unitPrice(l, "event") * l.qty })),
+    subtotal: st, total: st
+  };
+  saveOrder(o);
+  /* Only the event is cleared. A regular order in the cart stays as it was. */
+  S.eventLines = []; S.event = Object.assign({}, EMPTY_EVENT);
+  EVC = Object.assign({}, EMPTY_CO); save();
+  location.hash = "#/order/" + o.number;
+}
+
+function viewOrder(number) {
+  const o = readOrders()[number];
+  if (!o) {
+    return '<div class="narrow" style="padding:96px 0;text-align:center">'
+      + '<p style="font-family:Fraunces,Georgia,serif;font-size:24px">Order not found</p>'
+      + '<a class="btn btn-primary" style="margin-top:32px" href="#/menu">Back to the menu</a></div>';
+  }
+  const isEvent = o.kind === "EVENT";
+  const os = ORDER_STATUS_TEXT[o.status], ps = PAY_STATUS_TEXT[o.paymentStatus];
+  const payLabel = o.method === "CASH"
+    ? (o.fulfilment === "PICKUP" ? "Payment on pickup" : "Cash on delivery")
+    : o.method === "INSTAPAY" ? "InstaPay" : "Card";
+
+  let rows = "";
+  if (isEvent) rows += evRow("Occasion", o.occasion);
+  rows += evRow(isEvent ? "Date" : (o.fulfilment === "PICKUP" ? "Pickup date" : "Delivery date"),
+    o.date ? longDate(o.date) : null);
+  rows += evRow("Time", o.time);
+  if (isEvent) rows += evRow("Guests", o.guests ? o.guests + " people" : null);
+  if (!isEvent) rows += evRow("Fulfilment", o.fulfilment === "PICKUP" ? "Pickup" : "Delivery");
+  if (isEvent) rows += evRow("Venue", o.venue, true);
+  else if (o.fulfilment === "DELIVERY") rows += evRow("Address",
+    o.details ? o.addr + " \u2014 " + o.details : o.addr, true);
+  rows += evRow("Serving setup", o.setup === "RETURNABLE" ? "Returnable dishes" : "Disposable dishes");
+  rows += evRow("Name", o.name) + evRow("Mobile", o.mobile);
+  if (o.email) rows += evRow("Email", o.email);
+  rows += evRow("Payment method", payLabel);
+  if (o.ref) rows += evRow("Transfer reference", o.ref);
+
+  return '<div class="narrow" style="padding-top:48px;padding-bottom:72px">'
+    + '<p class="label-rule">' + (isEvent ? "Event request sent" : "Order placed") + '</p>'
+    + '<h1 class="co-h1">Thank you \u2014 we have your ' + (isEvent ? "request" : "order") + '</h1>'
+    + '<div class="ord-num"><p class="label-rule gold">Your order number</p>'
+    + '<p class="n tnum">' + esc(o.number) + '</p>'
+    + '<p class="d">Keep this to hand \u2014 it is how we find your order when you message us.</p></div>'
+    /* two statuses, side by side, because they move independently */
+    + '<div class="co-grid2" style="margin-top:24px">'
+    + '<div class="stat"><p class="label-rule">Order status</p><p class="v">' + os[0] + '</p>'
+    + '<p class="d">' + os[1] + '</p></div>'
+    + '<div class="stat"><p class="label-rule">Payment status</p><p class="v">' + ps[0] + '</p>'
+    + '<p class="d">' + ps[1] + '</p></div></div>'
+    + '<section class="ord-card"><h2>' + (isEvent ? "Your event" : "Your order") + '</h2>'
+    + '<dl class="ev-dl" style="margin-top:20px">' + rows + '</dl>'
+    + '<h3 class="ev-h3" style="margin-top:28px">Dishes</h3><ul class="co-lines">'
+    + o.lines.map((l) => '<li><span><span class="q tnum">' + l.qty + '\u00d7</span> ' + esc(l.name)
+        + (l.variant ? ' <span class="v">\u00b7 ' + esc(l.variant) + '</span>' : '')
+        + '</span><span class="tnum">' + egp(l.total) + '</span></li>').join("")
+    + '</ul>'
+    + '<dl class="co-dl"><div><dt>' + (isEvent ? "Food subtotal" : "Subtotal") + '</dt>'
+    + '<dd class="tnum">' + egp(o.subtotal) + '</dd></div>'
+    + (!isEvent && o.fulfilment === "DELIVERY"
+        ? '<div><dt>Delivery</dt><dd>Confirmed with you</dd></div>' : '')
+    + '</dl>'
+    + '<div class="co-total"><span>Total</span><span class="tnum">' + egp(o.total) + '</span></div>'
+    + (!isEvent && o.fulfilment === "DELIVERY"
+        ? '<p class="co-fine">Before the delivery fee.</p>' : '')
+    + (isEvent && o.multiplier
+        ? '<p class="co-fine">Priced for ' + esc(String(o.guests)) + ' guests at ' + o.multiplier
+          + ' the regular menu price.</p>' : '')
+    + (isEvent
+        ? '<h3 class="ev-h3" style="margin-top:28px">Anything else for the day?</h3>'
+          + (o.extras.length
+              ? o.extras.map((x) => '<span class="ev-tag">' + x + '</span>').join("")
+                + '<p class="co-fine" style="margin-top:12px">We quote each one when we confirm the '
+                + 'event. None of it is in the total above.</p>'
+              : '<p style="margin-top:12px;font-size:15px;color:var(--ink-soft)">Nothing requested.</p>')
+          + (o.extrasNotes ? '<p style="margin-top:12px;font-size:14px;font-style:italic;'
+              + 'color:var(--ink-soft)">' + esc(o.extrasNotes) + '</p>' : '')
+        : '')
+    + '</section>'
+    + '<section class="ord-card"><h2>What happens next</h2><ol class="next">'
+    + '<li><span class="n tnum">01</span><span>We message you on WhatsApp to confirm everything.</span></li>'
+    + '<li><span class="n tnum">02</span><span>'
+    + (o.method === "INSTAPAY"
+        ? 'Once your transfer arrives we check it and mark your payment as paid. Until then it stays '
+          + 'as awaiting verification.'
+        : o.fulfilment === "PICKUP"
+          ? 'You pay in cash when you collect the order.'
+          : 'You pay in cash when the order reaches you.')
+    + '</span></li>'
+    + '<li><span class="n tnum">03</span><span>'
+    + (isEvent
+        ? 'We agree the details, quote anything extra you asked for, and confirm the booking.'
+        : 'We cook it for your chosen time.')
+    + '</span></li></ol></section>'
+    + '<div style="margin-top:40px;display:flex;flex-wrap:wrap;gap:16px">'
+    + '<a class="btn btn-primary" href="#/menu">Back to the menu</a>'
+    + '<a class="btn btn-outline" href="#/cart">Your cart</a></div>'
+    + '</div>';
+}
+
 /* ----------------------------------------------------------------- router */
 function render() {
   const h = hashPath();
@@ -1360,6 +1932,13 @@ function render() {
   else if (parts[0] === "product") { html = viewProduct((parts[1] || "").split("?")[0]); after = renderPD; }
   else if (parts[0] === "cart") { html = viewCart(); after = () => { if (EV_EDIT) bindEventCard(renderCart); }; }
   else if (parts[0] === "our-work") html = viewOurWork();
+  else if (parts[0] === "checkout") {
+    /* Two checkouts, never one: the event review is step four of its own
+       journey and becomes its own record with its own number. */
+    if (parts[1] === "event") { html = viewEventCheckout(); after = renderEventCheckout; }
+    else { html = viewCheckout(); after = renderCheckout; }
+  }
+  else if (parts[0] === "order") html = viewOrder(decodeURIComponent(parts[1] || ""));
   else if (parts[0] === "events") {
     if (parts[1] === "start") { html = viewOccasion(); after = renderOccasion; }
     else if (parts[1] === "details") { html = viewDetails(); after = renderDetails; }
@@ -1431,6 +2010,15 @@ document.addEventListener("click", function (e) {
     if ($("#es")) renderDetails(); else renderCart();
     return;
   }
+  /* ---- checkout ---- */
+  if (t.dataset.ful)     { CO.fulfilment = t.dataset.ful; renderCheckout(); return; }
+  if (t.dataset.setup)   { CO.setup = t.dataset.setup; renderCheckout(); return; }
+  if (t.dataset.pay)     { CO.method = t.dataset.pay; renderCheckout(); return; }
+  if (t.dataset.evsetup) { EVC.setup = t.dataset.evsetup; renderEventCheckout(); return; }
+  if (t.dataset.evpay)   { EVC.method = t.dataset.evpay; renderEventCheckout(); return; }
+  if (t.id === "place-order") { placeNormalOrder(); return; }
+  if (t.id === "send-event")  { sendEventRequest(); return; }
+
   if (t.id === "cancel-event") {
     /* Abandons the event and its dishes. The normal order is untouched. */
     EV_EDIT = false; S.eventLines = []; S.event = Object.assign({}, EMPTY_EVENT);

@@ -5,6 +5,23 @@
  * homepage — and are enforced by the date pickers rather than merely displayed.
  */
 
+/**
+ * The four occasions, and how they are written.
+ *
+ * Kept HERE, not in the cart, because the cart is a client module: a value
+ * imported from one into a server component comes back as a client reference
+ * rather than the object itself, which is how the occasion silently rendered
+ * as an em dash on the confirmation page.
+ */
+export type EventTypeId = "BIRTHDAY" | "ENGAGEMENT" | "WEDDING" | "OTHER";
+
+export const EVENT_TYPE_LABELS: Record<EventTypeId, string> = {
+  BIRTHDAY: "Birthday",
+  ENGAGEMENT: "Engagement",
+  WEDDING: "Wedding",
+  OTHER: "Other",
+};
+
 export const RULES = {
   normal: { noticeHours: 48, noticeLabel: "48 hours", dailyCapacity: 3 },
   event: { noticeDays: 5, noticeLabel: "5 days" },

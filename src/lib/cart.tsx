@@ -1,5 +1,6 @@
 "use client";
 
+import type { EventTypeId } from "./ordering";
 import {
   createContext,
   useCallback,
@@ -39,7 +40,8 @@ export type CartLine = {
  */
 export type OrderScope = "normal" | "event";
 
-export type EventType = "BIRTHDAY" | "ENGAGEMENT" | "WEDDING" | "OTHER";
+/** One definition, in a module a server component can also read. */
+export type EventType = EventTypeId;
 
 /**
  * guestCount is stored as the exact STRING the customer typed.
@@ -121,6 +123,10 @@ type CartContextValue = {
   startNewEvent: () => void;
   /** Abandons the event request and its dishes. The normal order is untouched. */
   cancelEvent: () => void;
+  /** Emptied after a normal order is placed. The event request is untouched. */
+  clearNormal: () => void;
+  /** Emptied after an event request is sent. The normal order is untouched. */
+  clearEvent: () => void;
   /** Only ever called because the customer explicitly chose it. */
   moveNormalIntoEvent: () => void;
 };
@@ -213,6 +219,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  /**
+   * After an order is placed, only that part of the cart is emptied.
+   *
+   * A customer who sends an event request and still has a regular order keeps
+   * the regular order exactly as it was, and the other way round.
+   */
+  const clearNormal = useCallback(() => setState((s) => ({ ...s, normalLines: [] })), []);
+  const clearEvent = useCallback(
+    () => setState((s) => ({ ...s, eventLines: [], event: EMPTY_EVENT })),
+    [],
+  );
+
   const moveNormalIntoEvent = useCallback(
     () => setState((s) => ({ ...s, eventLines: [...s.eventLines, ...s.normalLines], normalLines: [] })),
     [],
@@ -237,9 +255,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       updateEvent,
       startNewEvent,
       cancelEvent,
+      clearNormal,
+      clearEvent,
       moveNormalIntoEvent,
     };
-  }, [state, ready, addLine, setQuantity, removeLine, updateEvent, startNewEvent, cancelEvent, moveNormalIntoEvent]);
+  }, [state, ready, addLine, setQuantity, removeLine, updateEvent, startNewEvent, cancelEvent,
+      clearNormal, clearEvent, moveNormalIntoEvent]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
@@ -250,9 +271,4 @@ export function useCart() {
   return ctx;
 }
 
-export const EVENT_TYPE_LABELS: Record<EventType, string> = {
-  BIRTHDAY: "Birthday",
-  ENGAGEMENT: "Engagement",
-  WEDDING: "Wedding",
-  OTHER: "Other",
-};
+export { EVENT_TYPE_LABELS } from "./ordering";

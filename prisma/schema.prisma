@@ -379,7 +379,11 @@ enum PaymentStatus {
 
 model Order {
   id          String      @id @default(cuid())
+  /// Human-readable, shown to the customer and used over WhatsApp.
   orderNumber String      @unique
+  /// Unguessable id for the confirmation page, so an order can be linked to
+  /// without exposing anyone else's by counting up from an order number.
+  publicToken String      @unique @default(cuid())
   type        OrderType   @default(NORMAL)
   status      OrderStatus @default(NEW)
 
@@ -406,8 +410,11 @@ model Order {
 
   // All piastres.
   subtotal    Int
-  deliveryFee Int @default(0)
-  discount    Int @default(0)
+  /// NULL means the fee is not known yet — the delivery areas and their fees
+  /// have not been supplied, so it is confirmed when the order is. It is not
+  /// zero, and `total` excludes it while it is unknown.
+  deliveryFee Int?
+  discount    Int  @default(0)
   total       Int
 
   paymentMethod     PaymentMethod
@@ -464,6 +471,10 @@ model EventDetail {
   eventTypeOther String?
   guestCount     Int
   eventTime      String?
+
+  /// The guest band the food was priced at, x10000 (25000 = 2.5x). Recorded so
+  /// the order stays readable after the ladder is edited.
+  pricingMultiplierBp Int?
 
   /// All three extras are quote-based: they carry no price and add nothing to
   /// the order total. The business quotes them when confirming the event.

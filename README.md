@@ -5,10 +5,10 @@ Replaces manual order-taking over Instagram DMs.
 
 ## Status
 
-**Customer experience revised through the cart.** Homepage, menu, product pages,
-the four-step event journey and the cart all work against the real catalogue,
-with event food priced by guest count. Checkout and the admin dashboard are the
-next phases.
+**Customer experience complete through checkout.** Homepage, menu, product pages,
+the four-step event journey, the cart and both checkouts work against the real
+catalogue, with event food priced by guest count. The admin dashboard is the
+next phase.
 
 | | |
 |---|---|
@@ -17,7 +17,7 @@ next phases.
 | [`docs/source-menu-full-buffet.pdf`](docs/source-menu-full-buffet.pdf) | Menu as supplied (image-only, no text layer) |
 | [`prisma/schema.prisma`](prisma/schema.prisma) | Data model |
 | [`prisma/catalogue.ts`](prisma/catalogue.ts) | The menu as data — readable, reviewable |
-| [`src/app`](src/app) | Customer website — home, menu, product, cart |
+| [`src/app`](src/app) | Customer website — home, menu, product, cart, checkout |
 | [`preview/index.html`](preview/index.html) | Static clickable preview of the site, for review before deployment |
 
 ## The catalogue
@@ -113,6 +113,60 @@ the food subtotal.
 - Whether an event under ten guests should really pay the normal price (1×), or
   carry a minimum.
 
+## Checkout
+
+Two checkouts, never one. A customer holding both a regular order and an event
+request sends them separately and gets **two records with two order numbers**;
+neither ever merges into the other.
+
+| | Normal order | Event request |
+|---|---|---|
+| Page | `/checkout` | `/checkout/event` (step four of the event journey) |
+| Number | `TD-260829-01` | `EV-260829-01` |
+| Written as | `NEW` | `REQUESTED` — a request, never an instant booking |
+| Asks | delivery or pickup, date, time, serving setup, name, mobile, optional email, address and area for delivery, payment method | serving setup, name, mobile, optional email, payment method |
+| Reviews | every line, subtotal, delivery | occasion, date, time, guests, venue, dishes, food subtotal, the quote-only extras |
+
+The **48-hour notice** and the **three-orders-a-day limit (pickup included)** are
+enforced twice: in the browser as you type, and again inside the transaction that
+writes the order, where the day's orders are re-counted so two people cannot both
+take the last slot. Full days come back to the browser as unavailable, with the
+reason. An event request is not counted against the normal daily limit.
+
+Delivery areas and their fees are **configurable and unpopulated**. Until they are
+supplied a delivery order records its fee as *unknown* — not zero — the total says
+"before the delivery fee", and the customer is told it is confirmed when we call.
+Add areas and the fee is charged, the area becomes required, and the wording
+disappears on its own.
+
+Time slots work the same way: a list when `TimeSlot` rows exist, a plain time
+field until then.
+
+### Payment
+
+Payment status is **independent of order status** everywhere. A delivered order
+can be unpaid; confirming a payment never moves an order along.
+
+| Method | At checkout | Payment status when placed |
+|---|---|---|
+| Cash | Reads "Cash on delivery" or "Payment on pickup", following the fulfilment | `UNPAID` |
+| InstaPay | Shows the transfer details and says plainly that choosing it does **not** mean the money arrived; takes an optional transfer reference | `AWAITING_VERIFICATION` |
+| Card | Present in the structure, shown disabled as "Coming soon" | — |
+
+`AWAITING_VERIFICATION → PAID` is a **manual** step. Nothing automatic ever marks
+an InstaPay order paid: someone checks the transfer arrived and confirms it. The
+transitions live in [`src/lib/payments.ts`](src/lib/payments.ts), which is
+deliberately **not** a server action — nothing a customer's browser can reach may
+mark an order paid. The admin dashboard calls it in the next phase.
+
+The InstaPay account details are the `instapay_account_details` setting, empty
+until supplied and editable from admin — never in the source. **No card details
+are collected or stored anywhere.** When card is switched on it goes through a
+payment provider, and only the provider's reference is recorded.
+
+The confirmation page is reached by an unguessable token rather than the order
+number, so nobody can read someone else's order by counting upwards.
+
 ## Assets
 
 The official logo (`public/brand/`) and four real photographs (`public/gallery/`)
@@ -134,6 +188,9 @@ Nothing has been invented to fill a gap.
   text, every one marked unreviewed. Gluten and egg are under-tagged on purpose:
   they need recipe knowledge, not menu wording.
 - **Delivery areas, fees, time slots, working days** — tables exist, unpopulated.
+  Checkout works without them and says the fee is still to be confirmed.
+- **InstaPay account details** — the setting exists and is empty. Nothing about
+  the account is written into the source.
 - **Per-dish event scaling** — the structure is there, no dish has been given an
   exception, because none has been supplied.
 
@@ -148,7 +205,10 @@ Items still open are listed in section 10 of the spec.
   special instructions and Add to Cart. Price updates live; Add to Cart stays
   locked until every required choice is answered.
 - **Cart** showing each line's chosen options, editable quantities, removal and
-  a subtotal.
+  a subtotal — with the event request as its own section beside it.
+- **Two checkouts**, one per order type, each writing its own record with its own
+  order number, and a confirmation page that states order status and payment
+  status separately.
 
 Every dish, price, choice and category comes from the database. Nothing about the
 menu is written into the interface, so admin edits appear on the site immediately.
