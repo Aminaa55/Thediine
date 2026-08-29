@@ -84,6 +84,11 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
     setSending(true);
     const result = await submitEventRequest(form, event, eventLines);
     if (result.ok) {
+      // A card payment finishes on the provider's own hosted page.
+      if (result.payAt) {
+        window.location.href = result.payAt;
+        return;
+      }
       clearEvent();
       router.push(`/order/${result.token}`);
       return;

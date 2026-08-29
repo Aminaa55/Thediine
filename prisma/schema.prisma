@@ -419,8 +419,25 @@ model Order {
 
   paymentMethod     PaymentMethod
   paymentStatus     PaymentStatus @default(UNPAID)
+  /// The customer's own reference for a transfer they say they have made.
   paymentReference  String?
   paymentVerifiedAt DateTime?
+
+  // --- card payments, through a provider ------------------------------------
+  // The site never sees a card number. Only the provider's own references are
+  // stored, and only after a signed callback has been verified.
+  /// Which provider handled it. "paymob" today; null for cash and InstaPay.
+  paymentProvider      String?
+  /// "test" or "live" — recorded so a test payment can never be mistaken for real.
+  paymentProviderMode  String?
+  /// Our reference sent to the provider; comes back as their merchant_order_id.
+  paymentMerchantRef   String? @unique
+  /// The provider's id for the payment attempt.
+  paymentIntentionId   String?
+  /// The provider's id for the transaction, once one exists.
+  paymentTransactionId String?
+
+  paymentEvents PaymentEvent[]
 
   notes  String?
   source String  @default("website")
@@ -540,6 +557,40 @@ model OrderStatusEvent {
   createdAt DateTime @default(now())
 
   @@index([orderId, createdAt])
+}
+
+/// Every callback a payment provider has sent us about an order.
+///
+/// Written whether or not the signature checked out and whether or not the
+/// payment succeeded, so there is always a record of what arrived and what we
+/// did about it. It is also what makes a repeated callback harmless: the same
+/// transaction cannot be applied twice.
+model PaymentEvent {
+  id      String  @id @default(cuid())
+  orderId String?
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  provider      String
+  /// "webhook" or "redirect" — the same outcome arrives both ways.
+  channel       String
+  /// The provider's transaction id.
+  transactionId String?
+  /// Our reference, as the provider echoed it back.
+  merchantRef   String?
+
+  /// Did the signature verify? A false here means nothing was changed.
+  signatureValid Boolean
+  /// Did we treat it as paid?
+  applied        Boolean @default(false)
+  /// Amount the provider reported, in piastres.
+  amount         Int?
+  /// Why it was not applied, when it was not.
+  note           String?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId, createdAt])
+  @@index([transactionId])
 }
 
 // ------------------------------------------------- inventory (designed, unbuilt)

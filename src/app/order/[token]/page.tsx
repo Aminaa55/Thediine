@@ -42,6 +42,7 @@ const PAYMENT_STATUS: Record<string, { label: string; body: string }> = {
     body: "We check the transfer and confirm it with you. Until then this is not marked as paid.",
   },
   PAID: { label: "Paid", body: "We have received your payment." },
+  // Kept for completeness; a card payment that fails simply stays UNPAID.
   REFUNDED: { label: "Refunded", body: "This payment was refunded." },
 };
 
@@ -73,7 +74,12 @@ export default async function OrderPage({ params }: Props) {
         : "Cash on delivery"
       : order.paymentMethod === "INSTAPAY"
         ? "InstaPay"
-        : "Card";
+        : order.paymentProviderMode === "test"
+          ? "Card (test mode)"
+          : "Card";
+
+  // A card payment that did not go through leaves the order placed and unpaid.
+  const cardUnpaid = order.paymentMethod === "CARD" && order.paymentStatus === "UNPAID";
 
   const extras = [
     detail?.decorRequested && "Table décor",
@@ -97,6 +103,18 @@ export default async function OrderPage({ params }: Props) {
           Keep this to hand — it is how we find your order when you message us.
         </p>
       </div>
+
+      {cardUnpaid && (
+        <div className="mt-6 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.06] px-6 py-5">
+          <p className="font-display text-[18px] font-semibold text-ink">
+            The card payment did not go through
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+            Your order is placed and safe — it is simply still unpaid. We will agree the payment
+            with you when we confirm the order.
+          </p>
+        </div>
+      )}
 
       {/* Two statuses, side by side, because they move independently. */}
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -143,6 +161,9 @@ export default async function OrderPage({ params }: Props) {
           {order.customerEmail && <Row label="Email" value={order.customerEmail} />}
           <Row label="Payment method" value={paymentLabel} />
           {order.paymentReference && <Row label="Transfer reference" value={order.paymentReference} />}
+          {order.paymentTransactionId && (
+            <Row label="Payment reference" value={order.paymentTransactionId} />
+          )}
         </dl>
 
         <h3 className="mt-8 text-[11px] uppercase tracking-widest text-ink-faint">Dishes</h3>
@@ -232,7 +253,16 @@ export default async function OrderPage({ params }: Props) {
         <h2 className="font-display text-[19px] font-semibold text-ink">What happens next</h2>
         <ol className="mt-4 grid gap-3">
           <Next n={1} body="We message you on WhatsApp to confirm everything." />
-          {order.paymentMethod === "INSTAPAY" ? (
+          {order.paymentMethod === "CARD" ? (
+            <Next
+              n={2}
+              body={
+                order.paymentStatus === "PAID"
+                  ? "Your card payment went through and is marked as paid."
+                  : "Your card payment did not go through, so this order is still unpaid. We will sort the payment out with you when we call."
+              }
+            />
+          ) : order.paymentMethod === "INSTAPAY" ? (
             <Next
               n={2}
               body="Once your transfer arrives we check it and mark your payment as paid. Until then it stays as awaiting verification."

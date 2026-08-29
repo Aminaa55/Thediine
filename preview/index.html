@@ -1534,7 +1534,9 @@ function paymentHTML(state, attr, fulfilment, err) {
     + (CARD_ENABLED
         ? payOpt(state.method === "CARD", 'data-' + attr + '="CARD"', "Card payment", "Pay by card.")
         : '<div class="pay-opt off"><span class="dot"></span><span><span class="t">Card payment</span>'
-          + '<span class="b">Coming soon.</span></span></div>')
+          + '<span class="b">Coming soon. On the real site this turns on by itself once the '
+          + 'Paymob keys are in place, and takes the customer to Paymob\u2019s own secure page \u2014 '
+          + 'this preview has no server, so it cannot take a payment.</span></span></div>')
     + '</div>';
   if (err) h += '<p class="bad-msg" style="margin-top:12px">' + esc(err) + '</p>';
   if (state.method === "INSTAPAY") {

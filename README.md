@@ -151,7 +151,7 @@ can be unpaid; confirming a payment never moves an order along.
 |---|---|---|
 | Cash | Reads "Cash on delivery" or "Payment on pickup", following the fulfilment | `UNPAID` |
 | InstaPay | Shows the transfer details and says plainly that choosing it does **not** mean the money arrived; takes an optional transfer reference | `AWAITING_VERIFICATION` |
-| Card | Present in the structure, shown disabled as "Coming soon" | — |
+| Card | Paymob's hosted checkout — see below. Shown disabled as "Coming soon" until a provider is configured | `UNPAID` until a verified callback says otherwise |
 
 `AWAITING_VERIFICATION → PAID` is a **manual** step. Nothing automatic ever marks
 an InstaPay order paid: someone checks the transfer arrived and confirms it. The
@@ -166,6 +166,54 @@ payment provider, and only the provider's reference is recorded.
 
 The confirmation page is reached by an unguessable token rather than the order
 number, so nobody can read someone else's order by counting upwards.
+
+### Card payments — Paymob
+
+**The site never sees a card.** Card payments use Paymob's **hosted** Unified
+Checkout: the customer is sent to Paymob's own page to enter their card, and the
+only things ever stored here are Paymob's own references. No card number, expiry
+or CVV touches this site, this server or this database.
+
+The flow:
+
+1. the order is written first, `UNPAID`, so nothing is lost if the payment fails;
+2. an *intention* is created with Paymob for that order's exact total, taken from
+   the order we just wrote — never from the browser;
+3. the customer is redirected to Paymob's hosted checkout;
+4. Paymob reports the outcome **twice** — a server-to-server webhook and a signed
+   redirect back — and **both are verified by HMAC-SHA512** before anything
+   changes.
+
+`POST /api/paymob/webhook` is the authority; `GET /api/paymob/return` handles the
+customer coming back and runs the identical verification, so the confirmation page
+is right immediately and the flow can be tested before the site has a public URL.
+Either way the same four checks must pass before an order is marked paid:
+
+1. the signature verifies (constant-time comparison);
+2. the reference matches an order we are expecting to be paid;
+3. the amount settled **equals the order's own total**;
+4. the transaction is a clean success — not pending, errored, voided or refunded.
+
+A repeated callback is harmless: an order already paid is not paid again. Every
+callback is recorded in `PaymentEvent` — verified or forged, applied or not —
+with the reason, so there is always a record of what arrived.
+
+**Nothing here can move an order's status.** A paid order is not a confirmed one.
+
+**Test mode is enforced, not assumed.** `PAYMOB_MODE` must be set to `live`
+deliberately; anything else means test. A live-looking key while in test mode is
+refused outright, checkout shows a **Test mode** badge on the card option with a
+plain warning, and the mode is recorded on every order so a test payment can
+never be mistaken for a real one.
+
+Card only appears to customers when a provider is fully configured **and** the
+`payment_card_enabled` setting is not `"false"`. Missing any one credential and it
+falls back to "Coming soon" on its own.
+
+Credentials live in the environment and **never** in the repository — see
+[`.env.example`](.env.example) for the names. `PAYMOB_SECRET_KEY` and
+`PAYMOB_HMAC_SECRET` are server-only and are never sent to a browser; the build
+was checked to confirm none of them reach the client bundle.
 
 ## Assets
 

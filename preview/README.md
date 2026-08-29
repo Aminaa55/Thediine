@@ -15,6 +15,10 @@ Two rules the preview cannot enforce are enforced by the real site: it resolves
 every price from the database again before writing, and it counts the orders a
 day already holds before accepting another.
 
+Card payments are the one thing the preview cannot show: they need a server to
+talk to Paymob, so the card option stays disabled here and says so. On the real
+site it turns on by itself once the Paymob keys are set.
+
 Event pricing is mirrored too: `EVENT_TIERS` in the script is the same guest-count
 ladder that `EventPriceTier` holds in the real site, and `scaled()` is the same
 integer arithmetic as `eventUnitPrice`. The difference is that the real site reads

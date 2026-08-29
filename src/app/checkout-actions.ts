@@ -7,6 +7,7 @@ import { nextOrderNumber } from "@/lib/order-number";
 import { parseGuests, earliestNormalDate, toDateInput, RULES } from "@/lib/ordering";
 import { eventUnitPrice, type EventTier } from "@/lib/event-pricing";
 import { getEventTiers } from "@/lib/catalog";
+import { paymobConfig, createIntention } from "@/lib/paymob";
 import {
   validateNormal,
   validateEventSubmission,
@@ -35,6 +36,8 @@ export type CheckoutContext = {
   /** InstaPay transfer details, as supplied by the business. Empty until then. */
   instapayDetails: string;
   cardComingSoon: boolean;
+  /** Card is only offered when a provider is actually configured to take it. */
+  cardTestMode: boolean;
   areas: { id: string; name: string; fee: number }[];
   slots: { id: string; label: string; startTime: string; endTime: string }[];
   whatsapp: string;
@@ -64,13 +67,26 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
   const methods: PaymentMethodId[] = [];
   if (s.payment_cash_enabled !== "false") methods.push("CASH");
   if (s.payment_instapay_enabled !== "false") methods.push("INSTAPAY");
-  // Card is structured but never offered until a gateway is actually integrated.
-  if (s.payment_card_enabled === "true") methods.push("CARD");
+
+  /**
+   * Card is offered only when a payment provider is actually configured AND the
+   * owner has not switched it off. Configuring the provider is itself the
+   * deliberate act; until then card stays "coming soon", because the interface
+   * must never imply card works before it does.
+   */
+  const paymob = paymobConfig();
+  const allowed = s.payment_card_enabled !== "false";
+  const cardOn = allowed && paymob.configured;
+  if (cardOn) methods.push("CARD");
+  if (allowed && !paymob.configured && paymob.problem) {
+    console.warn(`[paymob] card is not available: ${paymob.problem}`);
+  }
 
   return {
     methods,
     instapayDetails: s.instapay_account_details ?? "",
-    cardComingSoon: s.payment_card_enabled !== "true",
+    cardComingSoon: !cardOn,
+    cardTestMode: cardOn && paymob.mode === "test",
     areas: areas.map((a) => ({ id: a.id, name: a.nameEn, fee: a.fee })),
     slots: slots.map((t) => ({ id: t.id, label: t.labelEn, startTime: t.startTime, endTime: t.endTime })),
     whatsapp: s.whatsapp_number ?? "",
@@ -144,10 +160,62 @@ export type PlacedOrder = {
   ok: true;
   orderNumber: string;
   token: string;
+  /** Set for a card payment: the provider's hosted checkout to send them to. */
+  payAt?: string;
 } | {
   ok: false;
   errors: Record<string, string>;
 };
+
+/**
+ * Hands a written order to the card provider.
+ *
+ * The order already exists and is UNPAID; this only starts the payment. If the
+ * provider cannot be reached the order stands, and the customer is told to pay
+ * another way rather than losing what they just placed.
+ */
+async function startCardPayment(order: {
+  id: string;
+  orderNumber: string;
+  publicToken: string;
+  total: number;
+}, customer: CustomerDetails, address: string | null): Promise<string | null> {
+  const cfg = paymobConfig();
+  if (!cfg.configured) return null;
+
+  // Unique per attempt: a provider rejects a reference it has already seen.
+  const merchantRef = `${order.orderNumber}-${Date.now().toString(36)}`;
+
+  const intention = await createIntention({
+    amount: order.total,
+    merchantReference: merchantRef,
+    customer: {
+      name: customer.name.trim(),
+      mobile: normaliseMobile(customer.mobile),
+      email: customer.email.trim() || null,
+    },
+    address,
+    items: [{ name: `Order ${order.orderNumber}`, amount: order.total, quantity: 1 }],
+    redirectionUrl: `${cfg.siteUrl}/api/paymob/return`,
+    notificationUrl: `${cfg.siteUrl}/api/paymob/webhook`,
+  });
+
+  if (!intention.ok) {
+    console.error(`[paymob] could not start payment for ${order.orderNumber}: ${intention.error}`);
+    return null;
+  }
+
+  await db.order.update({
+    where: { id: order.id },
+    data: {
+      paymentProvider: "paymob",
+      paymentProviderMode: cfg.mode,
+      paymentMerchantRef: merchantRef,
+      paymentIntentionId: intention.intentionId || null,
+    },
+  });
+  return intention.checkoutUrl;
+}
 
 /** Turns resolved cart lines into the order's own snapshot of them. */
 function itemData(lines: Awaited<ReturnType<typeof resolveCart>>["lines"]) {
@@ -267,10 +335,14 @@ export async function placeNormalOrder(
           items: { create: itemData(cart.lines) },
           statusEvents: { create: { toStatus: "NEW", note: "Placed on the website." } },
         },
-        select: { orderNumber: true, publicToken: true },
+        select: { id: true, orderNumber: true, publicToken: true, total: true },
       });
     });
 
+    if (method === "CARD") {
+      const payAt = await startCardPayment(order, input, input.addressLine.trim() || null);
+      return { ok: true, orderNumber: order.orderNumber, token: order.publicToken, payAt: payAt ?? undefined };
+    }
     return { ok: true, orderNumber: order.orderNumber, token: order.publicToken };
   } catch (e) {
     if (e instanceof CapacityError) return { ok: false, errors: { date: e.message } };
@@ -356,9 +428,13 @@ export async function submitEventRequest(
           },
         },
       },
-      select: { orderNumber: true, publicToken: true },
+      select: { id: true, orderNumber: true, publicToken: true, total: true },
     });
   });
 
+  if (method === "CARD") {
+    const payAt = await startCardPayment(order, customer, event.venue.trim() || null);
+    return { ok: true, orderNumber: order.orderNumber, token: order.publicToken, payAt: payAt ?? undefined };
+  }
   return { ok: true, orderNumber: order.orderNumber, token: order.publicToken };
 }

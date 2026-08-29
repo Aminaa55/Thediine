@@ -41,7 +41,10 @@ const SETTINGS: Record<string, string> = {
   // Payment
   payment_cash_enabled: "true",
   payment_instapay_enabled: "true",
-  payment_card_enabled: "false", // structured, off until a gateway is added
+  // The owner's switch. Card is offered only when this is not "false" AND a
+  // payment provider is configured in the environment; configuring the provider
+  // is the deliberate act that turns card on.
+  payment_card_enabled: "true",
   instapay_account_details: "", // TO CONFIRM
 
   // Contact

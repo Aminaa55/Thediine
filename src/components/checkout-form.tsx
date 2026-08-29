@@ -84,6 +84,11 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
     setSending(true);
     const result = await placeNormalOrder(form, normalLines);
     if (result.ok) {
+      // A card payment finishes on the provider's own hosted page.
+      if (result.payAt) {
+        window.location.href = result.payAt;
+        return;
+      }
       clearNormal();
       router.push(`/order/${result.token}`);
       return;

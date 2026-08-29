@@ -176,19 +176,46 @@ export function PaymentChoice({
           />
         )}
 
-        {/* Structured, and deliberately not offered until a gateway is live. */}
+        {/* Never offered until a provider is configured and switched on. */}
         {ctx.cardComingSoon ? (
           <Method disabled title="Card payment" body="Coming soon." />
         ) : (
           <Method
-            on={value === "CARD"} onClick={() => onChange("CARD")}
-            title="Card payment" body="Pay by card."
+            on={value === "CARD"}
+            onClick={() => onChange("CARD")}
+            title="Card payment"
+            body="You are taken to our payment provider's secure page to pay. We never see or store your card details."
+            badge={ctx.cardTestMode ? "Test mode" : undefined}
           />
         )}
       </div>
 
       {errors.paymentMethod && (
         <p className="mt-3 text-[13.5px] text-[#A6391C]">{errors.paymentMethod}</p>
+      )}
+
+      {/*
+        Test mode must be unmistakable. A card entered here is a test card, and
+        nobody should be able to mistake this for a real payment.
+      */}
+      {value === "CARD" && ctx.cardTestMode && (
+        <div className="mt-5 rounded-sm border border-[#A6391C]/35 bg-[#A6391C]/[0.06] px-5 py-5">
+          <p className="text-[11px] uppercase tracking-widest text-[#A6391C]">Test mode</p>
+          <p className="mt-3 text-[15.5px] leading-relaxed text-ink">
+            Card payments are in <strong className="font-semibold">test mode</strong>. No real money
+            moves and no real card will be charged — use a test card only.
+          </p>
+        </div>
+      )}
+
+      {value === "CARD" && !ctx.cardTestMode && (
+        <div className="mt-5 rounded-sm border border-gold/40 bg-gold-pale/35 px-5 py-5">
+          <p className="text-[15.5px] leading-relaxed text-ink-soft">
+            You will be taken to our payment provider&rsquo;s secure page to pay. Your order is
+            placed either way; if the payment does not go through it simply stays unpaid and you
+            can pay another way.
+          </p>
+        </div>
       )}
 
       {value === "INSTAPAY" && (
@@ -231,12 +258,14 @@ export function PaymentChoice({
 }
 
 function Method({
-  on = false, disabled = false, title, body, onClick,
+  on = false, disabled = false, title, body, badge, onClick,
 }: {
   on?: boolean;
   disabled?: boolean;
   title: string;
   body: string;
+  /** e.g. "Test mode" — stated on the option itself, not buried below it. */
+  badge?: string;
   onClick?: () => void;
 }) {
   return (
@@ -262,7 +291,14 @@ function Method({
         {on && <span className="h-2 w-2 rounded-full bg-gold" />}
       </span>
       <span className="min-w-0">
-        <span className="block font-display text-[18px] font-semibold text-ink">{title}</span>
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="font-display text-[18px] font-semibold text-ink">{title}</span>
+          {badge && (
+            <span className="rounded-full border border-[#A6391C]/40 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.14em] text-[#A6391C]">
+              {badge}
+            </span>
+          )}
+        </span>
         <span className="mt-1 block text-[14.5px] leading-relaxed text-ink-soft">{body}</span>
       </span>
     </button>
