@@ -45,18 +45,14 @@ header.site .wrap{display:flex; align-items:center; gap:16px; height:64px}
 #logo-header{height:44px; width:auto; display:block}
 @media(min-width:640px){#logo-header{height:52px}}
 #logo-footer{height:76px; width:auto; display:block}
-/* Sticky, so it stays reachable down a long page without scrolling back up. */
-.backbar{position:sticky; top:64px; z-index:20; background:rgba(251,241,228,.95);
-  backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
-@media(min-width:640px){.backbar{top:80px}}
-.backbar.inflow{position:static; top:auto}
+/* In the flow, near the top of the page, rather than following the scroll. */
+.backbar{background:var(--cream); border-bottom:1px solid var(--line-soft)}
 .backbar button{background:none; border:0; padding:10px 12px 10px 8px; margin-left:-8px; display:flex;
   align-items:center; gap:8px; font-size:14.5px; color:var(--ink-soft)}
 .backbar button:hover{color:var(--ink)}
 .backbar .ar{font-size:17px; line-height:1; transition:transform .2s}
 .backbar button:hover .ar{transform:translateX(-4px)}
-.stepwrap{position:sticky; top:64px; z-index:20}
-@media(min-width:640px){.stepwrap{top:80px}}
+.stepwrap{background:var(--cream)}
 .chip-preview{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
   border:1px solid var(--line); border-radius:999px; padding:2px 8px; white-space:nowrap}
 nav.main{display:none; gap:32px; margin-left:36px}
@@ -99,6 +95,7 @@ section{padding:72px 0}
   letter-spacing:.22em; color:var(--gold)}
 .label-rule::after{content:""; height:1px; flex:1; max-width:80px; background:rgba(168,126,46,.35)}
 .link-sweep{position:relative; display:inline-block; color:var(--gold)}
+button.link-sweep{background:none; border:0; padding:0; cursor:pointer; font:inherit}
 .link-sweep::after{content:""; position:absolute; bottom:-2px; left:0; height:1px; width:0;
   background:var(--gold); transition:width .3s}
 .link-sweep:hover::after{width:100%}
@@ -1026,6 +1023,7 @@ function eventSectionHTML() {
         + '<p style="margin-top:8px;font-size:13px;color:var(--ink-faint)">Up to ' + MAX_GUESTS + '</p></div>'
       + '<div class="full"><span class="lab">Venue or address</span>'
         + '<input type="text" id="ev-venue" placeholder="Where should we bring the food?" value="' + esc(e.venue) + '"></div>'
+      + '<div class="full">' + extrasHTML(true) + '</div>'
       + (err ? '<p class="err full">' + esc(err) + '</p>' : '')
       + '<div class="full"><button type="button" class="btn btn-primary" id="ev-done">Done</button></div></div>';
   } else {
@@ -1051,10 +1049,11 @@ function eventSectionHTML() {
     + '<div class="ev-sec last"><h3 class="ev-h3">Anything else for the day?</h3>'
     + (extras.length === 0
         ? '<p style="margin-top:12px;font-size:16px;color:var(--ink-soft)">Nothing requested yet. '
-          + '<a class="link-sweep" href="#/events/extras">Add table d\u00e9cor, setup or staff</a></p>'
+          + '<button type="button" class="link-sweep" id="ev-extras">Add table d\u00e9cor, setup or staff</button></p>'
         : extras.map((x) => '<span class="ev-tag">' + x + '</span>').join("")
           + '<p style="margin-top:12px;font-size:14px;color:var(--ink-soft)">We will quote each one when we confirm '
-          + 'your event. Nothing here is added to your total. <a class="link-sweep" href="#/events/extras">Change</a></p>')
+          + 'your event. Nothing here is added to your total. '
+          + '<button type="button" class="link-sweep" id="ev-extras">Change</button></p>')
     + (e.extrasNotes ? '<p style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;'
         + 'font-size:15px;font-style:italic;color:var(--ink-soft)">' + esc(e.extrasNotes) + '</p>' : '')
     + '<div class="ord-total"><span>Food subtotal</span><span class="tnum">' + egp(st) + '</span></div>'
@@ -1075,6 +1074,7 @@ function bindEventCard(rerender) {
     if (n) n.addEventListener("input", (ev) => { S.event[key] = ev.target.value; save(); rerender(); }); };
   b("ev-date", "date"); b("ev-time", "time"); b("ev-venue", "venue"); b("ev-other", "eventTypeOther");
   bindGuestInput("ev-guests", rerender);
+  bindNotes();
 }
 
 function viewCart() {
@@ -1100,8 +1100,7 @@ let EV_EDIT = false;
 
 /* ----------------------------------------------------------- event journey */
 const STEPS = [["type","Occasion","#/events/start"],["details","Details","#/events/details"],
-               ["dishes","Dishes","#/menu?for=event"],["extras","Extras","#/events/extras"],
-               ["review","Review","#/cart"]];
+               ["dishes","Dishes","#/menu?for=event"],["review","Review","#/cart"]];
 /* Progress bar, then the Back control beneath it. */
 function progressHTML(cur) {
   const idx = STEPS.findIndex((s) => s[0] === cur);
@@ -1135,12 +1134,11 @@ function viewEvents() {
     + '<div class="ctas"><a class="btn btn-primary" href="#/events/start">Start an event request</a></div>'
     + '</div>' + curve("warm") + '</section>'
     + '<section class="band-warm" style="padding-top:32px;padding-bottom:112px"><div class="wrap">'
-    + '<p class="label-rule">How it works</p><h2 class="sec">Five steps, and<span class="ital"> a conversation</span></h2>'
+    + '<p class="label-rule">How it works</p><h2 class="sec">Four steps, and<span class="ital"> a conversation</span></h2>'
     + '<ol class="how5">'
     + [["Tell us the occasion","Birthday, engagement, wedding, or something else entirely."],
-       ["Give us the details","Your date and time, how many guests, and where we are coming to."],
+       ["Give us the details","Your date, time, guests and venue \u2014 and any d\u00e9cor, setup or staff you need."],
        ["Choose your dishes","The same menu, the same dishes, in the quantities an event needs."],
-       ["Add what you need","Table d\u00e9cor, setup on the day, serving staff \u2014 we quote each one for you."],
        ["Send the request","We come back to you personally to confirm everything before it is booked."]]
        .map((x, i) => '<li class="' + (i % 2 === 1 ? "drop" : "") + '"><span class="n tnum">'
          + String(i+1).padStart(2,"0") + '</span><h3>' + esc(x[0]) + '</h3><p>' + esc(x[1]) + '</p></li>').join("")
@@ -1205,6 +1203,7 @@ function renderDetails() {
     + field("Venue or address", '<input type="text" id="e-venue" placeholder="Where should we bring the food?" value="'
         + esc(e.venue) + '"' + (ES.touched && v.errors.venue ? ' class="bad"' : '') + '>', null, true)
     + '</div>'
+    + extrasHTML(false)
     + ((ES.touched || e.date) && !v.ok ? '<p class="warn">' + esc(Object.values(v.errors)[0]) + '</p>' : '')
     + '<div style="margin-top:40px"><button type="button" class="btn btn-primary" id="to-dishes">Choose your dishes</button></div>'
     + '<p style="margin-top:32px;font-size:14px;color:var(--ink-soft)">' + EVENT_NOTICE + '</p></div>';
@@ -1212,6 +1211,7 @@ function renderDetails() {
     if (n) n.addEventListener("input", (ev) => { S.event[key] = ev.target.value; save(); if (key === "date") renderDetails(); }); };
   b("#e-date", "date"); b("#e-time", "time"); b("#e-venue", "venue");
   bindGuestInput("e-guests", renderDetails);
+  bindNotes();
 }
 function field(label, input, hint, full) {
   return '<div class="field' + (full ? " full" : "") + '"><label style="display:block;margin-bottom:12px;'
@@ -1224,27 +1224,29 @@ const EXTRAS = [
   ["setupRequested", "Event setup", "We arrive early and set everything out ready for your guests."],
   ["servingStaffRequested", "Serving staff", "Our team stays to serve through the event."]
 ];
-function viewExtras() { return hasEvent() ? '<div id="ex"></div>' : notInEvent(); }
-function renderExtras() {
-  const el = $("#ex"); if (!el) return;
+/* Asked while the event is being planned, not discovered later from the cart.
+   All three are request-and-quote: nothing here carries a price or touches
+   any total, because no pricing has been defined. */
+function extrasHTML(compact) {
   const e = S.event;
-  el.innerHTML = progressHTML("extras") + '<div class="narrow" style="padding-top:48px;padding-bottom:64px">'
-    + '<p class="label-rule">Step four</p>'
-    + '<h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:600;margin-top:12px">Anything else for the day?</h1>'
-    + '<p style="margin-top:20px;font-size:17px;color:var(--ink-soft)">Tell us what you would like and we will quote '
-    + 'each one when we confirm your event. Nothing here is added to your total.</p>'
-    + '<div style="display:grid;gap:12px;margin-top:40px">'
+  /* padding:0 because the global section rule adds 72px, which is not wanted here */
+  return '<section style="padding:0;margin-top:' + (compact ? "8px" : "56px") + '">'
+    + '<h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:'
+      + (compact ? "21px" : "26px") + '">Anything else for the day?</h2>'
+    + '<p style="margin-top:12px;max-width:34rem;font-size:16px;color:var(--ink-soft)">Tell us what you would '
+    + 'like and we will quote each one when we confirm your event. Nothing here is added to your total.</p>'
+    + '<div style="display:grid;gap:12px;margin-top:28px">'
     + EXTRAS.map((x) => '<div class="extra' + (e[x[0]] ? " on" : "") + '"><div class="head">'
         + '<div style="min-width:0"><h2>' + x[1] + '</h2><p>' + x[2] + '</p></div>'
         + '<div class="toggle"><button type="button" data-x="' + x[0] + '" data-v="1" class="' + (e[x[0]] ? "on" : "") + '">Yes</button>'
         + '<button type="button" data-x="' + x[0] + '" data-v="0" class="' + (e[x[0]] ? "" : "on") + '">No</button></div></div>'
         + (e[x[0]] ? '<p class="quoted">We will quote this when we confirm your event.</p>' : '') + '</div>').join("")
-    + '</div><div style="margin-top:32px"><label for="notes" style="display:block;margin-bottom:12px;font-size:11px;'
+    + '</div><div style="margin-top:28px"><label for="notes" style="display:block;margin-bottom:12px;font-size:11px;'
     + 'text-transform:uppercase;letter-spacing:.22em;color:var(--ink-faint)">Anything we should know</label>'
-    + '<textarea id="notes" rows="4" placeholder="Colours, timings, dietary needs, anything at all.">' + esc(e.extrasNotes) + '</textarea></div>'
-    + '<div style="margin-top:40px;display:flex;flex-wrap:wrap;gap:16px;align-items:center">'
-    + '<a class="btn btn-primary" href="#/cart">Back to your request</a>'
-    + '<a class="link-sweep" href="#/menu">Back to the menu</a></div></div>';
+    + '<textarea id="notes" rows="3" placeholder="Colours, timings, dietary needs, anything at all.">'
+      + esc(e.extrasNotes) + '</textarea></div></section>';
+}
+function bindNotes() {
   const n = $("#notes");
   if (n) n.addEventListener("input", (ev) => { S.event.extrasNotes = ev.target.value; save(); });
 }
@@ -1278,8 +1280,7 @@ function render() {
   else if (parts[0] === "events") {
     if (parts[1] === "start") { html = viewOccasion(); after = renderOccasion; }
     else if (parts[1] === "details") { html = viewDetails(); after = renderDetails; }
-    else if (parts[1] === "review") { location.hash = "#/cart"; return; }
-    else if (parts[1] === "extras") { html = viewExtras(); after = renderExtras; }
+    else if (parts[1] === "review" || parts[1] === "extras") { location.hash = "#/cart"; return; }
     else html = viewEvents();
   } else html = viewHome();
 
@@ -1302,7 +1303,7 @@ document.addEventListener("click", function (e) {
   if (t.dataset.cat !== undefined) { MB.cat = t.dataset.cat || null; MB.q = ""; renderBrowser(); return; }
 
 
-  if (t.id === "ev-edit")  { EV_EDIT = true;  renderCart(); return; }
+  if (t.id === "ev-edit" || t.id === "ev-extras") { EV_EDIT = true; renderCart(); return; }
   if (t.id === "ev-close" || t.id === "ev-done") { EV_EDIT = false; renderCart(); return; }
   if (t.dataset.etype2) { S.event.eventType = t.dataset.etype2; save(); renderCart(); return; }
 
@@ -1344,7 +1345,7 @@ document.addEventListener("click", function (e) {
   }
   if (t.dataset.x) {
     S.event[t.dataset.x] = t.dataset.v === "1"; save();
-    if ($("#ex")) renderExtras(); else renderCart();
+    if ($("#es")) renderDetails(); else renderCart();
     return;
   }
   if (t.id === "cancel-event") {

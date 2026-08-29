@@ -11,6 +11,7 @@ import {
   validateEvent,
 } from "@/lib/ordering";
 import { formatEGP } from "@/lib/money";
+import { EventExtras, chosenExtras } from "./event-extras";
 import type { ResolvedCart } from "@/app/actions";
 
 /**
@@ -42,11 +43,7 @@ export function EventRequestSection({
         ? EVENT_TYPE_LABELS[event.eventType]
         : null;
 
-  const extras = [
-    event.decorRequested && "Table décor",
-    event.setupRequested && "Event setup",
-    event.servingStaffRequested && "Serving staff",
-  ].filter(Boolean) as string[];
+  const extras = chosenExtras(event);
 
   return (
     <section className="overflow-hidden rounded-sm border border-gold/45 bg-cream-warm">
@@ -180,10 +177,10 @@ export function EventRequestSection({
         </h3>
         {extras.length === 0 ? (
           <p className="mt-3 text-[16px] text-ink-soft">
-            Nothing requested yet.{" "}
-            <Link href="/events/extras" className="link-sweep">
+            Nothing requested.{" "}
+            <button type="button" onClick={() => setEditing(true)} className="link-sweep">
               Add table décor, setup or staff
-            </Link>
+            </button>
           </p>
         ) : (
           <>
@@ -200,7 +197,9 @@ export function EventRequestSection({
             <p className="mt-3.5 text-[14px] text-ink-soft">
               We will quote each one when we confirm your event. Nothing here is added to
               your total.{" "}
-              <Link href="/events/extras" className="link-sweep">Change</Link>
+              <button type="button" onClick={() => setEditing(true)} className="link-sweep">
+                Change
+              </button>
             </p>
           </>
         )}
@@ -310,6 +309,10 @@ function EditDetails({ onDone }: { onDone: () => void }) {
             className={field(!!check.errors.venue)}
           />
         </div>
+      </div>
+
+      <div className="mt-10 border-t border-line pt-8">
+        <EventExtras compact />
       </div>
 
       {!check.ok && (

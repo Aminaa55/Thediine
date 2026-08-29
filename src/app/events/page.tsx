@@ -10,9 +10,8 @@ export const metadata: Metadata = { title: "Plan an Event" };
 
 const HOW = [
   { title: "Tell us the occasion", body: "Birthday, engagement, wedding, or something else entirely." },
-  { title: "Give us the details", body: "Your date and time, how many guests, and where we are coming to." },
+  { title: "Give us the details", body: "Your date, time, guests and venue — and any décor, setup or staff you need." },
   { title: "Choose your dishes", body: "The same menu, the same dishes, in the quantities an event needs." },
-  { title: "Add what you need", body: "Table décor, setup on the day, serving staff — we quote each one for you." },
   { title: "Send the request", body: "We come back to you personally to confirm everything before it is booked." },
 ];
 
@@ -49,11 +48,11 @@ export default async function EventsPage() {
         <div className="mx-auto max-w-content px-5 pb-24 pt-8 sm:px-8 sm:pb-32">
           <p className="label-rule">How it works</p>
           <h2 className="mt-4 font-display text-[32px] font-semibold leading-tight text-ink sm:text-[42px]">
-            Five steps, and
+            Four steps, and
             <span className="italic font-normal text-gold"> a conversation</span>
           </h2>
 
-          <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
+          <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             {HOW.map((s, i) => (
               <li
                 key={s.title}

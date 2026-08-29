@@ -7,6 +7,7 @@ import { useCart } from "@/lib/cart";
 import { EventHeader, EventNotice } from "./event-steps";
 import { earliestEventDate, toDateInput, validateEvent, EVENT_GUESTS } from "@/lib/ordering";
 import { GuestInput } from "./event-request-panel";
+import { EventExtras } from "./event-extras";
 
 /** Step two: the day itself. The date field enforces the five-day rule. */
 export function EventDetailsForm() {
@@ -79,6 +80,9 @@ export function EventDetailsForm() {
             />
           </Field>
         </div>
+
+        {/* Planned here, with the rest of the day — not discovered from the cart. */}
+        <EventExtras />
 
         {(touched || event.date) && !check.ok && (
           <p className="mt-5 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.07] px-5 py-4 text-[15px] text-[#A6391C]">

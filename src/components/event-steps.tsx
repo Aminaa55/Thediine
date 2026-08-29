@@ -12,7 +12,6 @@ export const EVENT_STEPS = [
   { key: "type", label: "Occasion", href: "/events/start" },
   { key: "details", label: "Details", href: "/events/details" },
   { key: "dishes", label: "Dishes", href: "/menu?for=event" },
-  { key: "extras", label: "Extras", href: "/events/extras" },
   { key: "review", label: "Review", href: "/cart" },
 ] as const;
 
@@ -26,7 +25,7 @@ export function EventHeader({ current }: { current: StepKey }) {
   const index = EVENT_STEPS.findIndex((s) => s.key === current);
 
   return (
-    <div className="sticky top-16 z-20 sm:top-20">
+    <div>
       <nav aria-label="Event request progress" className="border-b border-line bg-cream-deep">
         <ol className="mx-auto flex max-w-content gap-1 overflow-x-auto px-5 py-3.5 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden">
           {EVENT_STEPS.map((step, i) => {
@@ -53,7 +52,7 @@ export function EventHeader({ current }: { current: StepKey }) {
           })}
         </ol>
       </nav>
-      <BackLink inFlow />
+      <BackLink />
     </div>
   );
 }

@@ -4,13 +4,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 /**
- * One back control, in the same place, on every inner page.
+ * One back control, in the same place near the top of every inner page.
  *
- * Sticky, so it stays reachable down a long menu without scrolling back up.
  * It returns to the ACTUAL previous page via history, so opening a dish while
  * browsing an event menu comes back to that event menu with everything intact.
  */
-export function BackLink({ inFlow = false }: { inFlow?: boolean }) {
+export function BackLink() {
   const router = useRouter();
   const pathname = usePathname();
   const [canGoBack, setCanGoBack] = useState(false);
@@ -23,11 +22,7 @@ export function BackLink({ inFlow = false }: { inFlow?: boolean }) {
 
   return (
     <div
-      className={
-        inFlow
-          ? "border-b border-line-soft bg-cream/95 backdrop-blur"
-          : "sticky top-16 z-20 border-b border-line-soft bg-cream/95 backdrop-blur sm:top-20"
-      }
+      className="border-b border-line-soft bg-cream"
     >
       <div className="mx-auto max-w-content px-5 sm:px-8">
         <button
