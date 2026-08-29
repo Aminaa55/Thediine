@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProduct, displayPrice } from "@/lib/catalog";
-import { formatEGP } from "@/lib/money";
+import { getProduct, getEventTiers, displayPrice } from "@/lib/catalog";
 import { ProductConfigurator } from "@/components/product-configurator";
+import { ProductPrice } from "@/components/product-price";
 
 export const dynamic = "force-dynamic";
 
@@ -19,10 +19,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const [product, tiers] = await Promise.all([getProduct(slug), getEventTiers()]);
   if (!product) notFound();
 
   const price = displayPrice(product);
+  const pricing = {
+    eventPricingEnabled: product.eventPricingEnabled,
+    tiers: product.eventTiers,
+  };
   const allergens = product.allergens.map((a) => a.allergen.nameEn);
   const serves =
     product.servesMin && product.servesMax
@@ -56,12 +60,14 @@ export default async function ProductPage({ params }: Props) {
         )}
 
         {price && (
-          <p className="mt-6 font-display text-[27px] font-semibold tabular-nums text-ink">
-            {price.from && (
-              <span className="me-2 font-body text-[15px] font-normal text-ink-faint">from</span>
-            )}
-            {formatEGP(price.amount)}
-          </p>
+          <div className="mt-6">
+            <ProductPrice
+              amount={price.amount}
+              from={price.from}
+              pricing={pricing}
+              tiers={tiers}
+            />
+          </div>
         )}
 
         {product.descriptionEn && (
@@ -89,6 +95,8 @@ export default async function ProductPage({ params }: Props) {
         minQuantity={product.minQuantity}
         quantityStep={product.quantityStep}
         isAvailable={product.isAvailable}
+        pricing={pricing}
+        tiers={tiers}
       />
     </article>
   );

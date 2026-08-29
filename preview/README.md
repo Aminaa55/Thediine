@@ -8,6 +8,12 @@ It mirrors the real site's design and carries the same catalogue, exported from
 `prisma/catalogue.ts`. It is **not** the application: there is no database, no
 server-side price resolution, and no checkout.
 
+Event pricing is mirrored too: `EVENT_TIERS` in the script is the same guest-count
+ladder that `EventPriceTier` holds in the real site, and `scaled()` is the same
+integer arithmetic as `eventUnitPrice`. The difference is that the real site reads
+the ladder from the database and lets any dish override it, while the preview has
+one shared ladder written into the file.
+
 The real site lives in `src/app` and needs hosting plus a PostgreSQL database.
 
 To regenerate after the catalogue changes, re-export `prisma/catalogue.ts` to

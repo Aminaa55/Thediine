@@ -17,21 +17,42 @@
  *                          recipe knowledge, not menu wording. All tags land
  *                          unreviewed and must be checked before launch.
  *  - `note`             -> something still unresolved, surfaced in admin.
+ *  - `eventPricing`     -> an EXCEPTION to the shared event ladder. Absent
+ *                          everywhere for now: every dish follows the shared
+ *                          guest-count ladder until the business says a
+ *                          particular dish scales differently. Prices below are
+ *                          NORMAL ORDER prices and are never rewritten by it.
  */
 
 export type Choice = { name: string };
 export type OptionGroup = { name: string; choices: string[] };
 export type Variant = { name: string; price: number };
 
+/**
+ * A dish that does not follow the shared event ladder.
+ *
+ * `enabled: false`  -> events pay the normal menu price for this dish.
+ * `tiers`           -> this dish's own guest bands, REPLACING the shared
+ *                      ladder. Give each band either a `multiplier` (2.5 means
+ *                      2.5x the normal price) or a flat `price` in EGP.
+ */
+export type SeedEventPricing = {
+  enabled?: boolean;
+  note?: string;
+  tiers?: { minGuests: number; maxGuests: number; multiplier?: number; price?: number }[];
+};
+
 export type SeedProduct = {
   slug: string;
   name: string;
   description?: string;
+  /** The NORMAL ORDER price, in EGP. Event prices are derived, never stored here. */
   price?: number;
   variants?: Variant[];
   options?: OptionGroup[];
   allergens?: string[];
   note?: string;
+  eventPricing?: SeedEventPricing;
 };
 
 export type SeedCategory = {

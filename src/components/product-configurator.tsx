@@ -4,6 +4,13 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatEGP } from "@/lib/money";
 import { useCart, EVENT_TYPE_LABELS, type OrderScope } from "@/lib/cart";
+import { useEventGuests } from "./event-price";
+import {
+  eventUnitPrice,
+  formatMultiplier,
+  type EventTier,
+  type ProductEventPricing,
+} from "@/lib/event-pricing";
 
 type Choice = { id: string; nameEn: string; priceDelta: number };
 type Group = { id: string; nameEn: string; isRequired: boolean; choices: Choice[] };
@@ -22,6 +29,8 @@ export function ProductConfigurator({
   minQuantity,
   quantityStep,
   isAvailable,
+  pricing,
+  tiers,
 }: {
   productId: string;
   basePrice: number | null;
@@ -30,6 +39,10 @@ export function ProductConfigurator({
   minQuantity: number;
   quantityStep: number;
   isAvailable: boolean;
+  /** How this dish prices for an event. */
+  pricing: ProductEventPricing;
+  /** The shared guest-count ladder. */
+  tiers: EventTier[];
 }) {
   const router = useRouter();
   const params = useSearchParams();
@@ -63,7 +76,16 @@ export function ProductConfigurator({
   const missingGroups = groups.filter((g) => g.isRequired && !selected[g.id]);
   const canAdd = isAvailable && missingGroups.length === 0;
 
-  const unitPrice = useMemo(() => {
+  const guests = useEventGuests();
+
+  /**
+   * Two prices, because the same dish costs differently in the two orders.
+   *
+   * The normal price is the menu price. The event price scales it by the guest
+   * count, so when the customer is asked WHERE a dish should go, each button
+   * shows what that dish would actually cost there.
+   */
+  const { normalPrice, eventPrice, eventTier } = useMemo(() => {
     const base = variantId
       ? (variants.find((v) => v.id === variantId)?.price ?? 0)
       : (basePrice ?? 0);
@@ -71,8 +93,15 @@ export function ProductConfigurator({
       const choice = g.choices.find((c) => c.id === selected[g.id]);
       return sum + (choice?.priceDelta ?? 0);
     }, 0);
-    return base + delta;
-  }, [variantId, variants, basePrice, groups, selected]);
+    const priced = eventUnitPrice(base, guests, pricing, tiers);
+    return {
+      normalPrice: base + delta,
+      eventPrice: priced.amount + delta,
+      eventTier: priced.scaled ? priced.tier : null,
+    };
+  }, [variantId, variants, basePrice, groups, selected, guests, pricing, tiers]);
+
+  const unitPrice = scope === "event" ? eventPrice : normalPrice;
 
   function handleAdd(target: OrderScope) {
     if (!canAdd) return;
@@ -107,7 +136,14 @@ export function ProductConfigurator({
                 }`}
               >
                 {v.nameEn}
-                <span className="ms-2 tabular-nums opacity-70">{formatEGP(v.price)}</span>
+                {/* Priced for whichever order this dish is heading into. */}
+                <span className="ms-2 tabular-nums opacity-70">
+                  {formatEGP(
+                    scope === "event"
+                      ? eventUnitPrice(v.price, guests, pricing, tiers).amount
+                      : v.price,
+                  )}
+                </span>
               </button>
             ))}
           </div>
@@ -202,9 +238,7 @@ export function ProductConfigurator({
 
         {mustAsk ? (
           <div className="flex-1">
-            <p className="mb-3 text-[14px] text-ink-soft">
-              Add this to <span className="tabular-nums">{formatEGP(unitPrice * quantity)}</span>
-            </p>
+            <p className="mb-3 text-[14px] text-ink-soft">Add this to</p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <button
                 type="button"
@@ -213,6 +247,7 @@ export function ProductConfigurator({
                 className="btn-primary flex-1 disabled:cursor-not-allowed disabled:bg-ink/25"
               >
                 Your normal order
+                <span className="tabular-nums">{formatEGP(normalPrice * quantity)}</span>
               </button>
               <button
                 type="button"
@@ -222,8 +257,16 @@ export function ProductConfigurator({
               >
                 {occasion}
                 {event.date ? ` · ${shortDate(event.date)}` : ""}
+                <span className="tabular-nums">{formatEGP(eventPrice * quantity)}</span>
               </button>
             </div>
+            {/* The two prices differ on purpose; say why rather than leave it odd. */}
+            {eventTier?.multiplierBp != null && (
+              <p className="mt-3 text-[13.5px] leading-relaxed text-ink-faint">
+                Event portions are cooked for {guests} guests, so they are priced at{" "}
+                {formatMultiplier(eventTier.multiplierBp)} the regular price.
+              </p>
+            )}
           </div>
         ) : (
           <button
@@ -248,6 +291,14 @@ export function ProductConfigurator({
             Choose {missingGroups.map((g) => g.nameEn.toLowerCase()).join(" and ")} to continue.
           </p>
         )
+      )}
+
+      {/* Inside the event journey, what the scaling did to this dish. */}
+      {forcedScope === "event" && eventTier?.multiplierBp != null && (
+        <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
+          Priced for {guests} guests at {formatMultiplier(eventTier.multiplierBp)} the regular
+          price. Change the guest count and this updates.
+        </p>
       )}
 
       {added && (

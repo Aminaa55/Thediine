@@ -167,6 +167,9 @@ button.link-sweep{background:none; border:0; padding:0; cursor:pointer; font:inh
 .event-note .dot{width:8px; height:8px; border-radius:999px; background:var(--gold); flex:none}
 .event-note .who{font-size:16px}
 .event-note a{margin-left:auto; font-size:14.5px}
+/* Why the prices on this menu differ. Full width, under the occasion line. */
+.ev-price-note{flex-basis:100%; margin-top:12px; border-top:1px solid rgba(168,126,46,.25);
+  padding-top:12px; font-size:14px; line-height:1.6; color:var(--ink-soft)}
 .ev-panel{border:1px solid rgba(168,126,46,.45); background:var(--cream-warm); border-radius:2px; overflow:hidden; padding:0}
 .ev-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:16px;
   background:rgba(239,226,190,.45); padding:20px 24px}
@@ -305,6 +308,9 @@ h2.sec{font-size:30px; font-weight:600; line-height:1.15; margin-top:12px}
   display:flex; align-items:baseline; justify-content:space-between; gap:16px}
 .card .amt{font-family:Fraunces,Georgia,serif; font-size:18px; font-weight:600}
 .card .from{font-size:12px; color:var(--ink-faint); margin-right:6px}
+/* The regular price is NOT struck through: it has not been reduced, it has
+   been scaled up for an event portion, and a strike would read as a discount. */
+.card .was{margin-left:8px; font-size:12.5px; color:var(--ink-faint)}
 .card .go{font-size:13px; color:var(--gold); opacity:0; transition:opacity .2s; white-space:nowrap}
 .card:hover .go{opacity:1}
 
@@ -600,7 +606,7 @@ try {
 function hasEvent() { return S.event.eventType !== null || S.eventLines.length > 0; }
 function linesFor(scope) { return scope === "event" ? S.eventLines : S.normalLines; }
 function countOf(ls) { return ls.reduce((n, l) => n + l.qty, 0); }
-function subtotalOf(ls) { return ls.reduce((n, l) => n + unitPrice(l) * l.qty, 0); }
+function subtotalOf(ls, scope) { return ls.reduce((n, l) => n + unitPrice(l, scope) * l.qty, 0); }
 
 /* The current route's scope, read from the hash query, never from state. */
 function routeScope() { return /[?&]for=event/.test(location.hash) ? "event" : null; }
@@ -626,11 +632,44 @@ function hashPath() {
 }
 const EVENT_LABELS = { BIRTHDAY: "Birthday", ENGAGEMENT: "Engagement", WEDDING: "Wedding", OTHER: "Other" };
 
-function unitPrice(l) {
+/* ------------------------------------------------- event food pricing
+   Event portions are cooked for the whole guest list, so an event price is
+   the normal menu price scaled by a guest band. Normal orders never touch
+   any of this. Mirrors EventPriceTier / eventUnitPrice in the real site;
+   there the ladder is editable, and per dish, from admin. */
+const EVENT_TIERS = [[1,10,10000],[11,20,15000],[21,30,20000],[31,40,25000],[41,50,30000],
+                     [51,60,35000],[61,70,40000],[71,80,45000],[81,90,50000],[91,100,55000]];
+
+function eventGuests() {
+  return /^\d+$/.test(S.event.guestCount) ? Number(S.event.guestCount) : null;
+}
+/* Above the top band clamps to it; charging 1x would be the unsafe failure. */
+function eventTier(guests) {
+  if (guests === null || guests < 1) return null;
+  const hit = EVENT_TIERS.find((t) => guests >= t[0] && guests <= t[1]);
+  if (hit) return hit;
+  const top = EVENT_TIERS[EVENT_TIERS.length - 1];
+  return guests > top[1] ? top : null;
+}
+/* Integer arithmetic, rounded to the nearest piastre. */
+function scaled(base, guests) {
+  const t = eventTier(guests);
+  return t ? Math.round((base * t[2]) / 10000) : base;
+}
+function multLabel(t) {
+  const x = t[2] / 10000;
+  return (Number.isInteger(x) ? x : x.toFixed(1)) + "\u00d7";
+}
+
+function basePriceOf(l) {
   const p = PRODUCTS[l.slug]; if (!p) return 0;
   let base = p.price != null ? p.price : 0;
   if (l.variant && p.variants) { const v = p.variants.find((x) => x.name === l.variant); if (v) base = v.price; }
   return base; // required accompaniments are included at no extra cost
+}
+function unitPrice(l, scope) {
+  const base = basePriceOf(l);
+  return scope === "event" ? scaled(base, eventGuests()) : base;
 }
 
 
@@ -706,12 +745,19 @@ function bindGuestInput(id, after) {
 /* ------------------------------------------------------------------ views */
 function cardHTML(p) {
   const pr = lowest(p);
+  /* Inside the event journey a card shows the EVENT price for the guest count
+     already given, with the regular price named beside it. */
+  const forEvent = routeScope() === "event";
+  const t = forEvent ? eventTier(eventGuests()) : null;
+  const shown = pr ? (forEvent ? scaled(pr.amount, eventGuests()) : pr.amount) : 0;
+  const wasNote = pr && t && shown !== pr.amount
+    ? '<span class="was">' + multLabel(t) + ' regular <span class="tnum">' + egp(pr.amount) + '</span></span>' : '';
   return '<a class="card" href="#/product/' + p.slug + (routeScope() === "event" ? "?for=event" : "") + '"><span class="hair"></span>'
     + '<h3>' + esc(p.name) + '</h3>'
     + (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '')
     + (p.allergens.length ? '<p class="allerg">' + p.allergens.map(esc).join(" \u00b7 ") + '</p>' : '')
     + '<div class="foot">' + (pr
-        ? '<span class="amt tnum">' + (pr.from ? '<span class="from">from</span>' : '') + egp(pr.amount) + '</span>'
+        ? '<span class="amt tnum">' + (pr.from ? '<span class="from">from</span>' : '') + egp(shown) + '</span>' + wasNote
         : '<span></span>')
     + '<span class="go">Choose \u2192</span></div></a>';
 }
@@ -833,7 +879,18 @@ function eventNoteHTML() {
   return '<div class="event-note"><span class="dot"></span>'
     + '<p class="who">Choosing dishes for your <strong>' + esc(occasionLabel(e)) + '</strong>'
     + (bits.length ? '<span style="color:var(--ink-soft)"> \u00b7 ' + esc(bits.join(" \u00b7 ")) + '</span>' : '')
-    + '</p><a class="link-sweep" href="#/cart">Edit event details</a></div>';
+    + '</p><a class="link-sweep" href="#/cart">Edit event details</a>'
+    + eventPricingNoteHTML() + '</div>';
+}
+
+/* Why the prices on this menu differ from the regular menu. */
+function eventPricingNoteHTML() {
+  const g = eventGuests(), t = eventTier(g);
+  if (!t) return "";
+  return '<p class="ev-price-note">Event prices are shown for <strong>' + g + ' guests</strong> '
+    + '\u2014 dishes are cooked for the whole table, so they are priced at ' + multLabel(t)
+    + ' the regular price for ' + t[0] + '\u2013' + t[1] + ' guests. Change the guest count and '
+    + 'every price here updates.</p>';
 }
 
 /* ------------------------------------------------------------ menu browser */
@@ -905,12 +962,21 @@ function renderPD() {
   let base = p.price != null ? p.price : 0;
   if (PS.variant && p.variants) { const v = p.variants.find((x) => x.name === PS.variant); if (v) base = v.price; }
 
+  /* Two prices, because the same dish costs differently in the two orders. */
+  const guests = eventGuests(), tier = eventTier(guests);
+  const eventBase = scaled(base, guests);
+  const headPrice = pr ? (routeScope() === "event" ? scaled(pr.amount, guests) : pr.amount) : 0;
+
   let h = '<header class="pd-head"><span class="hair"></span>'
     + '<p class="label-rule" style="margin-top:20px">' + esc(p.category.name) + '</p>'
     + '<h1>' + esc(p.name) + '</h1>'
     + (pr ? '<p class="price tnum">' + (pr.from
         ? '<span style="font-family:Karla;font-size:15px;font-weight:400;color:var(--ink-faint);margin-right:8px">from</span>' : '')
-        + egp(pr.amount) + '</p>' : '')
+        + egp(headPrice) + '</p>' : '')
+    + (routeScope() === "event" && tier && pr && headPrice !== pr.amount
+        ? '<p style="margin-top:8px;font-size:14px;color:var(--ink-soft)">Event price for ' + guests
+          + ' guests \u2014 ' + multLabel(tier) + ' the regular ' + egp(pr.amount)
+          + ', because an event portion is cooked for the whole table.</p>' : '')
     + (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '') + '</header>';
   if (p.allergens.length) {
     h += '<div class="allergen-box"><p class="label-rule">Allergens</p>'
@@ -923,7 +989,9 @@ function renderPD() {
     h += '<fieldset><legend class="label-rule">Choose one</legend><div class="pills">'
       + p.variants.map((v) => '<button type="button" class="pill-opt' + (PS.variant === v.name ? " on" : "")
         + '" data-variant="' + esc(v.name) + '" aria-pressed="' + (PS.variant === v.name) + '">'
-        + esc(v.name) + '<span class="p tnum">' + egp(v.price) + '</span></button>').join("") + '</div></fieldset>';
+        + esc(v.name) + '<span class="p tnum">'
+        + egp(routeScope() === "event" ? scaled(v.price, guests) : v.price)
+        + '</span></button>').join("") + '</div></fieldset>';
   }
   (p.options || []).forEach((g) => {
     h += '<fieldset><legend class="label-rule">' + esc(g.name) + '</legend><div class="opt-list">'
@@ -947,17 +1015,22 @@ function renderPD() {
     + '<button type="button" id="q-plus" aria-label="Increase quantity">+</button></div>';
 
   if (mustAsk) {
-    h += '<div style="flex:1"><p style="margin-bottom:12px;font-size:14px;color:var(--ink-soft)">Add this to '
-      + '<span class="tnum">' + egp(base * PS.qty) + '</span></p>'
+    h += '<div style="flex:1"><p style="margin-bottom:12px;font-size:14px;color:var(--ink-soft)">Add this to</p>'
       + '<div class="dest"><button type="button" class="btn btn-primary" data-add="normal"'
-      + (missing.length ? " disabled" : "") + '>Your normal order</button>'
+      + (missing.length ? " disabled" : "") + '>Your normal order '
+      + '<span class="tnum">' + egp(base * PS.qty) + '</span></button>'
       + '<button type="button" class="btn btn-outline" data-add="event"' + (missing.length ? " disabled" : "") + '>'
-      + esc(occ) + (S.event.date ? ' \u00b7 ' + esc(shortDate(S.event.date)) : '') + '</button></div></div>';
+      + esc(occ) + (S.event.date ? ' \u00b7 ' + esc(shortDate(S.event.date)) : '')
+      + ' <span class="tnum">' + egp(eventBase * PS.qty) + '</span></button></div>'
+      + (tier && eventBase !== base
+          ? '<p style="margin-top:12px;font-size:13.5px;color:var(--ink-faint)">Event portions are cooked for '
+            + guests + ' guests, so they are priced at ' + multLabel(tier) + ' the regular price.</p>' : '')
+      + '</div>';
   } else {
     h += '<button type="button" class="btn btn-primary" data-add="' + (forced || "normal") + '"'
       + (missing.length ? " disabled" : "") + '>'
       + (PS.added ? "Added" : forced === "event" ? "Add to your event" : "Add to cart")
-      + ' <span class="tnum">' + egp(base * PS.qty) + '</span></button>';
+      + ' <span class="tnum">' + egp((forced === "event" ? eventBase : base) * PS.qty) + '</span></button>';
   }
   h += '</div>';
 
@@ -969,7 +1042,11 @@ function renderPD() {
 
 /* ------------------------------------------------------------------- cart */
 function lineRowHTML(l, scope) {
-  const p = PRODUCTS[l.slug], u = unitPrice(l);
+  const p = PRODUCTS[l.slug], u = unitPrice(l, scope);
+  /* An event line says what it scaled from, so the figure is never a mystery. */
+  const t = scope === "event" ? eventTier(eventGuests()) : null;
+  const from = t && u !== basePriceOf(l)
+    ? multLabel(t) + " regular " + egp(basePriceOf(l)) + " \u00b7 " : "";
   return '<li class="cart-line compact"><div class="top"><div style="min-width:0">'
     + '<h2><a href="#/product/' + l.slug + '">' + esc(p ? p.name : l.slug) + '</a></h2>'
     + (l.variant ? '<p style="margin-top:4px;font-size:14.5px;color:var(--ink-soft)">' + esc(l.variant) + '</p>' : '')
@@ -982,11 +1059,11 @@ function lineRowHTML(l, scope) {
     + '<span class="n tnum">' + l.qty + '</span>'
     + '<button type="button" data-inc="' + esc(l.k) + '" data-scope="' + scope + '" aria-label="Increase quantity">+</button></div>'
     + '<button type="button" class="rm" data-rm="' + esc(l.k) + '" data-scope="' + scope + '">Remove</button>'
-    + '<span class="each tnum">' + egp(u) + ' each</span></div></li>';
+    + '<span class="each tnum">' + from + egp(u) + ' each</span></div></li>';
 }
 
 function normalSectionHTML() {
-  const st = subtotalOf(S.normalLines);
+  const st = subtotalOf(S.normalLines, "normal");
   return '<section class="ord-sec"><header class="ord-head normal">'
     + '<div><p class="ord-kicker">Normal order</p><h2>Your regular order</h2></div>'
     + '<a class="link-sweep" href="#/menu">Add more dishes</a></header>'
@@ -1002,8 +1079,10 @@ function normalSectionHTML() {
 
 /* The event request: occasion, dishes and extras as one section of the cart. */
 function eventSectionHTML() {
-  const e = S.event, err = firstError(e), st = subtotalOf(S.eventLines);
+  const e = S.event, err = firstError(e), st = subtotalOf(S.eventLines, "event");
   const extras = EXTRAS.filter((x) => e[x[0]]).map((x) => x[1]);
+  /* The band the food was priced at. Extras are quoted and never in the total. */
+  const evTier = S.eventLines.length ? eventTier(eventGuests()) : null;
   const occasion = e.eventType === "OTHER" ? (e.eventTypeOther || "Other")
     : e.eventType ? EVENT_LABELS[e.eventType] : "Your event";
 
@@ -1057,6 +1136,10 @@ function eventSectionHTML() {
     + (e.extrasNotes ? '<p style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;'
         + 'font-size:15px;font-style:italic;color:var(--ink-soft)">' + esc(e.extrasNotes) + '</p>' : '')
     + '<div class="ord-total"><span>Food subtotal</span><span class="tnum">' + egp(st) + '</span></div>'
+    + (evTier
+        ? '<p style="margin-top:6px;font-size:14px;color:var(--ink-soft)">Priced for <strong>'
+          + eventGuests() + ' guests</strong> at ' + multLabel(evTier) + ' the regular menu price. '
+          + 'Change the guest count above and this recalculates.</p>' : '')
     + '<p style="margin-top:6px;font-size:14px;color:var(--ink-faint)">Extras are quoted separately.</p>'
     + '<button type="button" class="btn btn-primary" style="margin-top:24px" disabled>Send this event request</button>'
     + '<p style="margin-top:16px;font-size:14px;color:var(--ink-soft)">Events need at least <strong>5 days\u2019 notice</strong> '

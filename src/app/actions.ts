@@ -2,6 +2,9 @@
 
 import { db } from "@/lib/db";
 import type { CartLine } from "@/lib/cart";
+import { eventUnitPrice, type EventTier } from "@/lib/event-pricing";
+import { getEventTiers } from "@/lib/catalog";
+import { parseGuests } from "@/lib/ordering";
 
 /**
  * Resolves cart references against the database.
@@ -23,7 +26,12 @@ export type ResolvedLine = {
   options: ResolvedOption[];
   instructions: string;
   quantity: number;
+  /** What is actually charged: the event price for an event, otherwise the menu price. */
   unitPrice: number;
+  /** The normal menu price, kept so an event line can show what it scaled from. */
+  normalUnitPrice: number;
+  /** The guest band applied to this line, or null when nothing scaled it. */
+  eventTier: EventTier | null;
   lineTotal: number;
   minQuantity: number;
   quantityStep: number;
@@ -31,10 +39,31 @@ export type ResolvedLine = {
   problem: string | null;
 };
 
-export type ResolvedCart = { lines: ResolvedLine[]; subtotal: number };
+export type ResolvedCart = {
+  lines: ResolvedLine[];
+  subtotal: number;
+  /** The guest count the event prices were worked out from. */
+  guestCount: number | null;
+};
 
-export async function resolveCart(lines: CartLine[]): Promise<ResolvedCart> {
-  if (lines.length === 0) return { lines: [], subtotal: 0 };
+/**
+ * Resolving an EVENT cart needs the guest count, because event food is priced
+ * by guest band. Passing none resolves at normal menu prices.
+ *
+ * This is the authoritative price. The browser recalculates the same numbers so
+ * the menu updates instantly when the guest count changes, but what a customer
+ * is charged is always what comes back from here.
+ */
+export type ResolveOptions = { guestCount?: string | null };
+
+export async function resolveCart(
+  lines: CartLine[],
+  options: ResolveOptions = {},
+): Promise<ResolvedCart> {
+  const guests = options.guestCount ? parseGuests(options.guestCount) : null;
+  if (lines.length === 0) return { lines: [], subtotal: 0, guestCount: guests };
+
+  const sharedTiers = guests === null ? [] : await getEventTiers();
 
   const products = await db.product.findMany({
     where: { id: { in: [...new Set(lines.map((l) => l.productId))] } },
@@ -47,6 +76,11 @@ export async function resolveCart(lines: CartLine[]): Promise<ResolvedCart> {
       archivedAt: true,
       minQuantity: true,
       quantityStep: true,
+      eventPricingEnabled: true,
+      eventTiers: {
+        orderBy: { minGuests: "asc" },
+        select: { minGuests: true, maxGuests: true, multiplierBp: true, fixedPrice: true },
+      },
       variants: { select: { id: true, nameEn: true, price: true, isAvailable: true } },
       optionGroups: {
         select: {
@@ -95,7 +129,19 @@ export async function resolveCart(lines: CartLine[]): Promise<ResolvedCart> {
       delta += choice.priceDelta;
     }
 
-    const unitPrice = base + delta;
+    /**
+     * Event scaling applies to the dish price. Option choices are added at face
+     * value afterwards: an accompaniment is a choice, not a quantity, and every
+     * one of them is +0 EGP today.
+     */
+    const priced = eventUnitPrice(
+      base,
+      guests,
+      { eventPricingEnabled: product.eventPricingEnabled, tiers: product.eventTiers },
+      sharedTiers,
+    );
+
+    const unitPrice = priced.amount + delta;
     const unavailable =
       !product.isAvailable || (variant ? !variant.isAvailable : false);
 
@@ -109,6 +155,8 @@ export async function resolveCart(lines: CartLine[]): Promise<ResolvedCart> {
       instructions: line.instructions,
       quantity: line.quantity,
       unitPrice,
+      normalUnitPrice: priced.base + delta,
+      eventTier: priced.scaled ? priced.tier : null,
       lineTotal: unitPrice * line.quantity,
       minQuantity: product.minQuantity,
       quantityStep: product.quantityStep,
@@ -122,7 +170,7 @@ export async function resolveCart(lines: CartLine[]): Promise<ResolvedCart> {
     .filter((l) => !l.unavailable && !l.problem)
     .reduce((sum, l) => sum + l.lineTotal, 0);
 
-  return { lines: resolved, subtotal };
+  return { lines: resolved, subtotal, guestCount: guests };
 }
 
 function missing(
@@ -141,6 +189,8 @@ function missing(
     instructions: line.instructions,
     quantity: line.quantity,
     unitPrice: 0,
+    normalUnitPrice: 0,
+    eventTier: null,
     lineTotal: 0,
     minQuantity: 1,
     quantityStep: 1,
@@ -165,7 +215,7 @@ export async function validateEventRequest(input: {
   guestCount: string;
   venue: string;
 }): Promise<{ ok: boolean; errors: Record<string, string> }> {
-  const { validateEvent, EVENT_GUESTS, parseGuests } = await import("@/lib/ordering");
+  const { validateEvent, EVENT_GUESTS } = await import("@/lib/ordering");
 
   const result = validateEvent(input);
 

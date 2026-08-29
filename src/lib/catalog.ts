@@ -1,4 +1,5 @@
 import { db } from "./db";
+import { DEFAULT_EVENT_TIERS, type EventTier } from "./event-pricing";
 
 /**
  * Every read of the menu goes through here, so the interface never hard-codes
@@ -14,6 +15,11 @@ const productSelect = {
   nameEn: true,
   descriptionEn: true,
   basePrice: true,
+  eventPricingEnabled: true,
+  eventTiers: {
+    orderBy: { minGuests: "asc" },
+    select: { minGuests: true, maxGuests: true, multiplierBp: true, fixedPrice: true },
+  },
   sellingUnitEn: true,
   servesMin: true,
   servesMax: true,
@@ -128,6 +134,22 @@ export async function getFeatured(take = 6) {
     select: productSelect,
   });
   return [...featured, ...filler];
+}
+
+/**
+ * The shared event pricing ladder.
+ *
+ * Read from the database so the business can reprice every dish at once from
+ * admin. Falls back to the ladder they supplied if the table has not been
+ * seeded, so the site can never quietly drop back to normal prices for events.
+ */
+export async function getEventTiers(): Promise<EventTier[]> {
+  const rows = await db.eventPriceTier.findMany({
+    orderBy: { minGuests: "asc" },
+    select: { minGuests: true, maxGuests: true, multiplierBp: true },
+  });
+  if (rows.length === 0) return DEFAULT_EVENT_TIERS;
+  return rows.map((r) => ({ ...r, fixedPrice: null }));
 }
 
 /** Lowest price shown on a card: base price, or the cheapest variant. */

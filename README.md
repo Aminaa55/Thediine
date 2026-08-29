@@ -6,8 +6,9 @@ Replaces manual order-taking over Instagram DMs.
 ## Status
 
 **Customer experience revised through the cart.** Homepage, menu, product pages,
-the five-step event journey and the cart all work against the real catalogue.
-Checkout and the admin dashboard are the next phases.
+the four-step event journey and the cart all work against the real catalogue,
+with event food priced by guest count. Checkout and the admin dashboard are the
+next phases.
 
 | | |
 |---|---|
@@ -45,7 +46,8 @@ instruction. Verified end to end against a real PostgreSQL instance.
 | Late cancellation | 20%, calculated and recorded | 20%, calculated and recorded |
 | Minimum order value | none | none |
 
-Events take a maximum of **100 guests**, enforced by the shared validator used by
+Event food is **priced by guest count**, separately from normal orders — see
+below. Events take a maximum of **100 guests**, enforced by the shared validator used by
 both the browser and the server, and backed by the editable `event_max_guests`
 setting. A normal order and an event request can exist **at the same time** in one cart,
 as separate sections with separate rules — they never merge, and each checks out
@@ -55,6 +57,61 @@ recorded, never processed: cash and InstaPay live, card structured but off.
 InstaPay verification is separate from order confirmation, and payment status is
 independent of order status. Customers cannot self-cancel. English at launch,
 with an Arabic field on every name and description.
+
+## Event pricing
+
+An event portion of a dish is cooked for the whole guest list, so it does not
+cost what the same dish costs in a normal order. **Normal orders always use the
+stored menu price and are never touched by any of this.**
+
+The shared ladder, as supplied by the business:
+
+| Guests | Multiplier | | Guests | Multiplier |
+|---|---|---|---|---|
+| 1–10 | 1× | | 51–60 | 3.5× |
+| 11–20 | 1.5× | | 61–70 | 4× |
+| 21–30 | 2× | | 71–80 | 4.5× |
+| 31–40 | 2.5× | | 81–90 | 5× |
+| 41–50 | 3× | | 91–100 | 5.5× |
+
+It is **not** hard-coded into any dish. It lives in `EventPriceTier`, one row per
+band, editable from admin — so every dish can be repriced at once. Each product
+then carries:
+
+| Field | Meaning |
+|---|---|
+| `basePrice` / variant `price` | The normal order price. Never derived. |
+| `eventPricingEnabled` | On by default. Off means events pay the normal price. |
+| `eventTiers` | This dish's own bands, **replacing** the shared ladder for it. |
+| `eventPricingNote` | Why this dish scales the way it does. Admin-only. |
+
+A product's own bands replace the shared ladder rather than merging with it — a
+partial ladder would leave guest counts silently unpriced. Each band carries
+either a multiplier or a flat price, so a dish whose ingredient cost does not
+scale smoothly can be given real figures instead of a factor.
+
+No dish has been given an exception. All 72 follow the shared ladder until the
+business says a particular dish scales differently.
+
+Multipliers are integers (`multiplierBp`, 10000 = 1×) and prices stay in
+piastres, so no event price is ever computed through a float. `src/lib/event-pricing.ts`
+holds the arithmetic and is used by both the browser and the server: the menu
+recalculates instantly when the guest count changes, and `resolveCart` recomputes
+the same figures server-side, which is what a customer is actually charged.
+
+Table décor, event setup and serving staff stay **quote-only** and are never in
+the food subtotal.
+
+### Still to confirm about event pricing
+
+- Whether the ladder is right for every dish, or which dishes need their own
+  bands. Desserts and dishes with expensive ingredients are the likely first
+  exceptions.
+- What one event "unit" is. The multiplier scales the price of one line; what a
+  1× portion physically is remains the unanswered selling-unit question, and a
+  customer adding two of a dish gets two scaled portions.
+- Whether an event under ten guests should really pay the normal price (1×), or
+  carry a minimum.
 
 ## Assets
 
@@ -77,6 +134,8 @@ Nothing has been invented to fill a gap.
   text, every one marked unreviewed. Gluten and egg are under-tagged on purpose:
   they need recipe knowledge, not menu wording.
 - **Delivery areas, fees, time slots, working days** — tables exist, unpopulated.
+- **Per-dish event scaling** — the structure is there, no dish has been given an
+  exception, because none has been supplied.
 
 Items still open are listed in section 10 of the spec.
 

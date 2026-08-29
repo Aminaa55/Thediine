@@ -47,7 +47,18 @@ model Product {
   category   Category @relation(fields: [categoryId], references: [id])
 
   /// Price in piastres. NULL when the product sells through variants instead.
+  /// This is the NORMAL ORDER price and is never changed by event pricing.
   basePrice Int?
+
+  /// Event pricing, per dish.
+  ///
+  /// Event portions are cooked for the whole guest list, so an event price is
+  /// the normal price scaled by the guest count. On by default, following the
+  /// shared ladder in EventPriceTier; switch it off for a dish that should cost
+  /// the same at an event as it does in a normal order.
+  eventPricingEnabled Boolean @default(true)
+  /// Why this dish scales the way it does. Admin-only.
+  eventPricingNote    String?
 
   /// What one unit is: "tray (serves 8)", "1 kg", "12 pieces".
   /// Deliberately empty until the business confirms it — never invented.
@@ -78,6 +89,8 @@ model Product {
 
   variants     ProductVariant[]
   optionGroups OptionGroup[]
+  /// An exception to the shared ladder. Empty means the shared ladder applies.
+  eventTiers   ProductEventTier[]
   allergens    ProductAllergen[]
   orderItems   OrderItem[]
   recipeItems  RecipeItem[]
@@ -91,6 +104,61 @@ model Product {
 
 /// A priced variant, e.g. Noodles > with Chicken. Absolute price, not a delta,
 /// so admin types the real number.
+/// The shared guest-count ladder for event food pricing.
+///
+/// One row per guest band. Editable from admin, so the business can reprice
+/// every dish at once without a deploy, and without the multipliers being
+/// copied into each product row.
+///
+/// The seeded ladder is the one supplied by the business:
+/// up to 10 guests 1x, then +0.5x for every further ten, to 5.5x at 91-100.
+model EventPriceTier {
+  id String @id @default(cuid())
+
+  minGuests Int
+  /// Inclusive.
+  maxGuests Int
+
+  /// Multiplier on the normal price, x10000: 10000 = 1x, 15000 = 1.5x.
+  /// Integer on purpose — no price in this system is ever held as a float.
+  multiplierBp Int
+
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([minGuests, maxGuests])
+  @@index([minGuests])
+}
+
+/// A dish that does not follow the shared ladder.
+///
+/// Ingredient cost and serving size do not scale the same way for every dish,
+/// so any product may carry its own bands. A product's rows REPLACE the shared
+/// ladder for that product rather than merging with it: a partial ladder would
+/// leave guest counts silently unpriced.
+model ProductEventTier {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  minGuests Int
+  /// Inclusive.
+  maxGuests Int
+
+  /// Either a multiplier on the normal price (x10000) OR a flat price in
+  /// piastres for this band. Set one; a fixed price wins if both are present.
+  multiplierBp Int?
+  fixedPrice   Int?
+
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, minGuests, maxGuests])
+  @@index([productId, minGuests])
+}
+
 model ProductVariant {
   id        String  @id @default(cuid())
   productId String

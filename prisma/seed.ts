@@ -11,6 +11,7 @@ import { PrismaClient } from "@prisma/client";
 import { ALLERGENS, CATALOGUE } from "./catalogue";
 import { GALLERY } from "./gallery-seed";
 import { poundsToPiastres } from "../src/lib/money";
+import { DEFAULT_EVENT_TIERS, MULTIPLIER_SCALE } from "../src/lib/event-pricing";
 
 const prisma = new PrismaClient();
 
@@ -74,6 +75,24 @@ async function main() {
   }
   console.log(`  settings         ${Object.keys(SETTINGS).length}`);
 
+  // --- event pricing ladder ------------------------------------------------
+  // The shared guest-count ladder, exactly as the business supplied it. It is
+  // NOT copied into any product: dishes follow it unless they carry their own
+  // bands. Editable from admin, so a re-run never overwrites a change.
+  for (const [i, t] of DEFAULT_EVENT_TIERS.entries()) {
+    await prisma.eventPriceTier.upsert({
+      where: { minGuests_maxGuests: { minGuests: t.minGuests, maxGuests: t.maxGuests } },
+      update: {},
+      create: {
+        minGuests: t.minGuests,
+        maxGuests: t.maxGuests,
+        multiplierBp: t.multiplierBp ?? MULTIPLIER_SCALE,
+        sortOrder: i,
+      },
+    });
+  }
+  console.log(`  event tiers      ${DEFAULT_EVENT_TIERS.length}`);
+
   // --- gallery -------------------------------------------------------------
   // Real photographs supplied by the business. Ordering, captions and
   // placement are all editable from admin.
@@ -124,6 +143,10 @@ async function main() {
         unitConfirmed: false,
         reviewNote: p.note ?? null,
         sortOrder: pIndex,
+        // Every dish follows the shared ladder unless the catalogue says
+        // otherwise. No multiplier is written onto a product here.
+        eventPricingEnabled: p.eventPricing?.enabled ?? true,
+        eventPricingNote: p.eventPricing?.note ?? null,
       };
 
       const product = await prisma.product.upsert({
@@ -133,6 +156,23 @@ async function main() {
       });
       productCount++;
       unitsMissing++;
+
+      // A dish's own bands replace the shared ladder for that dish. None are
+      // supplied yet: the business has not given per-dish scaling.
+      await prisma.productEventTier.deleteMany({ where: { productId: product.id } });
+      for (const [tIndex, t] of (p.eventPricing?.tiers ?? []).entries()) {
+        await prisma.productEventTier.create({
+          data: {
+            productId: product.id,
+            minGuests: t.minGuests,
+            maxGuests: t.maxGuests,
+            multiplierBp: t.multiplier !== undefined
+              ? Math.round(t.multiplier * MULTIPLIER_SCALE) : null,
+            fixedPrice: t.price !== undefined ? poundsToPiastres(t.price) : null,
+            sortOrder: tIndex,
+          },
+        });
+      }
 
       // Replace variants and options wholesale so re-seeding stays clean.
       await prisma.productVariant.deleteMany({ where: { productId: product.id } });
@@ -190,6 +230,11 @@ async function main() {
   console.log(`  products         ${productCount}`);
   console.log(`  priced variants  ${variantCount}`);
   console.log(`  option choices   ${choiceCount}`);
+
+  const scaling = await prisma.product.count({ where: { eventPricingEnabled: true } });
+  const exceptions = await prisma.productEventTier.groupBy({ by: ["productId"] });
+  console.log(`  event pricing    ${scaling} dishes scale by guest count, ` +
+    `${exceptions.length} with their own bands`);
   console.log(`\n  ${unitsMissing} products have no selling unit yet — expected.`);
   console.log("  All allergen tags are unreviewed and need checking before launch.\n");
 }

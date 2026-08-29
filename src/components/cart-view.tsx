@@ -6,6 +6,7 @@ import { useCart, type CartLine } from "@/lib/cart";
 import { resolveCart, type ResolvedCart, type ResolvedLine } from "@/app/actions";
 import { formatEGP } from "@/lib/money";
 import { RULES } from "@/lib/ordering";
+import { formatMultiplier } from "@/lib/event-pricing";
 import { EventRequestSection } from "./event-request-panel";
 
 /**
@@ -16,20 +17,32 @@ import { EventRequestSection } from "./event-request-panel";
  * checkout, where each follows its own rules.
  */
 export function CartView() {
-  const { normalLines, eventLines, hasEvent, ready, setQuantity, removeLine } = useCart();
+  const { normalLines, eventLines, event: draft, hasEvent, ready, setQuantity, removeLine } = useCart();
   const [normal, setNormal] = useState<ResolvedCart | null>(null);
   const [event, setEvent] = useState<ResolvedCart | null>(null);
   const [pending, startTransition] = useTransition();
 
-  // Prices always come from the database, never from what the browser stored.
+  const guestCount = draft.guestCount;
+
+  /**
+   * Prices always come from the database, never from what the browser stored.
+   *
+   * The event lines are resolved WITH the guest count, because event food is
+   * priced by guest band. Changing the guest count re-runs this, so every event
+   * price and the food subtotal follow it — and the normal order, resolved
+   * without it, is untouched.
+   */
   useEffect(() => {
     if (!ready) return;
     startTransition(async () => {
-      const [n, e] = await Promise.all([resolveCart(normalLines), resolveCart(eventLines)]);
+      const [n, e] = await Promise.all([
+        resolveCart(normalLines),
+        resolveCart(eventLines, { guestCount }),
+      ]);
       setNormal(n);
       setEvent(e);
     });
-  }, [normalLines, eventLines, ready]);
+  }, [normalLines, eventLines, guestCount, ready]);
 
   if (!ready || !normal || !event) {
     return <p className="py-20 text-center text-[15px] text-ink-faint">Loading your cart…</p>;
@@ -194,6 +207,13 @@ export function CartRow({
         </button>
         {!line.problem && (
           <span className="ms-auto text-[13.5px] tabular-nums text-ink-faint">
+            {/* An event line says what it scaled from, so the figure is never a mystery. */}
+            {line.eventTier?.multiplierBp != null && (
+              <span className="me-2">
+                {formatMultiplier(line.eventTier.multiplierBp)} regular{" "}
+                {formatEGP(line.normalUnitPrice)} &middot;
+              </span>
+            )}
             {formatEGP(line.unitPrice)} each
           </span>
         )}

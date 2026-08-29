@@ -11,6 +11,7 @@ import {
   validateEvent,
 } from "@/lib/ordering";
 import { formatEGP } from "@/lib/money";
+import { formatMultiplier } from "@/lib/event-pricing";
 import { EventExtras, chosenExtras } from "./event-extras";
 import type { ResolvedCart } from "@/app/actions";
 
@@ -44,6 +45,12 @@ export function EventRequestSection({
         : null;
 
   const extras = chosenExtras(event);
+
+  /**
+   * The band the event food was priced at, taken from the resolved lines rather
+   * than recomputed here: the server is the authority on what is charged.
+   */
+  const scaledTier = cart.lines.find((l) => l.eventTier)?.eventTier ?? null;
 
   return (
     <section className="overflow-hidden rounded-sm border border-gold/45 bg-cream-warm">
@@ -157,6 +164,13 @@ export function EventRequestSection({
                       Remove
                     </button>
                     <span className="ms-auto text-[13.5px] tabular-nums text-ink-faint">
+                      {/* Event portions are scaled; show what from and by how much. */}
+                      {line.eventTier?.multiplierBp != null && (
+                        <span className="me-2">
+                          {formatMultiplier(line.eventTier.multiplierBp)} regular{" "}
+                          {formatEGP(line.normalUnitPrice)} &middot;
+                        </span>
+                      )}
                       {formatEGP(line.unitPrice)} each
                     </span>
                   </div>
@@ -215,6 +229,18 @@ export function EventRequestSection({
             {formatEGP(cart.subtotal)}
           </span>
         </div>
+        {/*
+          The food subtotal is the event price of the dishes at this guest count.
+          Décor, setup and staff are quoted separately and are not in it.
+        */}
+        {scaledTier?.multiplierBp != null && cart.guestCount !== null && (
+          <p className="mt-1.5 text-[14px] leading-relaxed text-ink-soft">
+            Priced for{" "}
+            <strong className="font-semibold text-ink">{cart.guestCount} guests</strong> at{" "}
+            {formatMultiplier(scaledTier.multiplierBp)} the regular menu price. Change the guest
+            count above and this recalculates.
+          </p>
+        )}
         <p className="mt-1.5 text-[14px] text-ink-faint">Extras are quoted separately.</p>
 
         <button
@@ -297,7 +323,8 @@ function EditDetails({ onDone }: { onDone: () => void }) {
         </div>
         <div>
           <Lab>Guests</Lab>
-          <GuestInput />
+          {/* A distinct id: this editor and the details step can both be on screen. */}
+          <GuestInput id="ev-guests" />
           <p className="mt-2 text-[13px] text-ink-faint">Up to {EVENT_GUESTS.max}</p>
         </div>
         <div className="sm:col-span-2">
@@ -327,13 +354,14 @@ function EditDetails({ onDone }: { onDone: () => void }) {
  * Guests is a TEXT field, digits only. A number input's stepper responds to
  * arrow keys and stray wheel scrolls, which silently turned 153 into 152.
  */
-export function GuestInput() {
+export function GuestInput({ id = "guests" }: { id?: string }) {
   const { event, updateEvent } = useCart();
   const over = /^\d+$/.test(event.guestCount) && Number(event.guestCount) > EVENT_GUESTS.max;
 
   return (
     <>
       <input
+        id={id}
         type="text"
         inputMode="numeric"
         autoComplete="off"

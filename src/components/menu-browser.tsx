@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ProductCard } from "./product-card";
 import type { ListedProduct } from "@/lib/catalog";
+import { DEFAULT_EVENT_TIERS, type EventTier } from "@/lib/event-pricing";
 
 type Category = { slug: string; nameEn: string; products: ListedProduct[] };
 
@@ -18,9 +19,12 @@ type Category = { slug: string; nameEn: string; products: ListedProduct[] };
 export function MenuBrowser({
   categories,
   initialCategory = null,
+  tiers = DEFAULT_EVENT_TIERS,
 }: {
   categories: Category[];
   initialCategory?: string | null;
+  /** The shared event pricing ladder, passed down to every card. */
+  tiers?: EventTier[];
 }) {
   const [active, setActive] = useState<string | null>(initialCategory);
   const [query, setQuery] = useState("");
@@ -94,7 +98,7 @@ export function MenuBrowser({
             {results.length > 0 && (
               <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {results.map(({ p }) => (
-                  <ProductCard key={p.id} product={p} forEvent={forEvent} />
+                  <ProductCard key={p.id} product={p} forEvent={forEvent} tiers={tiers} />
                 ))}
               </div>
             )}
@@ -130,7 +134,7 @@ export function MenuBrowser({
 
               <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {category.products.map((p) => (
-                  <ProductCard key={p.id} product={p} forEvent={forEvent} />
+                  <ProductCard key={p.id} product={p} forEvent={forEvent} tiers={tiers} />
                 ))}
               </div>
             </section>

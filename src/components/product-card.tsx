@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { formatEGP } from "@/lib/money";
 import { displayPrice, type ListedProduct } from "@/lib/catalog";
+import { DEFAULT_EVENT_TIERS, type EventTier } from "@/lib/event-pricing";
+import { Price } from "./event-price";
 
 /**
  * Designed to be complete WITHOUT a photograph.
@@ -10,7 +11,16 @@ import { displayPrice, type ListedProduct } from "@/lib/catalog";
  * photograph is uploaded the card grows an image; nothing else changes, and
  * nothing here ever implies a missing picture.
  */
-export function ProductCard({ product, forEvent = false }: { product: ListedProduct; forEvent?: boolean }) {
+export function ProductCard({
+  product,
+  forEvent = false,
+  tiers = DEFAULT_EVENT_TIERS,
+}: {
+  product: ListedProduct;
+  forEvent?: boolean;
+  /** The shared event ladder, so an event price can be worked out in the browser. */
+  tiers?: EventTier[];
+}) {
   const price = displayPrice(product);
   const allergens = product.allergens.map((a) => a.allergen.nameEn);
 
@@ -58,12 +68,16 @@ export function ProductCard({ product, forEvent = false }: { product: ListedProd
         {/* Price sits on its own row so it stays put however long a dish name runs. */}
         <div className="mt-auto flex items-baseline justify-between gap-4 border-t border-line-soft pt-4 mt-6">
           {price ? (
-            <span className="font-display text-[18px] font-semibold tabular-nums text-ink">
-              {price.from && (
-                <span className="me-1.5 font-body text-[12px] font-normal text-ink-faint">from</span>
-              )}
-              {formatEGP(price.amount)}
-            </span>
+            <Price
+              amount={price.amount}
+              from={price.from}
+              forEvent={forEvent}
+              pricing={{
+                eventPricingEnabled: product.eventPricingEnabled,
+                tiers: product.eventTiers,
+              }}
+              tiers={tiers}
+            />
           ) : (
             <span />
           )}

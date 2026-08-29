@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getMenu } from "@/lib/catalog";
+import { getMenu, getEventTiers } from "@/lib/catalog";
 import { MenuBrowser } from "@/components/menu-browser";
 import { EventContextBar } from "@/components/event-context-bar";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Menu" };
 
 export default async function MenuPage() {
-  const categories = await getMenu();
+  const [categories, tiers] = await Promise.all([getMenu(), getEventTiers()]);
   const total = categories.reduce((n, c) => n + c.products.length, 0);
 
   return (
@@ -22,11 +22,11 @@ export default async function MenuPage() {
             {total} dishes across four courses. Pick a course to narrow things down, or
             search if you already know what you are after.
           </p>
-          <EventContextBar />
+          <EventContextBar tiers={tiers} />
         </div>
       </div>
 
-      <MenuBrowser categories={categories} />
+      <MenuBrowser categories={categories} tiers={tiers} />
     </>
   );
 }

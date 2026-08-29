@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getMenu } from "@/lib/catalog";
+import { getMenu, getEventTiers } from "@/lib/catalog";
 import { MenuBrowser } from "@/components/menu-browser";
 import { EventContextBar } from "@/components/event-context-bar";
 
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
-  const categories = await getMenu();
+  const [categories, tiers] = await Promise.all([getMenu(), getEventTiers()]);
   const found = categories.find((c) => c.slug === category);
   if (!found) notFound();
 
@@ -32,11 +32,11 @@ export default async function CategoryPage({ params }: Props) {
           <p className="mt-5 text-[17px] text-ink-soft">
             {found.products.length} dishes
           </p>
-          <EventContextBar />
+          <EventContextBar tiers={tiers} />
         </div>
       </div>
 
-      <MenuBrowser categories={categories} initialCategory={found.slug} />
+      <MenuBrowser categories={categories} initialCategory={found.slug} tiers={tiers} />
     </>
   );
 }
