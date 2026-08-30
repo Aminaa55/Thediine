@@ -19,6 +19,15 @@ day already holds before accepting another.
 its rules, running on sample orders held in the browser, so the dashboard can be
 used and judged before the site is deployed.
 
+Its menu screens carry the **real** menu -- `MENU_SEED` is exported from the
+database, so every dish, price, course, allergen tag and priced choice is the
+business's own. Edits made in the preview change only that browser's copy;
+"Reset the sample data" puts the real menu back. The rules the real admin
+enforces are enforced here too: a price is typed in pounds and held in piastres,
+a dish has either one price or priced choices, a choice that has been ordered
+cannot be removed, event bands may not overlap, and a dish is retired rather than
+deleted.
+
 It does **not** use the real authentication and does not weaken it. The real
 sign-in hashes passwords with scrypt and carries a signed session cookie, both
 server-side; neither can run in a static page. The preview therefore has its own
@@ -39,7 +48,8 @@ one shared ladder written into the file.
 The real site lives in `src/app` and needs hosting plus a PostgreSQL database.
 
 To regenerate after the catalogue changes, re-export `prisma/catalogue.ts` to
-JSON and substitute it for the `DATA` constant. Keep the file pure ASCII —
+JSON and substitute it for the `DATA` constant, and re-export the database to
+JSON for `admin.html`'s `MENU_SEED`. Keep the file pure ASCII —
 non-ASCII characters must be written as HTML entities or `\uXXXX` escapes, so
 the page cannot break if it is served without a charset header.
 

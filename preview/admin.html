@@ -371,6 +371,99 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .err{border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.07); border-radius:2px;
   padding:12px 16px; font-size:14.5px; color:var(--alert)}
 
+
+/* ------------------------------------------------------------------- menu
+   The menu screens carry the same furniture as the rest of the admin: the
+   same cards, the same pills, the same one obvious action per panel. */
+.menu-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
+  gap:12px 28px}
+.menu-head .acts{display:flex; align-items:center; gap:20px}
+.menu-head .acts a.quiet{font-size:14.5px; color:var(--ink-soft)}
+.menu-head .acts a.quiet:hover{color:var(--ink)}
+.course{margin-top:20px; border:1px solid var(--line); background:var(--cream-warm);
+  border-radius:2px}
+.course > header{display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  border-bottom:1px solid var(--line); padding:14px 24px}
+.course > header h2{font-size:18px}
+.course > header .n{font-size:13.5px; color:var(--ink-faint)}
+.drow{display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; padding:12px 24px;
+  border-bottom:1px solid var(--line-soft)}
+.drow:last-child{border-bottom:0}
+.drow .nm{flex:1; min-width:15rem; display:block; padding:2px 0}
+.drow .nm strong{font-family:Fraunces,Georgia,serif; font-size:16.5px; font-weight:600;
+  display:block}
+.drow .nm:hover strong{color:var(--gold)}
+.drow .pr{font-family:Fraunces,Georgia,serif; font-size:16px; white-space:nowrap}
+.drow.off .nm strong{color:var(--ink-faint)}
+.fl{display:inline-block; margin:5px 6px 0 0; border:1px solid var(--line); border-radius:999px;
+  padding:1px 9px; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-faint)}
+.fl.warn{border-color:rgba(166,57,28,.35); color:var(--alert)}
+.mv{display:flex; flex-direction:column; gap:2px}
+.mv button{background:none; border:0; padding:0 2px; font-size:10px; line-height:1;
+  color:var(--ink-faint)}
+.mv button:hover{color:var(--ink)}
+.mv button:disabled{opacity:.2; cursor:default}
+.av{border:1px solid; border-radius:999px; padding:6px 16px; font-size:13.5px; white-space:nowrap}
+.av.on{border-color:rgba(46,107,69,.4); background:rgba(46,107,69,.08); color:var(--paid)}
+.av.off{border-color:rgba(166,57,28,.4); background:rgba(166,57,28,.07); color:var(--alert)}
+
+/* the dish editor */
+.stack{display:grid; gap:20px; margin-top:24px; max-width:830px}
+.card > header p.pnote{flex-basis:100%; margin-top:6px; border:0; padding:0; font-size:13.5px;
+  font-style:normal; line-height:1.55; color:var(--ink-soft)}
+.fgrid{display:grid; gap:18px}
+@media(min-width:720px){.fgrid.two{grid-template-columns:1fr 1fr}}
+.f label{display:block; margin-bottom:8px}
+.f input,.f select,.f textarea{width:100%; border:1px solid var(--line); background:var(--cream);
+  border-radius:2px; padding:10px 14px; font-size:15px}
+.f textarea{min-height:76px; resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none; border-color:var(--gold)}
+.f input:disabled{background:var(--cream-deep); color:var(--ink-faint)}
+.f .hint{margin-top:6px; font-size:13px; line-height:1.5; color:var(--ink-faint)}
+.vrow{display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:12px 0;
+  border-bottom:1px solid var(--line-soft)}
+.vrow input.n{flex:1; min-width:11rem; border:1px solid var(--line); background:var(--cream);
+  border-radius:2px; padding:9px 14px; font-size:15px}
+.vrow input.p{width:7rem; border:1px solid var(--line); background:var(--cream);
+  border-radius:2px; padding:9px 14px; font-size:15px}
+.mini{border:1px solid var(--line); background:var(--cream); border-radius:999px; padding:6px 15px;
+  font-size:13.5px; color:var(--ink-soft)}
+.mini:hover{border-color:var(--gold)}
+.mini.on{border-color:rgba(46,107,69,.4); background:rgba(46,107,69,.08); color:var(--paid)}
+.mini.off{border-color:rgba(166,57,28,.4); background:rgba(166,57,28,.07); color:var(--alert)}
+.linky{background:none; border:0; padding:0; font-size:13.5px; color:var(--ink-faint);
+  text-decoration:underline; text-underline-offset:4px}
+.linky:hover{color:var(--alert)}
+.newrow{display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px; margin-top:18px}
+.newrow .f{min-width:9rem}
+.ach{margin:0 8px 8px 0; border:1px solid var(--line); background:var(--cream); border-radius:999px;
+  padding:5px 15px; font-size:14px; color:var(--ink-faint)}
+.ach.on{border-color:var(--gold); background:rgba(239,226,190,.45); color:var(--ink);
+  font-weight:500}
+.ladder{margin-top:12px; font-size:13.5px; line-height:1.9; color:var(--ink-faint)}
+.ladder b{margin-right:14px; font-weight:400; white-space:nowrap}
+.band{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; font-size:14px;
+  color:var(--ink-faint)}
+.band input{border:1px solid var(--line); background:var(--cream); border-radius:2px;
+  padding:8px 12px; font-size:14.5px}
+.band input.g{width:5rem}
+.band input.m{width:6rem}
+.band input.x{width:7rem}
+.check{display:flex; align-items:flex-start; gap:12px; width:100%; margin-top:14px;
+  background:none; border:0; padding:0; text-align:left}
+.check .box{flex:none; width:18px; height:18px; margin-top:2px; border:1px solid var(--line);
+  border-radius:2px; background:var(--cream); font-size:12px; line-height:16px; text-align:center;
+  color:var(--cream)}
+.check .box.on{border-color:var(--gold); background:var(--gold)}
+.check .t{display:block; font-size:15px}
+.check .b{display:block; margin-top:2px; font-size:13.5px; color:var(--ink-soft)}
+.flash{margin-bottom:20px; border:1px solid rgba(46,107,69,.35); background:rgba(46,107,69,.07);
+  border-radius:2px; padding:11px 16px; font-size:14.5px; color:var(--paid)}
+.retire{margin-top:8px}
+.crumb{display:inline-block; margin-bottom:14px; font-size:14px; color:var(--ink-soft)}
+.crumb:hover{color:var(--ink)}
+
 /* ------------------------------------------------------------ the prep sheet
    Printing gives a sheet to work from, not a screenshot of a web page. */
 @media print{
@@ -469,10 +562,13 @@ function iso(offsetDays) {
   d.setDate(d.getDate() + offsetDays);
   return d.toISOString().slice(0, 10);
 }
+var MENU_SEED = {"cats":[{"slug":"main-courses","name":"Main Courses","desc":null,"active":true},{"slug":"side-dishes","name":"Side Dishes","desc":null,"active":true},{"slug":"salads","name":"Salads","desc":null,"active":true},{"slug":"desserts","name":"Desserts","desc":null,"active":true}],"allerg":[{"slug":"dairy","name":"Dairy"},{"slug":"egg","name":"Egg"},{"slug":"fish","name":"Fish"},{"slug":"gluten","name":"Gluten"},{"slug":"nuts","name":"Nuts"},{"slug":"seafood","name":"Seafood / shellfish"},{"slug":"sesame","name":"Sesame"},{"slug":"soy","name":"Soy"}],"tiers":[{"min":1,"max":10,"bp":10000},{"min":11,"max":20,"bp":15000},{"min":21,"max":30,"bp":20000},{"min":31,"max":40,"bp":25000},{"min":41,"max":50,"bp":30000},{"min":51,"max":60,"bp":35000},{"min":61,"max":70,"bp":40000},{"min":71,"max":80,"bp":45000},{"min":81,"max":90,"bp":50000},{"min":91,"max":100,"bp":55000}],"dishes":[{"id":"stuffed-pigeons","name":"Stuffed Pigeons","cat":"main-courses","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Stuffing","ch":[{"name":"Freek, raisins & nuts","avail":true},{"name":"Rice, raisins & nuts","avail":true}]}],"v":[]},{"id":"stuffed-chicken-lesan-asfour","name":"Stuffed Chicken with Lesan Asfour","cat":"main-courses","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"egyptian-fattah-moza","name":"Egyptian Fattah with Moza","cat":"main-courses","price":185000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"lebanese-fattah-chicken","name":"Lebanese Fattah with Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With chicken and yogurt, served with basmati rice, almonds & fried Lebanese bread.","tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[]},{"id":"sweet-sour-shrimps","name":"Sweet & Sour Shrimps","cat":"main-courses","price":165000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[]},{"id":"sweet-sour-chicken","name":"Sweet & Sour Chicken","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[]},{"id":"roast-fakhda","name":"Roast Fakhda","cat":"main-courses","price":375000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-turkey","name":"Roast Turkey","cat":"main-courses","price":450000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey Breasts.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-salmon-side","name":"Roast Salmon Side","cat":"main-courses","price":270000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"fish","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & cranberries","avail":true},{"name":"Coconut basmati rice","avail":true},{"name":"Grilled vegetables","avail":true},{"name":"Creamy spinach","avail":true}]}],"v":[]},{"id":"grilled-shrimps","name":"Grilled Shrimps","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Noodles","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"duck-shanks","name":"Duck Shanks","cat":"main-courses","price":210000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Freek & vegetables, almonds","avail":true},{"name":"Sha'reya, almonds & cranberries","avail":true}]}],"v":[]},{"id":"filet-meat","name":"Filet Meat","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-beef","name":"Roast Beef","cat":"main-courses","price":230000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-turkey-breasts","name":"Roast Turkey Breasts","cat":"main-courses","price":200000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With special brown sauce.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"grilled-kofta-mini-chicken-shish","name":"Grilled Kofta with Mini Chicken Shish","cat":"main-courses","price":175000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice & almonds","avail":true},{"name":"Potato wedges","avail":true}]}],"v":[]},{"id":"swedish-meatballs","name":"Swedish Meatballs","cat":"main-courses","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with jasmine rice.","tiers":[],"al":[],"og":[],"v":[]},{"id":"chicken-breast-mushroom-mozzarella","name":"Chicken Breast stuffed with Mushroom & Mozzarella in Creamy Spinach White Sauce","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"lemon-butter-chicken","name":"Lemon & Butter Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with basmati rice.","tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"tagine-meammar-pigeon-fillet","name":"Tagine Meammar with Pigeon Fillet","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"sharkasia","name":"Sharkasia","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with chicken, Egyptian rice & walnuts.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"heart-kidneys-shareya","name":"Heart & Kidneys with Sha'reya","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with sha'reya & almonds.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"sambousek-minced-meat-mozzarella","name":"Sambousek with Minced Meat & Mozzarella","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding \u2014 the PDF ended in \"..\".","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"sambousek-white-cheese-mint","name":"Sambousek with White Cheese & Mint","cat":"side-dishes","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"mahshi","name":"Mahshi","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. UNRESOLVED: does the customer choose one vegetable, several, or is it always a mixed assortment?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Eggplant, zucchini, pepper, onion, potatoes, tomatoes.","tiers":[],"al":[],"og":[],"v":[]},{"id":"noodles","name":"Noodles","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only \u2014 allergens are currently held per product, not per variant, so the warning shows on all three.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"With vegetables","price":65000,"avail":true},{"name":"With chicken","price":80000,"avail":true},{"name":"With shrimps","price":105000,"avail":true}]},{"id":"spring-rolls","name":"Spring Rolls","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"Plain","price":60000,"avail":true},{"name":"With chicken","price":75000,"avail":true},{"name":"With shrimps","price":95000,"avail":true}]},{"id":"basmati-rice","name":"Basmati Rice","cat":"side-dishes","price":60000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"coconut-rice","name":"Coconut Rice","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"cream-spinach-chicken","name":"Cream Spinach with Chicken","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"eggplant-rolls-avocado-mozzarella","name":"Eggplant Rolls stuffed with Avocado & Mozzarella in Pink Sauce","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"mushroom-saute","name":"Mushroom Saut\u00e9 with Caramelized Onions & Parsley","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"rokak-minced-meat","name":"Rokak with Minced Meat","cat":"side-dishes","price":90000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"rokak-cones","name":"Rokak Cones with Minced Meat, Mozzarella & Tomatoes","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"lasagna","name":"Lasagna","cat":"side-dishes","price":100000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[]},{"id":"negresco","name":"Negresco","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"vine-leaves","name":"Vine Leaves","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"potato-gratin","name":"Potato Gratin","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"kobeba","name":"Kobeba","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"mombar-pops","name":"Mombar Pops","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"hawawshi","name":"Hawawshi","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"mushroom-rocca-salad","name":"Fresh Mushroom Rocca Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"caesar-salad","name":"Caesar Salad with Avocado, Apples, Chicken & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here; it is absent from the confirmed price list. Confirm whether it was removed.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"eggplant-salad","name":"Eggplant Salad with Pomegranate & Almonds","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"colored pepper\" here; absent from the confirmed list. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"blue-cheese-salad","name":"Blue Cheese Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"fattoush","name":"Fattoush","cat":"salads","price":55000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"tahini","name":"Tahini","cat":"salads","price":40000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"sesame","r":false}],"og":[],"v":[]},{"id":"baba-ganoush","name":"Baba Ganoush","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"coleslaw","name":"Coleslaw","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"tiramisu","name":"Tiramisu \u2014 Big Bowl","cat":"desserts","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Is \"Big Bowl\" a size, with other sizes to follow?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"batata-gratin","name":"Batata Gratin","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"batata-creme-brulee","name":"Batata with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"kunafa-cream","name":"Kunafa with Cream","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"cinnabon-cake","name":"Cinnabon Cake","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"lotus-cinnabons-12","name":"12 Lotus Cinnabons","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Quantity (12 pieces) is stated in the name \u2014 confirm it as the selling unit.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"chocolate-cake","name":"Chocolate Cake","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"golden-basbousa-cake","name":"Golden Basbousa Cake","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"cheesecake-creme-brulee","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"cheesecake-maltesers","name":"Cheesecake Maltesers","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"cheesecake-oreo","name":"Cheesecake Oreo","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"san-sebastian-cheesecake","name":"San Sebasti\u00e1n Cheesecake","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"honey-cake","name":"Honey Cake","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"lotus-brownies","name":"Lotus Brownies","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"om-ali-creme-brulee","name":"Om Ali with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"tres-leches","name":"Tres Leches","cat":"desserts","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[{"name":"Caramel","price":130000,"avail":true},{"name":"Mango","price":140000,"avail":true}]},{"id":"profiteroles-caramel-custard","name":"Profiteroles with Caramel Custard, Croquant & Chocolate Sauce","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"profiteroles-kunafa-pistachio","name":"Profiteroles with Kunafa & Pistachio Sauce","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"mini-bites-baklava-nutella","name":"Mini Bites Baklava with Nutella","cat":"desserts","price":120000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"mini-bites-baklava-lotus","name":"Mini Bites Baklava with Lotus","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"mini-bites-baklava-hazelnut","name":"Mini Bites Baklava with Hazelnut","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"mini-baklava-kunafa","name":"Mini Baklava with Kunafa","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Named \"Mini\" rather than \"Mini Bites\" \u2014 same family, or a different product?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"bonbon-chocolate-box-pistachio-kunafa","name":"Bonbon Chocolate Box stuffed with Pistachio Kunafa","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"cheesecake-creme-brulee-blueberries","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e with Blueberries","cat":"desserts","price":155000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]}]};
+
 function freshData() {
   return {
     signedIn: false,
     admin: { name: "Radwa Serag", email: "radwaserag@hotmail.com" },
+    menu: freshMenu(),
     orders: [
       {
         number: "TD-260830-01", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
@@ -577,6 +673,7 @@ var KEY = "thediine.admin.preview.v2";
 var S;
 try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
 if (!S || !S.orders) S = freshData();
+if (!S.menu) S.menu = freshMenu();
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 /* ----------------------------------------------------------- formatting */
@@ -954,9 +1051,12 @@ function viewOrder(number) {
               + '<button type="button" class="btn-paid" data-pay="PAID">'
               + "I have checked it \u2014 mark paid</button></div>"
             : "")
-        + '<div class="field"><label class="lab" for="ref">Transfer reference '
-        + '<span style="text-transform:none;letter-spacing:normal">optional</span></label>'
-        + '<input type="text" id="ref" value="' + esc(o.reference || "") + '"></div>'
+        /* A transfer reference only exists for a transfer. Cash has none. */
+        + (o.method === "INSTAPAY"
+            ? '<div class="field"><label class="lab" for="ref">Transfer reference '
+              + '<span style="text-transform:none;letter-spacing:normal">optional</span></label>'
+              + '<input type="text" id="ref" value="' + esc(o.reference || "") + '"></div>'
+            : "")
         + '<details class="more"' + (PAY_CONFIRM ? " open" : "") + '>'
         + "<summary>Change the payment status by hand</summary>"
         + '<div class="pay-btns">'
@@ -1118,6 +1218,565 @@ function dishRow(d, mixed) {
       }).join("") + "</ul></li>";
 }
 
+
+/* ==================================================================== menu
+   Menu management: the dish list, the dish editor, the courses. The rules
+   here are the same ones the real admin enforces -- a price is typed in
+   pounds and held in piastres, a dish has either one price or priced
+   choices, a choice that has been ordered cannot be removed, bands may not
+   overlap, and a dish is retired rather than deleted. */
+function freshMenu() { return JSON.parse(JSON.stringify(MENU_SEED)); }
+
+var CARRY = false;      /* keep the message across one navigation */
+var MENU_MSG = null;    /* a one-off line at the top of the page */
+var MENU_ERR = null;
+var BANDS = null;       /* the bands being edited, before they are saved */
+var RETIRING = false;
+
+function catFor(slug) {
+  var c = S.menu.cats.filter(function (x) { return x.slug === slug; })[0];
+  return c ? c.name : slug;
+}
+function liveDishes() {
+  return S.menu.dishes.filter(function (d) { return !d.archived; });
+}
+function dishBy(id) {
+  return S.menu.dishes.filter(function (d) { return d.id === id; })[0];
+}
+function unchecked(d) {
+  return d.al.filter(function (a) { return !a.r; }).length > 0;
+}
+function dishFlags(d) {
+  var f = [];
+  if (!d.unit || !d.unitok) f.push(["No selling unit", false]);
+  if (unchecked(d)) f.push(["Allergens unchecked", true]);
+  if (d.note) f.push(["Has a note", false]);
+  if (d.price === null && !d.v.length) f.push(["No price", true]);
+  return f;
+}
+function priceText(d) {
+  if (d.v.length) {
+    var ps = d.v.map(function (v) { return v.price; });
+    var lo = Math.min.apply(null, ps), hi = Math.max.apply(null, ps);
+    return lo === hi ? egp(lo) : egp(lo) + " \u2013 " + egp(hi);
+  }
+  return d.price === null ? "No price" : egp(d.price);
+}
+function pounds(piastres) {
+  return piastres % 100 === 0 ? String(piastres / 100) : (piastres / 100).toFixed(2);
+}
+function toPiastres(text) {
+  var n = Number(String(text).replace(/,/g, "").trim());
+  if (!isFinite(n) || n < 0) return null;
+  return Math.round(n * 100);
+}
+/* A choice that appears on any order is part of that order's history. */
+function choiceOrdered(dish, name) {
+  return S.orders.filter(function (o) {
+    return o.items.filter(function (i) {
+      return i.name === dish.name && i.variant === name;
+    }).length > 0;
+  }).length > 0;
+}
+function val(sel) { var el = $(sel); return el ? el.value.trim() : ""; }
+function multLabel(bp) {
+  var x = bp / 10000;
+  return (x % 1 === 0 ? String(x) : String(x)) + "\u00d7";
+}
+
+/* ------------------------------------------------------------ the list */
+function viewMenu() {
+  var show = query().get("show") || "";
+  var all = liveDishes();
+  var counts = {
+    off: all.filter(function (d) { return !d.avail; }).length,
+    unit: all.filter(function (d) { return !d.unit || !d.unitok; }).length,
+    al: all.filter(function (d) { return unchecked(d); }).length,
+    notes: all.filter(function (d) { return !!d.note; }).length
+  };
+  var keep = function (d) {
+    if (show === "unavailable") return !d.avail;
+    if (show === "no-unit") return !d.unit || !d.unitok;
+    if (show === "unreviewed") return unchecked(d);
+    if (show === "notes") return !!d.note;
+    return true;
+  };
+  var chip = function (v, label) {
+    return '<a class="chip sm' + (show === v ? " on" : "") + '" href="'
+      + (v ? "#/menu?show=" + v : "#/menu") + '">' + label + "</a>";
+  };
+  var courses = S.menu.cats.map(function (c) {
+    var mine = all.filter(function (d) { return d.cat === c.slug; });
+    var shown = mine.filter(keep);
+    if (!shown.length) return "";
+    return '<section class="course"><header><h2>' + esc(c.name) + "</h2>"
+      + '<span class="n tnum">' + mine.length + (mine.length === 1 ? " dish" : " dishes")
+      + "</span></header><ul>"
+      + shown.map(function (d) { return menuRow(d, mine.indexOf(d), mine.length); }).join("")
+      + "</ul></section>";
+  }).join("");
+
+  return "<main>" + flashes()
+    + '<div class="menu-head"><div><p class="eyebrow">Menu</p>'
+    + "<h1>" + all.length + (all.length === 1 ? " dish" : " dishes") + "</h1></div>"
+    + '<div class="acts"><a class="quiet" href="#/menu/categories">Courses</a>'
+    + '<a class="btn btn-primary" href="#/menu/new">Add a dish</a></div></div>'
+    + '<div class="stats">'
+    + stat("Off the menu", counts.off, "#/menu?show=unavailable")
+    + stat("Without a selling unit", counts.unit, "#/menu?show=no-unit")
+    + stat("Allergens to check", counts.al, "#/menu?show=unreviewed")
+    + "</div>"
+    + '<div class="chips" style="margin-top:28px">'
+    + chip("", "Everything") + chip("unavailable", "Off the menu")
+    + chip("no-unit", "No selling unit") + chip("unreviewed", "Allergens unchecked")
+    + (counts.notes ? chip("notes", "Has a note") : "")
+    + "</div>" + (courses || '<p class="sub">Nothing to show under that filter.</p>')
+    + "</main>";
+}
+
+function menuRow(d, i, n) {
+  return '<li class="drow' + (d.avail ? "" : " off") + '">'
+    + '<span class="mv"><button type="button" data-m="move" data-id="' + d.id + '" data-dir="up"'
+    + (i === 0 ? " disabled" : "") + ' aria-label="Move ' + esc(d.name) + ' up">\u25b2</button>'
+    + '<button type="button" data-m="move" data-id="' + d.id + '" data-dir="down"'
+    + (i === n - 1 ? " disabled" : "") + ' aria-label="Move ' + esc(d.name) + ' down">\u25bc</button></span>'
+    + '<a class="nm" href="#/menu/' + d.id + '"><strong>' + esc(d.name) + "</strong>"
+    + dishFlags(d).map(function (f) {
+        return '<span class="fl' + (f[1] ? " warn" : "") + '">' + f[0] + "</span>";
+      }).join("") + "</a>"
+    + '<span class="pr tnum">' + priceText(d) + "</span>"
+    + '<button type="button" class="av ' + (d.avail ? "on" : "off") + '" data-m="avail" data-id="'
+    + d.id + '">' + (d.avail ? "On the menu" : "Off the menu") + "</button></li>";
+}
+
+function flashes() {
+  var out = "";
+  if (MENU_ERR) out += '<p class="err" style="margin-bottom:20px">' + esc(MENU_ERR) + "</p>";
+  if (MENU_MSG) out += '<p class="flash">' + esc(MENU_MSG) + "</p>";
+  return out;
+}
+function panel(title, note, body) {
+  return '<section class="card"><header><h2>' + title + "</h2>"
+    + (note ? '<p class="pnote">' + note + "</p>" : "") + "</header>"
+    + '<div class="body">' + body + "</div></section>";
+}
+function field(label, id, control, hint) {
+  return '<div class="f"><label class="lab" for="' + id + '">' + label + "</label>" + control
+    + (hint ? '<p class="hint">' + hint + "</p>" : "") + "</div>";
+}
+function checkbox(on, m, title, body) {
+  return '<button type="button" class="check" data-m="' + m + '">'
+    + '<span class="box' + (on ? " on" : "") + '">' + (on ? "\u2713" : "") + "</span>"
+    + '<span><span class="t">' + title + '</span><span class="b">' + body + "</span></span></button>";
+}
+
+/* ---------------------------------------------------------- the editor */
+function viewDish(id) {
+  var d = dishBy(id);
+  if (!d) return "<main><h1>That dish is not here.</h1>"
+    + '<p class="sub"><a class="crumb" href="#/menu">Back to the menu</a></p></main>';
+  if (BANDS === null) BANDS = (d.tiers || []).map(function (t) {
+    return { min: String(t.min), max: String(t.max), mult: t.bp ? String(t.bp / 10000) : "",
+             price: t.price ? pounds(t.price) : "" };
+  });
+
+  var courseOptions = S.menu.cats.map(function (c) {
+    return '<option value="' + c.slug + '"' + (c.slug === d.cat ? " selected" : "") + ">"
+      + esc(c.name) + "</option>";
+  }).join("");
+
+  var dish = '<div class="fgrid">'
+    + field("Name", "d-name", '<input id="d-name" value="' + esc(d.name) + '">')
+    + field("Description", "d-desc", '<textarea id="d-desc">' + esc(d.desc || "") + "</textarea>",
+            "Shown under the name on the menu.")
+    + '</div><div class="fgrid two" style="margin-top:18px">'
+    + field("Course", "d-cat", '<select id="d-cat">' + courseOptions + "</select>")
+    + field("Price", "d-price", '<input id="d-price" inputmode="decimal" value="'
+        + (d.price === null ? "" : pounds(d.price)) + '"' + (d.v.length ? " disabled" : "") + ">",
+        d.v.length ? "This dish is priced by its choices below."
+                   : "In EGP. This is the regular order price.")
+    + "</div>"
+    + '<div class="fgrid" style="margin-top:18px">'
+    + field("Selling unit", "d-unit", '<input id="d-unit" value="' + esc(d.unit || "") + '">',
+            "What one of these is: a tray, a kilo, twelve pieces. Left empty until the business says.")
+    + "</div>"
+    + (d.unit ? checkbox(!!d.unitok, "unit-ok", "This selling unit is confirmed",
+        "Until it is confirmed the dish keeps its reminder on the list.") : "")
+    + '<div class="fgrid two" style="margin-top:18px">'
+    + field("Serves from", "d-smin", '<input id="d-smin" class="tnum" inputmode="numeric" value="'
+        + (d.smin === null ? "" : d.smin) + '">', "Optional.")
+    + field("Serves up to", "d-smax", '<input id="d-smax" class="tnum" inputmode="numeric" value="'
+        + (d.smax === null ? "" : d.smax) + '">', "Optional.")
+    + field("Smallest order", "d-minq", '<input id="d-minq" class="tnum" inputmode="numeric" value="'
+        + d.minq + '">', "How few a customer may order.")
+    + field("Ordered in steps of", "d-step", '<input id="d-step" class="tnum" inputmode="numeric" value="'
+        + d.step + '">')
+    + "</div>"
+    + '<div class="fgrid" style="margin-top:18px">'
+    + field("Note to yourself", "d-note", '<input id="d-note" value="' + esc(d.note || "") + '">',
+            "Never shown to a customer.")
+    + "</div>"
+    + '<button type="button" class="btn btn-primary" style="margin-top:22px" data-m="save-dish">'
+    + "Save the dish</button>";
+
+  var choices = (d.v.length
+      ? "<ul>" + d.v.map(function (v, i) {
+          return '<li class="vrow"><input class="n" id="v-name-' + i + '" value="' + esc(v.name)
+            + '"><input class="p tnum" id="v-price-' + i + '" inputmode="decimal" value="'
+            + pounds(v.price) + '">'
+            + '<button type="button" class="mini" data-m="v-save" data-i="' + i + '">Save</button>'
+            + '<button type="button" class="mini ' + (v.avail ? "on" : "off")
+            + '" data-m="v-avail" data-i="' + i + '">' + (v.avail ? "On" : "Off") + "</button>"
+            + '<button type="button" class="linky" data-m="v-remove" data-i="' + i + '">Remove</button>'
+            + "</li>";
+        }).join("") + "</ul>"
+      : "")
+    + '<div class="newrow">'
+    + field("New choice", "nv-name", '<input id="nv-name" placeholder="With chicken">')
+    + field("Price", "nv-price", '<input id="nv-price" class="tnum" inputmode="decimal" placeholder="800" style="width:8rem">')
+    + '<button type="button" class="mini" data-m="v-add">Add it</button></div>';
+
+  var comes = (d.og || []).map(function (g, gi) {
+    return "<p class=\"lab\" style=\"margin-top:16px\">" + esc(g.name) + "</p>"
+      + '<div style="margin-top:10px">' + g.ch.map(function (c, ci) {
+          return '<button type="button" class="ach' + (c.avail ? " on" : "")
+            + '" data-m="choice" data-g="' + gi + '" data-c="' + ci + '">' + esc(c.name)
+            + (c.avail ? "" : " \u2014 off") + "</button>";
+        }).join("") + "</div>";
+  }).join("");
+
+  var allergens = (unchecked(d)
+      ? '<p class="waiting">These have not been checked against the recipe yet.</p>' : "")
+    + S.menu.allerg.map(function (a) {
+        var on = d.al.filter(function (x) { return x.s === a.slug; }).length > 0;
+        return '<button type="button" class="ach' + (on ? " on" : "") + '" data-m="allergen" data-slug="'
+          + a.slug + '">' + esc(a.name) + "</button>";
+      }).join("")
+    + (unchecked(d)
+        ? '<div style="margin-top:8px"><button type="button" class="mini" data-m="allergens-ok">'
+          + "I have checked these against the recipe</button></div>"
+        : "");
+
+  var ladder = S.menu.tiers.map(function (t) {
+    return "<b>" + t.min + "\u2013" + t.max + ": " + multLabel(t.bp) + "</b>";
+  }).join("");
+
+  var bands = BANDS.map(function (t, i) {
+    var shows = d.price !== null && t.mult
+      ? ' <span class="tnum">= ' + egp(Math.round(d.price * Number(t.mult || 0))) + "</span>" : "";
+    return '<div class="band"><input class="g tnum" aria-label="From guests" data-b="min" data-i="'
+      + i + '" value="' + esc(t.min) + '"> to '
+      + '<input class="g tnum" aria-label="To guests" data-b="max" data-i="' + i + '" value="'
+      + esc(t.max) + '"> guests: '
+      + '<input class="m tnum" aria-label="Multiplier" placeholder="2.5" data-b="mult" data-i="' + i
+      + '" value="' + esc(t.mult) + '"> \u00d7 \u2014 or a flat '
+      + '<input class="x tnum" aria-label="Flat price" placeholder="EGP" data-b="price" data-i="' + i
+      + '" value="' + esc(t.price) + '">' + shows
+      + '<button type="button" class="linky" data-m="band-del" data-i="' + i + '">Remove</button></div>';
+  }).join("");
+
+  var event = checkbox(d.ev, "ev-toggle", "Scale this dish by guest count",
+        "Off means an event pays the regular price for it.")
+    + (d.ev
+        ? ((d.tiers && d.tiers.length)
+            ? '<p class="hint" style="margin-top:14px">It has bands of its own, so the shared ladder does not apply to it.</p>'
+            : '<p class="hint" style="margin-top:14px">It follows the shared ladder:</p><p class="ladder">' + ladder + "</p>")
+          + bands
+          + '<div class="chips" style="margin-top:16px">'
+          + '<button type="button" class="mini" data-m="band-add">Add a band</button>'
+          + (BANDS.length ? '<button type="button" class="mini" data-m="bands-save">Save these bands</button>' : "")
+          + ((d.tiers && d.tiers.length)
+              ? '<button type="button" class="linky" data-m="bands-clear">Go back to the shared ladder</button>' : "")
+          + "</div>"
+        : "")
+    + '<div class="fgrid" style="margin-top:20px">'
+    + field("Why it scales this way", "d-evnote",
+        '<input id="d-evnote" value="' + esc(d.evnote || "") + '">', "Never shown to a customer.")
+    + '</div><button type="button" class="mini" style="margin-top:14px" data-m="save-evnote">'
+    + "Save the note</button>";
+
+  var site = checkbox(d.avail, "avail", "On the menu",
+        "Off means customers can see it but not order it.")
+    + checkbox(d.featured, "feature", "Show on the homepage", "Featured dishes lead the homepage.");
+
+  var retire = RETIRING
+    ? '<div class="danger-box"><h3>Take ' + esc(d.name) + " off the menu for good?</h3>"
+      + '<p class="fine">It stays on every order it has ever been part of. It simply stops being '
+      + "something a customer can order.</p>"
+      + '<div class="chips" style="margin-top:16px">'
+      + '<button type="button" class="btn btn-danger" data-m="retire">Yes, retire it</button>'
+      + '<button type="button" class="linky" data-m="retire-no">Keep it</button></div></div>'
+    : '<button type="button" class="linky" data-m="retire-open">'
+      + "Take this dish off the menu for good</button>";
+
+  return "<main>" + '<a class="crumb" href="#/menu">\u2190 The menu</a>' + flashes()
+    + '<div class="menu-head"><div><p class="eyebrow">' + esc(catFor(d.cat)) + "</p>"
+    + "<h1>" + esc(d.name) + "</h1></div></div>"
+    + '<div class="stack">'
+    + panel("The dish", "", dish)
+    + panel("Priced choices",
+        "A dish either has one price or a set of priced choices \u2014 Noodles with vegetables, "
+        + "with chicken, with shrimps. Adding the first choice clears the single price.", choices)
+    + (comes ? panel("What comes with it",
+        "Choices the customer makes at no extra cost. Switch one off when you have run out of it.",
+        comes) : "")
+    + panel("Allergens",
+        "Tagged from the menu wording during setup and never checked against a recipe. "
+        + "Confirm them before launch.", allergens)
+    + panel("Event pricing",
+        "An event portion is cooked for the whole guest list, so it is priced by guest count.", event)
+    + panel("On the site", "", site)
+    + '<div class="retire">' + retire + "</div>"
+    + "</div></main>";
+}
+
+/* ---------------------------------------------------------- a new dish */
+function viewNewDish() {
+  var courseOptions = S.menu.cats.map(function (c) {
+    return '<option value="' + c.slug + '">' + esc(c.name) + "</option>";
+  }).join("");
+  return "<main>" + '<a class="crumb" href="#/menu">\u2190 The menu</a>' + flashes()
+    + '<div class="menu-head"><div><p class="eyebrow">Menu</p><h1>Add a dish</h1></div></div>'
+    + '<div class="stack">' + panel("The dish",
+        "Only a name is needed to start. Everything else can follow once it is decided.",
+        '<div class="fgrid two">'
+        + field("Name", "n-name", '<input id="n-name" placeholder="Roast lamb with freekeh">')
+        + field("Course", "n-cat", '<select id="n-cat">' + courseOptions + "</select>")
+        + "</div>"
+        + '<div class="fgrid two" style="margin-top:18px">'
+        + field("Price", "n-price", '<input id="n-price" inputmode="decimal" placeholder="1450">',
+                "In EGP. Leave it empty if the dish is priced by choices.")
+        + "</div>"
+        + '<button type="button" class="btn btn-primary" style="margin-top:22px" data-m="new-dish">'
+        + "Add it to the menu</button>")
+    + "</div></main>";
+}
+
+/* ------------------------------------------------------------ courses */
+function viewCourses() {
+  var rows = S.menu.cats.map(function (c, i) {
+    var n = liveDishes().filter(function (d) { return d.cat === c.slug; }).length;
+    return '<section class="card"><div class="body">'
+      + '<div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px">'
+      + '<span class="mv" style="padding-bottom:10px">'
+      + '<button type="button" data-m="cat-move" data-i="' + i + '" data-dir="up"'
+      + (i === 0 ? " disabled" : "") + ' aria-label="Move ' + esc(c.name) + ' up">\u25b2</button>'
+      + '<button type="button" data-m="cat-move" data-i="' + i + '" data-dir="down"'
+      + (i === S.menu.cats.length - 1 ? " disabled" : "")
+      + ' aria-label="Move ' + esc(c.name) + ' down">\u25bc</button></span>'
+      + '<div class="f" style="flex:1; min-width:12rem"><label class="lab" for="c-name-' + i
+      + '">Name</label><input id="c-name-' + i + '" value="' + esc(c.name) + '"></div>'
+      + '<span class="tnum" style="padding-bottom:12px; font-size:13.5px; color:var(--ink-faint)">'
+      + n + (n === 1 ? " dish" : " dishes") + "</span></div>"
+      + '<div class="f" style="margin-top:16px"><label class="lab" for="c-desc-' + i
+      + '">Description</label><input id="c-desc-' + i + '" value="' + esc(c.desc || "") + '"></div>'
+      + '<div class="chips" style="margin-top:16px">'
+      + '<button type="button" class="mini" data-m="cat-save" data-i="' + i + '">Save</button>'
+      + '<button type="button" class="mini ' + (c.active ? "on" : "off") + '" data-m="cat-active" data-i="'
+      + i + '">' + (c.active ? "Showing on the site" : "Hidden from the site") + "</button>"
+      + "</div></div></section>";
+  }).join("");
+  return "<main>" + '<a class="crumb" href="#/menu">\u2190 The menu</a>' + flashes()
+    + '<div class="menu-head"><div><p class="eyebrow">Menu</p><h1>Courses</h1>'
+    + '<p class="sub">The order here is the order they appear in on the site.</p></div></div>'
+    + '<div class="stack">' + rows + "</div></main>";
+}
+
+/* ------------------------------------------------------------- actions */
+function readBands() {
+  document.querySelectorAll("[data-b]").forEach(function (el) {
+    var i = Number(el.dataset.i);
+    if (BANDS[i]) BANDS[i][el.dataset.b] = el.value.trim();
+  });
+}
+document.addEventListener("click", function (e) {
+  var t = e.target.closest("button");
+  if (!t || !t.dataset.m) return;
+  var m = t.dataset.m;
+  var h = hash();
+  var d = t.dataset.id ? dishBy(t.dataset.id)
+        : (h.indexOf("/menu/") === 0 ? dishBy(decodeURIComponent(h.slice(6))) : null);
+  MENU_MSG = null; MENU_ERR = null;
+
+  if (m === "avail" && d) { d.avail = !d.avail; save(); render(); return; }
+  if (m === "feature" && d) { d.featured = !d.featured; save(); render(); return; }
+  if (m === "unit-ok" && d) { d.unitok = !d.unitok; save(); render(); return; }
+
+  if (m === "move" && d) {
+    var sibs = liveDishes().filter(function (x) { return x.cat === d.cat; });
+    var at = sibs.indexOf(d), to = at + (t.dataset.dir === "up" ? -1 : 1);
+    if (to < 0 || to >= sibs.length) return;
+    var a = S.menu.dishes.indexOf(sibs[at]), b = S.menu.dishes.indexOf(sibs[to]);
+    S.menu.dishes[a] = sibs[to]; S.menu.dishes[b] = sibs[at];
+    save(); render(); return;
+  }
+
+  if (m === "save-dish" && d) {
+    var name = val("#d-name");
+    if (!name) { MENU_ERR = "A dish needs a name."; render(); return; }
+    if (!d.v.length) {
+      var price = val("#d-price");
+      var p = price === "" ? null : toPiastres(price);
+      if (price !== "" && p === null) { MENU_ERR = "That price is not a number."; render(); return; }
+      d.price = p;
+    }
+    var whole = function (sel, fallback) {
+      var v = val(sel);
+      if (v === "") return fallback;
+      var n = Math.round(Number(v));
+      return isFinite(n) && n > 0 ? n : fallback;
+    };
+    d.name = name;
+    d.desc = val("#d-desc") || null;
+    d.cat = val("#d-cat");
+    d.unit = val("#d-unit") || null;
+    if (!d.unit) d.unitok = false;
+    d.smin = whole("#d-smin", null);
+    d.smax = whole("#d-smax", null);
+    d.minq = whole("#d-minq", 1);
+    d.step = whole("#d-step", 1);
+    d.note = val("#d-note") || null;
+    MENU_MSG = "Saved.";
+    save(); render(); return;
+  }
+  if (m === "save-evnote" && d) {
+    d.evnote = val("#d-evnote") || null;
+    MENU_MSG = "Saved."; save(); render(); return;
+  }
+
+  /* ---- priced choices */
+  if (m === "v-save" && d) {
+    var i = Number(t.dataset.i);
+    var vn = val("#v-name-" + i), vp = toPiastres(val("#v-price-" + i));
+    if (!vn) { MENU_ERR = "A choice needs a name."; render(); return; }
+    if (vp === null) { MENU_ERR = "That price is not a number."; render(); return; }
+    d.v[i].name = vn; d.v[i].price = vp;
+    MENU_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "v-avail" && d) {
+    d.v[Number(t.dataset.i)].avail = !d.v[Number(t.dataset.i)].avail;
+    save(); render(); return;
+  }
+  if (m === "v-remove" && d) {
+    var vi = Number(t.dataset.i);
+    if (choiceOrdered(d, d.v[vi].name)) {
+      MENU_ERR = d.v[vi].name + " has been ordered before, so it cannot be removed. "
+        + "Switch it off instead.";
+      render(); return;
+    }
+    d.v.splice(vi, 1);
+    if (!d.v.length && d.price === null) MENU_MSG = "That was the last choice \u2014 give the dish a price.";
+    save(); render(); return;
+  }
+  if (m === "v-add" && d) {
+    var nn = val("#nv-name"), np = toPiastres(val("#nv-price"));
+    if (!nn) { MENU_ERR = "A choice needs a name."; render(); return; }
+    if (np === null) { MENU_ERR = "That price is not a number."; render(); return; }
+    if (!d.v.length) d.price = null;   /* the first choice clears the single price */
+    d.v.push({ name: nn, price: np, avail: true });
+    save(); render(); return;
+  }
+  if (m === "choice" && d) {
+    var g = d.og[Number(t.dataset.g)].ch[Number(t.dataset.c)];
+    g.avail = !g.avail; save(); render(); return;
+  }
+
+  /* ---- allergens */
+  if (m === "allergen" && d) {
+    var slug = t.dataset.slug;
+    var had = d.al.filter(function (x) { return x.s === slug; })[0];
+    if (had) d.al = d.al.filter(function (x) { return x.s !== slug; });
+    else d.al.push({ s: slug, r: true });
+    save(); render(); return;
+  }
+  if (m === "allergens-ok" && d) {
+    d.al.forEach(function (a) { a.r = true; });
+    MENU_MSG = "Marked as checked."; save(); render(); return;
+  }
+
+  /* ---- event bands */
+  if (m === "ev-toggle" && d) { d.ev = !d.ev; save(); render(); return; }
+  if (m === "band-add") {
+    readBands(); BANDS.push({ min: "", max: "", mult: "", price: "" }); render(); return;
+  }
+  if (m === "band-del") {
+    readBands(); BANDS.splice(Number(t.dataset.i), 1); render(); return;
+  }
+  if (m === "bands-clear" && d) { d.tiers = []; BANDS = []; save(); render(); return; }
+  if (m === "bands-save" && d) {
+    readBands();
+    var rows = [], bad = null;
+    BANDS.forEach(function (t2) {
+      var lo = Number(t2.min), hi = Number(t2.max);
+      if (!lo || !hi || hi < lo) bad = bad || "Each band needs a guest count to run from and to.";
+      if (!t2.mult && !t2.price) bad = bad || "Each band needs a multiplier or a flat price.";
+      rows.push({ min: lo, max: hi,
+        bp: t2.mult ? Math.round(Number(t2.mult) * 10000) : null,
+        price: t2.price ? toPiastres(t2.price) : null });
+    });
+    rows.sort(function (a2, b2) { return a2.min - b2.min; });
+    for (var k = 1; k < rows.length; k++) {
+      if (rows[k].min <= rows[k - 1].max) bad = bad || "Those bands overlap. Every guest count can "
+        + "only fall in one band.";
+    }
+    if (bad) { MENU_ERR = bad; render(); return; }
+    d.tiers = rows;
+    BANDS = rows.map(function (r) {
+      return { min: String(r.min), max: String(r.max), mult: r.bp ? String(r.bp / 10000) : "",
+               price: r.price ? pounds(r.price) : "" };
+    });
+    MENU_MSG = "Saved."; save(); render(); return;
+  }
+
+  /* ---- retiring */
+  if (m === "retire-open") { RETIRING = true; render(); return; }
+  if (m === "retire-no") { RETIRING = false; render(); return; }
+  if (m === "retire" && d) {
+    d.archived = true; RETIRING = false;
+    MENU_MSG = d.name + " is off the menu. It is still on every order it was part of.";
+    CARRY = true; save(); go("#/menu"); render(); return;
+  }
+
+  /* ---- a new dish */
+  if (m === "new-dish") {
+    var newName = val("#n-name");
+    if (!newName) { MENU_ERR = "A dish needs a name."; render(); return; }
+    var newPrice = val("#n-price");
+    var pp = newPrice === "" ? null : toPiastres(newPrice);
+    if (newPrice !== "" && pp === null) { MENU_ERR = "That price is not a number."; render(); return; }
+    var id = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (dishBy(id)) { MENU_ERR = "There is already a dish with that name."; render(); return; }
+    S.menu.dishes.push({ id: id, name: newName, cat: val("#n-cat"), price: pp, unit: null,
+      unitok: false, smin: null, smax: null, minq: 1, step: 1, note: null, avail: true,
+      featured: false, ev: true, evnote: null, desc: null, al: [], og: [], v: [], tiers: [] });
+    BANDS = null;
+    MENU_MSG = "Added. Its selling unit is left empty until you say what one of these is.";
+    CARRY = true; save(); go("#/menu/" + id); render(); return;
+  }
+
+  /* ---- courses */
+  if (m === "cat-move") {
+    var ci = Number(t.dataset.i), cto = ci + (t.dataset.dir === "up" ? -1 : 1);
+    if (cto < 0 || cto >= S.menu.cats.length) return;
+    var tmp = S.menu.cats[ci];
+    S.menu.cats[ci] = S.menu.cats[cto]; S.menu.cats[cto] = tmp;
+    save(); render(); return;
+  }
+  if (m === "cat-save") {
+    var k2 = Number(t.dataset.i);
+    var cn = val("#c-name-" + k2);
+    if (!cn) { MENU_ERR = "A course needs a name."; render(); return; }
+    S.menu.cats[k2].name = cn;
+    S.menu.cats[k2].desc = val("#c-desc-" + k2) || null;
+    MENU_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "cat-active") {
+    var k3 = Number(t.dataset.i);
+    S.menu.cats[k3].active = !S.menu.cats[k3].active;
+    save(); render(); return;
+  }
+});
+
 /* --------------------------------------------------------------- chrome */
 function chrome(inner) {
   var h = hash();
@@ -1127,7 +1786,8 @@ function chrome(inner) {
   return '<header class="top no-print"><div class="in">'
     + '<a class="brand" href="#/">The Diine<span class="tag">Admin</span></a>'
     + "<nav>" + link("#/", "Today", "/") + link("#/orders", "Orders", "/orders")
-    + link("#/kitchen", "Kitchen", "/kitchen") + "</nav>"
+    + link("#/kitchen", "Kitchen", "/kitchen")
+    + '<a href="#/menu"' + (h.indexOf("/menu") === 0 ? ' class="on"' : "") + ">Menu</a></nav>"
     + '<div class="who"><span>' + esc(S.admin.name) + "</span>"
     + '<button type="button" id="signout">Sign out</button></div>'
     + "</div></header>" + inner;
@@ -1145,13 +1805,22 @@ function render() {
   }
   var body;
   if (h.indexOf("/order/") === 0) body = viewOrder(decodeURIComponent(h.slice(7)));
+  else if (h === "/menu/new") body = viewNewDish();
+  else if (h === "/menu/categories") body = viewCourses();
+  else if (h.indexOf("/menu/") === 0) body = viewDish(decodeURIComponent(h.slice(6)));
+  else if (h === "/menu") body = viewMenu();
   else if (h === "/orders") body = viewOrders();
   else if (h === "/kitchen") body = viewKitchen();
   else body = viewToday();
   $("#app").innerHTML = chrome(body);
   window.scrollTo(0, 0);
 }
-window.addEventListener("hashchange", function () { PAY_CONFIRM = null; render(); });
+window.addEventListener("hashchange", function () {
+  PAY_CONFIRM = null; BANDS = null; RETIRING = false; MENU_ERR = null;
+  if (!CARRY) MENU_MSG = null;
+  CARRY = false;
+  render();
+});
 
 /* ---------------------------------------------------------------- events */
 document.addEventListener("submit", function (e) {

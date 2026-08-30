@@ -22,6 +22,7 @@ const NAV = [
   { href: "/admin", label: "Today" },
   { href: "/admin/orders", label: "Orders" },
   { href: "/admin/kitchen", label: "Kitchen" },
+  { href: "/admin/menu", label: "Menu" },
 ];
 
 /**

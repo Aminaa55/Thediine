@@ -308,6 +308,7 @@ export default async function OrderPage({ params }: Props) {
             </p>
             <PaymentActions
               orderId={order.id}
+              method={order.paymentMethod}
               current={order.paymentStatus}
               reference={order.paymentReference}
               total={order.total}

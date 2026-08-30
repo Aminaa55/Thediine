@@ -122,8 +122,14 @@ export function ConfirmEvent({ orderId }: { orderId: string }) {
  * sits quietly underneath — and the two that undo something ask first.
  */
 export function PaymentActions({
-  orderId, current, reference, total,
-}: { orderId: string; current: PaymentStatus; reference: string | null; total: number }) {
+  orderId, method, current, reference, total,
+}: {
+  orderId: string;
+  method: "CASH" | "INSTAPAY" | "CARD";
+  current: PaymentStatus;
+  reference: string | null;
+  total: number;
+}) {
   const { pending, error, run } = useAction();
   const [ref, setRef] = useState(reference ?? "");
   const [confirming, setConfirming] = useState<PaymentStatus | null>(null);
@@ -162,15 +168,18 @@ export function PaymentActions({
         </>
       )}
 
-      <div className="mt-5">
-        <label htmlFor="ref" className="eyebrow mb-2 block">
-          Transfer reference <span className="normal-case tracking-normal text-ink-faint">optional</span>
-        </label>
-        <input
-          id="ref" value={ref} onChange={(e) => setRef(e.target.value)}
-          className="w-full rounded-sm border border-line bg-cream px-4 py-2.5 text-[15px] text-ink focus:border-gold focus:outline-none"
-        />
-      </div>
+      {/* A transfer reference only exists for a transfer. Cash has none. */}
+      {method === "INSTAPAY" && (
+        <div className="mt-5">
+          <label htmlFor="ref" className="eyebrow mb-2 block">
+            Transfer reference <span className="normal-case tracking-normal text-ink-faint">optional</span>
+          </label>
+          <input
+            id="ref" value={ref} onChange={(e) => setRef(e.target.value)}
+            className="w-full rounded-sm border border-line bg-cream px-4 py-2.5 text-[15px] text-ink focus:border-gold focus:outline-none"
+          />
+        </div>
+      )}
 
       <details className="mt-4 group">
         <summary className="cursor-pointer list-none text-[14px] text-ink-faint underline underline-offset-4 hover:text-ink">

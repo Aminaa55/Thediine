@@ -8,8 +8,9 @@ Replaces manual order-taking over Instagram DMs.
 **Customer site complete, admin under way.** Homepage, menu, product pages, the
 four-step event journey, the cart and both checkouts work against the real
 catalogue, with event food priced by guest count. Admin covers the day's work:
-orders, statuses, payment verification and the kitchen list. Menu management,
-settings and analytics are next.
+orders, statuses, payment verification, the kitchen list, and the menu itself --
+prices, availability, allergens, priced choices and per-dish event bands.
+Settings and analytics are next.
 
 | | |
 |---|---|
@@ -20,6 +21,7 @@ settings and analytics are next.
 | [`prisma/catalogue.ts`](prisma/catalogue.ts) | The menu as data — readable, reviewable |
 | [`src/app`](src/app) | Customer website — home, menu, product, cart, checkout |
 | [`preview/index.html`](preview/index.html) | Static clickable preview of the site, for review before deployment |
+| [`preview/admin.html`](preview/admin.html) | Static clickable preview of the admin dashboard, on sample orders and the real menu |
 
 ## The catalogue
 
@@ -233,6 +235,7 @@ down inside it.
 | **Orders** | Every order, filtered by type, status, payment status or date, and searchable by number, name or mobile. Filters live in the address, so a view is a link |
 | **Order** | Everything about one order, and everything that can be done to it |
 | **Kitchen** | What to cook on a day, totalled by dish and broken down by order |
+| **Menu** | Every dish: price, availability, selling unit, allergens, priced choices, event bands, and the courses they sit in |
 
 **Order status and payment status are separate panels, on purpose.** Moving an
 order along never touches the money, and confirming a payment never moves the
@@ -271,6 +274,46 @@ the two that undo something — refunding, taking a paid order back to unpaid �
 ask before they apply, as cancelling already did. There is a WhatsApp action for
 the customer, a delivery address you can copy or open in Maps, and anything the
 customer asked for is carried in a banner at the top rather than buried.
+
+### Menu management
+
+At `/admin/menu`. The list is grouped by course and leads with what still needs
+deciding: dishes **without a selling unit**, dishes whose **allergens have never
+been checked**, dishes carrying a **note from setup**, and any dish with **no
+price**. Those counts are the filters -- clicking one narrows the list -- and the
+filter lives in the address, so a view is a link.
+
+Taking a dish off the menu is one click from the list, and the customer site
+agrees immediately: the dish stays visible but cannot be ordered.
+
+**Editing a dish never rewrites history.** Prices, names and options are copied
+onto an order when it is placed, so changing the price of Lasagna today leaves
+every past order exactly as it was. This is tested, not assumed.
+
+Inside a dish:
+
+- **The dish** -- name, description, course, price (typed in pounds, held in
+  piastres), selling unit and whether it is confirmed, serving range, smallest
+  order and step, and a private note. A selling unit is never invented: it stays
+  empty, and the dish keeps its reminder, until the business says what one of
+  these is.
+- **Priced choices** -- a dish has either one price or a set of priced choices,
+  never both; adding the first choice clears the single price. **A choice that
+  has been ordered before cannot be removed** -- it can only be switched off --
+  because removing it would break the orders that contain it.
+- **What comes with it** -- the free choices a customer makes, each of which can
+  be switched off when the kitchen runs out of it.
+- **Allergens** -- tagged from the menu wording during setup and marked
+  unchecked until someone confirms them against a recipe.
+- **Event pricing** -- whether the dish scales by guest count at all, and either
+  the shared ladder or bands of its own (a multiplier or a flat price per band).
+  **Overlapping bands are refused**, so a guest count can only ever fall in one
+  band. Normal prices are untouched by any of this.
+- **On the site** -- on the menu, and on the homepage.
+
+**A dish is retired, never deleted.** It leaves the customer menu and stays on
+every order it was ever part of. Courses are renamed, reordered and hidden at
+`/admin/menu/categories`.
 
 ### Getting in
 
