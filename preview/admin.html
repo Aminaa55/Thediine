@@ -31,10 +31,11 @@ button{cursor:pointer}
 a{color:inherit; text-decoration:none}
 :focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:2px}
 .tnum{font-variant-numeric:tabular-nums}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
 
 /* ------------------------------------------------------------- the banner */
 .demo{background:var(--ink); color:var(--cream); font-size:13.5px; line-height:1.5}
-.demo .in{max-width:1100px; margin:0 auto; padding:10px 20px; display:flex; flex-wrap:wrap;
+.demo .in{max-width:1180px; margin:0 auto; padding:10px 20px; display:flex; flex-wrap:wrap;
   align-items:center; gap:8px 20px}
 .demo strong{color:#F0D9A6; font-weight:700}
 .demo button{margin-left:auto; background:none; border:1px solid rgba(251,241,228,.35);
@@ -43,49 +44,61 @@ a{color:inherit; text-decoration:none}
 
 /* -------------------------------------------------------------- the chrome */
 .top{border-bottom:1px solid var(--line); background:var(--cream-warm)}
-.top .in{max-width:1100px; margin:0 auto; padding:16px 20px; display:flex; flex-wrap:wrap;
+.top .in{max-width:1180px; margin:0 auto; padding:14px 20px; display:flex; flex-wrap:wrap;
   align-items:center; gap:10px 28px}
 .brand{font-family:Fraunces,Georgia,serif; font-size:19px; font-weight:600}
 .brand .tag{margin-left:8px; border:1px solid rgba(168,126,46,.45); border-radius:999px;
   padding:2px 9px; font-family:Karla,sans-serif; font-size:10px; font-weight:700;
   letter-spacing:.18em; text-transform:uppercase; color:var(--gold)}
-.top nav{display:flex; gap:24px}
-.top nav a{font-size:15px; color:var(--ink-soft)}
-.top nav a:hover,.top nav a.on{color:var(--ink)}
-.top nav a.on{font-weight:700}
+/* Built to hold Menu, Settings and Analytics as well: it scrolls rather than
+   wraps, and the current section is marked by a rule, not by position. */
+.top nav{display:flex; gap:4px; margin:0 -4px; overflow-x:auto; scrollbar-width:none}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{white-space:nowrap; padding:6px 12px; font-size:15px; color:var(--ink-soft);
+  border-bottom:2px solid transparent; transition:color .2s, border-color .2s}
+.top nav a:hover{color:var(--ink); border-bottom-color:var(--line)}
+.top nav a.on{color:var(--ink); font-weight:700; border-bottom-color:var(--gold)}
 .who{margin-left:auto; display:flex; align-items:center; gap:20px; font-size:14px;
   color:var(--ink-soft)}
 .who button{background:none; border:0; padding:0; font-size:14px; color:var(--ink-faint);
   text-decoration:underline; text-underline-offset:4px}
 .who button:hover{color:var(--ink)}
-main{max-width:1100px; margin:0 auto; padding:40px 20px 72px}
+main{max-width:1180px; margin:0 auto; padding:36px 20px 72px}
 
 /* ------------------------------------------------------------------- type */
 .eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold)}
 .lab{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
-h1{font-size:30px; margin-top:12px}
+h1{font-size:30px}
 .sub{margin-top:12px; font-size:15.5px; color:var(--ink-soft)}
+.page-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
+  gap:8px 32px}
+.page-head .when{font-size:15px; color:var(--ink-soft)}
 
 /* ------------------------------------------------------------------ cards */
 .card{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px}
 .card > header{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
   gap:16px; border-bottom:1px solid var(--line); padding:16px 24px}
 .card > header h2{font-size:18px}
+.card > header a{font-size:14px; color:var(--gold)}
+.card > header a:hover{text-decoration:underline}
 .card > .body{padding:20px 24px}
 .grid{display:grid; gap:24px}
-@media(min-width:900px){
+@media(min-width:1000px){
+  .two-up{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); align-items:start}
   .cols{grid-template-columns:minmax(0,1fr) 380px; align-items:start}
   .cols > .side{position:sticky; top:24px}
-  .k-cols{grid-template-columns:minmax(0,1fr) 320px; align-items:start}
+  .k-cols{grid-template-columns:minmax(0,1fr) 310px; align-items:start}
+  .k-cols > .side{position:sticky; top:24px}
 }
 
 /* ------------------------------------------------------------------ stats */
-.stats{display:grid; gap:16px; margin-top:32px}
+.stats{display:grid; gap:16px; margin-top:28px}
 @media(min-width:700px){.stats{grid-template-columns:repeat(3,1fr)}}
 .stat{display:block; border:1px solid var(--line); background:var(--cream-warm);
   border-radius:2px; padding:20px; transition:border-color .2s}
 .stat:hover{border-color:var(--gold)}
-.stat .n{margin-top:8px; font-family:Fraunces,Georgia,serif; font-size:28px; font-weight:600}
+.stat .n{margin-top:8px; font-family:Fraunces,Georgia,serif; font-size:28px; font-weight:600;
+  display:block}
 .stat.alert{border-color:rgba(166,57,28,.35); background:rgba(166,57,28,.06)}
 .stat.alert:hover{border-color:rgba(166,57,28,.6)}
 .stat.alert .n{color:var(--alert)}
@@ -110,6 +123,35 @@ h1{font-size:30px; margin-top:12px}
   color:var(--ink-faint)}
 .type.ev{border-color:rgba(168,126,46,.5); color:var(--gold)}
 
+/* ------------------------------------------------------------- today rows */
+.today-list li{border-bottom:1px solid var(--line-soft)}
+.today-list li:last-child{border-bottom:0}
+.today-list a{display:block; margin:0 -12px; padding:14px 12px; border-radius:2px;
+  transition:background-color .15s}
+.today-list a:hover{background:var(--cream)}
+.today-list .l1{display:flex; align-items:baseline; gap:12px}
+.today-list .num{font-family:Fraunces,Georgia,serif; font-size:16px; font-weight:600}
+.today-list .name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:15px}
+.today-list .amt{margin-left:auto; white-space:nowrap; font-family:Fraunces,Georgia,serif;
+  font-size:15.5px; font-weight:600}
+.today-list .l2{margin-top:6px; display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px}
+.today-list .meta{font-size:13.5px; color:var(--ink-faint)}
+.today-list .pills{margin-left:auto; display:flex; gap:8px}
+.ev-list li{border-bottom:1px solid var(--line-soft)}
+.ev-list li:last-child{border-bottom:0}
+.ev-list a{display:block; margin:0 -12px; padding:14px 12px; border-radius:2px;
+  transition:background-color .15s}
+.ev-list a:hover{background:var(--cream)}
+.ev-list .l1{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px}
+.ev-list .occ{font-family:Fraunces,Georgia,serif; font-size:16px; font-weight:600}
+.ev-list .guests{font-size:14px; color:var(--ink-soft)}
+.ev-list .l1 .end{margin-left:auto}
+.ev-list .l2{margin-top:4px; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px;
+  font-size:13.5px; color:var(--ink-faint)}
+.ev-list .l2 .away{color:var(--ink-soft)}
+.ev-list .l2 .num{margin-left:auto}
+.ev-list .l3{margin-top:2px; font-size:13.5px; color:var(--ink-soft)}
+
 /* ------------------------------------------------------------------- rows */
 .rows{border-top:1px solid var(--line-soft)}
 .rows li{border-bottom:1px solid var(--line-soft)}
@@ -124,32 +166,66 @@ a.row:hover{background:var(--cream)}
 .row .end{margin-left:auto; display:flex; flex-wrap:wrap; align-items:center; gap:12px}
 .row .amt{font-family:Fraunces,Georgia,serif; font-size:15.5px; font-weight:600}
 
-/* ------------------------------------------------------------------ chips */
-.chips{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:28px}
+/* ---------------------------------------------------------------- filters */
+.filters{display:grid; gap:14px; margin-top:26px}
+.chips{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
 .chip{border:1px solid var(--line); background:var(--cream-warm); border-radius:999px;
   padding:6px 16px; font-size:14px; color:var(--ink-soft); transition:border-color .2s}
 .chip:hover{border-color:rgba(59,35,16,.4)}
 .chip.on{border-color:var(--ink); background:var(--ink); color:var(--cream)}
+.chip.sm{padding:4px 14px; font-size:13.5px}
+.chip-div{width:1px; height:20px; background:var(--line); margin:0 4px}
 .search{margin-left:auto; display:flex; align-items:center; gap:10px}
 .search input{width:230px; border:1px solid var(--line); background:var(--cream-warm);
   border-radius:999px; padding:7px 16px; font-size:14.5px}
 .search input:focus{outline:none; border-color:var(--gold)}
+.search button{background:none; border:0; padding:0; font-size:14px; color:var(--gold)}
+.daterow{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px;
+  border:1px solid var(--line); background:var(--cream-warm); border-radius:2px; padding:12px 16px}
+.daterow input[type=date]{border:1px solid var(--line); background:var(--cream); border-radius:2px;
+  padding:5px 12px; font-size:14px}
+.daterow input[type=date]:focus{outline:none; border-color:var(--gold)}
+.daterow label{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-faint)}
+.clear{font-size:13.5px; color:var(--ink-faint); text-decoration:underline;
+  text-underline-offset:4px; background:none; border:0; padding:0}
+.clear:hover{color:var(--ink)}
+.count{font-size:13.5px; color:var(--ink-faint)}
+.count a{color:var(--gold)}
+.count a:hover{text-decoration:underline}
 
 /* ------------------------------------------------------------- order page */
 .crumb{font-size:14px; color:var(--ink-faint)}
 .crumb:hover{color:var(--ink)}
 .head{display:flex; flex-wrap:wrap; align-items:center; gap:10px 20px; margin-top:16px}
-.head h1{font-size:30px; margin:0}
+.head h1{font-size:30px}
 .head .total{margin-left:auto; font-family:Fraunces,Georgia,serif; font-size:24px; font-weight:600}
+/* The thing most easily missed, given the weight to match. */
+.notes-banner{margin-top:24px; border:1px solid var(--gold); background:rgba(239,226,190,.45);
+  border-radius:2px; padding:20px 24px}
+.notes-banner .lab2{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold)}
+.notes-banner p{margin-top:12px; font-size:16.5px; line-height:1.6}
+.notes-banner li{margin-top:6px; font-size:15.5px; line-height:1.6}
+.notes-banner li strong{font-weight:700}
 dl.pairs{display:grid; gap:16px 32px}
 @media(min-width:600px){dl.pairs{grid-template-columns:1fr 1fr} dl.pairs .full{grid-column:1/-1}}
 dl.pairs dt{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
 dl.pairs dd{margin:4px 0 0; font-size:15.5px}
+.wa{margin-top:20px; display:inline-flex; align-items:center; gap:10px;
+  border:1px solid var(--paid); background:rgba(46,107,69,.08); border-radius:999px;
+  padding:10px 20px; font-size:15px; color:var(--paid); transition:background-color .2s}
+.wa:hover{background:rgba(46,107,69,.16)}
+.addr{font-family:Fraunces,Georgia,serif; font-size:19px; line-height:1.35}
+.addr-more{margin-top:6px; font-size:15.5px; color:var(--ink-soft)}
+.addr-area{margin-top:8px; font-size:14px; color:var(--ink-faint)}
+.addr-acts{margin-top:16px; display:flex; flex-wrap:wrap; gap:12px}
+.addr-acts button,.addr-acts a{border:1px solid var(--line); background:var(--cream);
+  border-radius:999px; padding:4px 14px; font-size:13px; color:var(--ink-soft);
+  transition:border-color .2s, color .2s}
+.addr-acts button:hover,.addr-acts a:hover{border-color:var(--gold); color:var(--ink)}
 .items li{border-bottom:1px solid var(--line-soft); padding:14px 0}
 .items li:last-child{border-bottom:0}
 .items .top-line{display:flex; align-items:flex-start; justify-content:space-between; gap:20px}
 .items .q{color:var(--ink-faint)}
-.items .opt{margin-top:2px; font-size:13.5px; color:var(--ink-soft)}
 .items .instr{margin-top:6px; border-left:2px solid var(--gold); padding-left:12px;
   font-size:13.5px; font-style:italic; color:var(--ink-soft)}
 .sums{margin-top:20px; border-top:1px solid var(--line); padding-top:14px}
@@ -163,11 +239,18 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
   font-style:italic; color:var(--ink-soft)}
 .tag{display:inline-block; border:1px solid rgba(168,126,46,.45); background:var(--cream);
   border-radius:999px; padding:6px 14px; font-size:13.5px; margin:0 8px 8px 0}
-.hist li{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; font-size:14.5px;
-  padding:3px 0}
-.hist .t{color:var(--ink-faint)}
-.hist .by{color:var(--ink-soft)}
-.hist .n2{flex-basis:100%; font-size:13.5px; color:var(--ink-soft)}
+/* History as a line you can follow. */
+.timeline{position:relative; margin-left:8px; border-left:1px solid var(--line)}
+.timeline li{position:relative; padding:0 0 20px 24px}
+.timeline li:last-child{padding-bottom:0}
+.timeline .dot{position:absolute; left:-5.5px; top:6px; width:10px; height:10px; border-radius:999px;
+  border:1px solid var(--line); background:var(--cream-warm)}
+.timeline li.last .dot{border-color:var(--gold); background:var(--gold)}
+.timeline .what{font-family:Fraunces,Georgia,serif; font-size:16px; font-weight:600}
+.timeline .from{margin-left:8px; font-family:Karla,sans-serif; font-size:13.5px; font-weight:400;
+  color:var(--ink-faint)}
+.timeline .meta{margin-top:2px; font-size:13.5px; color:var(--ink-soft)}
+.timeline .n2{margin-top:4px; font-size:14px; color:var(--ink-soft)}
 
 /* ---------------------------------------------------------------- actions */
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0;
@@ -175,31 +258,43 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .btn-primary{background:var(--ink); color:var(--cream)}
 .btn-primary:hover{background:rgba(59,35,16,.9)}
 .btn-danger{background:var(--alert); color:var(--cream)}
+/* One obvious next step per panel. */
+.btn-main{width:100%; padding:15px 26px; font-size:16px}
+.btn-paid{width:100%; border:1px solid var(--paid); background:var(--paid); color:var(--cream);
+  border-radius:999px; padding:15px 26px; font-size:16px; transition:background-color .2s}
+.btn-paid:hover{background:#255739}
+.btn-second{width:100%; margin-top:12px; border:1px solid var(--line); background:var(--cream);
+  border-radius:999px; padding:10px 20px; font-size:14.5px; color:var(--ink-soft)}
+.btn-second:hover{border-color:rgba(59,35,16,.4)}
 .opts{display:grid; gap:10px; margin-top:16px}
-@media(min-width:600px){.opts.two{grid-template-columns:1fr 1fr}}
-.opt-btn{border:1px solid var(--line); background:var(--cream); border-radius:2px; padding:16px 20px;
+.opt-btn{border:1px solid var(--line); background:var(--cream); border-radius:2px; padding:14px 20px;
   text-align:left; transition:border-color .2s, background-color .2s}
 .opt-btn:hover{border-color:var(--gold)}
 .opt-btn.on{border-color:var(--gold); background:rgba(239,226,190,.4)}
 .opt-btn .t{display:block; font-family:Fraunces,Georgia,serif; font-size:16px; font-weight:600}
 .opt-btn .b{display:block; margin-top:4px; font-size:14px; color:var(--ink-soft)}
-.pay-btns{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px}
-.pay-btns button{border:1px solid var(--line); background:var(--cream-warm); border-radius:999px;
-  padding:8px 16px; font-size:14px; color:var(--ink-soft); transition:border-color .2s}
-.pay-btns button:hover:not(:disabled){border-color:rgba(59,35,16,.4)}
-.pay-btns button.now{border-color:var(--ink); background:var(--ink); color:var(--cream); opacity:.6;
-  cursor:not-allowed}
-.pay-btns button.go-paid{border-color:rgba(46,107,69,.5); background:rgba(46,107,69,.08);
-  color:var(--paid)}
-.pay-btns button.go-paid:hover{border-color:var(--paid)}
-.waiting{margin-bottom:16px; border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.06);
-  border-radius:2px; padding:12px 16px; font-size:14.5px; line-height:1.55; color:var(--alert)}
+.waiting{border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.06); border-radius:2px;
+  padding:12px 16px; font-size:14.5px; line-height:1.55; color:var(--alert); margin-bottom:16px}
 .fine{margin-top:12px; font-size:13.5px; line-height:1.6; color:var(--ink-faint)}
 .field{margin-top:16px}
 .field label{display:block; margin-bottom:8px}
 .field input{width:100%; border:1px solid var(--line); background:var(--cream); border-radius:2px;
   padding:10px 14px; font-size:15px}
 .field input:focus{outline:none; border-color:var(--gold)}
+/* Corrections live behind a disclosure so they never compete with the next step. */
+.more{margin-top:16px}
+.more > summary{list-style:none; cursor:pointer; font-size:14px; color:var(--ink-faint);
+  text-decoration:underline; text-underline-offset:4px}
+.more > summary::-webkit-details-marker{display:none}
+.more > summary:hover{color:var(--ink)}
+.pay-btns{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+.pay-btns button{border:1px solid var(--line); background:var(--cream-warm); border-radius:999px;
+  padding:8px 16px; font-size:14px; color:var(--ink-soft); transition:border-color .2s}
+.pay-btns button:hover{border-color:rgba(59,35,16,.4)}
+.pay-btns button.confirming{border-color:var(--alert); background:var(--alert); color:var(--cream)}
+.pay-btns .never{background:none; border:0; padding:0; color:var(--ink-soft);
+  text-decoration:underline; text-underline-offset:4px}
+.confirm-note{margin-top:8px; font-size:13.5px; color:var(--alert)}
 .danger-box{border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.05); border-radius:2px;
   padding:20px}
 .danger-box h3{font-size:17px}
@@ -210,20 +305,41 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .banner.bad{border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.06); color:var(--alert)}
 
 /* ---------------------------------------------------------------- kitchen */
-.cook li{border-bottom:1px solid var(--line); padding:20px 0}
-.cook li:first-child{padding-top:0}
-.cook li:last-child{border-bottom:0; padding-bottom:0}
-.cook .line{display:flex; align-items:baseline; justify-content:space-between; gap:20px}
-.cook h3{font-size:19px}
-.cook .var{margin-top:2px; font-size:14.5px; color:var(--ink-soft)}
-.cook .qty{font-family:Fraunces,Georgia,serif; font-size:26px; font-weight:600; white-space:nowrap}
-.cook .from{margin-top:12px; display:flex; flex-wrap:wrap; gap:4px 20px; font-size:13.5px;
-  color:var(--ink-faint)}
-.cook .from em{color:var(--ink-soft)}
-.daynav{margin-left:auto; display:flex; align-items:center; gap:18px; font-size:14.5px}
-.daynav a{color:var(--ink-soft)}
-.daynav a:hover{color:var(--ink)}
-.daynav a.today{color:var(--gold)}
+.daybar{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:22px}
+.daybar input[type=date]{border:1px solid var(--line); background:var(--cream-warm);
+  border-radius:999px; padding:7px 16px; font-size:14.5px}
+.daybar input[type=date]:focus{outline:none; border-color:var(--gold)}
+.daybar .print{border:1px solid rgba(168,126,46,.5); background:rgba(239,226,190,.4);
+  border-radius:999px; padding:7px 16px; font-size:14.5px; color:var(--ink)}
+.daybar .print:hover{border-color:var(--gold)}
+.cook > li{border-bottom:1px solid var(--line); padding:22px 0; break-inside:avoid}
+.cook > li:first-child{padding-top:0}
+.cook > li:last-child{border-bottom:0; padding-bottom:0}
+.cook .line{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
+  gap:8px 24px}
+.cook h3{font-size:21px}
+.cook .qty{font-family:Fraunces,Georgia,serif; font-size:28px; font-weight:600; white-space:nowrap}
+.cook .qty .of{margin-left:8px; font-family:Karla,sans-serif; font-size:12px; font-weight:400;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+.cook .split{margin-top:4px; font-size:13.5px; color:var(--ink-soft)}
+.cook .vars{margin-top:8px; display:flex; flex-wrap:wrap; gap:4px 20px}
+.cook .vars li{font-size:13.5px; color:var(--ink-soft)}
+.cook .vars strong{font-weight:700; color:var(--ink)}
+.cook .breakdown{margin-top:16px; display:grid; gap:8px}
+.cook .breakdown > li{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 16px;
+  border:1px solid var(--line-soft); background:var(--cream); border-radius:2px; padding:10px 16px}
+.cook .breakdown .onum{font-family:Fraunces,Georgia,serif; font-size:15px; font-weight:600;
+  text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:4px}
+.cook .breakdown .onum:hover{text-decoration-color:var(--gold)}
+.cook .breakdown .oq{font-family:Fraunces,Georgia,serif; font-size:15px; font-weight:600}
+.cook .breakdown .opt{font-size:13.5px; color:var(--ink-soft)}
+/* Loud on purpose: this is what gets missed while cooking. */
+.cook .instr{flex-basis:100%; margin-top:4px}
+.cook .instr > span{display:inline-flex; flex-wrap:wrap; align-items:baseline; gap:8px;
+  border:1px solid var(--gold); background:rgba(239,226,190,.6); border-radius:2px;
+  padding:6px 12px}
+.cook .instr .k{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold)}
+.cook .instr .v{font-size:14px; font-weight:500}
 .mini{display:grid; gap:12px}
 .mini a{display:block; border:1px solid var(--line); background:var(--cream); border-radius:2px;
   padding:12px 16px; transition:border-color .2s}
@@ -235,11 +351,12 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .mini .l3{font-size:13px; color:var(--ink-faint)}
 .mini .l4{margin-top:8px; border-left:2px solid var(--gold); padding-left:10px; font-size:13px;
   font-style:italic; color:var(--ink-soft)}
-.empty{padding:24px 0; font-size:15.5px; color:var(--ink-soft)}
+.empty{padding:8px 0; font-size:15.5px; line-height:1.6; color:var(--ink-soft)}
+.print-head{display:none}
 
 /* ------------------------------------------------------------------ login */
 .login{max-width:420px; margin:0 auto; padding:80px 20px}
-.login h1{font-size:30px}
+.login h1{font-size:30px; margin-top:12px}
 .login form{display:grid; gap:20px; margin-top:32px}
 .login label{display:block; margin-bottom:8px}
 .login input{width:100%; border:1px solid var(--line); background:var(--cream-warm);
@@ -253,9 +370,30 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
   border-radius:2px; padding:2px 7px}
 .err{border:1px solid rgba(166,57,28,.3); background:rgba(166,57,28,.07); border-radius:2px;
   padding:12px 16px; font-size:14.5px; color:var(--alert)}
+
+/* ------------------------------------------------------------ the prep sheet
+   Printing gives a sheet to work from, not a screenshot of a web page. */
+@media print{
+  @page{margin:14mm}
+  html,body{background:#fff !important; color:#000 !important}
+  .demo,.top,.no-print,.side{display:none !important}
+  main{max-width:none !important; padding:0 !important}
+  .print-head{display:block !important; margin-bottom:10mm}
+  .print-head h2{font-size:22px}
+  .print-head p{font-size:15px}
+  .k-cols{display:block !important}
+  .card{border:0 !important; background:transparent !important}
+  .card > header{border:0 !important; border-bottom:1pt solid #000 !important; padding:0 0 4mm !important}
+  .card > .body{padding:4mm 0 0 !important}
+  .cook > li{break-inside:avoid; page-break-inside:avoid}
+  .cook .breakdown > li{border:1pt solid #999 !important; background:transparent !important}
+  .cook .instr > span{border:1.5pt solid #000 !important; background:transparent !important}
+  .cook .instr .k{color:#000 !important}
+  a{text-decoration:none !important; color:#000 !important}
+}
 </style>
 
-<div class="demo"><div class="in">
+<div class="demo no-print"><div class="in">
   <span><strong>Preview.</strong> Sample orders, in your browser only. Nothing here is a real
   customer, and this is not connected to a live database.</span>
   <button type="button" id="reset">Reset the sample data</button>
@@ -313,6 +451,7 @@ var PAY_LABELS = {
   REFUNDED: "Refunded"
 };
 var OPEN = ["REQUESTED", "NEW", "CONFIRMED", "PREPARING", "READY", "OUT_FOR_DELIVERY"];
+var COOKING = ["CONFIRMED", "PREPARING", "READY", "OUT_FOR_DELIVERY"];
 
 /* Free window: 24 hours for a normal order, 48 for an event. Outside it a
    20% charge is CALCULATED AND RECORDED -- never collected. */
@@ -334,13 +473,12 @@ function freshData() {
   return {
     signedIn: false,
     admin: { name: "Radwa Serag", email: "radwaserag@hotmail.com" },
-    blockedDays: [],
     orders: [
       {
         number: "TD-260830-01", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
         method: "CASH", fulfilment: "DELIVERY", date: iso(0), time: "18:00",
         setup: "RETURNABLE", name: "Nour Hassan", mobile: "01012345678",
-        address: "12 Road 9, Maadi", details: "Blue door, second floor",
+        address: "12 Road 9, Maadi", details: "Blue door, second floor", area: "Maadi",
         notes: "Please ring the bell twice.", placed: "2 days ago",
         items: [
           { name: "Lasagna", qty: 2, unit: 100000, instr: "Extra crispy on top, please." },
@@ -348,12 +486,41 @@ function freshData() {
         ],
         history: [
           { t: "2 days ago", to: "NEW", note: "Placed on the website." },
-          { t: "Yesterday", to: "CONFIRMED", by: "Radwa Serag", note: "Confirmed on WhatsApp." }
+          { t: "Yesterday", from: "NEW", to: "CONFIRMED", by: "Radwa Serag",
+            note: "Confirmed on WhatsApp." }
         ]
       },
       {
-        number: "TD-260830-02", type: "NORMAL", status: "NEW", payment: "AWAITING_VERIFICATION",
-        method: "INSTAPAY", reference: "IPN-55231", fulfilment: "PICKUP", date: iso(3),
+        number: "TD-260830-02", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
+        method: "CASH", fulfilment: "PICKUP", date: iso(0), time: "12:00",
+        setup: "DISPOSABLE", name: "Hana Mostafa", mobile: "01277889900",
+        notes: "", placed: "3 days ago",
+        items: [
+          { name: "Lasagna", qty: 4, unit: 100000 },
+          { name: "Noodles", qty: 2, unit: 65000, variant: "With vegetables" }
+        ],
+        history: [
+          { t: "3 days ago", to: "NEW", note: "Placed on the website." },
+          { t: "2 days ago", from: "NEW", to: "CONFIRMED", by: "Radwa Serag" }
+        ]
+      },
+      {
+        number: "EV-260830-02", type: "EVENT", status: "CONFIRMED", payment: "UNPAID",
+        method: "CASH", fulfilment: "DELIVERY", date: iso(0), time: "19:00",
+        setup: "RETURNABLE", name: "Tarek Sami", mobile: "01066554433",
+        address: "9 Nile Street, Giza", occasion: "Birthday", guests: 25, multiplier: "2\u00d7",
+        extras: ["Serving staff"], extrasNotes: "", notes: "", placed: "a fortnight ago",
+        capacityMode: "KEEP_DAY_OPEN",
+        items: [{ name: "Lasagna", qty: 2, unit: 200000, instr: "No mushrooms." }],
+        history: [
+          { t: "a fortnight ago", to: "REQUESTED", note: "Requested from the website." },
+          { t: "12 days ago", from: "REQUESTED", to: "CONFIRMED", by: "Radwa Serag",
+            note: "Confirmed; the day stays open." }
+        ]
+      },
+      {
+        number: "TD-260830-03", type: "NORMAL", status: "NEW", payment: "AWAITING_VERIFICATION",
+        method: "INSTAPAY", reference: "IPN-55231", fulfilment: "PICKUP", date: iso(5),
         time: "13:30", setup: "DISPOSABLE", name: "Omar Fathy", mobile: "01198765432",
         notes: "", placed: "Today",
         items: [{ name: "Kunafa with Cream", qty: 3, unit: 110000 }],
@@ -369,8 +536,8 @@ function freshData() {
         extrasNotes: "White and gold, please.", notes: "Anniversary dinner.",
         placed: "Today",
         items: [
-          { name: "Lasagna", qty: 3, unit: 250000, wasUnit: 100000 },
-          { name: "Kunafa with Cream", qty: 2, unit: 275000, wasUnit: 110000 }
+          { name: "Lasagna", qty: 3, unit: 250000 },
+          { name: "Kunafa with Cream", qty: 2, unit: 275000 }
         ],
         history: [{ t: "Today", to: "REQUESTED", note: "Requested from the website." }]
       },
@@ -382,11 +549,11 @@ function freshData() {
         items: [{ name: "Stuffed Pigeons", qty: 4, unit: 125000 }],
         history: [
           { t: "4 days ago", to: "NEW", note: "Placed on the website." },
-          { t: "3 days ago", to: "CONFIRMED", by: "Radwa Serag" },
-          { t: "Yesterday", to: "PREPARING", by: "Radwa Serag" },
-          { t: "Yesterday", to: "READY", by: "Radwa Serag" },
-          { t: "Yesterday", to: "OUT_FOR_DELIVERY", by: "Radwa Serag" },
-          { t: "Yesterday", to: "DELIVERED", by: "Radwa Serag" }
+          { t: "3 days ago", from: "NEW", to: "CONFIRMED", by: "Radwa Serag" },
+          { t: "Yesterday", from: "CONFIRMED", to: "PREPARING", by: "Radwa Serag" },
+          { t: "Yesterday", from: "PREPARING", to: "READY", by: "Radwa Serag" },
+          { t: "Yesterday", from: "READY", to: "OUT_FOR_DELIVERY", by: "Radwa Serag" },
+          { t: "Yesterday", from: "OUT_FOR_DELIVERY", to: "DELIVERED", by: "Radwa Serag" }
         ]
       },
       {
@@ -398,7 +565,7 @@ function freshData() {
         items: [{ name: "Koshari", qty: 2, unit: 45000 }],
         history: [
           { t: "5 days ago", to: "NEW", note: "Placed on the website." },
-          { t: "3 days ago", to: "CANCELLED", by: "Radwa Serag",
+          { t: "3 days ago", from: "NEW", to: "CANCELLED", by: "Radwa Serag",
             note: "Cancelled inside the free window." }
         ]
       }
@@ -406,7 +573,7 @@ function freshData() {
   };
 }
 
-var KEY = "thediine.admin.preview.v1";
+var KEY = "thediine.admin.preview.v2";
 var S;
 try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
 if (!S || !S.orders) S = freshData();
@@ -422,25 +589,24 @@ function egp(piastres) {
 }
 function total(o) { return o.items.reduce(function (n, i) { return n + i.unit * i.qty; }, 0); }
 function longDate(d) {
-  var x = new Date(d + "T00:00:00");
-  return x.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short",
-    year: "numeric" });
+  return new Date(d + "T00:00:00").toLocaleDateString("en-GB",
+    { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 }
 function fullDate(d) {
-  var x = new Date(d + "T00:00:00");
-  return x.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long",
-    year: "numeric" });
+  return new Date(d + "T00:00:00").toLocaleDateString("en-GB",
+    { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+function daysAway(d) {
+  var a = new Date(d + "T00:00:00").getTime();
+  var b = new Date().setHours(0, 0, 0, 0);
+  return Math.round((a - b) / 86400000);
 }
 function byNumber(n) {
   for (var i = 0; i < S.orders.length; i++) if (S.orders[i].number === n) return S.orders[i];
   return null;
 }
-function statusPill(s) {
-  return '<span class="pill st-' + s + '">' + STATUS_LABELS[s] + "</span>";
-}
-function payPill(s) {
-  return '<span class="pill pay-' + s + '">' + PAY_LABELS[s] + "</span>";
-}
+function statusPill(s) { return '<span class="pill st-' + s + '">' + STATUS_LABELS[s] + "</span>"; }
+function payPill(s) { return '<span class="pill pay-' + s + '">' + PAY_LABELS[s] + "</span>"; }
 function typePill(t) {
   return '<span class="type' + (t === "EVENT" ? " ev" : "") + '">'
     + (t === "EVENT" ? "Event" : "Order") + "</span>";
@@ -449,34 +615,40 @@ function methodLabel(o) {
   if (o.method === "CASH") return o.fulfilment === "PICKUP" ? "Payment on pickup" : "Cash on delivery";
   return o.method === "INSTAPAY" ? "InstaPay" : "Card";
 }
+function itemLabel(i) {
+  return [i.variant].concat(i.options || []).filter(Boolean).join(" \u00b7 ");
+}
 
 /* --------------------------------------------------------------- routing */
 function hash() { return (location.hash.replace(/^#/, "").split("?")[0]) || "/"; }
-function query() {
-  var q = location.hash.split("?")[1] || "";
-  return new URLSearchParams(q);
-}
+function query() { return new URLSearchParams(location.hash.split("?")[1] || ""); }
 function go(h) { location.hash = h; }
+/* Filters live in the address, so a view can be kept or shared. */
+function withQuery(base, patch) {
+  var q = query();
+  Object.keys(patch).forEach(function (k) {
+    if (patch[k]) q.set(k, patch[k]); else q.delete(k);
+  });
+  var s = q.toString();
+  return "#" + base + (s ? "?" + s : "");
+}
 
 /* ----------------------------------------------------------------- login */
 function viewLogin(error) {
   return '<div class="login">'
-    + '<p class="eyebrow">The Diine</p>'
-    + '<h1 style="margin-top:12px">Admin</h1>'
+    + '<p class="eyebrow">The Diine</p><h1>Admin</h1>'
     + (error ? '<p class="err" style="margin-top:24px">' + esc(error) + "</p>" : "")
     + '<form id="login-form">'
     + '<div><label class="lab" for="email">Email</label>'
     + '<input type="email" id="email" autocomplete="username" required></div>'
     + '<div><label class="lab" for="password">Password</label>'
     + '<input type="password" id="password" autocomplete="current-password" required></div>'
-    + '<button type="submit" class="btn btn-primary">Sign in</button>'
-    + "</form>"
+    + '<button type="submit" class="btn btn-primary">Sign in</button></form>'
     + '<div class="creds"><p class="lab">Preview sign-in</p>'
     + '<p style="margin-top:12px">Email <code>radwaserag@hotmail.com</code><br>'
     + 'Password <code>thediine-preview</code></p>'
     + '<p style="margin-top:12px">These belong to this preview only. The real site uses a proper '
-    + "password and a signed session, and its credentials are never printed anywhere.</p></div>"
-    + "</div>";
+    + "password and a signed session, and its credentials are never printed anywhere.</p></div></div>";
 }
 
 /* ----------------------------------------------------------------- today */
@@ -493,90 +665,137 @@ function viewToday() {
   var a = attention();
   var today = iso(0);
   var due = S.orders.filter(function (o) { return o.date === today && o.status !== "CANCELLED"; });
+  var events = S.orders
+    .filter(function (o) {
+      return o.type === "EVENT" && OPEN.indexOf(o.status) >= 0 && daysAway(o.date) >= 0;
+    })
+    .sort(function (x, y) { return x.date < y.date ? -1 : 1; })
+    .slice(0, 5);
 
   return "<main>"
-    + '<p class="eyebrow">Today</p>'
-    + "<h1>Good to see you, " + esc(S.admin.name.split(" ")[0]) + "</h1>"
+    + '<div class="page-head"><div><p class="eyebrow">Today</p>'
+    + "<h1 style=\"margin-top:8px\">Good to see you, " + esc(S.admin.name.split(" ")[0]) + "</h1></div>"
+    + '<p class="when">' + new Date().toLocaleDateString("en-GB",
+        { weekday: "long", day: "numeric", month: "long" }) + "</p></div>"
     + '<div class="stats">'
-    + stat("Event requests waiting", a.events, "#/orders?status=REQUESTED")
+    + stat("Event requests waiting", a.events, withQuery("/orders", { status: "REQUESTED", type: "EVENT", payment: "", fulfilment: "", from: "", to: "", all: "", q: "" }))
     + stat("Payments to verify", a.payments, "#/orders?payment=AWAITING_VERIFICATION")
-    + stat("New orders to confirm", a.fresh, "#/orders?status=NEW")
+    + stat("New orders to confirm", a.fresh, "#/orders?type=NORMAL&status=NEW")
     + "</div>"
-    + '<div style="margin-top:40px"><section class="card">'
-    + "<header><h2>Going out today</h2>"
-    + '<a href="#/kitchen?date=' + today + '" style="color:var(--gold);font-size:14px">'
-    + "Kitchen list \u2192</a></header>"
+    + '<div class="grid two-up" style="margin-top:32px">'
+    + '<section class="card"><header><h2>Going out today</h2>'
+    + '<a href="#/kitchen?date=' + today + '">Kitchen list \u2192</a></header><div class="body">'
     + (due.length === 0
-        ? '<div class="body"><p class="empty" style="padding:0">Nothing is due today.</p></div>'
-        : '<ul class="rows">' + due.map(orderRow).join("") + "</ul>")
-    + "</section></div></main>";
+        ? '<p class="empty">Nothing is due today.</p>'
+        : '<ul class="today-list">' + due.map(todayRow).join("") + "</ul>")
+    + "</div></section>"
+    + '<section class="card"><header><h2>Upcoming events</h2>'
+    + '<a href="#/orders?type=EVENT&all=1">All events \u2192</a></header><div class="body">'
+    + (events.length === 0
+        ? '<p class="empty">No events coming up.</p>'
+        : '<ul class="ev-list">' + events.map(eventRow).join("") + "</ul>")
+    + "</div></section></div></main>";
 }
 function stat(label, n, href) {
   return '<a class="stat' + (n > 0 ? " alert" : "") + '" href="' + href + '">'
-    + '<span class="lab">' + label + "</span>"
-    + '<span class="n tnum" style="display:block">' + n + "</span></a>";
+    + '<span class="lab">' + label + '</span><span class="n tnum">' + n + "</span></a>";
 }
-function orderRow(o) {
-  return "<li>" + '<a class="row" href="#/order/' + o.number + '">'
-    + '<span class="num">' + o.number + "</span>"
-    + typePill(o.type)
-    + '<span><span class="name" style="display:block">' + esc(o.name) + "</span>"
-    + '<span class="mob">' + esc(o.mobile) + "</span></span>"
-    + '<span class="when">' + longDate(o.date) + (o.time ? " \u00b7 " + o.time : "")
-    + "<span>" + (o.type === "EVENT" ? o.guests + " guests"
-        : o.fulfilment === "PICKUP" ? "Pickup" : "Delivery") + "</span></span>"
-    + '<span class="end">' + statusPill(o.status) + payPill(o.payment)
+function todayRow(o) {
+  return '<li><a href="#/order/' + o.number + '">'
+    + '<span class="l1"><span class="num tnum">' + o.number + "</span>" + typePill(o.type)
+    + '<span class="name">' + esc(o.name) + "</span>"
     + '<span class="amt tnum">' + egp(total(o)) + "</span></span>"
+    + '<span class="l2"><span class="meta">' + o.time + " \u00b7 "
+    + (o.fulfilment === "PICKUP" ? "Pickup" : "Delivery") + "</span>"
+    + '<span class="pills">' + statusPill(o.status) + payPill(o.payment) + "</span></span>"
     + "</a></li>";
+}
+function eventRow(o) {
+  var away = daysAway(o.date);
+  return '<li><a href="#/order/' + o.number + '">'
+    + '<span class="l1"><span class="occ">' + esc(o.occasion) + "</span>"
+    + '<span class="guests">' + o.guests + " guests</span>"
+    + '<span class="end">' + statusPill(o.status) + "</span></span>"
+    + '<span class="l2"><span>' + longDate(o.date) + "</span>"
+    + '<span class="away">' + (away === 0 ? "today" : away === 1 ? "tomorrow" : "in " + away + " days")
+    + "</span>" + '<span class="num tnum">' + o.number + "</span></span>"
+    + '<span class="l3">' + esc(o.name) + "</span></a></li>";
 }
 
 /* ---------------------------------------------------------------- orders */
 function viewOrders() {
   var q = query();
   var fType = q.get("type"), fStatus = q.get("status"), fPay = q.get("payment");
+  var fFul = q.get("fulfilment"), from = q.get("from") || "", to = q.get("to") || "";
   var search = (q.get("q") || "").trim().toLowerCase();
   var all = q.get("all") === "1";
+  var open = !fType && !fStatus && !fPay && !fFul && !from && !to && !all;
 
   var list = S.orders.filter(function (o) {
     if (fType && o.type !== fType) return false;
     if (fStatus && o.status !== fStatus) return false;
     if (fPay && o.payment !== fPay) return false;
+    if (fFul && o.fulfilment !== fFul) return false;
+    if (from && o.date < from) return false;
+    if (to && o.date > to) return false;
     if (!all && !fStatus && !fPay && OPEN.indexOf(o.status) < 0) return false;
-    if (search) {
-      var hay = (o.number + " " + o.name + " " + o.mobile).toLowerCase();
-      if (hay.indexOf(search) < 0) return false;
+    if (search && (o.number + " " + o.name + " " + o.mobile).toLowerCase().indexOf(search) < 0) {
+      return false;
     }
     return true;
   }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
 
-  var open = !fType && !fStatus && !fPay && !all;
-  var chip = function (href, on, label) {
-    return '<a class="chip' + (on ? " on" : "") + '" href="' + href + '">' + label + "</a>";
+  var chip = function (href, on, label, small) {
+    return '<a class="chip' + (small ? " sm" : "") + (on ? " on" : "") + '" href="' + href + '">'
+      + label + "</a>";
   };
+  var clear = "#/orders";
 
   return "<main>"
     + '<p class="eyebrow">Orders</p>'
-    + "<h1>" + (open ? "Open orders" : "Orders") + "</h1>"
-    + '<div class="chips">'
-    + chip("#/orders", open, "Open")
-    + chip("#/orders?all=1", all, "All")
-    + chip("#/orders?type=NORMAL", fType === "NORMAL", "Normal")
-    + chip("#/orders?type=EVENT", fType === "EVENT", "Events")
-    + chip("#/orders?status=REQUESTED", fStatus === "REQUESTED", "Requests")
-    + chip("#/orders?payment=AWAITING_VERIFICATION", fPay === "AWAITING_VERIFICATION", "To verify")
-    + '<form class="search" id="search-form">'
-    + '<input type="search" id="q" value="' + esc(q.get("q") || "")
-    + '" placeholder="Number, name or mobile">'
-    + '<button type="submit" style="background:none;border:0;color:var(--gold);font-size:14px">'
-    + "Search</button></form>"
+    + '<h1 style="margin-top:12px">' + (open ? "Open orders" : "Orders") + "</h1>"
+    + '<div class="filters"><div class="chips">'
+    + chip(clear, open, "Open")
+    + chip(withQuery("/orders", { all: "1", status: "", payment: "" }), all, "All")
+    + '<span class="chip-div"></span>'
+    + chip(withQuery("/orders", { type: fType === "NORMAL" ? "" : "NORMAL" }), fType === "NORMAL", "Normal")
+    + chip(withQuery("/orders", { type: fType === "EVENT" ? "" : "EVENT" }), fType === "EVENT", "Events")
+    + chip(withQuery("/orders", { type: "EVENT", status: "REQUESTED" }), fStatus === "REQUESTED", "Requests")
+    + chip(withQuery("/orders", { payment: fPay === "AWAITING_VERIFICATION" ? "" : "AWAITING_VERIFICATION" }),
+        fPay === "AWAITING_VERIFICATION", "To verify")
+    + '<span class="chip-div"></span>'
+    + chip(withQuery("/orders", { fulfilment: fFul === "DELIVERY" ? "" : "DELIVERY" }), fFul === "DELIVERY", "Delivery")
+    + chip(withQuery("/orders", { fulfilment: fFul === "PICKUP" ? "" : "PICKUP" }), fFul === "PICKUP", "Pickup")
+    + '<form class="search" id="search-form"><input type="search" id="q" value="'
+    + esc(q.get("q") || "") + '" placeholder="Number, name or mobile">'
+    + '<button type="submit">Search</button></form></div>'
+    + '<div class="daterow"><span class="lab">Wanted for</span>'
+    + chip(withQuery("/orders", { from: iso(0), to: iso(0) }), from === iso(0) && to === iso(0), "Today", true)
+    + chip(withQuery("/orders", { from: iso(1), to: iso(1) }), from === iso(1) && to === iso(1), "Tomorrow", true)
+    + chip(withQuery("/orders", { from: iso(0), to: iso(7) }), from === iso(0) && to === iso(7), "Next 7 days", true)
+    + chip(withQuery("/orders", { from: iso(0), to: iso(30) }), from === iso(0) && to === iso(30), "Next 30 days", true)
+    + '<label>From <input type="date" id="from" value="' + esc(from) + '"></label>'
+    + '<label>to <input type="date" id="to" value="' + esc(to) + '"></label>'
+    + (from || to ? '<a class="clear" href="' + withQuery("/orders", { from: "", to: "" }) + '">Clear dates</a>' : "")
     + "</div>"
-    + '<div style="margin-top:24px"><section class="card">'
+    + '<p class="count">' + list.length + " shown"
+    + (open ? "" : ' \u00b7 <a href="' + clear + '">Clear every filter</a>') + "</p></div>"
+    + '<section class="card" style="margin-top:20px">'
     + (list.length === 0
-        ? '<div class="body"><p class="empty" style="padding:0;text-align:center">'
-          + "Nothing matches that.</p></div>"
+        ? '<div class="body"><p class="empty" style="text-align:center">Nothing matches that.</p></div>'
         : '<ul class="rows">' + list.map(orderRow).join("") + "</ul>")
-    + "</section></div>"
-    + '<p class="fine">' + list.length + " shown.</p></main>";
+    + "</section></main>";
+}
+function orderRow(o) {
+  return '<li><a class="row" href="#/order/' + o.number + '">'
+    + '<span class="num tnum">' + o.number + "</span>" + typePill(o.type)
+    + '<span><span class="name" style="display:block">' + esc(o.name) + "</span>"
+    + '<span class="mob tnum">' + esc(o.mobile) + "</span></span>"
+    + '<span class="when">' + longDate(o.date) + (o.time ? " \u00b7 " + o.time : "")
+    + "<span>" + (o.type === "EVENT" ? o.guests + " guests"
+        : o.fulfilment === "PICKUP" ? "Pickup" : "Delivery") + "</span></span>"
+    + '<span class="end">' + statusPill(o.status) + payPill(o.payment)
+    + '<span class="amt tnum">' + egp(total(o)) + "</span></span></a></li>";
 }
 
 /* ----------------------------------------------------------------- order */
@@ -586,8 +805,10 @@ function viewOrder(number) {
 
   var isEvent = o.type === "EVENT";
   var t = total(o);
-  var terms = cancellationTerms(Object.assign({}, o, { total: t }));
+  var terms = cancellationTerms({ type: o.type, date: o.date, total: t });
   var finished = o.status === "DELIVERED" || o.status === "CANCELLED";
+  var dishNotes = o.items.filter(function (i) { return i.instr; });
+  var fullAddress = o.details ? o.address + " \u2014 " + o.details : (o.address || "");
 
   var rows = "";
   if (isEvent) rows += pair("Occasion", esc(o.occasion));
@@ -596,10 +817,6 @@ function viewOrder(number) {
   if (isEvent) rows += pair("Guests", String(o.guests));
   else rows += pair("Fulfilment", o.fulfilment === "PICKUP" ? "Pickup" : "Delivery");
   rows += pair("Serving setup", o.setup === "RETURNABLE" ? "Returnable dishes" : "Disposable dishes");
-  if (o.address) {
-    rows += pair(isEvent ? "Venue" : "Address",
-      esc(o.details ? o.address + " \u2014 " + o.details : o.address), true);
-  }
   rows += pair("Placed", esc(o.placed));
 
   return "<main>"
@@ -609,44 +826,77 @@ function viewOrder(number) {
     + '<span class="total tnum">' + egp(t) + "</span></div>"
     + (o.status === "CANCELLED"
         ? '<div class="banner bad">Cancelled \u2014 ' + esc(o.cancelReason || "no reason given") + ". "
-          + (o.cancelWithin
-              ? "Inside the free window, so nothing was charged."
-              : "A late-cancellation charge of " + egp(o.cancelCharge)
-                + " was recorded (not collected).")
+          + (o.cancelWithin ? "Inside the free window, so nothing was charged."
+              : "A late-cancellation charge of " + egp(o.cancelCharge) + " was recorded (not collected).")
           + "</div>"
         : "")
-    + '<div class="grid cols" style="margin-top:32px">'
+    /* Everything the customer asked for, given real weight. */
+    + (o.notes || dishNotes.length
+        ? '<section class="notes-banner"><p class="lab2">Please note</p>'
+          + (o.notes ? "<p>" + esc(o.notes) + "</p>" : "")
+          + (dishNotes.length
+              ? "<ul>" + dishNotes.map(function (i) {
+                  return "<li><strong>" + esc(i.name) + "</strong> \u2014 " + esc(i.instr) + "</li>";
+                }).join("") + "</ul>"
+              : "")
+          + "</section>"
+        : "")
+    + '<div class="grid cols" style="margin-top:28px"><div class="grid">'
 
-    + "<div class=\"grid\">"
     + card(isEvent ? "The event" : "The order",
-        '<dl class="pairs">' + rows + "</dl>"
-        + (o.notes ? '<p class="note">\u201c' + esc(o.notes) + "\u201d</p>" : ""))
+        '<dl class="pairs">' + rows + "</dl>")
+
     + card("Customer",
         '<dl class="pairs">' + pair("Name", esc(o.name))
-        + pair("Mobile", '<a href="https://wa.me/2' + esc(o.mobile.replace(/^0/, ""))
-            + '" target="_blank" rel="noreferrer" style="color:var(--gold)">'
-            + esc(o.mobile) + " \u2192 WhatsApp</a>")
-        + (o.email ? pair("Email", esc(o.email)) : "") + "</dl>")
+        + pair("Mobile", '<span class="tnum">' + esc(o.mobile) + "</span>")
+        + (o.email ? pair("Email", esc(o.email)) : "") + "</dl>"
+        /* Every order is confirmed on WhatsApp, so it is an action. */
+        + '<a class="wa" href="https://wa.me/2' + esc(o.mobile.replace(/^0/, ""))
+        + '" target="_blank" rel="noreferrer">'
+        + '<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+        + '<path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 '
+        + '9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm0 '
+        + '18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 '
+        + '1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.23 8.23 0 0 1 8.24 8.24c0 4.54-3.7 8.23-8.24 '
+        + '8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15'
+        + '.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38'
+        + '.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-'
+        + '.76-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.05s.88 2.38 '
+        + '1 2.54c.13.17 1.73 2.64 4.19 3.7.58.26 1.04.41 1.4.52.59.19 1.13.16 1.55.1.47-.07 '
+        + '1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>'
+        + "Message " + esc(o.name.split(" ")[0]) + " on WhatsApp</a>")
+
+    + (o.address
+        ? card(isEvent ? "Venue" : "Delivery address",
+            '<p class="addr">' + esc(o.address) + "</p>"
+            + (o.details ? '<p class="addr-more">' + esc(o.details) + "</p>" : "")
+            + (o.area ? '<p class="addr-area">Area: ' + esc(o.area) + "</p>" : "")
+            + '<div class="addr-acts"><button type="button" id="copy-addr" data-addr="'
+            + esc(fullAddress) + '">Copy</button>'
+            + '<a href="https://www.google.com/maps/search/?api=1&query='
+            + encodeURIComponent(fullAddress) + '" target="_blank" rel="noreferrer">Open in Maps</a>'
+            + "</div>")
+        : "")
+
     + card(isEvent ? "Dishes for the event" : "Dishes",
         '<ul class="items">' + o.items.map(function (i) {
-          return "<li>"
-            + '<div class="top-line"><div style="min-width:0">'
+          return '<li><div class="top-line"><div style="min-width:0">'
             + '<p style="font-size:15.5px"><span class="q tnum">' + i.qty + "\u00d7</span> "
-            + '<span style="font-weight:500">' + esc(i.name) + "</span></p>"
+            + '<span style="font-weight:500">' + esc(i.name) + "</span>"
+            + (itemLabel(i) ? ' <span style="color:var(--ink-soft)">\u00b7 ' + esc(itemLabel(i)) + "</span>" : "")
+            + "</p>"
             + (i.instr ? '<p class="instr">' + esc(i.instr) + "</p>" : "")
-            + "</div>"
-            + '<p class="tnum" style="white-space:nowrap;font-size:15px">'
+            + '</div><p class="tnum" style="white-space:nowrap;font-size:15px">'
             + egp(i.unit * i.qty) + "</p></div></li>";
         }).join("") + "</ul>"
-        + '<dl class="sums">'
-        + '<div><dt>' + (isEvent ? "Food subtotal" : "Subtotal") + "</dt><dd class=\"tnum\">"
-        + egp(t) + "</dd></div>"
+        + '<dl class="sums"><div><dt>' + (isEvent ? "Food subtotal" : "Subtotal")
+        + '</dt><dd class="tnum">' + egp(t) + "</dd></div>"
         + (!isEvent && o.fulfilment === "DELIVERY"
             ? "<div><dt>Delivery</dt><dd>Not set \u2014 confirm with the customer</dd></div>" : "")
         + '<div class="grand"><dt>Total</dt><dd class="tnum">' + egp(t) + "</dd></div></dl>"
-        + (isEvent
-            ? '<p class="fine">Priced for ' + o.guests + " guests at " + o.multiplier
-              + " the regular menu price.</p>" : ""))
+        + (isEvent ? '<p class="fine">Priced for ' + o.guests + " guests at " + o.multiplier
+            + " the regular menu price.</p>" : ""))
+
     + (isEvent
         ? card("Anything else for the day?",
             (o.extras && o.extras.length
@@ -655,75 +905,94 @@ function viewOrder(number) {
             + '<p class="fine">Quote each of these separately. None of it is in the total above.</p>'
             + (o.extrasNotes ? '<p class="note">\u201c' + esc(o.extrasNotes) + "\u201d</p>" : ""))
         : "")
+
     + card("History",
-        '<ol class="hist">' + o.history.map(function (h) {
-          return "<li><span class=\"t\">" + esc(h.t) + "</span>"
-            + "<span>" + STATUS_LABELS[h.to] + "</span>"
-            + (h.by ? '<span class="by">by ' + esc(h.by) + "</span>" : "")
-            + (h.note ? '<span class="n2">' + esc(h.note) + "</span>" : "")
-            + "</li>";
+        '<ol class="timeline">' + o.history.map(function (h, i) {
+          var last = i === o.history.length - 1;
+          return '<li class="' + (last ? "last" : "") + '"><span class="dot"></span>'
+            + '<p class="what">' + STATUS_LABELS[h.to]
+            + (h.from ? '<span class="from">from ' + STATUS_LABELS[h.from].toLowerCase() + "</span>" : "")
+            + "</p>"
+            + '<p class="meta">' + esc(h.t) + " \u00b7 "
+            + (h.by ? esc(h.by) : "the customer, on the website") + "</p>"
+            + (h.note ? '<p class="n2">' + esc(h.note) + "</p>" : "") + "</li>";
         }).join("") + "</ol>")
     + "</div>"
 
+    /* ---- the actions: one obvious next step, everything else quieter ---- */
     + '<div class="grid side">'
     + (o.status === "REQUESTED"
         ? card("This is a request",
-            '<p style="font-size:15.5px;color:var(--ink-soft)">Accepting this turns the request '
-            + "into a confirmed booking. Decide what it does to the day.</p>"
-            + '<div class="opts two">'
+            '<p style="font-size:15px;color:var(--ink-soft)">Accepting this turns the request into '
+            + "a confirmed booking. Decide what it does to the day.</p>"
+            + '<div class="opts">'
             + '<button type="button" class="opt-btn on" data-mode="BLOCK_DAY">'
             + '<span class="t">Block the day</span>'
             + '<span class="b">No regular orders can be taken for that date.</span></button>'
             + '<button type="button" class="opt-btn" data-mode="KEEP_DAY_OPEN">'
             + '<span class="t">Keep the day open</span>'
-            + '<span class="b">Regular orders can still be taken alongside it.</span></button>'
-            + "</div>"
-            + '<button type="button" class="btn btn-primary" style="margin-top:20px" '
+            + '<span class="b">Regular orders can still be taken alongside it.</span></button></div>'
+            + '<button type="button" class="btn btn-primary btn-main" style="margin-top:20px" '
             + 'id="confirm-event">Confirm this event</button>')
         : card("Order status",
             '<p style="font-size:14.5px;color:var(--ink-soft)">Now: <strong>'
             + STATUS_LABELS[o.status] + "</strong></p>"
             + (nextStatuses(o.status, o.fulfilment).length === 0
                 ? '<p class="fine">This order has reached the end of its journey.</p>'
-                : '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px">'
-                  + nextStatuses(o.status, o.fulfilment).map(function (s) {
-                      return '<button type="button" class="btn btn-primary" data-to="' + s + '">'
+                : '<div style="margin-top:16px">'
+                  + nextStatuses(o.status, o.fulfilment).map(function (s, i) {
+                      return '<button type="button" data-to="' + s + '" class="'
+                        + (i === 0 ? "btn btn-primary btn-main" : "btn-second") + '">'
                         + STATUS_ACTIONS[s] + "</button>";
                     }).join("") + "</div>")))
+
     + card("Payment",
         '<p style="font-size:14.5px;color:var(--ink-soft)">' + methodLabel(o) + "</p>"
         + (o.payment === "AWAITING_VERIFICATION"
-            ? '<p class="waiting" style="margin-top:16px">Waiting on you: check that ' + egp(t)
-              + " arrived before marking this paid.</p>"
+            ? '<div style="margin-top:16px"><p class="waiting">Waiting on you: check that <strong>'
+              + egp(t) + "</strong> arrived before marking this paid.</p>"
+              + '<button type="button" class="btn-paid" data-pay="PAID">'
+              + "I have checked it \u2014 mark paid</button></div>"
             : "")
         + '<div class="field"><label class="lab" for="ref">Transfer reference '
         + '<span style="text-transform:none;letter-spacing:normal">optional</span></label>'
         + '<input type="text" id="ref" value="' + esc(o.reference || "") + '"></div>'
+        + '<details class="more"' + (PAY_CONFIRM ? " open" : "") + '>'
+        + "<summary>Change the payment status by hand</summary>"
         + '<div class="pay-btns">'
-        + ["UNPAID", "AWAITING_VERIFICATION", "PAID", "REFUNDED"].map(function (s) {
-            var now = s === o.payment;
-            return '<button type="button" data-pay="' + s + '"' + (now ? " disabled" : "")
-              + ' class="' + (now ? "now" : s === "PAID" ? "go-paid" : "") + '">'
-              + (now ? PAY_LABELS[s] + " \u2014 now" : "Mark " + PAY_LABELS[s].toLowerCase())
-              + "</button>";
-          }).join("") + "</div>"
+        + ["UNPAID", "AWAITING_VERIFICATION", "PAID", "REFUNDED"].filter(function (s) {
+            return s !== o.payment && !(o.payment === "AWAITING_VERIFICATION" && s === "PAID");
+          }).map(function (s) {
+            var confirming = PAY_CONFIRM === s;
+            return '<button type="button" data-pay="' + s + '"'
+              + (confirming ? ' class="confirming"' : "") + ">"
+              + (confirming ? "Yes \u2014 mark " + PAY_LABELS[s].toLowerCase()
+                            : "Mark " + PAY_LABELS[s].toLowerCase()) + "</button>";
+          }).join("")
+        + (PAY_CONFIRM ? '<button type="button" class="never" id="pay-never">Never mind</button>' : "")
+        + "</div>"
+        + (PAY_CONFIRM
+            ? '<p class="confirm-note">' + (PAY_CONFIRM === "REFUNDED"
+                ? "This records the payment as refunded. Click again to confirm."
+                : "This takes a paid order back to unpaid. Click again to confirm.") + "</p>"
+            : "")
+        + "</details>"
         + '<p class="fine">This changes the payment only. The order stays exactly where it is.</p>')
+
     + (finished ? "" :
-        '<div><div id="cancel-slot">'
-        + '<button type="button" class="link-danger" id="open-cancel">Cancel this order</button>'
-        + "</div></div>")
+        '<div id="cancel-slot">'
+        + '<button type="button" class="link-danger" id="open-cancel">Cancel this order</button></div>')
     + "</div></div></main>";
 }
 function card(title, body) {
-  return '<section class="card"><header><h2>' + title + '</h2></header>'
+  return '<section class="card"><header><h2>' + title + "</h2></header>"
     + '<div class="body">' + body + "</div></section>";
 }
 function pair(label, value, full) {
   return "<div" + (full ? ' class="full"' : "") + "><dt>" + label + "</dt><dd>" + value + "</dd></div>";
 }
 function cancelBox(o) {
-  var t = total(o);
-  var terms = cancellationTerms(Object.assign({}, o, { total: t }));
+  var terms = cancellationTerms({ type: o.type, date: o.date, total: total(o) });
   return '<div class="danger-box"><h3>Cancel this order</h3>'
     + '<p style="margin-top:8px;font-size:14.5px;color:var(--ink-soft)">'
     + (terms.within
@@ -731,36 +1000,53 @@ function cancelBox(o) {
         : "This is outside the free window. A " + terms.percent + "% charge of <strong>"
           + egp(terms.charge) + "</strong> will be <strong>recorded</strong> \u2014 this system "
           + "does not collect it.")
-    + "</p>"
-    + '<div class="field"><label class="lab" for="reason">Reason</label>'
+    + '</p><div class="field"><label class="lab" for="reason">Reason</label>'
     + '<input type="text" id="reason" placeholder="Why is it being cancelled?"></div>'
-    + '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;align-items:center">'
+    + '<div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;align-items:center">'
     + '<button type="button" class="btn btn-danger" id="do-cancel">Yes, cancel it</button>'
     + '<button type="button" class="link-danger" id="keep">Keep it</button></div></div>';
 }
 
 /* --------------------------------------------------------------- kitchen */
+/* Grouped by DISH, not by dish-and-variation: the kitchen's first question is
+   how much of a thing to make. The variations and the orders are underneath. */
 function prepFor(date) {
-  var lines = {};
+  var dishes = {};
   S.orders.forEach(function (o) {
-    if (o.date !== date) return;
-    if (["CONFIRMED", "PREPARING", "READY", "OUT_FOR_DELIVERY"].indexOf(o.status) < 0) return;
+    if (o.date !== date || COOKING.indexOf(o.status) < 0) return;
     o.items.forEach(function (i) {
-      var key = i.name;
-      if (!lines[key]) lines[key] = { name: i.name, qty: 0, from: [] };
-      lines[key].qty += i.qty;
-      lines[key].from.push({ number: o.number, qty: i.qty, instr: i.instr });
+      var d = dishes[i.name] || (dishes[i.name] = {
+        name: i.name, total: 0, normal: 0, event: 0, variations: [], lines: []
+      });
+      d.total += i.qty;
+      if (o.type === "EVENT") d.event += i.qty; else d.normal += i.qty;
+      d.lines.push({ number: o.number, type: o.type, qty: i.qty,
+        label: itemLabel(i), instr: i.instr });
+      var label = itemLabel(i);
+      if (label) {
+        var found = null;
+        d.variations.forEach(function (v) { if (v.label === label) found = v; });
+        if (found) found.qty += i.qty; else d.variations.push({ label: label, qty: i.qty });
+      }
     });
   });
-  return Object.keys(lines).sort().map(function (k) { return lines[k]; });
+  return Object.keys(dishes).sort().map(function (k) {
+    var d = dishes[k];
+    /* One form only is not a variation worth listing separately. */
+    if (d.variations.length < 2) d.variations = [];
+    return d;
+  });
 }
 function viewKitchen() {
   var date = query().get("date") || iso(0);
-  var lines = prepFor(date);
+  var dishes = prepFor(date);
   var orders = S.orders.filter(function (o) {
     return o.date === date && o.status !== "CANCELLED";
   });
-  var count = lines.reduce(function (n, l) { return n + l.qty; }, 0);
+  var cooking = orders.filter(function (o) { return COOKING.indexOf(o.status) >= 0; });
+  var mixed = cooking.some(function (o) { return o.type === "EVENT"; })
+           && cooking.some(function (o) { return o.type === "NORMAL"; });
+  var count = dishes.reduce(function (n, d) { return n + d.total; }, 0);
   var shift = function (days) {
     var d = new Date(date + "T00:00:00");
     d.setDate(d.getDate() + days);
@@ -768,43 +1054,68 @@ function viewKitchen() {
   };
 
   return "<main>"
-    + '<p class="eyebrow">Kitchen</p>'
-    + '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:12px">'
-    + "<h1 style=\"margin:0\">" + fullDate(date) + "</h1>"
-    + '<span class="daynav"><a href="' + shift(-1) + '">\u2190 Day before</a>'
-    + '<a class="today" href="#/kitchen?date=' + iso(0) + '">Today</a>'
-    + '<a href="' + shift(1) + '">Day after \u2192</a></span></div>'
-    + '<p class="sub">' + (lines.length === 0
+    + '<div class="print-head"><h2>The Diine \u2014 prep sheet</h2><p>' + fullDate(date) + "</p></div>"
+    + '<div class="no-print"><p class="eyebrow">Kitchen</p>'
+    + '<h1 style="margin-top:12px">' + fullDate(date) + "</h1>"
+    + '<p class="sub">' + (dishes.length === 0
         ? "Nothing confirmed to cook."
-        : lines.length + (lines.length === 1 ? " dish, " : " dishes, ") + count
-          + " in total, across " + orders.length + (orders.length === 1 ? " order." : " orders."))
+        : dishes.length + (dishes.length === 1 ? " dish, " : " dishes, ") + count
+          + " in total, across " + cooking.length + (cooking.length === 1 ? " order." : " orders."))
     + "</p>"
-    + '<div class="grid k-cols" style="margin-top:32px">'
-    + card("To cook", lines.length === 0
-        ? '<p class="empty" style="padding:0">Nothing to cook for this day. Only confirmed orders '
-          + "appear here \u2014 an event request that has not been accepted is not counted.</p>"
-        : '<ul class="cook">' + lines.map(function (l) {
-            return "<li><div class=\"line\"><div><h3>" + esc(l.name) + "</h3></div>"
-              + '<p class="qty tnum">\u00d7' + l.qty + "</p></div>"
-              + '<ul class="from">' + l.from.map(function (f) {
-                  return "<li><span class=\"tnum\">" + f.number + "</span> "
-                    + '<span class="tnum">\u00d7' + f.qty + "</span>"
-                    + (f.instr ? " <em>\u201c" + esc(f.instr) + "\u201d</em>" : "") + "</li>";
-                }).join("") + "</ul></li>";
-          }).join("") + "</ul>")
-    + card("Orders that day", orders.length === 0
+    + '<div class="daybar"><a class="chip" href="' + shift(-1) + '">\u2190 Day before</a>'
+    + '<a class="chip' + (date === iso(0) ? " on" : "") + '" href="#/kitchen?date=' + iso(0) + '">Today</a>'
+    + '<a class="chip" href="' + shift(1) + '">Day after \u2192</a>'
+    + '<label class="sr" for="kdate">Jump to a date</label>'
+    + '<input type="date" id="kdate" value="' + date + '">'
+    + '<button type="button" class="print" id="print">Print the prep sheet</button></div></div>'
+
+    + '<div class="grid k-cols" style="margin-top:28px">'
+    + '<section class="card"><header><h2>To cook</h2></header><div class="body">'
+    + (dishes.length === 0
+        ? '<p class="empty">Nothing to cook for this day. Only confirmed orders appear here \u2014 '
+          + "an event request that has not been accepted is not counted.</p>"
+        : '<ul class="cook">' + dishes.map(function (d) { return dishRow(d, mixed); }).join("") + "</ul>")
+    + "</div></section>"
+
+    + '<div class="side"><section class="card"><header><h2>Orders that day</h2></header>'
+    + '<div class="body">'
+    + (orders.length === 0
         ? '<p style="font-size:15px;color:var(--ink-soft)">None.</p>'
         : '<div class="mini">' + orders.map(function (o) {
             return '<a href="#/order/' + o.number + '">'
-              + '<span class="l1"><span class="num">' + o.number + "</span>" + typePill(o.type)
+              + '<span class="l1"><span class="num tnum">' + o.number + "</span>" + typePill(o.type)
               + '<span class="end">' + statusPill(o.status) + "</span></span>"
               + '<span class="l2">' + esc(o.name) + " \u00b7 " + o.time + "</span>"
               + '<span class="l3">' + (o.type === "EVENT" ? o.guests + " guests"
                   : o.fulfilment === "PICKUP" ? "Pickup" : "Delivery") + "</span>"
-              + (o.notes ? '<span class="l4">' + esc(o.notes) + "</span>" : "")
-              + "</a>";
+              + (o.notes ? '<span class="l4">' + esc(o.notes) + "</span>" : "") + "</a>";
           }).join("") + "</div>")
-    + "</div></main>";
+    + "</div></section></div></div></main>";
+}
+function dishRow(d, mixed) {
+  return "<li>"
+    + '<div class="line"><h3>' + esc(d.name) + "</h3>"
+    + '<p class="qty tnum">\u00d7' + d.total + '<span class="of">total</span></p></div>'
+    + (mixed && d.normal > 0 && d.event > 0
+        ? '<p class="split"><span class="tnum">' + d.normal + "</span> for regular orders, "
+          + '<span class="tnum">' + d.event + "</span> for events</p>"
+        : "")
+    + (d.variations.length
+        ? '<ul class="vars">' + d.variations.map(function (v) {
+            return "<li><strong class=\"tnum\">\u00d7" + v.qty + "</strong> " + esc(v.label) + "</li>";
+          }).join("") + "</ul>"
+        : "")
+    + '<ul class="breakdown">' + d.lines.map(function (l) {
+        return '<li><a class="onum tnum" href="#/order/' + l.number + '">' + l.number + "</a>"
+          + '<span class="oq tnum">\u00d7' + l.qty + "</span>"
+          + typePill(l.type)
+          + (l.label ? '<span class="opt">' + esc(l.label) + "</span>" : "")
+          + (l.instr
+              ? '<span class="instr"><span><span class="k">Note</span>'
+                + '<span class="v">' + esc(l.instr) + "</span></span></span>"
+              : "")
+          + "</li>";
+      }).join("") + "</ul></li>";
 }
 
 /* --------------------------------------------------------------- chrome */
@@ -813,7 +1124,7 @@ function chrome(inner) {
   var link = function (href, label, match) {
     return '<a href="' + href + '"' + (h === match ? ' class="on"' : "") + ">" + label + "</a>";
   };
-  return '<header class="top"><div class="in">'
+  return '<header class="top no-print"><div class="in">'
     + '<a class="brand" href="#/">The Diine<span class="tag">Admin</span></a>'
     + "<nav>" + link("#/", "Today", "/") + link("#/orders", "Orders", "/orders")
     + link("#/kitchen", "Kitchen", "/kitchen") + "</nav>"
@@ -824,6 +1135,7 @@ function chrome(inner) {
 
 /* --------------------------------------------------------------- render */
 var LOGIN_ERROR = null;
+var PAY_CONFIRM = null;   /* a payment change that has asked but not been confirmed */
 function render() {
   var h = hash();
   if (!S.signedIn) {
@@ -839,7 +1151,7 @@ function render() {
   $("#app").innerHTML = chrome(body);
   window.scrollTo(0, 0);
 }
-window.addEventListener("hashchange", render);
+window.addEventListener("hashchange", function () { PAY_CONFIRM = null; render(); });
 
 /* ---------------------------------------------------------------- events */
 document.addEventListener("submit", function (e) {
@@ -847,8 +1159,7 @@ document.addEventListener("submit", function (e) {
     e.preventDefault();
     var email = $("#email").value.trim().toLowerCase();
     var pw = $("#password").value;
-    /* The same message either way, exactly as the real sign-in behaves: the
-       form cannot be used to find out which accounts exist. */
+    /* The same message either way, exactly as the real sign-in behaves. */
     if (email === "radwaserag@hotmail.com" && pw === "thediine-preview") {
       S.signedIn = true; save(); go("#/"); render();
     } else {
@@ -859,9 +1170,14 @@ document.addEventListener("submit", function (e) {
   }
   if (e.target.id === "search-form") {
     e.preventDefault();
-    var q = $("#q").value.trim();
-    go("#/orders" + (q ? "?q=" + encodeURIComponent(q) : ""));
+    go(withQuery("/orders", { q: $("#q").value.trim() }));
   }
+});
+
+document.addEventListener("change", function (e) {
+  if (e.target.id === "kdate" && e.target.value) go("#/kitchen?date=" + e.target.value);
+  if (e.target.id === "from") go(withQuery("/orders", { from: e.target.value }));
+  if (e.target.id === "to") go(withQuery("/orders", { to: e.target.value }));
 });
 
 document.addEventListener("click", function (e) {
@@ -869,18 +1185,27 @@ document.addEventListener("click", function (e) {
   if (!t) return;
 
   if (t.id === "reset") {
-    /* Puts the sample orders back without signing you out -- resetting the
-       data is not the same act as leaving. */
+    /* Puts the sample orders back without signing you out. */
     var wasIn = S.signedIn;
-    S = freshData();
-    S.signedIn = wasIn;
+    S = freshData(); S.signedIn = wasIn;
     save(); go("#/"); render(); return;
   }
   if (t.id === "signout") { S.signedIn = false; save(); render(); return; }
+  if (t.id === "print") { window.print(); return; }
+
+  if (t.id === "copy-addr") {
+    var addr = t.dataset.addr;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(addr).then(function () {
+        t.textContent = "Copied";
+        setTimeout(function () { t.textContent = "Copy"; }, 2000);
+      });
+    }
+    return;
+  }
 
   var order = byNumber(decodeURIComponent(hash().slice(7)));
 
-  /* choosing what confirming an event does to the day */
   if (t.dataset.mode) {
     document.querySelectorAll("[data-mode]").forEach(function (b) {
       b.classList.toggle("on", b === t);
@@ -890,51 +1215,48 @@ document.addEventListener("click", function (e) {
   if (t.id === "confirm-event" && order) {
     var chosen = document.querySelector("[data-mode].on");
     var mode = chosen ? chosen.dataset.mode : "BLOCK_DAY";
+    order.history.push({ t: "Just now", from: "REQUESTED", to: "CONFIRMED", by: S.admin.name,
+      note: mode === "BLOCK_DAY" ? "Confirmed; the day is blocked." : "Confirmed; the day stays open." });
     order.status = "CONFIRMED";
     order.capacityMode = mode;
-    order.history.push({ t: "Just now", to: "CONFIRMED", by: S.admin.name,
-      note: mode === "BLOCK_DAY" ? "Confirmed; the day is blocked." : "Confirmed; the day stays open." });
-    if (mode === "BLOCK_DAY" && S.blockedDays.indexOf(order.date) < 0) S.blockedDays.push(order.date);
     save(); render(); return;
   }
 
-  /* moving the order along */
   if (t.dataset.to && order) {
-    order.history.push({ t: "Just now", to: t.dataset.to, by: S.admin.name });
+    order.history.push({ t: "Just now", from: order.status, to: t.dataset.to, by: S.admin.name });
     order.status = t.dataset.to;
     save(); render(); return;
   }
 
-  /* the payment, on its own */
+  /* The payment, on its own. Undoing something asks first. */
   if (t.dataset.pay && order) {
-    order.payment = t.dataset.pay;
+    var to = t.dataset.pay;
+    var undoing = to === "REFUNDED" || (to === "UNPAID" && order.payment === "PAID");
+    if (undoing && PAY_CONFIRM !== to) { PAY_CONFIRM = to; render(); return; }
+    PAY_CONFIRM = null;
+    order.payment = to;
     var ref = $("#ref");
     if (ref && ref.value.trim()) order.reference = ref.value.trim();
     save(); render(); return;
   }
+  if (t.id === "pay-never") { PAY_CONFIRM = null; render(); return; }
 
-  /* cancelling */
-  if (t.id === "open-cancel" && order) {
-    $("#cancel-slot").innerHTML = cancelBox(order);
-    return;
-  }
-  if (t.id === "keep" && order) {
+  if (t.id === "open-cancel" && order) { $("#cancel-slot").innerHTML = cancelBox(order); return; }
+  if (t.id === "keep") {
     $("#cancel-slot").innerHTML =
       '<button type="button" class="link-danger" id="open-cancel">Cancel this order</button>';
     return;
   }
   if (t.id === "do-cancel" && order) {
-    var terms = cancellationTerms(Object.assign({}, order, { total: total(order) }));
+    var terms = cancellationTerms({ type: order.type, date: order.date, total: total(order) });
     var reason = $("#reason") ? $("#reason").value.trim() : "";
+    order.history.push({ t: "Just now", from: order.status, to: "CANCELLED", by: S.admin.name,
+      note: terms.within ? "Cancelled inside the free window."
+                         : "Cancelled late \u2014 " + terms.percent + "% recorded." });
     order.status = "CANCELLED";
     order.cancelReason = reason;
     order.cancelWithin = terms.within;
     order.cancelCharge = terms.charge;
-    order.history.push({ t: "Just now", to: "CANCELLED", by: S.admin.name,
-      note: terms.within ? "Cancelled inside the free window."
-                         : "Cancelled late \u2014 " + terms.percent + "% recorded." });
-    var i = S.blockedDays.indexOf(order.date);
-    if (i >= 0) S.blockedDays.splice(i, 1);
     save(); render(); return;
   }
 });

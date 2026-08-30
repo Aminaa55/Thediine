@@ -232,7 +232,7 @@ down inside it.
 | **Today** | What is waiting on someone — event requests, payments to verify, new orders — and what is going out today |
 | **Orders** | Every order, filtered by type, status, payment status or date, and searchable by number, name or mobile. Filters live in the address, so a view is a link |
 | **Order** | Everything about one order, and everything that can be done to it |
-| **Kitchen** | What to cook on a day, totalled by dish |
+| **Kitchen** | What to cook on a day, totalled by dish and broken down by order |
 
 **Order status and payment status are separate panels, on purpose.** Moving an
 order along never touches the money, and confirming a payment never moves the
@@ -252,10 +252,25 @@ the free window, and the late-cancellation charge. The charge is **calculated an
 recorded, never collected** — there is no deposit and no card on file, so it is a
 note for the conversation that follows.
 
-**The kitchen list** totals the same dish across orders, because that is how it
-is cooked, and still lists every order underneath so a special instruction is
-never lost inside an aggregate. Only confirmed work appears: an event request
-nobody has accepted is not something the kitchen should be cooking.
+**The kitchen list** answers two questions at once. Each dish leads with its
+total across every order, because that is how it is cooked; underneath it, that
+total is broken down by the orders it belongs to — order number (clickable),
+quantity, whether it is a regular order or an event, the variation, and any
+special instruction, which is given real weight rather than a footnote. A dish
+ordered in more than one form also carries a sub-total per form, and a day
+holding both kinds of order says how the total splits. Only confirmed work
+appears: an event request nobody has accepted is not something the kitchen
+should be cooking. **Print the prep sheet** gives a clean sheet to work from —
+the chrome, the navigation and the side panel come off, and a dish is never
+split across two pages.
+
+**On the order page there is one obvious next step**, and everything else is
+quieter than it. Confirm leads on a new order; on an InstaPay transfer waiting
+to be checked, marking it paid does. Corrections sit behind a disclosure, and
+the two that undo something — refunding, taking a paid order back to unpaid —
+ask before they apply, as cancelling already did. There is a WhatsApp action for
+the customer, a delivery address you can copy or open in Maps, and anything the
+customer asked for is carried in a banner at the top rather than buried.
 
 ### Getting in
 

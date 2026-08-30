@@ -56,3 +56,33 @@
     transition-duration: .01ms !important;
   }
 }
+
+/* ------------------------------------------------------------ the prep sheet
+   Printing the kitchen list gives a sheet to work from, not a screenshot of a
+   web page: the chrome, the navigation and the side panel come off, colour
+   comes down to ink on paper, and a dish is never split across two pages. */
+@media print {
+  @page { margin: 14mm; }
+
+  html, body { background: #fff !important; color: #000 !important; }
+  header, footer, .no-print { display: none !important; }
+  main { max-width: none !important; padding: 0 !important; }
+
+  .print-head { display: block !important; margin-bottom: 10mm; }
+
+  /* Cards become plain sections; the screen's fills and borders are noise here. */
+  section { border: 0 !important; background: transparent !important; }
+  section > header {
+    border: 0 !important; padding: 0 0 4mm 0 !important;
+    border-bottom: 1pt solid #000 !important;
+  }
+  section > div { padding: 4mm 0 0 0 !important; }
+
+  li { break-inside: avoid; page-break-inside: avoid; }
+
+  /* A note must survive losing its colour. */
+  .border-gold { border: 1.5pt solid #000 !important; }
+  .bg-gold-pale\/60 { background: transparent !important; }
+
+  a { text-decoration: none !important; color: #000 !important; }
+}

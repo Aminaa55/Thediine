@@ -3,14 +3,20 @@ import { requireAdminPage } from "@/lib/admin-auth";
 import { listOrders } from "@/lib/admin-queries";
 import { STATUS_LABELS, PAYMENT_LABELS } from "@/lib/admin-orders";
 import { Money, PaymentPill, StatusPill, TypePill, longDate } from "@/components/admin/bits";
-import type { OrderStatus, OrderType, PaymentStatus } from "@prisma/client";
+import { OrderFilterBar } from "@/components/admin/order-filters";
+import type { FulfilmentType, OrderStatus, OrderType, PaymentStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Orders" };
 
 type Props = {
-  searchParams: Promise<{ type?: string; status?: string; payment?: string; date?: string; q?: string; all?: string }>;
+  searchParams: Promise<{
+    type?: string; status?: string; payment?: string; fulfilment?: string;
+    from?: string; to?: string; q?: string; all?: string;
+  }>;
 };
+
+const isDate = (v?: string) => (/^\d{4}-\d{2}-\d{2}$/.test(v ?? "") ? v : undefined);
 
 /**
  * Every order, filtered.
@@ -26,20 +32,15 @@ export default async function OrdersPage({ searchParams }: Props) {
     type: (["NORMAL", "EVENT"].includes(sp.type ?? "") ? sp.type : undefined) as OrderType | undefined,
     status: (sp.status && sp.status in STATUS_LABELS ? sp.status : undefined) as OrderStatus | undefined,
     paymentStatus: (sp.payment && sp.payment in PAYMENT_LABELS ? sp.payment : undefined) as PaymentStatus | undefined,
-    date: /^\d{4}-\d{2}-\d{2}$/.test(sp.date ?? "") ? sp.date : undefined,
+    fulfilment: (["DELIVERY", "PICKUP"].includes(sp.fulfilment ?? "") ? sp.fulfilment : undefined) as FulfilmentType | undefined,
+    dateFrom: isDate(sp.from),
+    dateTo: isDate(sp.to),
     q: sp.q,
     // Open orders by default; the finished ones are one click away.
     openOnly: sp.all !== "1" && !sp.status && !sp.payment,
   };
 
   const orders = await listOrders(filters);
-  const link = (patch: Record<string, string | undefined>) => {
-    const p = new URLSearchParams();
-    const merged = { type: sp.type, status: sp.status, payment: sp.payment, date: sp.date, q: sp.q, all: sp.all, ...patch };
-    for (const [k, v] of Object.entries(merged)) if (v) p.set(k, v);
-    const s = p.toString();
-    return `/admin/orders${s ? `?${s}` : ""}`;
-  };
 
   return (
     <div>
@@ -48,28 +49,9 @@ export default async function OrdersPage({ searchParams }: Props) {
         {filters.openOnly ? "Open orders" : "Orders"}
       </h1>
 
-      {/* Filters */}
-      <div className="mt-7 flex flex-wrap items-center gap-2">
-        <Chip href={link({ type: undefined, status: undefined, payment: undefined, all: undefined })}
-              on={!sp.type && !sp.status && !sp.payment && sp.all !== "1"}>Open</Chip>
-        <Chip href={link({ all: "1", status: undefined, payment: undefined })} on={sp.all === "1"}>All</Chip>
-        <Chip href={link({ type: "NORMAL" })} on={sp.type === "NORMAL"}>Normal</Chip>
-        <Chip href={link({ type: "EVENT" })} on={sp.type === "EVENT"}>Events</Chip>
-        <Chip href={link({ type: "EVENT", status: "REQUESTED" })} on={sp.status === "REQUESTED"}>Requests</Chip>
-        <Chip href={link({ payment: "AWAITING_VERIFICATION" })} on={sp.payment === "AWAITING_VERIFICATION"}>
-          To verify
-        </Chip>
+      <OrderFilterBar shown={orders.length} />
 
-        <form action="/admin/orders" className="ms-auto flex items-center gap-2">
-          <input
-            type="search" name="q" defaultValue={sp.q ?? ""} placeholder="Number, name or mobile"
-            className="w-56 rounded-full border border-line bg-cream-warm px-4 py-2 text-[14.5px] text-ink placeholder:text-ink-faint focus:border-gold focus:outline-none"
-          />
-          <button type="submit" className="text-[14px] text-gold hover:underline">Search</button>
-        </form>
-      </div>
-
-      <div className="mt-6 overflow-hidden rounded-sm border border-line bg-cream-warm">
+      <div className="mt-5 overflow-hidden rounded-sm border border-line bg-cream-warm">
         {orders.length === 0 ? (
           <p className="px-6 py-10 text-center text-[15.5px] text-ink-soft">Nothing matches that.</p>
         ) : (
@@ -106,22 +88,11 @@ export default async function OrdersPage({ searchParams }: Props) {
         )}
       </div>
 
-      <p className="mt-4 text-[13.5px] text-ink-faint">
-        {orders.length} shown{orders.length === 100 ? " — narrow the filters to see more" : ""}.
-      </p>
+      {orders.length === 100 && (
+        <p className="mt-4 text-[13.5px] text-ink-faint">
+          Only the first 100 are shown — narrow the filters to see more.
+        </p>
+      )}
     </div>
-  );
-}
-
-function Chip({ href, on, children }: { href: string; on: boolean; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className={`rounded-full border px-4 py-1.5 text-[14px] transition-colors ${
-        on ? "border-ink bg-ink text-cream" : "border-line bg-cream-warm text-ink-soft hover:border-ink/40"
-      }`}
-    >
-      {children}
-    </Link>
   );
 }

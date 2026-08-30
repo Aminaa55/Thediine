@@ -13,6 +13,10 @@ import type { OrderStatus, PaymentStatus } from "@prisma/client";
  * Order status and payment status are two separate panels on purpose. Moving an
  * order along never touches the money, and confirming a payment never moves the
  * order — the interface says so by keeping them apart.
+ *
+ * Within each panel there is one obvious next step and everything else is
+ * quieter. A step that undoes something — refunding, marking a paid order
+ * unpaid, cancelling — asks before it happens.
  */
 
 function useAction() {
@@ -34,9 +38,12 @@ function useAction() {
   return { pending, error, run };
 }
 
-export function StatusActions({
-  orderId, next,
-}: { orderId: string; next: OrderStatus[] }) {
+function Err({ message }: { message: string | null }) {
+  return message ? <p className="mt-3 text-[14px] text-[#A6391C]">{message}</p> : null;
+}
+
+/** The one next step, and nothing competing with it. */
+export function StatusActions({ orderId, next }: { orderId: string; next: OrderStatus[] }) {
   const { pending, error, run } = useAction();
   const moves = next.filter((s) => s !== "CANCELLED");
 
@@ -46,20 +53,22 @@ export function StatusActions({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3">
-        {moves.map((s) => (
-          <button
-            key={s}
-            type="button"
-            disabled={pending}
-            onClick={() => run(() => setOrderStatus(orderId, s))}
-            className="btn-primary disabled:bg-ink/25"
-          >
-            {STATUS_ACTIONS[s]}
-          </button>
-        ))}
-      </div>
-      {error && <p className="mt-3 text-[14px] text-[#A6391C]">{error}</p>}
+      {moves.map((s, i) => (
+        <button
+          key={s}
+          type="button"
+          disabled={pending}
+          onClick={() => run(() => setOrderStatus(orderId, s))}
+          className={
+            i === 0
+              ? "btn-primary w-full justify-center py-4 text-[16px] disabled:bg-ink/25"
+              : "mt-3 w-full rounded-full border border-line bg-cream px-5 py-2.5 text-[14.5px] text-ink-soft hover:border-ink/40"
+          }
+        >
+          {STATUS_ACTIONS[s]}
+        </button>
+      ))}
+      <Err message={error} />
     </div>
   );
 }
@@ -77,11 +86,11 @@ export function ConfirmEvent({ orderId }: { orderId: string }) {
 
   return (
     <div>
-      <p className="text-[15.5px] leading-relaxed text-ink-soft">
+      <p className="text-[15px] leading-relaxed text-ink-soft">
         Accepting this turns the request into a confirmed booking. Decide what it does to the day.
       </p>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid gap-2.5">
         <Choice
           on={mode === "BLOCK_DAY"} onClick={() => setMode("BLOCK_DAY")}
           title="Block the day" body="No regular orders can be taken for that date."
@@ -96,74 +105,123 @@ export function ConfirmEvent({ orderId }: { orderId: string }) {
         type="button"
         disabled={pending}
         onClick={() => run(() => confirmEvent(orderId, mode))}
-        className="btn-primary mt-5 disabled:bg-ink/25"
+        className="btn-primary mt-5 w-full justify-center py-4 text-[16px] disabled:bg-ink/25"
       >
         {pending ? "Confirming…" : "Confirm this event"}
       </button>
-      {error && <p className="mt-3 text-[14px] text-[#A6391C]">{error}</p>}
+      <Err message={error} />
     </div>
   );
 }
 
 /**
- * Confirming a payment by hand.
+ * The payment, on its own.
  *
- * This is the InstaPay step. Somebody looks at the transfer, sees the money,
- * and says so here. Nothing automatic ever does it.
+ * An InstaPay transfer waiting to be checked gets one obvious action: mark it
+ * paid, once you have seen the money. Everything else is a correction, so it
+ * sits quietly underneath — and the two that undo something ask first.
  */
 export function PaymentActions({
   orderId, current, reference, total,
 }: { orderId: string; current: PaymentStatus; reference: string | null; total: number }) {
   const { pending, error, run } = useAction();
   const [ref, setRef] = useState(reference ?? "");
+  const [confirming, setConfirming] = useState<PaymentStatus | null>(null);
 
-  const options: PaymentStatus[] = ["UNPAID", "AWAITING_VERIFICATION", "PAID", "REFUNDED"];
+  const waiting = current === "AWAITING_VERIFICATION";
+  const others = (["UNPAID", "AWAITING_VERIFICATION", "PAID", "REFUNDED"] as PaymentStatus[])
+    .filter((s) => s !== current && !(waiting && s === "PAID"));
+
+  // Undoing something asks first; simply recording where a payment has got to
+  // does not need a second click.
+  const needsConfirming = (s: PaymentStatus) =>
+    s === "REFUNDED" || (s === "UNPAID" && current === "PAID");
+
+  const apply = (s: PaymentStatus) => {
+    if (needsConfirming(s) && confirming !== s) return setConfirming(s);
+    setConfirming(null);
+    run(() => setPaymentStatus(orderId, s, ref));
+  };
 
   return (
     <div>
-      {current === "AWAITING_VERIFICATION" && (
-        <p className="mb-4 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.06] px-4 py-3 text-[14.5px] leading-relaxed text-[#A6391C]">
-          Waiting on you: check that {formatEGP(total)} arrived before marking this paid.
-        </p>
+      {waiting && (
+        <>
+          <p className="rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.06] px-4 py-3 text-[14.5px] leading-relaxed text-[#A6391C]">
+            Waiting on you: check that <strong className="font-semibold">{formatEGP(total)}</strong>{" "}
+            arrived before marking this paid.
+          </p>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => apply("PAID")}
+            className="mt-4 flex w-full items-center justify-center rounded-full border border-[#2E6B45] bg-[#2E6B45] px-6 py-4 text-[16px] text-cream transition-colors hover:bg-[#255739] disabled:opacity-50"
+          >
+            {pending ? "Marking paid…" : "I have checked it — mark paid"}
+          </button>
+        </>
       )}
 
-      <label htmlFor="ref" className="eyebrow mb-2 block">
-        Transfer reference <span className="normal-case tracking-normal text-ink-faint">optional</span>
-      </label>
-      <input
-        id="ref" value={ref} onChange={(e) => setRef(e.target.value)}
-        className="w-full rounded-sm border border-line bg-cream px-4 py-2.5 text-[15px] text-ink focus:border-gold focus:outline-none"
-      />
-
-      <div className="mt-4 flex flex-wrap gap-2.5">
-        {options.map((s) => (
-          <button
-            key={s}
-            type="button"
-            disabled={pending || s === current}
-            onClick={() => run(() => setPaymentStatus(orderId, s, ref))}
-            className={`rounded-full border px-4 py-2 text-[14px] transition-colors disabled:cursor-not-allowed ${
-              s === current
-                ? "border-ink bg-ink text-cream opacity-60"
-                : s === "PAID"
-                  ? "border-[#2E6B45]/50 bg-[#2E6B45]/[0.08] text-[#2E6B45] hover:border-[#2E6B45]"
-                  : "border-line bg-cream-warm text-ink-soft hover:border-ink/40"
-            }`}
-          >
-            {s === current ? `${PAYMENT_LABELS[s]} — now` : `Mark ${PAYMENT_LABELS[s].toLowerCase()}`}
-          </button>
-        ))}
+      <div className="mt-5">
+        <label htmlFor="ref" className="eyebrow mb-2 block">
+          Transfer reference <span className="normal-case tracking-normal text-ink-faint">optional</span>
+        </label>
+        <input
+          id="ref" value={ref} onChange={(e) => setRef(e.target.value)}
+          className="w-full rounded-sm border border-line bg-cream px-4 py-2.5 text-[15px] text-ink focus:border-gold focus:outline-none"
+        />
       </div>
+
+      <details className="mt-4 group">
+        <summary className="cursor-pointer list-none text-[14px] text-ink-faint underline underline-offset-4 hover:text-ink">
+          Change the payment status by hand
+        </summary>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {others.map((s) => (
+            <button
+              key={s}
+              type="button"
+              disabled={pending}
+              onClick={() => apply(s)}
+              className={`rounded-full border px-4 py-2 text-[14px] transition-colors disabled:opacity-50 ${
+                confirming === s
+                  ? "border-[#A6391C] bg-[#A6391C] text-cream"
+                  : "border-line bg-cream-warm text-ink-soft hover:border-ink/40"
+              }`}
+            >
+              {confirming === s
+                ? `Yes — mark ${PAYMENT_LABELS[s].toLowerCase()}`
+                : `Mark ${PAYMENT_LABELS[s].toLowerCase()}`}
+            </button>
+          ))}
+          {confirming && (
+            <button
+              type="button"
+              onClick={() => setConfirming(null)}
+              className="text-[14px] text-ink-soft underline underline-offset-4"
+            >
+              Never mind
+            </button>
+          )}
+        </div>
+        {confirming && (
+          <p className="mt-2 text-[13.5px] text-[#A6391C]">
+            {confirming === "REFUNDED"
+              ? "This records the payment as refunded. Click again to confirm."
+              : "This takes a paid order back to unpaid. Click again to confirm."}
+          </p>
+        )}
+      </details>
 
       <p className="mt-3 text-[13.5px] leading-relaxed text-ink-faint">
         This changes the payment only. The order stays exactly where it is.
       </p>
-      {error && <p className="mt-3 text-[14px] text-[#A6391C]">{error}</p>}
+      <Err message={error} />
     </div>
   );
 }
 
-/** Cancelling, with the terms shown before it happens. */
+/** Cancelling: quiet until asked for, and it shows the terms before it happens. */
 export function CancelOrder({
   orderId, withinFreeWindow, charge, percent,
 }: { orderId: string; withinFreeWindow: boolean; charge: number; percent: number }) {
@@ -206,7 +264,7 @@ export function CancelOrder({
         className="w-full rounded-sm border border-line bg-cream px-4 py-2.5 text-[15px] text-ink focus:border-gold focus:outline-none"
       />
 
-      <div className="mt-4 flex flex-wrap gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-4">
         <button
           type="button"
           disabled={pending}
@@ -219,8 +277,31 @@ export function CancelOrder({
           Keep it
         </button>
       </div>
-      {error && <p className="mt-3 text-[14px] text-[#A6391C]">{error}</p>}
+      <Err message={error} />
     </div>
+  );
+}
+
+/** An address you can put straight into a map or a message. */
+export function CopyAddress({ address }: { address: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(address);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch {
+          setCopied(false);
+        }
+      }}
+      className="rounded-full border border-line bg-cream px-3.5 py-1 text-[13px] text-ink-soft transition-colors hover:border-gold hover:text-ink"
+    >
+      {copied ? "Copied" : "Copy"}
+    </button>
   );
 }
 
@@ -232,7 +313,7 @@ function Choice({ on, onClick, title, body }: {
       type="button"
       onClick={onClick}
       aria-pressed={on}
-      className={`rounded-sm border px-5 py-4 text-start transition-colors ${
+      className={`rounded-sm border px-5 py-3.5 text-start transition-colors ${
         on ? "border-gold bg-gold-pale/40" : "border-line bg-cream hover:border-gold"
       }`}
     >

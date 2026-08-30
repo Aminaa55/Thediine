@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { currentAdmin } from "@/lib/admin-auth";
+import { AdminNav } from "@/components/admin/admin-nav";
 import { logoutAction } from "./admin-actions";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +11,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
+/**
+ * The sections.
+ *
+ * Menu, Settings and Analytics are coming; the row is built to hold them
+ * without rearranging — it scrolls rather than wraps on a narrow screen, and
+ * the active section is marked by a rule under it rather than by position.
+ */
 const NAV = [
   { href: "/admin", label: "Today" },
   { href: "/admin/orders", label: "Orders" },
@@ -38,13 +46,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </span>
           </Link>
 
-          <nav className="flex gap-6">
-            {NAV.map((n) => (
-              <Link key={n.href} href={n.href} className="text-[15px] text-ink-soft hover:text-ink">
-                {n.label}
-              </Link>
-            ))}
-          </nav>
+          <AdminNav items={NAV} />
 
           <div className="ms-auto flex items-center gap-5">
             <Link href="/" className="text-[14px] text-ink-faint hover:text-ink">View the site</Link>
