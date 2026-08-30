@@ -15,8 +15,16 @@ Two rules the preview cannot enforce are enforced by the real site: it resolves
 every price from the database again before writing, and it counts the orders a
 day already holds before accepting another.
 
-The admin dashboard is not in the preview either. It needs a database and a
-login, so it only exists on the real site, at /admin.
+`admin.html` is the same kind of thing for the admin dashboard: its screens and
+its rules, running on sample orders held in the browser, so the dashboard can be
+used and judged before the site is deployed.
+
+It does **not** use the real authentication and does not weaken it. The real
+sign-in hashes passwords with scrypt and carries a signed session cookie, both
+server-side; neither can run in a static page. The preview therefore has its own
+stand-in sign-in, which is why its credentials are printed on its own screen —
+they unlock sample data in one browser and nothing else. Nothing here can reach
+a database.
 
 Card payments are the one thing the preview cannot show: they need a server to
 talk to Paymob, so the card option stays disabled here and says so. On the real
