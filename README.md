@@ -5,10 +5,11 @@ Replaces manual order-taking over Instagram DMs.
 
 ## Status
 
-**Customer experience complete through checkout.** Homepage, menu, product pages,
-the four-step event journey, the cart and both checkouts work against the real
-catalogue, with event food priced by guest count. The admin dashboard is the
-next phase.
+**Customer site complete, admin under way.** Homepage, menu, product pages, the
+four-step event journey, the cart and both checkouts work against the real
+catalogue, with event food priced by guest count. Admin covers the day's work:
+orders, statuses, payment verification and the kitchen list. Menu management,
+settings and analytics are next.
 
 | | |
 |---|---|
@@ -151,7 +152,7 @@ can be unpaid; confirming a payment never moves an order along.
 |---|---|---|
 | Cash | Reads "Cash on delivery" or "Payment on pickup", following the fulfilment | `UNPAID` |
 | InstaPay | Shows the transfer details and says plainly that choosing it does **not** mean the money arrived; takes an optional transfer reference | `AWAITING_VERIFICATION` |
-| Card | Paymob's hosted checkout — see below. Shown disabled as "Coming soon" until a provider is configured | `UNPAID` until a verified callback says otherwise |
+| Card | **Paused.** Not shown to customers at all — see below | — |
 
 `AWAITING_VERIFICATION → PAID` is a **manual** step. Nothing automatic ever marks
 an InstaPay order paid: someone checks the transfer arrived and confirms it. The
@@ -167,7 +168,13 @@ payment provider, and only the provider's reference is recorded.
 The confirmation page is reached by an unguessable token rather than the order
 number, so nobody can read someone else's order by counting upwards.
 
-### Card payments — Paymob
+### Card payments — Paymob (paused)
+
+Card is **switched off and hidden**. It does not appear at checkout, not even as
+"coming soon", and **no Paymob environment variable is needed for the site to
+run**. The integration below is built, tested and untouched, waiting behind one
+switch: `CARD_PAYMENTS_PAUSED` in [`src/lib/paymob.ts`](src/lib/paymob.ts). Set it
+to `false`, supply the keys, and card comes back exactly as described here.
 
 **The site never sees a card.** Card payments use Paymob's **hosted** Unified
 Checkout: the customer is sent to Paymob's own page to enter their card, and the
@@ -215,6 +222,58 @@ Credentials live in the environment and **never** in the repository — see
 `PAYMOB_HMAC_SECRET` are server-only and are never sent to a browser; the build
 was checked to confirm none of them reach the client bundle.
 
+## Admin
+
+At `/admin`, behind a password. Never indexed, and the customer chrome stands
+down inside it.
+
+| Screen | What it is for |
+|---|---|
+| **Today** | What is waiting on someone — event requests, payments to verify, new orders — and what is going out today |
+| **Orders** | Every order, filtered by type, status, payment status or date, and searchable by number, name or mobile. Filters live in the address, so a view is a link |
+| **Order** | Everything about one order, and everything that can be done to it |
+| **Kitchen** | What to cook on a day, totalled by dish |
+
+**Order status and payment status are separate panels, on purpose.** Moving an
+order along never touches the money, and confirming a payment never moves the
+order. Confirming an InstaPay transfer is the manual step the whole payment
+design rests on: someone looks at the transfer, sees the money, and says so.
+
+An order only moves along a path it is allowed to take — a pickup order is never
+sent "out for delivery" — and the server refuses an illegal jump even if asked
+directly. Every move is written into the order's history with who made it.
+
+**Accepting an event request** is where a request becomes a booking, so it is
+also where the day is decided: *block the day* closes that date to normal orders,
+*keep the day open* leaves them coming. Nothing else in the system blocks a date.
+
+**Cancelling** shows the terms first, records the reason, whether it was inside
+the free window, and the late-cancellation charge. The charge is **calculated and
+recorded, never collected** — there is no deposit and no card on file, so it is a
+note for the conversation that follows.
+
+**The kitchen list** totals the same dish across orders, because that is how it
+is cooked, and still lists every order underneath so a special instruction is
+never lost inside an aggregate. Only confirmed work appears: an event request
+nobody has accepted is not something the kitchen should be cooking.
+
+### Getting in
+
+Admin needs `ADMIN_SESSION_SECRET` (any long random string) and an account:
+
+```bash
+npm run admin:create -- "Your Name" you@example.com 'a long password'
+```
+
+Passwords are stored as a scrypt hash with a per-password salt — never in plain
+text, never reversible, never logged. The session is a signed cookie carrying
+only an id and an expiry. Without the secret nobody can sign in, and the customer
+site is unaffected.
+
+Each page checks for itself rather than trusting the layout: a layout renders
+around a page, it does not stand in front of it. Every action re-checks too,
+because a server action is a public endpoint.
+
 ## Assets
 
 The official logo (`public/brand/`) and four real photographs (`public/gallery/`)
@@ -257,6 +316,7 @@ Items still open are listed in section 10 of the spec.
 - **Two checkouts**, one per order type, each writing its own record with its own
   order number, and a confirmation page that states order status and payment
   status separately.
+- **An admin dashboard** for the day's work — see above.
 
 Every dish, price, choice and category comes from the database. Nothing about the
 menu is written into the interface, so admin edits appear on the site immediately.

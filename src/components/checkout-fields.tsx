@@ -176,10 +176,12 @@ export function PaymentChoice({
           />
         )}
 
-        {/* Never offered until a provider is configured and switched on. */}
-        {ctx.cardComingSoon ? (
-          <Method disabled title="Card payment" body="Coming soon." />
-        ) : (
+        {/*
+          Card appears only when it is actually available. While it is paused it
+          is not shown at all — not as "coming soon" either, because a customer
+          should not be offered something they cannot use.
+        */}
+        {ctx.methods.includes("CARD") && (
           <Method
             on={value === "CARD"}
             onClick={() => onChange("CARD")}
@@ -221,13 +223,21 @@ export function PaymentChoice({
       {value === "INSTAPAY" && (
         <div className="mt-5 rounded-sm border border-gold/40 bg-gold-pale/35 px-5 py-5">
           <p className="eyebrow">Transfer details</p>
-          {ctx.instapayDetails ? (
-            <p className="mt-3 whitespace-pre-line text-[16px] leading-relaxed text-ink">
-              {ctx.instapayDetails}
+          {ctx.instapayNumber ? (
+            <p className="mt-3 text-[16px] leading-relaxed text-ink">
+              Transfer to{" "}
+              <strong className="font-display text-[19px] font-semibold tracking-wide">
+                {ctx.instapayNumber}
+              </strong>
             </p>
           ) : (
             <p className="mt-3 text-[15.5px] leading-relaxed text-ink-soft">
               We will send you the transfer details on WhatsApp as soon as we have your order.
+            </p>
+          )}
+          {ctx.instapayDetails && (
+            <p className="mt-2 whitespace-pre-line text-[15.5px] leading-relaxed text-ink-soft">
+              {ctx.instapayDetails}
             </p>
           )}
 

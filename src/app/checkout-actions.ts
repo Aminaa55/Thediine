@@ -7,7 +7,7 @@ import { nextOrderNumber } from "@/lib/order-number";
 import { parseGuests, earliestNormalDate, toDateInput, RULES } from "@/lib/ordering";
 import { eventUnitPrice, type EventTier } from "@/lib/event-pricing";
 import { getEventTiers } from "@/lib/catalog";
-import { paymobConfig, createIntention } from "@/lib/paymob";
+import { paymobConfig, createIntention, CARD_PAYMENTS_PAUSED } from "@/lib/paymob";
 import {
   validateNormal,
   validateEventSubmission,
@@ -33,10 +33,11 @@ import {
 
 export type CheckoutContext = {
   methods: PaymentMethodId[];
-  /** InstaPay transfer details, as supplied by the business. Empty until then. */
+  /** The InstaPay number to transfer to, as supplied by the business. */
+  instapayNumber: string;
+  /** Anything further the business wants to say about the transfer. */
   instapayDetails: string;
-  cardComingSoon: boolean;
-  /** Card is only offered when a provider is actually configured to take it. */
+  /** Card is only offered when a provider is configured AND card is not paused. */
   cardTestMode: boolean;
   areas: { id: string; name: string; fee: number }[];
   slots: { id: string; label: string; startTime: string; endTime: string }[];
@@ -69,13 +70,12 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
   if (s.payment_instapay_enabled !== "false") methods.push("INSTAPAY");
 
   /**
-   * Card is offered only when a payment provider is actually configured AND the
-   * owner has not switched it off. Configuring the provider is itself the
-   * deliberate act; until then card stays "coming soon", because the interface
-   * must never imply card works before it does.
+   * Card is paused, so it is not offered at all. When it comes back it is
+   * offered only where a provider is actually configured and the owner has not
+   * switched it off — the interface must never imply card works before it does.
    */
   const paymob = paymobConfig();
-  const allowed = s.payment_card_enabled !== "false";
+  const allowed = !CARD_PAYMENTS_PAUSED && s.payment_card_enabled !== "false";
   const cardOn = allowed && paymob.configured;
   if (cardOn) methods.push("CARD");
   if (allowed && !paymob.configured && paymob.problem) {
@@ -84,8 +84,8 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
 
   return {
     methods,
+    instapayNumber: s.instapay_number ?? "",
     instapayDetails: s.instapay_account_details ?? "",
-    cardComingSoon: !cardOn,
     cardTestMode: cardOn && paymob.mode === "test",
     areas: areas.map((a) => ({ id: a.id, name: a.nameEn, fee: a.fee })),
     slots: slots.map((t) => ({ id: t.id, label: t.labelEn, startTime: t.startTime, endTime: t.endTime })),

@@ -213,6 +213,8 @@ button.link-sweep{background:none; border:0; padding:0; cursor:pointer; font:inh
 .instapay{margin-top:20px; border:1px solid rgba(168,126,46,.4); background:rgba(239,226,190,.35);
   border-radius:2px; padding:20px}
 .instapay .d{margin-top:12px; font-size:15.5px; line-height:1.6; color:var(--ink-soft)}
+.instapay .ip-num{font-family:Fraunces,Georgia,serif; font-size:19px; font-weight:600;
+  letter-spacing:.02em; color:var(--ink)}
 .instapay .warn2{margin-top:16px; border-top:1px solid rgba(168,126,46,.3); padding-top:16px;
   font-size:14.5px; line-height:1.6; color:var(--ink-soft)}
 .instapay .co-field{margin-top:20px}
@@ -1452,8 +1454,12 @@ const AREAS = [];
 /* No time slots supplied either: the real site lists them when they exist
    and shows a plain time field until then. */
 const SLOTS = [];
-const INSTAPAY_DETAILS = "";     /* supplied separately by the business */
-const CARD_ENABLED = false;      /* structured, off until a gateway is live */
+/* Supplied by the business; editable from admin on the real site. */
+const INSTAPAY_NUMBER = "+20 1119992417";
+const INSTAPAY_DETAILS = "";
+/* Card payments are paused. The integration is built and waiting; while this
+   is false card is not shown at checkout at all. */
+const CARD_ENABLED = false;
 
 /* 48 hours ahead, floored to the day, as yyyy-mm-dd */
 function minNormalDate() {
@@ -1533,18 +1539,16 @@ function paymentHTML(state, attr, fulfilment, err) {
         "Transfer to us, and we confirm once we have seen the payment arrive.")
     + (CARD_ENABLED
         ? payOpt(state.method === "CARD", 'data-' + attr + '="CARD"', "Card payment", "Pay by card.")
-        : '<div class="pay-opt off"><span class="dot"></span><span><span class="t">Card payment</span>'
-          + '<span class="b">Coming soon. On the real site this turns on by itself once the '
-          + 'Paymob keys are in place, and takes the customer to Paymob\u2019s own secure page \u2014 '
-          + 'this preview has no server, so it cannot take a payment.</span></span></div>')
+        : '')
     + '</div>';
   if (err) h += '<p class="bad-msg" style="margin-top:12px">' + esc(err) + '</p>';
   if (state.method === "INSTAPAY") {
     h += '<div class="instapay"><p class="label-rule">Transfer details</p>'
-      + (INSTAPAY_DETAILS
-          ? '<p class="d">' + esc(INSTAPAY_DETAILS) + '</p>'
+      + (INSTAPAY_NUMBER
+          ? '<p class="d">Transfer to <strong class="ip-num">' + esc(INSTAPAY_NUMBER) + '</strong></p>'
           : '<p class="d">We will send you the transfer details on WhatsApp as soon as we have '
             + 'your order.</p>')
+      + (INSTAPAY_DETAILS ? '<p class="d" style="margin-top:8px">' + esc(INSTAPAY_DETAILS) + '</p>' : '')
       + '<p class="warn2">Choosing InstaPay does <strong>not</strong> mark your order as paid. '
       + 'Your payment shows as <strong>awaiting verification</strong> until we have checked that '
       + 'the transfer arrived, and we confirm it with you.</p>'

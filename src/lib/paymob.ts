@@ -23,6 +23,19 @@ import { createHmac, timingSafeEqual } from "node:crypto";
  * separate.
  */
 
+/**
+ * Card payments are PAUSED.
+ *
+ * The whole integration below is intact and tested; it is simply not offered to
+ * customers. While this is true, card does not appear at checkout at all — not
+ * even as "coming soon" — and no Paymob environment variable is needed for the
+ * site to run normally.
+ *
+ * To bring card back: set this to false and supply the Paymob keys. Nothing
+ * else has to change.
+ */
+export const CARD_PAYMENTS_PAUSED = true;
+
 export type PaymobMode = "test" | "live";
 
 export type PaymobConfig = {

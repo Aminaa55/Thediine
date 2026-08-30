@@ -5,6 +5,7 @@ import { CartProvider } from "@/lib/cart";
 import { SiteHeader } from "@/components/site-header";
 import { GlobalBack } from "@/components/global-back";
 import { SiteFooter } from "@/components/site-footer";
+import { CustomerChrome } from "@/components/customer-chrome";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -35,12 +36,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" dir="ltr" className={`${display.variable} ${body.variable}`}>
       <body className="flex min-h-screen flex-col">
         <CartProvider>
-          <SiteHeader />
-          {/* One consistent back control. Event steps render their own beneath
-              the progress bar, so it is suppressed there. */}
-          <GlobalBack />
+          {/* The customer chrome. Admin renders its own instead. */}
+          <CustomerChrome>
+            <SiteHeader />
+            {/* One consistent back control. Event steps render their own beneath
+                the progress bar, so it is suppressed there. */}
+            <GlobalBack />
+          </CustomerChrome>
           <main className="flex-1">{children}</main>
-          <SiteFooter />
+          <CustomerChrome>
+            <SiteFooter />
+          </CustomerChrome>
         </CartProvider>
       </body>
     </html>

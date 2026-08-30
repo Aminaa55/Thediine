@@ -38,7 +38,10 @@ export const SETTINGS: Record<string, string> = {
   // payment provider is configured in the environment; configuring the provider
   // is the deliberate act that turns card on.
   payment_card_enabled: "true",
-  instapay_account_details: "", // TO CONFIRM
+  // Supplied by the business. Shown at checkout when InstaPay is chosen.
+  instapay_number: "+20 1119992417",
+  // Anything further to say about the transfer. Nothing supplied yet.
+  instapay_account_details: "",
 
   // Contact
   whatsapp_number: "+201123030107",

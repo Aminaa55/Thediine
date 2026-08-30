@@ -15,6 +15,9 @@ Two rules the preview cannot enforce are enforced by the real site: it resolves
 every price from the database again before writing, and it counts the orders a
 day already holds before accepting another.
 
+The admin dashboard is not in the preview either. It needs a database and a
+login, so it only exists on the real site, at /admin.
+
 Card payments are the one thing the preview cannot show: they need a server to
 talk to Paymob, so the card option stays disabled here and says so. On the real
 site it turns on by itself once the Paymob keys are set.
