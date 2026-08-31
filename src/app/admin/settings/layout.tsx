@@ -37,8 +37,9 @@ export default async function SettingsLayout({ children }: { children: React.Rea
 
       {todo.length > 0 && (
         <p className="mt-10 text-[13px] text-ink-faint">
-          {todo.length} {todo.length === 1 ? "thing is" : "things are"} still undecided, marked in
-          gold where they belong. Nothing has been chosen on your behalf.
+          A gold dot in the list marks a section holding something still undecided —{" "}
+          {todo.length} {todo.length === 1 ? "thing" : "things"} in all. Each one is explained where
+          it belongs, and nothing has been chosen on your behalf.
         </p>
       )}
     </div>

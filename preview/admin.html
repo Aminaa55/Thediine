@@ -503,8 +503,8 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .set-card{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px;
   padding:16px 20px}
 .set-card h3{font-size:16.5px}
-.set-card > .note{margin-top:4px; max-width:44rem; font-size:13px; line-height:1.55;
-  color:var(--ink-soft)}
+.set-card > .note{margin-top:4px; max-width:44rem; border:0; padding:0; font-size:13px;
+  font-style:normal; line-height:1.55; color:var(--ink-soft)}
 .set-card .f{margin-top:14px}
 .set-card .fgrid .f{margin-top:0}
 .set-card ul{margin-top:12px}
@@ -805,6 +805,25 @@ try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
 if (!S || !S.orders) S = freshData();
 if (!S.menu) S.menu = freshMenu();
 if (!S.settings) S.settings = freshSettings();
+/**
+ * Bring a stored copy up to date.
+ *
+ * This browser may still be holding settings written by an earlier version of
+ * the preview, before payment methods and serving options were rows. Anything
+ * missing is filled in from the defaults; anything already there is kept.
+ */
+(function () {
+  var fresh = freshSettings();
+  if (!S.settings.values) S.settings.values = fresh.values;
+  Object.keys(fresh.values).forEach(function (k) {
+    if (S.settings.values[k] === undefined) S.settings.values[k] = fresh.values[k];
+  });
+  if (!Array.isArray(S.settings.areas)) S.settings.areas = fresh.areas;
+  if (!Array.isArray(S.settings.closed)) S.settings.closed = fresh.closed;
+  if (!Array.isArray(S.settings.payments)) S.settings.payments = fresh.payments;
+  if (!Array.isArray(S.settings.servings)) S.settings.servings = fresh.servings;
+  save();
+})();
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 /* ----------------------------------------------------------- formatting */
@@ -2078,9 +2097,9 @@ function settingsShell(inner) {
     + "</ul></nav>"
     + '<div class="set-body">' + setFlashes() + inner + "</div></div>"
     + (n
-        ? '<p class="hist-note">' + n + (n === 1 ? " thing is" : " things are")
-          + " still undecided, marked in gold where they belong. Nothing has been chosen on your "
-          + "behalf.</p>"
+        ? '<p class="hist-note">A gold dot in the list marks a section holding something still '
+          + "undecided \u2014 " + n + (n === 1 ? " thing" : " things") + " in all. Each one is "
+          + "explained where it belongs, and nothing has been chosen on your behalf.</p>"
         : "")
     + "</main>";
 }
@@ -2915,6 +2934,20 @@ function render() {
     return;
   }
   var body;
+  try {
+    body = route(h);
+  } catch (err) {
+    /* A page that cannot draw says so, rather than leaving the last one on
+       screen and looking like a dead click. */
+    body = "<main><h1>That page could not be drawn</h1>"
+      + '<p class="sub">Reset the sample data at the top of the screen and it will come back.</p>'
+      + '<p class="sub" style="margin-top:12px; font-size:13px">' + esc(String(err)) + "</p></main>";
+  }
+  $("#app").innerHTML = chrome(body);
+}
+
+function route(h) {
+  var body;
   if (h.indexOf("/order/") === 0) body = viewOrder(decodeURIComponent(h.slice(7)));
   else if (h === "/menu/new") body = viewNewDish();
   else if (h === "/menu/categories") body = viewCourses();
@@ -2930,7 +2963,7 @@ function render() {
   else if (h === "/orders") body = viewOrders();
   else if (h === "/kitchen") body = viewKitchen();
   else body = viewToday();
-  $("#app").innerHTML = chrome(body);
+  return body;
 }
 window.addEventListener("hashchange", function () {
   PAY_CONFIRM = null; BANDS = null; EV_CHOICE = null; RETIRING = false; MENU_ERR = null;
