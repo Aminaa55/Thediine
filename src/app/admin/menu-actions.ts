@@ -90,6 +90,8 @@ export type ProductDetails = {
   price: string;
   sellingUnitEn: string;
   unitConfirmed: boolean;
+  /** Whether this dish is one that genuinely needs a unit stated. */
+  unitRequired: boolean;
   servesMin: string;
   servesMax: string;
   minQuantity: string;
@@ -138,6 +140,7 @@ export async function saveProduct(id: string, input: ProductDetails): Promise<Sa
       sellingUnitEn: input.sellingUnitEn.trim() || null,
       // Confirmed only means something once there is something to confirm.
       unitConfirmed: input.unitConfirmed && input.sellingUnitEn.trim() !== "",
+      unitRequired: input.unitRequired,
       servesMin: input.servesMin.trim() ? int(input.servesMin, 1) : null,
       servesMax: input.servesMax.trim() ? int(input.servesMax, 1) : null,
       minQuantity: int(input.minQuantity, 1),

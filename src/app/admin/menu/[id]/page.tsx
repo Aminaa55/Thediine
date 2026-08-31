@@ -55,6 +55,7 @@ export default async function DishPage({ params }: Props) {
             basePrice: product.basePrice,
             sellingUnitEn: product.sellingUnitEn,
             unitConfirmed: product.unitConfirmed,
+            unitRequired: product.unitRequired,
             servesMin: product.servesMin,
             servesMax: product.servesMax,
             minQuantity: product.minQuantity,

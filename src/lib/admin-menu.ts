@@ -5,8 +5,9 @@ import { MULTIPLIER_SCALE } from "./event-pricing";
  * The menu, as admin sees it.
  *
  * The customer's view hides anything unavailable or archived. This one shows
- * everything, plus the things the business still has to decide: a dish with no
- * selling unit, allergen tags nobody has checked, a note left during setup.
+ * everything, plus the things the business still has to decide: allergen tags
+ * nobody has checked, a note left during setup, and a selling unit only where
+ * the business has said that dish needs one.
  */
 
 export type MenuFlag = "no-unit" | "unreviewed-allergens" | "has-note" | "no-price";
@@ -19,7 +20,7 @@ export async function getMenuProducts() {
     orderBy: [{ category: { sortOrder: "asc" } }, { sortOrder: "asc" }],
     select: {
       id: true, slug: true, nameEn: true, descriptionEn: true,
-      basePrice: true, sellingUnitEn: true, unitConfirmed: true,
+      basePrice: true, sellingUnitEn: true, unitConfirmed: true, unitRequired: true,
       isAvailable: true, isFeatured: true, sortOrder: true, reviewNote: true,
       eventPricingEnabled: true,
       category: { select: { id: true, slug: true, nameEn: true, sortOrder: true } },
@@ -35,7 +36,9 @@ export async function getMenuProducts() {
 
   return products.map((p) => {
     const flags: MenuFlag[] = [];
-    if (!p.sellingUnitEn || !p.unitConfirmed) flags.push("no-unit");
+    // Only a gap where the business has said this dish needs a unit. Nothing
+    // is chased otherwise, so no unit is ever invented to clear a warning.
+    if (p.unitRequired && (!p.sellingUnitEn || !p.unitConfirmed)) flags.push("no-unit");
     if (p.allergens.some((a) => !a.reviewed)) flags.push("unreviewed-allergens");
     if (p.reviewNote) flags.push("has-note");
     if (p.basePrice === null && p.variants.length === 0) flags.push("no-price");

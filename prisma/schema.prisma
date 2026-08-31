@@ -66,6 +66,10 @@ model Product {
   sellingUnitAr String?
   /// Surfaced in admin as a "needs confirming" badge while the unit is unknown.
   unitConfirmed Boolean @default(false)
+  /// Not every dish is sold by a unit worth stating, so a missing one is only
+  /// a gap where the business says it is. Off by default: nothing is chased,
+  /// and no unit is ever invented to clear a warning.
+  unitRequired  Boolean @default(false)
 
   /// Optional; used for desserts, not required for savoury dishes.
   servesMin Int?

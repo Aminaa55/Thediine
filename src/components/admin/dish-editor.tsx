@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { formatEGP, piastresToPounds } from "@/lib/money";
+import { formatEGP, piastresToPounds, PIASTRES_PER_POUND } from "@/lib/money";
 import { multiplierText } from "@/lib/admin-menu";
 import {
   saveProduct, saveVariant, removeVariant, setAllergen, markAllergensReviewed,
@@ -25,7 +25,8 @@ type Tier = { id?: string; minGuests: string; maxGuests: string; multiplier: str
 export function DishEditor({ product, categories, allergens, sharedTiers }: {
   product: {
     id: string; nameEn: string; descriptionEn: string | null; categoryId: string;
-    basePrice: number | null; sellingUnitEn: string | null; unitConfirmed: boolean;
+    basePrice: number | null; sellingUnitEn: string | null;
+    unitConfirmed: boolean; unitRequired: boolean;
     servesMin: number | null; servesMax: number | null;
     minQuantity: number; quantityStep: number; reviewNote: string | null;
     isAvailable: boolean; isFeatured: boolean;
@@ -63,6 +64,7 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
     price: product.basePrice === null ? "" : String(piastresToPounds(product.basePrice)),
     sellingUnitEn: product.sellingUnitEn ?? "",
     unitConfirmed: product.unitConfirmed,
+    unitRequired: product.unitRequired,
     servesMin: product.servesMin === null ? "" : String(product.servesMin),
     servesMax: product.servesMax === null ? "" : String(product.servesMax),
     minQuantity: String(product.minQuantity),
@@ -86,6 +88,13 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
   );
   const ownLadder = product.eventTiers.length > 0;
 
+  // What the event bands are worked out from, live: the price as it is being
+  // typed, or -- for a dish sold as priced choices -- the choice being looked at.
+  const [pricingChoice, setPricingChoice] = useState(product.variants[0]?.id ?? "");
+  const typedPrice = typedPiastres(details.price);
+  const chosen = product.variants.find((v) => v.id === pricingChoice) ?? product.variants[0] ?? null;
+  const eventBasis = product.variants.length > 0 ? (chosen?.price ?? null) : typedPrice;
+
   const [note, setNote] = useState(product.eventPricingNote ?? "");
   const allergenIds = new Set(product.allergens.map((a) => a.allergen.id));
   const unreviewed = product.allergens.some((a) => !a.reviewed);
@@ -104,7 +113,7 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
         </p>
       )}
 
-      {/* --- what it is --- */}
+      {/* --- what it is: the things changed most often, first --- */}
       <Panel title="The dish">
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Name" htmlFor="name" full>
@@ -124,10 +133,10 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
           </Field>
 
           <Field
-            label="Price" htmlFor="price"
+            label="Regular price" htmlFor="price"
             hint={product.variants.length > 0
               ? "Priced by its choices below."
-              : "In EGP. This is the regular order price."}
+              : "In EGP. What a normal order pays."}
           >
             <input
               id="price" value={details.price} inputMode="decimal"
@@ -136,45 +145,6 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
               className={`${input} disabled:opacity-40`}
             />
           </Field>
-
-          <Field
-            label="Selling unit" htmlFor="unit" full
-            hint="What one of these is: a tray, a kilo, twelve pieces. Left empty until the business says."
-          >
-            <input id="unit" value={details.sellingUnitEn}
-              onChange={(e) => set({ sellingUnitEn: e.target.value })} className={input} />
-          </Field>
-
-          {details.sellingUnitEn.trim() !== "" && (
-            <label className="flex items-center gap-3 text-[14.5px] text-ink-soft sm:col-span-2">
-              <input type="checkbox" checked={details.unitConfirmed}
-                onChange={(e) => set({ unitConfirmed: e.target.checked })} className="h-4 w-4 accent-[#A87E2E]" />
-              This selling unit is confirmed
-            </label>
-          )}
-
-          <Field label="Serves from" htmlFor="smin" hint="Optional.">
-            <input id="smin" value={details.servesMin} inputMode="numeric"
-              onChange={(e) => set({ servesMin: e.target.value })} className={input} />
-          </Field>
-          <Field label="Serves up to" htmlFor="smax" hint="Optional.">
-            <input id="smax" value={details.servesMax} inputMode="numeric"
-              onChange={(e) => set({ servesMax: e.target.value })} className={input} />
-          </Field>
-
-          <Field label="Smallest order" htmlFor="minq" hint="How few a customer may order.">
-            <input id="minq" value={details.minQuantity} inputMode="numeric"
-              onChange={(e) => set({ minQuantity: e.target.value })} className={input} />
-          </Field>
-          <Field label="Ordered in steps of" htmlFor="step">
-            <input id="step" value={details.quantityStep} inputMode="numeric"
-              onChange={(e) => set({ quantityStep: e.target.value })} className={input} />
-          </Field>
-
-          <Field label="Note to yourself" htmlFor="rnote" full hint="Never shown to a customer.">
-            <input id="rnote" value={details.reviewNote}
-              onChange={(e) => set({ reviewNote: e.target.value })} className={input} />
-          </Field>
         </div>
 
         <button type="button" disabled={pending}
@@ -182,6 +152,43 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
           className="btn-primary mt-6 disabled:bg-ink/25">
           Save the dish
         </button>
+      </Panel>
+
+      {/* --- available today, which is not the same as retired --- */}
+      <Panel
+        title="Availability"
+        note="Whether customers can order this dish right now. It is a switch you can flick back the same day, and it never touches an order that has already been placed."
+      >
+        <div className="flex flex-wrap gap-3">
+          <AvailabilityButton
+            on={product.isAvailable} pending={pending} available
+            onClick={() => run("The menu", () => setProductAvailability(product.id, true))}
+          />
+          <AvailabilityButton
+            on={!product.isAvailable} pending={pending} available={false}
+            onClick={() => run("The menu", () => setProductAvailability(product.id, false))}
+          />
+        </div>
+
+        <p className="mt-4 text-[13.5px] leading-relaxed text-ink-soft">
+          {product.isAvailable
+            ? "Customers can order it."
+            : "Customers can still see it on the menu, but cannot order it. Nothing is archived and nothing is lost \u2014 flick it back whenever it is on again."}
+        </p>
+
+        <div className="mt-6 border-t border-line-soft pt-5">
+          <Toggle
+            on={product.isFeatured} pending={pending}
+            onChange={() => run("The homepage", () => setFeatured(product.id, !product.isFeatured))}
+            title="Show on the homepage"
+            body="Featured dishes lead the homepage."
+          />
+        </div>
+
+        <p className="mt-5 text-[13px] leading-relaxed text-ink-faint">
+          Taking a dish off the menu for good is a different thing, and it is at the bottom of this
+          page.
+        </p>
       </Panel>
 
       {/* --- priced choices --- */}
@@ -255,6 +262,68 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
         </Panel>
       )}
 
+      {/* --- how it is sold: real, but not the daily edit --- */}
+      <Panel
+        title="Serving and order details"
+        note="How this dish is sold and how few of it a customer may order."
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field
+            label="Selling unit" htmlFor="unit" full
+            hint="What one of these is: a tray, a kilo, twelve pieces. Left empty until the business says — never invented."
+          >
+            <input id="unit" value={details.sellingUnitEn}
+              onChange={(e) => set({ sellingUnitEn: e.target.value })} className={input} />
+          </Field>
+
+          <div className="grid gap-3 sm:col-span-2">
+            <Toggle
+              on={details.unitRequired} pending={pending}
+              onChange={() => set({ unitRequired: !details.unitRequired })}
+              title="This dish needs a selling unit"
+              body="Only then is a missing unit flagged on the menu. Off for anything sold as it is."
+            />
+            {details.sellingUnitEn.trim() !== "" && (
+              <Toggle
+                on={details.unitConfirmed} pending={pending}
+                onChange={() => set({ unitConfirmed: !details.unitConfirmed })}
+                title="This selling unit is confirmed"
+                body="Until it is, the dish keeps its reminder."
+              />
+            )}
+          </div>
+
+          <Field label="Serves from" htmlFor="smin" hint="Optional.">
+            <input id="smin" value={details.servesMin} inputMode="numeric"
+              onChange={(e) => set({ servesMin: e.target.value })} className={input} />
+          </Field>
+          <Field label="Serves up to" htmlFor="smax" hint="Optional.">
+            <input id="smax" value={details.servesMax} inputMode="numeric"
+              onChange={(e) => set({ servesMax: e.target.value })} className={input} />
+          </Field>
+
+          <Field label="Smallest order" htmlFor="minq" hint="How few a customer may order.">
+            <input id="minq" value={details.minQuantity} inputMode="numeric"
+              onChange={(e) => set({ minQuantity: e.target.value })} className={input} />
+          </Field>
+          <Field label="Ordered in steps of" htmlFor="step">
+            <input id="step" value={details.quantityStep} inputMode="numeric"
+              onChange={(e) => set({ quantityStep: e.target.value })} className={input} />
+          </Field>
+
+          <Field label="Note to yourself" htmlFor="rnote" full hint="Never shown to a customer.">
+            <input id="rnote" value={details.reviewNote}
+              onChange={(e) => set({ reviewNote: e.target.value })} className={input} />
+          </Field>
+        </div>
+
+        <button type="button" disabled={pending}
+          onClick={() => run("The details", () => saveProduct(product.id, details))}
+          className="btn-primary mt-6 disabled:bg-ink/25">
+          Save these details
+        </button>
+      </Panel>
+
       {/* --- allergens --- */}
       <Panel
         title="Allergens"
@@ -316,6 +385,24 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
 
         {product.eventPricingEnabled && (
           <div className="mt-6">
+            {/* Worked out for this dish, from the price as it is being typed. */}
+            {product.variants.length > 0 && (
+              <div className="mb-5 flex flex-wrap items-center gap-3">
+                <label htmlFor="evchoice" className="text-[14px] text-ink-soft">
+                  Prices shown for
+                </label>
+                <select id="evchoice" value={pricingChoice}
+                  onChange={(e) => setPricingChoice(e.target.value)}
+                  className={`${input} w-auto`}>
+                  {product.variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.nameEn} — {formatEGP(v.price)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <p className="text-[14.5px] text-ink-soft">
               {ownLadder
                 ? "This dish has its own bands, which replace the shared ladder for it."
@@ -323,18 +410,32 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
             </p>
 
             {!ownLadder && (
-              <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
+              <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
                 {sharedTiers.map((t) => (
-                  <li key={t.minGuests} className="text-[13.5px] tabular-nums text-ink-faint">
-                    {t.minGuests}&ndash;{t.maxGuests}: {multiplierText(t.multiplierBp)}
+                  <li key={t.minGuests} className="flex items-baseline gap-3 text-[14px] tabular-nums">
+                    <span className="w-24 text-ink-faint">
+                      {t.minGuests}&ndash;{t.maxGuests} guests
+                    </span>
+                    <span className="w-12 text-ink-soft">{multiplierText(t.multiplierBp)}</span>
+                    <span className="font-medium text-ink">
+                      {eventBasis === null
+                        ? "—"
+                        : formatEGP(Math.round((eventBasis * t.multiplierBp) / 10000))}
+                    </span>
                   </li>
                 ))}
               </ul>
             )}
 
+            {eventBasis === null && (
+              <p className="mt-3 text-[13.5px] text-ink-faint">
+                Give the dish a price and the event amounts appear here.
+              </p>
+            )}
+
             <TierEditor
               tiers={tiers} setTiers={setTiers} pending={pending}
-              basePrice={product.basePrice}
+              basePrice={eventBasis}
               onSave={() => run("The bands", () => saveProductTiers(product.id, tiers))}
               onClear={() => run("The bands", async () => {
                 const r = await clearProductTiers(product.id);
@@ -358,24 +459,6 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
         )}
       </Panel>
 
-      {/* --- where it shows --- */}
-      <Panel title="On the site">
-        <div className="grid gap-4">
-          <Toggle
-            on={product.isAvailable} pending={pending}
-            onChange={() => run("The menu", () => setProductAvailability(product.id, !product.isAvailable))}
-            title="On the menu"
-            body="Off means customers can see it but not order it."
-          />
-          <Toggle
-            on={product.isFeatured} pending={pending}
-            onChange={() => run("The homepage", () => setFeatured(product.id, !product.isFeatured))}
-            title="Show on the homepage"
-            body="Featured dishes lead the homepage."
-          />
-        </div>
-      </Panel>
-
       <ArchiveDish id={product.id} name={product.nameEn} orderCount={product.orderCount} />
     </div>
   );
@@ -385,6 +468,38 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
 
 const input =
   "w-full rounded-sm border border-line bg-cream px-4 py-2.5 text-[15px] text-ink placeholder:text-ink-faint focus:border-gold focus:outline-none";
+
+/** A price as typed, in piastres, or null while it is not a price yet. */
+function typedPiastres(text: string): number | null {
+  const clean = text.replace(/,/g, "").trim();
+  if (clean === "") return null;
+  const n = Number(clean);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return Math.round(n * PIASTRES_PER_POUND);
+}
+
+/**
+ * Available or unavailable, said in words rather than hidden in a checkbox:
+ * this is the control the kitchen reaches for, and it must never read as
+ * anything to do with retiring a dish.
+ */
+function AvailabilityButton({ on, available, pending, onClick }: {
+  on: boolean; available: boolean; pending: boolean; onClick: () => void;
+}) {
+  const tone = available
+    ? "border-[#2E6B45] bg-[#2E6B45] text-cream"
+    : "border-[#A6391C] bg-[#A6391C] text-cream";
+  return (
+    <button
+      type="button" disabled={pending} onClick={onClick} aria-pressed={on}
+      className={`rounded-full border px-6 py-2.5 text-[15px] transition-colors ${
+        on ? tone : "border-line bg-cream text-ink-soft hover:border-ink/40"
+      }`}
+    >
+      {available ? "Available" : "Unavailable"}
+    </button>
+  );
+}
 
 function Panel({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {
   return (

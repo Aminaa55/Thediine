@@ -277,14 +277,18 @@ customer asked for is carried in a banner at the top rather than buried.
 
 ### Menu management
 
-At `/admin/menu`. The list is grouped by course and leads with what still needs
-deciding: dishes **without a selling unit**, dishes whose **allergens have never
-been checked**, dishes carrying a **note from setup**, and any dish with **no
-price**. Those counts are the filters -- clicking one narrows the list -- and the
-filter lives in the address, so a view is a link.
+At `/admin/menu`. The list is grouped by course, has a **search** for finding one
+dish among seventy, and leads with what still needs deciding: dishes whose
+**allergens have never been checked**, dishes carrying a **note from setup**, any
+dish with **no price**, and a **selling unit** only where the business has said
+that dish needs one. Those counts are the filters -- clicking one narrows the
+list -- and the filter lives in the address, so a view is a link.
 
-Taking a dish off the menu is one click from the list, and the customer site
-agrees immediately: the dish stays visible but cannot be ordered.
+**Available and unavailable is not retiring.** Availability is the daily edit:
+one click from the list, or an Available / Unavailable control on the dish. The
+dish stays on the menu, stays in the database, and every order that contains it
+is untouched; it simply cannot be ordered today. Retiring is a separate,
+confirmed action at the bottom of the dish, and even that only archives.
 
 **Editing a dish never rewrites history.** Prices, names and options are copied
 onto an order when it is placed, so changing the price of Lasagna today leaves
@@ -292,11 +296,16 @@ every past order exactly as it was. This is tested, not assumed.
 
 Inside a dish:
 
-- **The dish** -- name, description, course, price (typed in pounds, held in
-  piastres), selling unit and whether it is confirmed, serving range, smallest
-  order and step, and a private note. A selling unit is never invented: it stays
-  empty, and the dish keeps its reminder, until the business says what one of
-  these is.
+- **The dish** -- name, description, course and the regular price (typed in
+  pounds, held in piastres): the handful of things that change most often, and
+  nothing else.
+- **Availability** -- Available or Unavailable, plus whether it leads the
+  homepage.
+- **Serving and order details** -- selling unit, whether this dish is one that
+  needs a unit at all, whether the unit is confirmed, the serving range, the
+  smallest order and the step, and a private note. A selling unit is never
+  invented, and a missing one is only flagged where the business has said that
+  dish needs one -- nothing is chased just to clear a warning.
 - **Priced choices** -- a dish has either one price or a set of priced choices,
   never both; adding the first choice clears the single price. **A choice that
   has been ordered before cannot be removed** -- it can only be switched off --
@@ -307,9 +316,12 @@ Inside a dish:
   unchecked until someone confirms them against a recipe.
 - **Event pricing** -- whether the dish scales by guest count at all, and either
   the shared ladder or bands of its own (a multiplier or a flat price per band).
+  Every band is shown **in this dish's own money** -- 11--20 guests at 1.5x on a
+  1,000 EGP dish reads 1,500 EGP -- and the amounts follow the price as it is
+  typed, before anything is saved. A dish sold as priced choices prices its
+  events from the **chosen** choice, not from a general price it does not have.
   **Overlapping bands are refused**, so a guest count can only ever fall in one
   band. Normal prices are untouched by any of this.
-- **On the site** -- on the menu, and on the homepage.
 
 **A dish is retired, never deleted.** It leaves the customer menu and stays on
 every order it was ever part of. Courses are renamed, reordered and hidden at

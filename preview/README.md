@@ -25,8 +25,9 @@ business's own. Edits made in the preview change only that browser's copy;
 "Reset the sample data" puts the real menu back. The rules the real admin
 enforces are enforced here too: a price is typed in pounds and held in piastres,
 a dish has either one price or priced choices, a choice that has been ordered
-cannot be removed, event bands may not overlap, and a dish is retired rather than
-deleted.
+cannot be removed, event bands may not overlap, a missing selling unit is only
+flagged where the dish has been marked as needing one, and a dish is retired
+rather than deleted -- which is a different thing from being unavailable today.
 
 It does **not** use the real authentication and does not weaken it. The real
 sign-in hashes passwords with scrypt and carries a signed session cookie, both

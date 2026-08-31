@@ -16,7 +16,7 @@ import type { MenuProduct } from "@/lib/admin-menu";
  */
 
 const FLAG_TEXT: Record<string, string> = {
-  "no-unit": "No selling unit",
+  "no-unit": "Selling unit needed",
   "unreviewed-allergens": "Allergens unchecked",
   "has-note": "Has a note",
   "no-price": "No price",
@@ -25,7 +25,15 @@ const FLAG_TEXT: Record<string, string> = {
 export function MenuList({
   products, filter,
 }: { products: MenuProduct[]; filter: string | null }) {
+  // Seventy-odd dishes is too many to scroll for one of them.
+  const [query, setQuery] = useState("");
+  const needle = query.trim().toLowerCase();
+
   const shown = products.filter((p) => {
+    if (needle) {
+      const hay = `${p.nameEn} ${p.variants.map((v) => v.nameEn).join(" ")}`.toLowerCase();
+      if (!hay.includes(needle)) return false;
+    }
     if (filter === "unavailable") return !p.isAvailable;
     if (filter === "no-unit") return p.flags.includes("no-unit");
     if (filter === "unreviewed") return p.flags.includes("unreviewed-allergens");
@@ -40,16 +48,36 @@ export function MenuList({
     else courses.push({ name: p.category.nameEn, slug: p.category.slug, items: [p] });
   }
 
+  const search = (
+    <div className="flex flex-wrap items-center gap-3">
+      <label htmlFor="dish-search" className="sr-only">Find a dish</label>
+      <input
+        id="dish-search" type="search" value={query} placeholder="Find a dish"
+        onChange={(e) => setQuery(e.target.value)}
+        className="w-full max-w-xs rounded-sm border border-line bg-cream-warm px-4 py-2.5 text-[15px] text-ink placeholder:text-ink-faint focus:border-gold focus:outline-none"
+      />
+      {needle && (
+        <span className="text-[13.5px] text-ink-faint">
+          {shown.length} {shown.length === 1 ? "dish" : "dishes"}
+        </span>
+      )}
+    </div>
+  );
+
   if (shown.length === 0) {
     return (
-      <p className="rounded-sm border border-line bg-cream-warm px-6 py-10 text-center text-[15.5px] text-ink-soft">
-        Nothing here.
-      </p>
+      <div className="grid gap-5">
+        {search}
+        <p className="rounded-sm border border-line bg-cream-warm px-6 py-10 text-center text-[15.5px] text-ink-soft">
+          Nothing here.
+        </p>
+      </div>
     );
   }
 
   return (
     <div className="grid gap-6">
+      {search}
       {courses.map((c) => (
         <section key={c.slug} className="overflow-hidden rounded-sm border border-line bg-cream-warm">
           <header className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line px-6 py-4">
@@ -138,7 +166,7 @@ function Row({ product, first, last }: { product: MenuProduct; first: boolean; l
           {price}
         </span>
 
-        {/* The daily edit. */}
+        {/* The daily edit. Says what it does: this is not retiring a dish. */}
         <button
           type="button"
           disabled={pending}
@@ -150,7 +178,7 @@ function Row({ product, first, last }: { product: MenuProduct; first: boolean; l
               : "border-[#A6391C]/40 bg-[#A6391C]/[0.07] text-[#A6391C] hover:border-[#A6391C]"
           }`}
         >
-          {product.isAvailable ? "On the menu" : "Off the menu"}
+          {product.isAvailable ? "Available" : "Unavailable"}
         </button>
       </div>
 

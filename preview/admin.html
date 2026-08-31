@@ -458,6 +458,24 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .check .box.on{border-color:var(--gold); background:var(--gold)}
 .check .t{display:block; font-size:15px}
 .check .b{display:block; margin-top:2px; font-size:13.5px; color:var(--ink-soft)}
+.avail{border:1px solid var(--line); background:var(--cream); border-radius:999px;
+  padding:10px 24px; font-size:15px; color:var(--ink-soft)}
+.avail:hover{border-color:rgba(59,35,16,.4)}
+.avail.on{border-color:var(--paid); background:var(--paid); color:var(--cream)}
+.avail.no.on{border-color:var(--alert); background:var(--alert); color:var(--cream)}
+.ladder{display:grid; gap:6px; margin-top:12px}
+@media(min-width:640px){.ladder{grid-template-columns:1fr 1fr; column-gap:32px}}
+.ladder li{display:flex; align-items:baseline; gap:12px; font-size:14px;
+  font-variant-numeric:tabular-nums}
+.ladder .g{width:7.5rem; color:var(--ink-faint)}
+.ladder .x{width:3rem; color:var(--ink-soft)}
+.ladder .amt{font-weight:500; color:var(--ink)}
+#dish-search{width:100%; max-width:20rem; border:1px solid var(--line);
+  background:var(--cream-warm); border-radius:2px; padding:10px 14px; font-size:15px}
+#dish-search:focus{outline:none; border-color:var(--gold)}
+.band label{color:var(--ink-faint)}
+.band select{border:1px solid var(--line); background:var(--cream); border-radius:2px;
+  padding:8px 12px; font-size:14.5px}
 .flash{margin-bottom:20px; border:1px solid rgba(46,107,69,.35); background:rgba(46,107,69,.07);
   border-radius:2px; padding:11px 16px; font-size:14.5px; color:var(--paid)}
 .retire{margin-top:8px}
@@ -562,7 +580,7 @@ function iso(offsetDays) {
   d.setDate(d.getDate() + offsetDays);
   return d.toISOString().slice(0, 10);
 }
-var MENU_SEED = {"cats":[{"slug":"main-courses","name":"Main Courses","desc":null,"active":true},{"slug":"side-dishes","name":"Side Dishes","desc":null,"active":true},{"slug":"salads","name":"Salads","desc":null,"active":true},{"slug":"desserts","name":"Desserts","desc":null,"active":true}],"allerg":[{"slug":"dairy","name":"Dairy"},{"slug":"egg","name":"Egg"},{"slug":"fish","name":"Fish"},{"slug":"gluten","name":"Gluten"},{"slug":"nuts","name":"Nuts"},{"slug":"seafood","name":"Seafood / shellfish"},{"slug":"sesame","name":"Sesame"},{"slug":"soy","name":"Soy"}],"tiers":[{"min":1,"max":10,"bp":10000},{"min":11,"max":20,"bp":15000},{"min":21,"max":30,"bp":20000},{"min":31,"max":40,"bp":25000},{"min":41,"max":50,"bp":30000},{"min":51,"max":60,"bp":35000},{"min":61,"max":70,"bp":40000},{"min":71,"max":80,"bp":45000},{"min":81,"max":90,"bp":50000},{"min":91,"max":100,"bp":55000}],"dishes":[{"id":"stuffed-pigeons","name":"Stuffed Pigeons","cat":"main-courses","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Stuffing","ch":[{"name":"Freek, raisins & nuts","avail":true},{"name":"Rice, raisins & nuts","avail":true}]}],"v":[]},{"id":"stuffed-chicken-lesan-asfour","name":"Stuffed Chicken with Lesan Asfour","cat":"main-courses","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"egyptian-fattah-moza","name":"Egyptian Fattah with Moza","cat":"main-courses","price":185000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"lebanese-fattah-chicken","name":"Lebanese Fattah with Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With chicken and yogurt, served with basmati rice, almonds & fried Lebanese bread.","tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[]},{"id":"sweet-sour-shrimps","name":"Sweet & Sour Shrimps","cat":"main-courses","price":165000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[]},{"id":"sweet-sour-chicken","name":"Sweet & Sour Chicken","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[]},{"id":"roast-fakhda","name":"Roast Fakhda","cat":"main-courses","price":375000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-turkey","name":"Roast Turkey","cat":"main-courses","price":450000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey Breasts.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-salmon-side","name":"Roast Salmon Side","cat":"main-courses","price":270000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"fish","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & cranberries","avail":true},{"name":"Coconut basmati rice","avail":true},{"name":"Grilled vegetables","avail":true},{"name":"Creamy spinach","avail":true}]}],"v":[]},{"id":"grilled-shrimps","name":"Grilled Shrimps","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Noodles","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"duck-shanks","name":"Duck Shanks","cat":"main-courses","price":210000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Freek & vegetables, almonds","avail":true},{"name":"Sha'reya, almonds & cranberries","avail":true}]}],"v":[]},{"id":"filet-meat","name":"Filet Meat","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-beef","name":"Roast Beef","cat":"main-courses","price":230000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"roast-turkey-breasts","name":"Roast Turkey Breasts","cat":"main-courses","price":200000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With special brown sauce.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[]},{"id":"grilled-kofta-mini-chicken-shish","name":"Grilled Kofta with Mini Chicken Shish","cat":"main-courses","price":175000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice & almonds","avail":true},{"name":"Potato wedges","avail":true}]}],"v":[]},{"id":"swedish-meatballs","name":"Swedish Meatballs","cat":"main-courses","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with jasmine rice.","tiers":[],"al":[],"og":[],"v":[]},{"id":"chicken-breast-mushroom-mozzarella","name":"Chicken Breast stuffed with Mushroom & Mozzarella in Creamy Spinach White Sauce","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"lemon-butter-chicken","name":"Lemon & Butter Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with basmati rice.","tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"tagine-meammar-pigeon-fillet","name":"Tagine Meammar with Pigeon Fillet","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"sharkasia","name":"Sharkasia","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with chicken, Egyptian rice & walnuts.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"heart-kidneys-shareya","name":"Heart & Kidneys with Sha'reya","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with sha'reya & almonds.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"sambousek-minced-meat-mozzarella","name":"Sambousek with Minced Meat & Mozzarella","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding \u2014 the PDF ended in \"..\".","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"sambousek-white-cheese-mint","name":"Sambousek with White Cheese & Mint","cat":"side-dishes","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"mahshi","name":"Mahshi","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. UNRESOLVED: does the customer choose one vegetable, several, or is it always a mixed assortment?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Eggplant, zucchini, pepper, onion, potatoes, tomatoes.","tiers":[],"al":[],"og":[],"v":[]},{"id":"noodles","name":"Noodles","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only \u2014 allergens are currently held per product, not per variant, so the warning shows on all three.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"With vegetables","price":65000,"avail":true},{"name":"With chicken","price":80000,"avail":true},{"name":"With shrimps","price":105000,"avail":true}]},{"id":"spring-rolls","name":"Spring Rolls","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"Plain","price":60000,"avail":true},{"name":"With chicken","price":75000,"avail":true},{"name":"With shrimps","price":95000,"avail":true}]},{"id":"basmati-rice","name":"Basmati Rice","cat":"side-dishes","price":60000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"coconut-rice","name":"Coconut Rice","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"cream-spinach-chicken","name":"Cream Spinach with Chicken","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"eggplant-rolls-avocado-mozzarella","name":"Eggplant Rolls stuffed with Avocado & Mozzarella in Pink Sauce","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"mushroom-saute","name":"Mushroom Saut\u00e9 with Caramelized Onions & Parsley","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"rokak-minced-meat","name":"Rokak with Minced Meat","cat":"side-dishes","price":90000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"rokak-cones","name":"Rokak Cones with Minced Meat, Mozzarella & Tomatoes","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"lasagna","name":"Lasagna","cat":"side-dishes","price":100000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[]},{"id":"negresco","name":"Negresco","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"vine-leaves","name":"Vine Leaves","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"potato-gratin","name":"Potato Gratin","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"kobeba","name":"Kobeba","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"mombar-pops","name":"Mombar Pops","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"hawawshi","name":"Hawawshi","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"mushroom-rocca-salad","name":"Fresh Mushroom Rocca Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"caesar-salad","name":"Caesar Salad with Avocado, Apples, Chicken & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here; it is absent from the confirmed price list. Confirm whether it was removed.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"eggplant-salad","name":"Eggplant Salad with Pomegranate & Almonds","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"colored pepper\" here; absent from the confirmed list. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"blue-cheese-salad","name":"Blue Cheese Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"fattoush","name":"Fattoush","cat":"salads","price":55000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"tahini","name":"Tahini","cat":"salads","price":40000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"sesame","r":false}],"og":[],"v":[]},{"id":"baba-ganoush","name":"Baba Ganoush","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"coleslaw","name":"Coleslaw","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"tiramisu","name":"Tiramisu \u2014 Big Bowl","cat":"desserts","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Is \"Big Bowl\" a size, with other sizes to follow?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"batata-gratin","name":"Batata Gratin","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"batata-creme-brulee","name":"Batata with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"kunafa-cream","name":"Kunafa with Cream","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"cinnabon-cake","name":"Cinnabon Cake","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"lotus-cinnabons-12","name":"12 Lotus Cinnabons","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Quantity (12 pieces) is stated in the name \u2014 confirm it as the selling unit.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"chocolate-cake","name":"Chocolate Cake","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"golden-basbousa-cake","name":"Golden Basbousa Cake","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"cheesecake-creme-brulee","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"cheesecake-maltesers","name":"Cheesecake Maltesers","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"cheesecake-oreo","name":"Cheesecake Oreo","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"san-sebastian-cheesecake","name":"San Sebasti\u00e1n Cheesecake","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"honey-cake","name":"Honey Cake","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"lotus-brownies","name":"Lotus Brownies","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"om-ali-creme-brulee","name":"Om Ali with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"tres-leches","name":"Tres Leches","cat":"desserts","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[{"name":"Caramel","price":130000,"avail":true},{"name":"Mango","price":140000,"avail":true}]},{"id":"profiteroles-caramel-custard","name":"Profiteroles with Caramel Custard, Croquant & Chocolate Sauce","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"profiteroles-kunafa-pistachio","name":"Profiteroles with Kunafa & Pistachio Sauce","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[]},{"id":"mini-bites-baklava-nutella","name":"Mini Bites Baklava with Nutella","cat":"desserts","price":120000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"mini-bites-baklava-lotus","name":"Mini Bites Baklava with Lotus","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"mini-bites-baklava-hazelnut","name":"Mini Bites Baklava with Hazelnut","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"mini-baklava-kunafa","name":"Mini Baklava with Kunafa","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Named \"Mini\" rather than \"Mini Bites\" \u2014 same family, or a different product?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[]},{"id":"bonbon-chocolate-box-pistachio-kunafa","name":"Bonbon Chocolate Box stuffed with Pistachio Kunafa","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[]},{"id":"cheesecake-creme-brulee-blueberries","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e with Blueberries","cat":"desserts","price":155000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[]}]};
+var MENU_SEED = {"cats":[{"slug":"main-courses","name":"Main Courses","desc":null,"active":true},{"slug":"side-dishes","name":"Side Dishes","desc":null,"active":true},{"slug":"salads","name":"Salads","desc":null,"active":true},{"slug":"desserts","name":"Desserts","desc":null,"active":true}],"allerg":[{"slug":"dairy","name":"Dairy"},{"slug":"egg","name":"Egg"},{"slug":"fish","name":"Fish"},{"slug":"gluten","name":"Gluten"},{"slug":"nuts","name":"Nuts"},{"slug":"seafood","name":"Seafood / shellfish"},{"slug":"sesame","name":"Sesame"},{"slug":"soy","name":"Soy"}],"tiers":[{"min":1,"max":10,"bp":10000},{"min":11,"max":20,"bp":15000},{"min":21,"max":30,"bp":20000},{"min":31,"max":40,"bp":25000},{"min":41,"max":50,"bp":30000},{"min":51,"max":60,"bp":35000},{"min":61,"max":70,"bp":40000},{"min":71,"max":80,"bp":45000},{"min":81,"max":90,"bp":50000},{"min":91,"max":100,"bp":55000}],"dishes":[{"id":"stuffed-pigeons","name":"Stuffed Pigeons","cat":"main-courses","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Stuffing","ch":[{"name":"Freek, raisins & nuts","avail":true},{"name":"Rice, raisins & nuts","avail":true}]}],"v":[],"unitreq":false},{"id":"stuffed-chicken-lesan-asfour","name":"Stuffed Chicken with Lesan Asfour","cat":"main-courses","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"egyptian-fattah-moza","name":"Egyptian Fattah with Moza","cat":"main-courses","price":185000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"lebanese-fattah-chicken","name":"Lebanese Fattah with Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With chicken and yogurt, served with basmati rice, almonds & fried Lebanese bread.","tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[],"unitreq":false},{"id":"sweet-sour-shrimps","name":"Sweet & Sour Shrimps","cat":"main-courses","price":165000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"sweet-sour-chicken","name":"Sweet & Sour Chicken","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-fakhda","name":"Roast Fakhda","cat":"main-courses","price":375000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-turkey","name":"Roast Turkey","cat":"main-courses","price":450000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey Breasts.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-salmon-side","name":"Roast Salmon Side","cat":"main-courses","price":270000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"fish","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & cranberries","avail":true},{"name":"Coconut basmati rice","avail":true},{"name":"Grilled vegetables","avail":true},{"name":"Creamy spinach","avail":true}]}],"v":[],"unitreq":false},{"id":"grilled-shrimps","name":"Grilled Shrimps","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Noodles","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"duck-shanks","name":"Duck Shanks","cat":"main-courses","price":210000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Freek & vegetables, almonds","avail":true},{"name":"Sha'reya, almonds & cranberries","avail":true}]}],"v":[],"unitreq":false},{"id":"filet-meat","name":"Filet Meat","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-beef","name":"Roast Beef","cat":"main-courses","price":230000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-turkey-breasts","name":"Roast Turkey Breasts","cat":"main-courses","price":200000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With special brown sauce.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"grilled-kofta-mini-chicken-shish","name":"Grilled Kofta with Mini Chicken Shish","cat":"main-courses","price":175000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice & almonds","avail":true},{"name":"Potato wedges","avail":true}]}],"v":[],"unitreq":false},{"id":"swedish-meatballs","name":"Swedish Meatballs","cat":"main-courses","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with jasmine rice.","tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"chicken-breast-mushroom-mozzarella","name":"Chicken Breast stuffed with Mushroom & Mozzarella in Creamy Spinach White Sauce","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"lemon-butter-chicken","name":"Lemon & Butter Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with basmati rice.","tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"tagine-meammar-pigeon-fillet","name":"Tagine Meammar with Pigeon Fillet","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"sharkasia","name":"Sharkasia","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with chicken, Egyptian rice & walnuts.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"heart-kidneys-shareya","name":"Heart & Kidneys with Sha'reya","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with sha'reya & almonds.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"sambousek-minced-meat-mozzarella","name":"Sambousek with Minced Meat & Mozzarella","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding \u2014 the PDF ended in \"..\".","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"sambousek-white-cheese-mint","name":"Sambousek with White Cheese & Mint","cat":"side-dishes","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mahshi","name":"Mahshi","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. UNRESOLVED: does the customer choose one vegetable, several, or is it always a mixed assortment?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Eggplant, zucchini, pepper, onion, potatoes, tomatoes.","tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"noodles","name":"Noodles","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only \u2014 allergens are currently held per product, not per variant, so the warning shows on all three.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"With vegetables","price":65000,"avail":true},{"name":"With chicken","price":80000,"avail":true},{"name":"With shrimps","price":105000,"avail":true}],"unitreq":false},{"id":"spring-rolls","name":"Spring Rolls","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"Plain","price":60000,"avail":true},{"name":"With chicken","price":75000,"avail":true},{"name":"With shrimps","price":95000,"avail":true}],"unitreq":false},{"id":"basmati-rice","name":"Basmati Rice","cat":"side-dishes","price":60000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"coconut-rice","name":"Coconut Rice","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"cream-spinach-chicken","name":"Cream Spinach with Chicken","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"eggplant-rolls-avocado-mozzarella","name":"Eggplant Rolls stuffed with Avocado & Mozzarella in Pink Sauce","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mushroom-saute","name":"Mushroom Saut\u00e9 with Caramelized Onions & Parsley","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"rokak-minced-meat","name":"Rokak with Minced Meat","cat":"side-dishes","price":90000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"rokak-cones","name":"Rokak Cones with Minced Meat, Mozzarella & Tomatoes","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"lasagna","name":"Lasagna","cat":"side-dishes","price":100000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[],"unitreq":false},{"id":"negresco","name":"Negresco","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"vine-leaves","name":"Vine Leaves","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"potato-gratin","name":"Potato Gratin","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"kobeba","name":"Kobeba","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"mombar-pops","name":"Mombar Pops","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"hawawshi","name":"Hawawshi","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"mushroom-rocca-salad","name":"Fresh Mushroom Rocca Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"caesar-salad","name":"Caesar Salad with Avocado, Apples, Chicken & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here; it is absent from the confirmed price list. Confirm whether it was removed.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"eggplant-salad","name":"Eggplant Salad with Pomegranate & Almonds","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"colored pepper\" here; absent from the confirmed list. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"blue-cheese-salad","name":"Blue Cheese Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"fattoush","name":"Fattoush","cat":"salads","price":55000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"tahini","name":"Tahini","cat":"salads","price":40000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"sesame","r":false}],"og":[],"v":[],"unitreq":false},{"id":"baba-ganoush","name":"Baba Ganoush","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"coleslaw","name":"Coleslaw","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"tiramisu","name":"Tiramisu \u2014 Big Bowl","cat":"desserts","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Is \"Big Bowl\" a size, with other sizes to follow?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"batata-gratin","name":"Batata Gratin","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"batata-creme-brulee","name":"Batata with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"kunafa-cream","name":"Kunafa with Cream","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cinnabon-cake","name":"Cinnabon Cake","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"lotus-cinnabons-12","name":"12 Lotus Cinnabons","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Quantity (12 pieces) is stated in the name \u2014 confirm it as the selling unit.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"chocolate-cake","name":"Chocolate Cake","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"golden-basbousa-cake","name":"Golden Basbousa Cake","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-creme-brulee","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-maltesers","name":"Cheesecake Maltesers","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-oreo","name":"Cheesecake Oreo","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"san-sebastian-cheesecake","name":"San Sebasti\u00e1n Cheesecake","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"honey-cake","name":"Honey Cake","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"lotus-brownies","name":"Lotus Brownies","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"om-ali-creme-brulee","name":"Om Ali with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"tres-leches","name":"Tres Leches","cat":"desserts","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[{"name":"Caramel","price":130000,"avail":true},{"name":"Mango","price":140000,"avail":true}],"unitreq":false},{"id":"profiteroles-caramel-custard","name":"Profiteroles with Caramel Custard, Croquant & Chocolate Sauce","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"profiteroles-kunafa-pistachio","name":"Profiteroles with Kunafa & Pistachio Sauce","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mini-bites-baklava-nutella","name":"Mini Bites Baklava with Nutella","cat":"desserts","price":120000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mini-bites-baklava-lotus","name":"Mini Bites Baklava with Lotus","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"mini-bites-baklava-hazelnut","name":"Mini Bites Baklava with Hazelnut","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mini-baklava-kunafa","name":"Mini Baklava with Kunafa","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Named \"Mini\" rather than \"Mini Bites\" \u2014 same family, or a different product?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"bonbon-chocolate-box-pistachio-kunafa","name":"Bonbon Chocolate Box stuffed with Pistachio Kunafa","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-creme-brulee-blueberries","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e with Blueberries","cat":"desserts","price":155000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false}]};
 
 function freshData() {
   return {
@@ -1231,6 +1249,8 @@ var CARRY = false;      /* keep the message across one navigation */
 var MENU_MSG = null;    /* a one-off line at the top of the page */
 var MENU_ERR = null;
 var BANDS = null;       /* the bands being edited, before they are saved */
+var EV_CHOICE = null;   /* the priced choice the event amounts are shown for */
+var SEARCH = "";        /* what has been typed into the menu's search */
 var RETIRING = false;
 
 function catFor(slug) {
@@ -1248,7 +1268,8 @@ function unchecked(d) {
 }
 function dishFlags(d) {
   var f = [];
-  if (!d.unit || !d.unitok) f.push(["No selling unit", false]);
+  /* only a gap where the business has said this dish needs a unit */
+  if (d.unitreq && (!d.unit || !d.unitok)) f.push(["Selling unit needed", false]);
   if (unchecked(d)) f.push(["Allergens unchecked", true]);
   if (d.note) f.push(["Has a note", false]);
   if (d.price === null && !d.v.length) f.push(["No price", true]);
@@ -1290,13 +1311,17 @@ function viewMenu() {
   var all = liveDishes();
   var counts = {
     off: all.filter(function (d) { return !d.avail; }).length,
-    unit: all.filter(function (d) { return !d.unit || !d.unitok; }).length,
+    unit: all.filter(function (d) { return d.unitreq && (!d.unit || !d.unitok); }).length,
     al: all.filter(function (d) { return unchecked(d); }).length,
     notes: all.filter(function (d) { return !!d.note; }).length
   };
   var keep = function (d) {
+    if (SEARCH) {
+      var hay = (d.name + " " + d.v.map(function (v) { return v.name; }).join(" ")).toLowerCase();
+      if (hay.indexOf(SEARCH.toLowerCase()) < 0) return false;
+    }
     if (show === "unavailable") return !d.avail;
-    if (show === "no-unit") return !d.unit || !d.unitok;
+    if (show === "no-unit") return d.unitreq && (!d.unit || !d.unitok);
     if (show === "unreviewed") return unchecked(d);
     if (show === "notes") return !!d.note;
     return true;
@@ -1305,14 +1330,15 @@ function viewMenu() {
     return '<a class="chip sm' + (show === v ? " on" : "") + '" href="'
       + (v ? "#/menu?show=" + v : "#/menu") + '">' + label + "</a>";
   };
+  var shown = all.filter(keep);
   var courses = S.menu.cats.map(function (c) {
     var mine = all.filter(function (d) { return d.cat === c.slug; });
-    var shown = mine.filter(keep);
-    if (!shown.length) return "";
+    var here = mine.filter(keep);
+    if (!here.length) return "";
     return '<section class="course"><header><h2>' + esc(c.name) + "</h2>"
       + '<span class="n tnum">' + mine.length + (mine.length === 1 ? " dish" : " dishes")
       + "</span></header><ul>"
-      + shown.map(function (d) { return menuRow(d, mine.indexOf(d), mine.length); }).join("")
+      + here.map(function (d) { return menuRow(d, mine.indexOf(d), mine.length); }).join("")
       + "</ul></section>";
   }).join("");
 
@@ -1322,15 +1348,25 @@ function viewMenu() {
     + '<div class="acts"><a class="quiet" href="#/menu/categories">Courses</a>'
     + '<a class="btn btn-primary" href="#/menu/new">Add a dish</a></div></div>'
     + '<div class="stats">'
-    + stat("Off the menu", counts.off, "#/menu?show=unavailable")
-    + stat("Without a selling unit", counts.unit, "#/menu?show=no-unit")
+    + stat("Unavailable today", counts.off, "#/menu?show=unavailable")
     + stat("Allergens to check", counts.al, "#/menu?show=unreviewed")
+    + stat("Selling unit needed", counts.unit, "#/menu?show=no-unit")
     + "</div>"
     + '<div class="chips" style="margin-top:28px">'
-    + chip("", "Everything") + chip("unavailable", "Off the menu")
-    + chip("no-unit", "No selling unit") + chip("unreviewed", "Allergens unchecked")
+    + chip("", "Everything") + chip("unavailable", "Unavailable")
+    + chip("unreviewed", "Allergens unchecked")
+    + (counts.unit ? chip("no-unit", "Selling unit needed") : "")
     + (counts.notes ? chip("notes", "Has a note") : "")
-    + "</div>" + (courses || '<p class="sub">Nothing to show under that filter.</p>')
+    + "</div>"
+    /* seventy-odd dishes is too many to scroll for one of them */
+    + '<div class="chips" style="margin-top:20px">'
+    + '<input id="dish-search" type="search" placeholder="Find a dish" value="'
+    + esc(SEARCH) + '">'
+    + (SEARCH
+        ? '<span class="hint">' + shown.length + (shown.length === 1 ? " dish" : " dishes")
+          + "</span>"
+        : "")
+    + (courses || '<p class="sub" style="margin-top:24px">Nothing here.</p>')
     + "</main>";
 }
 
@@ -1346,7 +1382,7 @@ function menuRow(d, i, n) {
       }).join("") + "</a>"
     + '<span class="pr tnum">' + priceText(d) + "</span>"
     + '<button type="button" class="av ' + (d.avail ? "on" : "off") + '" data-m="avail" data-id="'
-    + d.id + '">' + (d.avail ? "On the menu" : "Off the menu") + "</button></li>";
+    + d.id + '">' + (d.avail ? "Available" : "Unavailable") + "</button></li>";
 }
 
 function flashes() {
@@ -1375,6 +1411,7 @@ function viewDish(id) {
   var d = dishBy(id);
   if (!d) return "<main><h1>That dish is not here.</h1>"
     + '<p class="sub"><a class="crumb" href="#/menu">Back to the menu</a></p></main>';
+  if (EV_CHOICE === null && d.v.length) EV_CHOICE = d.v[0].name;
   if (BANDS === null) BANDS = (d.tiers || []).map(function (t) {
     return { min: String(t.min), max: String(t.max), mult: t.bp ? String(t.bp / 10000) : "",
              price: t.price ? pounds(t.price) : "" };
@@ -1385,23 +1422,48 @@ function viewDish(id) {
       + esc(c.name) + "</option>";
   }).join("");
 
+  /* what changes most often, and nothing else */
   var dish = '<div class="fgrid">'
     + field("Name", "d-name", '<input id="d-name" value="' + esc(d.name) + '">')
     + field("Description", "d-desc", '<textarea id="d-desc">' + esc(d.desc || "") + "</textarea>",
             "Shown under the name on the menu.")
     + '</div><div class="fgrid two" style="margin-top:18px">'
     + field("Course", "d-cat", '<select id="d-cat">' + courseOptions + "</select>")
-    + field("Price", "d-price", '<input id="d-price" inputmode="decimal" value="'
+    + field("Regular price", "d-price", '<input id="d-price" inputmode="decimal" value="'
         + (d.price === null ? "" : pounds(d.price)) + '"' + (d.v.length ? " disabled" : "") + ">",
-        d.v.length ? "This dish is priced by its choices below."
-                   : "In EGP. This is the regular order price.")
+        d.v.length ? "Priced by its choices below."
+                   : "In EGP. What a normal order pays.")
     + "</div>"
-    + '<div class="fgrid" style="margin-top:18px">'
+    + '<button type="button" class="btn btn-primary" style="margin-top:22px" data-m="save-dish">'
+    + "Save the dish</button>";
+
+  /* available today -- which is not the same thing as retired */
+  var availability = '<div class="chips">'
+    + '<button type="button" class="avail' + (d.avail ? " on" : "") + '" data-m="avail-on">Available</button>'
+    + '<button type="button" class="avail no' + (d.avail ? "" : " on") + '" data-m="avail-off">Unavailable</button>'
+    + "</div>"
+    + '<p class="hint" style="margin-top:14px">'
+    + (d.avail
+        ? "Customers can order it."
+        : "Customers can still see it on the menu, but cannot order it. Nothing is archived and "
+          + "nothing is lost \u2014 flick it back whenever it is on again.")
+    + "</p>"
+    + '<div style="margin-top:20px; border-top:1px solid var(--line-soft); padding-top:16px">'
+    + checkbox(d.featured, "feature", "Show on the homepage", "Featured dishes lead the homepage.")
+    + "</div>"
+    + '<p class="hint" style="margin-top:18px">Taking a dish off the menu for good is a different '
+    + "thing, and it is at the bottom of this page.</p>";
+
+  /* how it is sold: real, but not the daily edit */
+  var serving = '<div class="fgrid">'
     + field("Selling unit", "d-unit", '<input id="d-unit" value="' + esc(d.unit || "") + '">',
-            "What one of these is: a tray, a kilo, twelve pieces. Left empty until the business says.")
+            "What one of these is: a tray, a kilo, twelve pieces. Left empty until the business "
+            + "says \u2014 never invented.")
     + "</div>"
+    + checkbox(!!d.unitreq, "unit-req", "This dish needs a selling unit",
+        "Only then is a missing unit flagged on the menu. Off for anything sold as it is.")
     + (d.unit ? checkbox(!!d.unitok, "unit-ok", "This selling unit is confirmed",
-        "Until it is confirmed the dish keeps its reminder on the list.") : "")
+        "Until it is, the dish keeps its reminder.") : "")
     + '<div class="fgrid two" style="margin-top:18px">'
     + field("Serves from", "d-smin", '<input id="d-smin" class="tnum" inputmode="numeric" value="'
         + (d.smin === null ? "" : d.smin) + '">', "Optional.")
@@ -1416,8 +1478,8 @@ function viewDish(id) {
     + field("Note to yourself", "d-note", '<input id="d-note" value="' + esc(d.note || "") + '">',
             "Never shown to a customer.")
     + "</div>"
-    + '<button type="button" class="btn btn-primary" style="margin-top:22px" data-m="save-dish">'
-    + "Save the dish</button>";
+    + '<button type="button" class="btn btn-primary" style="margin-top:22px" data-m="save-details">'
+    + "Save these details</button>";
 
   var choices = (d.v.length
       ? "<ul>" + d.v.map(function (v, i) {
@@ -1457,13 +1519,33 @@ function viewDish(id) {
           + "I have checked these against the recipe</button></div>"
         : "");
 
+  /* the price the bands are worked out from: the price as it is being typed,
+     or -- for a dish sold as priced choices -- the choice being looked at */
+  var basis = d.v.length
+    ? (d.v.filter(function (v) { return v.name === EV_CHOICE; })[0] || d.v[0]).price
+    : d.price;
+
   var ladder = S.menu.tiers.map(function (t) {
-    return "<b>" + t.min + "\u2013" + t.max + ": " + multLabel(t.bp) + "</b>";
+    return '<li><span class="g">' + t.min + "\u2013" + t.max + " guests</span>"
+      + '<span class="x">' + multLabel(t.bp) + "</span>"
+      + '<span class="amt tnum" data-ev-bp="' + t.bp + '">'
+      + (basis === null ? "\u2014" : egp(Math.round((basis * t.bp) / 10000))) + "</span></li>";
   }).join("");
 
+  var choicePicker = d.v.length
+    ? '<div class="band" style="margin-bottom:16px"><label for="evchoice">Prices shown for</label>'
+      + '<select id="evchoice">' + d.v.map(function (v) {
+          return '<option value="' + esc(v.name) + '"'
+            + (v.name === EV_CHOICE ? " selected" : "") + ">" + esc(v.name)
+            + " \u2014 " + egp(v.price) + "</option>";
+        }).join("") + "</select></div>"
+    : "";
+
   var bands = BANDS.map(function (t, i) {
-    var shows = d.price !== null && t.mult
-      ? ' <span class="tnum">= ' + egp(Math.round(d.price * Number(t.mult || 0))) + "</span>" : "";
+    var shows = t.mult
+      ? ' <span class="tnum amt" data-ev-bp="' + Math.round(Number(t.mult || 0) * 10000) + '">= '
+        + (basis === null ? "\u2014" : egp(Math.round(basis * Number(t.mult || 0)))) + "</span>"
+      : "";
     return '<div class="band"><input class="g tnum" aria-label="From guests" data-b="min" data-i="'
       + i + '" value="' + esc(t.min) + '"> to '
       + '<input class="g tnum" aria-label="To guests" data-b="max" data-i="' + i + '" value="'
@@ -1478,9 +1560,13 @@ function viewDish(id) {
   var event = checkbox(d.ev, "ev-toggle", "Scale this dish by guest count",
         "Off means an event pays the regular price for it.")
     + (d.ev
-        ? ((d.tiers && d.tiers.length)
-            ? '<p class="hint" style="margin-top:14px">It has bands of its own, so the shared ladder does not apply to it.</p>'
-            : '<p class="hint" style="margin-top:14px">It follows the shared ladder:</p><p class="ladder">' + ladder + "</p>")
+        ? '<div style="margin-top:16px">' + choicePicker + "</div>"
+          + ((d.tiers && d.tiers.length)
+            ? '<p class="hint">It has bands of its own, so the shared ladder does not apply to it.</p>'
+            : '<p class="hint">It follows the shared ladder:</p><ul class="ladder">' + ladder + "</ul>")
+          + (basis === null
+              ? '<p class="hint" style="margin-top:8px">Give the dish a price and the event amounts appear here.</p>'
+              : "")
           + bands
           + '<div class="chips" style="margin-top:16px">'
           + '<button type="button" class="mini" data-m="band-add">Add a band</button>'
@@ -1494,10 +1580,6 @@ function viewDish(id) {
         '<input id="d-evnote" value="' + esc(d.evnote || "") + '">', "Never shown to a customer.")
     + '</div><button type="button" class="mini" style="margin-top:14px" data-m="save-evnote">'
     + "Save the note</button>";
-
-  var site = checkbox(d.avail, "avail", "On the menu",
-        "Off means customers can see it but not order it.")
-    + checkbox(d.featured, "feature", "Show on the homepage", "Featured dishes lead the homepage.");
 
   var retire = RETIRING
     ? '<div class="danger-box"><h3>Take ' + esc(d.name) + " off the menu for good?</h3>"
@@ -1514,18 +1596,22 @@ function viewDish(id) {
     + "<h1>" + esc(d.name) + "</h1></div></div>"
     + '<div class="stack">'
     + panel("The dish", "", dish)
+    + panel("Availability",
+        "Whether customers can order this dish right now. It is a switch you can flick back the "
+        + "same day, and it never touches an order that has already been placed.", availability)
     + panel("Priced choices",
         "A dish either has one price or a set of priced choices \u2014 Noodles with vegetables, "
         + "with chicken, with shrimps. Adding the first choice clears the single price.", choices)
     + (comes ? panel("What comes with it",
         "Choices the customer makes at no extra cost. Switch one off when you have run out of it.",
         comes) : "")
+    + panel("Serving and order details",
+        "How this dish is sold and how few of it a customer may order.", serving)
     + panel("Allergens",
         "Tagged from the menu wording during setup and never checked against a recipe. "
         + "Confirm them before launch.", allergens)
     + panel("Event pricing",
         "An event portion is cooked for the whole guest list, so it is priced by guest count.", event)
-    + panel("On the site", "", site)
     + '<div class="retire">' + retire + "</div>"
     + "</div></main>";
 }
@@ -1599,6 +1685,9 @@ document.addEventListener("click", function (e) {
   MENU_MSG = null; MENU_ERR = null;
 
   if (m === "avail" && d) { d.avail = !d.avail; save(); render(); return; }
+  if (m === "avail-on" && d) { d.avail = true; save(); render(); return; }
+  if (m === "avail-off" && d) { d.avail = false; save(); render(); return; }
+  if (m === "unit-req" && d) { d.unitreq = !d.unitreq; save(); render(); return; }
   if (m === "feature" && d) { d.featured = !d.featured; save(); render(); return; }
   if (m === "unit-ok" && d) { d.unitok = !d.unitok; save(); render(); return; }
 
@@ -1611,10 +1700,10 @@ document.addEventListener("click", function (e) {
     save(); render(); return;
   }
 
-  if (m === "save-dish" && d) {
-    var name = val("#d-name");
+  if ((m === "save-dish" || m === "save-details") && d) {
+    var name = $("#d-name") ? val("#d-name") : d.name;
     if (!name) { MENU_ERR = "A dish needs a name."; render(); return; }
-    if (!d.v.length) {
+    if (!d.v.length && $("#d-price")) {
       var price = val("#d-price");
       var p = price === "" ? null : toPiastres(price);
       if (price !== "" && p === null) { MENU_ERR = "That price is not a number."; render(); return; }
@@ -1629,13 +1718,15 @@ document.addEventListener("click", function (e) {
     d.name = name;
     d.desc = val("#d-desc") || null;
     d.cat = val("#d-cat");
-    d.unit = val("#d-unit") || null;
+    if ($("#d-unit")) d.unit = val("#d-unit") || null;
     if (!d.unit) d.unitok = false;
-    d.smin = whole("#d-smin", null);
-    d.smax = whole("#d-smax", null);
-    d.minq = whole("#d-minq", 1);
-    d.step = whole("#d-step", 1);
-    d.note = val("#d-note") || null;
+    if ($("#d-smin")) {
+      d.smin = whole("#d-smin", null);
+      d.smax = whole("#d-smax", null);
+      d.minq = whole("#d-minq", 1);
+      d.step = whole("#d-step", 1);
+      d.note = val("#d-note") || null;
+    }
     MENU_MSG = "Saved.";
     save(); render(); return;
   }
@@ -1747,7 +1838,7 @@ document.addEventListener("click", function (e) {
     var id = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     if (dishBy(id)) { MENU_ERR = "There is already a dish with that name."; render(); return; }
     S.menu.dishes.push({ id: id, name: newName, cat: val("#n-cat"), price: pp, unit: null,
-      unitok: false, smin: null, smax: null, minq: 1, step: 1, note: null, avail: true,
+      unitok: false, unitreq: false, smin: null, smax: null, minq: 1, step: 1, note: null, avail: true,
       featured: false, ev: true, evnote: null, desc: null, al: [], og: [], v: [], tiers: [] });
     BANDS = null;
     MENU_MSG = "Added. Its selling unit is left empty until you say what one of these is.";
@@ -1816,7 +1907,7 @@ function render() {
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", function () {
-  PAY_CONFIRM = null; BANDS = null; RETIRING = false; MENU_ERR = null;
+  PAY_CONFIRM = null; BANDS = null; EV_CHOICE = null; RETIRING = false; MENU_ERR = null;
   if (!CARRY) MENU_MSG = null;
   CARRY = false;
   render();
@@ -1843,7 +1934,42 @@ document.addEventListener("submit", function (e) {
   }
 });
 
+/* The event amounts follow the price while it is being typed, without a
+   re-render, which would take the cursor out of the field. */
+function refreshEventAmounts() {
+  var h = hash();
+  if (h.indexOf("/menu/") !== 0) return;
+  var d = dishBy(decodeURIComponent(h.slice(6)));
+  if (!d) return;
+  var basis;
+  if (d.v.length) {
+    var picked = $("#evchoice") ? $("#evchoice").value : EV_CHOICE;
+    var v = d.v.filter(function (x) { return x.name === picked; })[0] || d.v[0];
+    basis = v ? v.price : null;
+  } else {
+    basis = $("#d-price") ? toPiastres($("#d-price").value) : d.price;
+  }
+  document.querySelectorAll("[data-ev-bp]").forEach(function (el) {
+    var bp = Number(el.dataset.evBp);
+    var lead = el.textContent.indexOf("=") === 0 ? "= " : "";
+    el.textContent = lead + (basis === null || !isFinite(bp)
+      ? "\u2014"
+      : egp(Math.round((basis * bp) / 10000)));
+  });
+}
+document.addEventListener("input", function (e) {
+  if (e.target.id === "d-price") refreshEventAmounts();
+  if (e.target.id === "dish-search") {
+    SEARCH = e.target.value;
+    var at = e.target.selectionStart;
+    render();
+    var again = $("#dish-search");
+    if (again) { again.focus(); again.setSelectionRange(at, at); }
+  }
+});
+
 document.addEventListener("change", function (e) {
+  if (e.target.id === "evchoice") { EV_CHOICE = e.target.value; refreshEventAmounts(); }
   if (e.target.id === "kdate" && e.target.value) go("#/kitchen?date=" + e.target.value);
   if (e.target.id === "from") go(withQuery("/orders", { from: e.target.value }));
   if (e.target.id === "to") go(withQuery("/orders", { to: e.target.value }));

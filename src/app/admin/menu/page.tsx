@@ -12,10 +12,11 @@ type Props = { searchParams: Promise<{ show?: string }> };
 /**
  * The menu.
  *
- * It opens on everything, grouped the way a customer sees it. The filters above
- * are the questions the business actually has outstanding: what is off the menu
- * today, and what still needs a decision from setup — a selling unit nobody has
- * supplied, allergens nobody has checked.
+ * It opens on everything, grouped the way a customer sees it, with a search for
+ * the days when scrolling seventy dishes is not the answer. The filters above
+ * are the questions the business actually has outstanding: what is unavailable
+ * today, allergens nobody has checked, and a selling unit only where the
+ * business has said one is needed.
  */
 export default async function MenuPage({ searchParams }: Props) {
   await requireAdminPage();
@@ -45,22 +46,24 @@ export default async function MenuPage({ searchParams }: Props) {
 
       <div className="mt-7 grid gap-4 sm:grid-cols-3">
         <Stat
-          label="Off the menu" value={counts.unavailable}
+          label="Unavailable today" value={counts.unavailable}
           href="/admin/menu?show=unavailable"
           tone={counts.unavailable > 0 ? "alert" : "plain"}
         />
-        <Stat label="Without a selling unit" value={counts.noUnit} href="/admin/menu?show=no-unit" />
         <Stat
           label="Allergens to check" value={counts.unreviewed}
           href="/admin/menu?show=unreviewed"
         />
+        <Stat label="Selling unit needed" value={counts.noUnit} href="/admin/menu?show=no-unit" />
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
         <Chip href="/admin/menu" on={filter === null}>Everything</Chip>
-        <Chip href="/admin/menu?show=unavailable" on={filter === "unavailable"}>Off the menu</Chip>
-        <Chip href="/admin/menu?show=no-unit" on={filter === "no-unit"}>No selling unit</Chip>
+        <Chip href="/admin/menu?show=unavailable" on={filter === "unavailable"}>Unavailable</Chip>
         <Chip href="/admin/menu?show=unreviewed" on={filter === "unreviewed"}>Allergens unchecked</Chip>
+        {counts.noUnit > 0 && (
+          <Chip href="/admin/menu?show=no-unit" on={filter === "no-unit"}>Selling unit needed</Chip>
+        )}
         {counts.notes > 0 && (
           <Chip href="/admin/menu?show=notes" on={filter === "notes"}>Has a note</Chip>
         )}
@@ -71,8 +74,9 @@ export default async function MenuPage({ searchParams }: Props) {
       </div>
 
       <p className="mt-6 text-[13.5px] leading-relaxed text-ink-faint">
-        Changing a price or a name here changes what customers see straight away. It never changes
-        an order that has already been placed — every order keeps its own record of what was bought
+        Unavailable means customers cannot order it today; it is not the same as retiring a dish,
+        which is done from the dish itself. Changing a price or a name here changes what customers
+        see straight away. It never changes an order that has already been placed — every order keeps its own record of what was bought
         and what it cost.
       </p>
     </div>
