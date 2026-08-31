@@ -80,9 +80,13 @@ export function StatusActions({ orderId, next }: { orderId: string; next: OrderS
  * blocking it closes the date to normal orders, keeping it open leaves them
  * taking bookings alongside.
  */
-export function ConfirmEvent({ orderId }: { orderId: string }) {
+export function ConfirmEvent({ orderId, defaultMode = "BLOCK_DAY" }: {
+  orderId: string;
+  /** Which answer is offered first, from Settings. The decision is still made here. */
+  defaultMode?: "BLOCK_DAY" | "KEEP_DAY_OPEN";
+}) {
   const { pending, error, run } = useAction();
-  const [mode, setMode] = useState<"BLOCK_DAY" | "KEEP_DAY_OPEN">("BLOCK_DAY");
+  const [mode, setMode] = useState<"BLOCK_DAY" | "KEEP_DAY_OPEN">(defaultMode);
 
   return (
     <div>

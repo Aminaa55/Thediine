@@ -3,13 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart, EVENT_TYPE_LABELS, type EventType } from "@/lib/cart";
-import {
-  EVENT_GUESTS,
-  GUEST_LIMIT_MESSAGE,
-  earliestEventDate,
-  toDateInput,
-  validateEvent,
-} from "@/lib/ordering";
+import { validateEvent } from "@/lib/ordering";
+import { useRules } from "./rules-provider";
 import { formatEGP } from "@/lib/money";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { EventExtras, chosenExtras } from "./event-extras";
@@ -274,7 +269,7 @@ export function EventRequestSection({
 
 function EditDetails({ onDone }: { onDone: () => void }) {
   const { event, updateEvent } = useCart();
-  const min = toDateInput(earliestEventDate());
+  const { eventEarliest: min, maxGuests } = useRules();
   const check = validateEvent(event);
 
   return (
@@ -329,7 +324,7 @@ function EditDetails({ onDone }: { onDone: () => void }) {
           <Lab>Guests</Lab>
           {/* A distinct id: this editor and the details step can both be on screen. */}
           <GuestInput id="ev-guests" />
-          <p className="mt-2 text-[13px] text-ink-faint">Up to {EVENT_GUESTS.max}</p>
+          <p className="mt-2 text-[13px] text-ink-faint">Up to {maxGuests}</p>
         </div>
         <div className="sm:col-span-2">
           <Lab>Venue or address</Lab>
@@ -360,7 +355,8 @@ function EditDetails({ onDone }: { onDone: () => void }) {
  */
 export function GuestInput({ id = "guests" }: { id?: string }) {
   const { event, updateEvent } = useCart();
-  const over = /^\d+$/.test(event.guestCount) && Number(event.guestCount) > EVENT_GUESTS.max;
+  const { maxGuests } = useRules();
+  const over = /^\d+$/.test(event.guestCount) && Number(event.guestCount) > maxGuests;
 
   return (
     <>
@@ -379,7 +375,11 @@ export function GuestInput({ id = "guests" }: { id?: string }) {
         aria-invalid={over}
         className={field(over)}
       />
-      {over && <p className="mt-2 text-[14px] text-[#A6391C]">{GUEST_LIMIT_MESSAGE}</p>}
+      {over && (
+        <p className="mt-2 text-[14px] text-[#A6391C]">
+          We currently cater events for up to {maxGuests} guests.
+        </p>
+      )}
     </>
   );
 }

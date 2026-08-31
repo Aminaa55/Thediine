@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart";
 import { EventHeader, EventNotice } from "./event-steps";
-import { earliestEventDate, toDateInput, validateEvent, EVENT_GUESTS } from "@/lib/ordering";
+import { validateEvent } from "@/lib/ordering";
+import { useRules } from "./rules-provider";
 import { GuestInput } from "./event-request-panel";
 import { EventExtras } from "./event-extras";
 
@@ -15,7 +16,8 @@ export function EventDetailsForm() {
   const { event, updateEvent, ready } = useCart();
   const [touched, setTouched] = useState(false);
 
-  const min = toDateInput(earliestEventDate());
+  const rules = useRules();
+  const min = rules.eventEarliest;
   const check = validateEvent(event);
 
   if (ready && !event.eventType) {
@@ -66,7 +68,7 @@ export function EventDetailsForm() {
           <Field
             label="Number of guests"
             htmlFor="guests"
-            hint={`We cater events for up to ${EVENT_GUESTS.max} guests`}
+            hint={`We cater events for up to ${rules.maxGuests} guests`}
           >
             <GuestInput />
           </Field>

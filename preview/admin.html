@@ -482,6 +482,46 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .crumb{display:inline-block; margin-bottom:14px; font-size:14px; color:var(--ink-soft)}
 .crumb:hover{color:var(--ink)}
 
+
+/* --------------------------------------------------------------- settings */
+.waiting-on{margin-top:28px; border:1px solid rgba(168,126,46,.5); background:rgba(239,226,190,.4);
+  border-radius:2px; padding:20px 24px}
+.waiting-on > p{margin-top:8px; font-size:15px}
+.waiting-on ul{margin-top:16px; display:grid; gap:12px}
+.waiting-on a strong{display:block; font-family:Fraunces,Georgia,serif; font-size:16.5px;
+  font-weight:600}
+.waiting-on a:hover strong{color:var(--gold)}
+.waiting-on a span{display:block; margin-top:2px; max-width:44rem; font-size:14px;
+  line-height:1.55; color:var(--ink-soft)}
+.set-grid{display:grid; gap:16px; margin-top:32px}
+@media(min-width:700px){.set-grid{grid-template-columns:1fr 1fr}}
+.set-card{display:block; border:1px solid var(--line); background:var(--cream-warm);
+  border-radius:2px; padding:20px 24px; transition:border-color .2s}
+.set-card:hover{border-color:var(--gold)}
+.set-card h2{font-size:18px}
+.set-card p{margin-top:6px; font-size:14px; line-height:1.55; color:var(--ink-soft)}
+.set-card .now{margin-top:12px; font-size:14px; color:var(--gold)}
+.set-panel .save-row{display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:22px}
+.set-panel ul.plain{margin-top:10px; display:grid; gap:6px; font-size:14.5px; line-height:1.55;
+  color:var(--ink-soft)}
+.to-decide{margin-top:16px; border:1px solid rgba(168,126,46,.45); background:rgba(239,226,190,.4);
+  border-radius:2px; padding:12px 16px; font-size:14px; line-height:1.6}
+.to-decide .eyebrow{display:block; margin-bottom:4px}
+.hist-note{margin-top:28px; max-width:52rem; font-size:13.5px; line-height:1.7; color:var(--ink-faint)}
+.dayc{border:1px solid var(--line); background:var(--cream); border-radius:999px; padding:8px 16px;
+  font-size:14px; color:var(--ink-faint)}
+.dayc:hover{border-color:rgba(59,35,16,.3)}
+.dayc.on{border-color:rgba(46,107,69,.45); background:rgba(46,107,69,.08); color:var(--paid)}
+.closed-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:12px 0;
+  border-bottom:1px solid var(--line-soft)}
+.closed-row:last-child{border-bottom:0}
+.closed-row strong{font-family:Fraunces,Georgia,serif; font-size:16px; font-weight:600}
+.closed-row .why{flex:1; font-size:14.5px; color:var(--ink-soft)}
+.closed-row .hint{font-size:13.5px}
+.closed-row a{font-size:14px; color:var(--gold)}
+.fgrid.three{display:grid; gap:18px}
+@media(min-width:720px){.fgrid.three{grid-template-columns:repeat(3,1fr)}}
+
 /* ------------------------------------------------------------ the prep sheet
    Printing gives a sheet to work from, not a screenshot of a web page. */
 @media print{
@@ -580,6 +620,36 @@ function iso(offsetDays) {
   d.setDate(d.getDate() + offsetDays);
   return d.toISOString().slice(0, 10);
 }
+var SETTINGS_SEED = {
+  normal_notice_hours: "48",
+  normal_daily_capacity: "3",
+  pickup_counts_toward_capacity: "true",
+  pickup_enabled: "true",
+  normal_cutoff_time: "",
+  minimum_order_value_piastres: "0",
+  normal_free_cancellation_hours: "24",
+  event_free_cancellation_hours: "48",
+  late_cancellation_percent: "20",
+  customer_self_cancel_enabled: "false",
+  working_days: "0,1,2,3,4,5,6",
+  event_notice_days: "5",
+  event_max_guests: "100",
+  event_default_capacity_mode: "BLOCK_DAY",
+  payment_cash_enabled: "true",
+  payment_instapay_enabled: "true",
+  instapay_number: "+20 1119992417",
+  instapay_account_details: "",
+  serving_returnable_enabled: "true",
+  serving_disposable_enabled: "true",
+  serving_setup_policy_en: "",
+  returnable_deposit_piastres: "",
+  returnable_return_days: "",
+  returnable_late_fee_piastres: "",
+  whatsapp_number: "+201123030107",
+  contact_instagram: "https://www.instagram.com/thediine/",
+  contact_email: ""
+};
+
 var MENU_SEED = {"cats":[{"slug":"main-courses","name":"Main Courses","desc":null,"active":true},{"slug":"side-dishes","name":"Side Dishes","desc":null,"active":true},{"slug":"salads","name":"Salads","desc":null,"active":true},{"slug":"desserts","name":"Desserts","desc":null,"active":true}],"allerg":[{"slug":"dairy","name":"Dairy"},{"slug":"egg","name":"Egg"},{"slug":"fish","name":"Fish"},{"slug":"gluten","name":"Gluten"},{"slug":"nuts","name":"Nuts"},{"slug":"seafood","name":"Seafood / shellfish"},{"slug":"sesame","name":"Sesame"},{"slug":"soy","name":"Soy"}],"tiers":[{"min":1,"max":10,"bp":10000},{"min":11,"max":20,"bp":15000},{"min":21,"max":30,"bp":20000},{"min":31,"max":40,"bp":25000},{"min":41,"max":50,"bp":30000},{"min":51,"max":60,"bp":35000},{"min":61,"max":70,"bp":40000},{"min":71,"max":80,"bp":45000},{"min":81,"max":90,"bp":50000},{"min":91,"max":100,"bp":55000}],"dishes":[{"id":"stuffed-pigeons","name":"Stuffed Pigeons","cat":"main-courses","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Stuffing","ch":[{"name":"Freek, raisins & nuts","avail":true},{"name":"Rice, raisins & nuts","avail":true}]}],"v":[],"unitreq":false},{"id":"stuffed-chicken-lesan-asfour","name":"Stuffed Chicken with Lesan Asfour","cat":"main-courses","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"egyptian-fattah-moza","name":"Egyptian Fattah with Moza","cat":"main-courses","price":185000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"lebanese-fattah-chicken","name":"Lebanese Fattah with Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With chicken and yogurt, served with basmati rice, almonds & fried Lebanese bread.","tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[],"unitreq":false},{"id":"sweet-sour-shrimps","name":"Sweet & Sour Shrimps","cat":"main-courses","price":165000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"sweet-sour-chicken","name":"Sweet & Sour Chicken","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Served with","ch":[{"name":"Basmati rice","avail":true},{"name":"Noodles with vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-fakhda","name":"Roast Fakhda","cat":"main-courses","price":375000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-turkey","name":"Roast Turkey","cat":"main-courses","price":450000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey Breasts.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds & raisins","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-salmon-side","name":"Roast Salmon Side","cat":"main-courses","price":270000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"fish","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & cranberries","avail":true},{"name":"Coconut basmati rice","avail":true},{"name":"Grilled vegetables","avail":true},{"name":"Creamy spinach","avail":true}]}],"v":[],"unitreq":false},{"id":"grilled-shrimps","name":"Grilled Shrimps","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false},{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Noodles","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"duck-shanks","name":"Duck Shanks","cat":"main-courses","price":210000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Freek & vegetables, almonds","avail":true},{"name":"Sha'reya, almonds & cranberries","avail":true}]}],"v":[],"unitreq":false},{"id":"filet-meat","name":"Filet Meat","cat":"main-courses","price":240000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-beef","name":"Roast Beef","cat":"main-courses","price":230000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[{"name":"Sauce","ch":[{"name":"Mushroom & rosemary sauce","avail":true},{"name":"Coffee sauce","avail":true},{"name":"Pepper sauce","avail":true},{"name":"Prunes sauce","avail":true}]},{"name":"Served with","ch":[{"name":"Potato pur\u00e9e","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"roast-turkey-breasts","name":"Roast Turkey Breasts","cat":"main-courses","price":200000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Confirm this is distinct from Roast Turkey.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"With special brown sauce.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Mixed rice, almonds & raisins","avail":true},{"name":"Basmati rice, almonds","avail":true},{"name":"Grilled vegetables","avail":true}]}],"v":[],"unitreq":false},{"id":"grilled-kofta-mini-chicken-shish","name":"Grilled Kofta with Mini Chicken Shish","cat":"main-courses","price":175000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[{"name":"Served with","ch":[{"name":"Basmati rice & almonds","avail":true},{"name":"Potato wedges","avail":true}]}],"v":[],"unitreq":false},{"id":"swedish-meatballs","name":"Swedish Meatballs","cat":"main-courses","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with jasmine rice.","tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"chicken-breast-mushroom-mozzarella","name":"Chicken Breast stuffed with Mushroom & Mozzarella in Creamy Spinach White Sauce","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"lemon-butter-chicken","name":"Lemon & Butter Chicken","cat":"main-courses","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with basmati rice.","tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"tagine-meammar-pigeon-fillet","name":"Tagine Meammar with Pigeon Fillet","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"sharkasia","name":"Sharkasia","cat":"main-courses","price":150000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with chicken, Egyptian rice & walnuts.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"heart-kidneys-shareya","name":"Heart & Kidneys with Sha'reya","cat":"main-courses","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Served with sha'reya & almonds.","tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"sambousek-minced-meat-mozzarella","name":"Sambousek with Minced Meat & Mozzarella","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding \u2014 the PDF ended in \"..\".","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"sambousek-white-cheese-mint","name":"Sambousek with White Cheese & Mint","cat":"side-dishes","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Full sambousek filling list still outstanding.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mahshi","name":"Mahshi","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. UNRESOLVED: does the customer choose one vegetable, several, or is it always a mixed assortment?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":"Eggplant, zucchini, pepper, onion, potatoes, tomatoes.","tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"noodles","name":"Noodles","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only \u2014 allergens are currently held per product, not per variant, so the warning shows on all three.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"With vegetables","price":65000,"avail":true},{"name":"With chicken","price":80000,"avail":true},{"name":"With shrimps","price":105000,"avail":true}],"unitreq":false},{"id":"spring-rolls","name":"Spring Rolls","cat":"side-dishes","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Seafood applies to the shrimps variant only.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"seafood","r":false}],"og":[],"v":[{"name":"Plain","price":60000,"avail":true},{"name":"With chicken","price":75000,"avail":true},{"name":"With shrimps","price":95000,"avail":true}],"unitreq":false},{"id":"basmati-rice","name":"Basmati Rice","cat":"side-dishes","price":60000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"coconut-rice","name":"Coconut Rice","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"cream-spinach-chicken","name":"Cream Spinach with Chicken","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"eggplant-rolls-avocado-mozzarella","name":"Eggplant Rolls stuffed with Avocado & Mozzarella in Pink Sauce","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mushroom-saute","name":"Mushroom Saut\u00e9 with Caramelized Onions & Parsley","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"rokak-minced-meat","name":"Rokak with Minced Meat","cat":"side-dishes","price":90000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"rokak-cones","name":"Rokak Cones with Minced Meat, Mozzarella & Tomatoes","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"lasagna","name":"Lasagna","cat":"side-dishes","price":100000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false},{"s":"gluten","r":false}],"og":[],"v":[],"unitreq":false},{"id":"negresco","name":"Negresco","cat":"side-dishes","price":95000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"vine-leaves","name":"Vine Leaves","cat":"side-dishes","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"potato-gratin","name":"Potato Gratin","cat":"side-dishes","price":70000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"kobeba","name":"Kobeba","cat":"side-dishes","price":80000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"mombar-pops","name":"Mombar Pops","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"hawawshi","name":"Hawawshi","cat":"side-dishes","price":85000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"mushroom-rocca-salad","name":"Fresh Mushroom Rocca Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"caesar-salad","name":"Caesar Salad with Avocado, Apples, Chicken & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here; it is absent from the confirmed price list. Confirm whether it was removed.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"eggplant-salad","name":"Eggplant Salad with Pomegranate & Almonds","cat":"salads","price":65000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"colored pepper\" here; absent from the confirmed list. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"blue-cheese-salad","name":"Blue Cheese Salad with Cherry Tomatoes, Apples & Caramelized Walnuts","cat":"salads","price":75000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. The PDF also listed \"cappouci\" here. Confirm.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"fattoush","name":"Fattoush","cat":"salads","price":55000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"tahini","name":"Tahini","cat":"salads","price":40000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"sesame","r":false}],"og":[],"v":[],"unitreq":false},{"id":"baba-ganoush","name":"Baba Ganoush","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"coleslaw","name":"Coleslaw","cat":"salads","price":45000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"tiramisu","name":"Tiramisu \u2014 Big Bowl","cat":"desserts","price":140000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Is \"Big Bowl\" a size, with other sizes to follow?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"batata-gratin","name":"Batata Gratin","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"batata-creme-brulee","name":"Batata with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"kunafa-cream","name":"Kunafa with Cream","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cinnabon-cake","name":"Cinnabon Cake","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"lotus-cinnabons-12","name":"12 Lotus Cinnabons","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Quantity (12 pieces) is stated in the name \u2014 confirm it as the selling unit.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"chocolate-cake","name":"Chocolate Cake","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"golden-basbousa-cake","name":"Golden Basbousa Cake","cat":"desserts","price":105000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-creme-brulee","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-maltesers","name":"Cheesecake Maltesers","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-oreo","name":"Cheesecake Oreo","cat":"desserts","price":135000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"san-sebastian-cheesecake","name":"San Sebasti\u00e1n Cheesecake","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"honey-cake","name":"Honey Cake","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"lotus-brownies","name":"Lotus Brownies","cat":"desserts","price":110000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"om-ali-creme-brulee","name":"Om Ali with Cr\u00e8me Br\u00fbl\u00e9e","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"tres-leches","name":"Tres Leches","cat":"desserts","price":null,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[{"name":"Caramel","price":130000,"avail":true},{"name":"Mango","price":140000,"avail":true}],"unitreq":false},{"id":"profiteroles-caramel-custard","name":"Profiteroles with Caramel Custard, Croquant & Chocolate Sauce","cat":"desserts","price":130000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"profiteroles-kunafa-pistachio","name":"Profiteroles with Kunafa & Pistachio Sauce","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false},{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mini-bites-baklava-nutella","name":"Mini Bites Baklava with Nutella","cat":"desserts","price":120000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mini-bites-baklava-lotus","name":"Mini Bites Baklava with Lotus","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"mini-bites-baklava-hazelnut","name":"Mini Bites Baklava with Hazelnut","cat":"desserts","price":125000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"mini-baklava-kunafa","name":"Mini Baklava with Kunafa","cat":"desserts","price":115000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied. Named \"Mini\" rather than \"Mini Bites\" \u2014 same family, or a different product?","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[],"og":[],"v":[],"unitreq":false},{"id":"bonbon-chocolate-box-pistachio-kunafa","name":"Bonbon Chocolate Box stuffed with Pistachio Kunafa","cat":"desserts","price":145000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"nuts","r":false}],"og":[],"v":[],"unitreq":false},{"id":"cheesecake-creme-brulee-blueberries","name":"Cheesecake Cr\u00e8me Br\u00fbl\u00e9e with Blueberries","cat":"desserts","price":155000,"unit":null,"unitok":false,"smin":null,"smax":null,"minq":1,"step":1,"note":"Selling unit not yet supplied.","avail":true,"featured":false,"ev":true,"evnote":null,"desc":null,"tiers":[],"al":[{"s":"dairy","r":false}],"og":[],"v":[],"unitreq":false}]};
 
 function freshData() {
@@ -587,6 +657,7 @@ function freshData() {
     signedIn: false,
     admin: { name: "Radwa Serag", email: "radwaserag@hotmail.com" },
     menu: freshMenu(),
+    settings: freshSettings(),
     orders: [
       {
         number: "TD-260830-01", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
@@ -692,6 +763,7 @@ var S;
 try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
 if (!S || !S.orders) S = freshData();
 if (!S.menu) S.menu = freshMenu();
+if (!S.settings) S.settings = freshSettings();
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 /* ----------------------------------------------------------- formatting */
@@ -1868,6 +1940,885 @@ document.addEventListener("click", function (e) {
   }
 });
 
+
+/* ================================================================ settings
+   The business's own rules. Grouped the way the business is run, opened on
+   what has not been decided, and saved a card at a time. The rules here are
+   the ones the real admin writes; the preview keeps them in this browser. */
+function freshSettings() {
+  return { values: JSON.parse(JSON.stringify(SETTINGS_SEED)), areas: [], slots: [], closed: [] };
+}
+
+var SET_MSG = null;
+var SET_ERR = null;
+
+function S_() { return S.settings.values; }
+function sOn(key) { return S_()[key] !== "false"; }
+function setVal(key, value) { S_()[key] = value; }
+
+var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+function workingDays() {
+  var raw = S_().working_days;
+  if (!raw) return [];
+  return raw.split(",").filter(function (d) { return d !== ""; }).map(Number);
+}
+function hoursLabel(h) { return Number(h) === 1 ? "1 hour" : h + " hours"; }
+
+function undecided() {
+  var out = [];
+  if (!S.settings.areas.length) out.push(["Delivery areas and fees",
+    "No areas have been set up, so an order records its delivery fee as unknown rather than as "
+    + "zero, and the customer is not shown a fee.", "#/settings/delivery"]);
+  if (!S.settings.slots.length) out.push(["Delivery and pickup times",
+    "No time slots exist, so the customer types a time of their own instead of choosing one of "
+    + "yours.", "#/settings/delivery"]);
+  if (!S_().normal_cutoff_time) out.push(["A daily cut-off time",
+    "Nothing is set, so only the notice period decides which dates can be chosen. Say what a "
+    + "cut-off should mean and it can be added.", "#/settings/ordering"]);
+  if (!S_().serving_setup_policy_en) out.push(["The returnable-dish policy",
+    "Customers can choose returnable dishes, but nothing tells them how or when to return them. "
+    + "No deposit, return period or fee has been invented.", "#/settings/serving"]);
+  if (!S_().contact_email) out.push(["A contact email address",
+    "None supplied, so the site shows WhatsApp and Instagram only.", "#/settings/contact"]);
+  return out;
+}
+
+var SET_SECTIONS = [
+  ["#/settings/ordering", "Ordering", "Notice period, how many orders a day, cancellations.",
+   function () { return hoursLabel(S_().normal_notice_hours) + " notice, "
+     + S_().normal_daily_capacity + " orders a day"; }],
+  ["#/settings/delivery", "Delivery & pickup", "Areas and their fees, pickup, and the times you deliver.",
+   function () {
+     if (!S.settings.areas.length) return "No areas set up yet";
+     var a = S.settings.areas.filter(function (x) { return x.active; }).length;
+     var t = S.settings.slots.filter(function (x) { return x.active; }).length;
+     return a + " of " + S.settings.areas.length + " areas, " + t + " of " + S.settings.slots.length + " times";
+   }],
+  ["#/settings/calendar", "Calendar & capacity", "Working days, days you are closed, and a day's own capacity.",
+   function () {
+     var d = workingDays();
+     var base = d.length === 7 ? "Every day"
+       : d.length === 0 ? "No days"
+       : d.map(function (x) { return DAY_NAMES[x].slice(0, 3); }).join(", ");
+     var shut = S.settings.closed.filter(function (c) { return c.closed; }).length;
+     return base + (shut ? " \u00b7 " + shut + " day" + (shut === 1 ? "" : "s") + " closed ahead" : "");
+   }],
+  ["#/settings/events", "Events", "Notice, guest limit, cancellation, and the guest-count ladder.",
+   function () { return S_().event_notice_days + " days notice, up to " + S_().event_max_guests + " guests"; }],
+  ["#/settings/payment", "Payment", "Cash and InstaPay, and the number transfers go to.",
+   function () {
+     var on = [];
+     if (sOn("payment_cash_enabled")) on.push("Cash");
+     if (sOn("payment_instapay_enabled")) on.push("InstaPay");
+     return on.length ? on.join(" and ") : "No payment method is on";
+   }],
+  ["#/settings/serving", "Serving setup", "Returnable and disposable dishes, and what customers are told.",
+   function () {
+     var on = [];
+     if (sOn("serving_returnable_enabled")) on.push("Returnable");
+     if (sOn("serving_disposable_enabled")) on.push("Disposable");
+     return on.join(" and ");
+   }],
+  ["#/settings/contact", "Business details", "The WhatsApp number, Instagram and email the site shows.",
+   function () { return S_().whatsapp_number || "No WhatsApp number"; }]
+];
+
+function viewSettings() {
+  var todo = undecided();
+  return "<main>"
+    + '<p class="eyebrow">Settings</p><h1>How the business runs</h1>'
+    + '<p class="sub">These are the rules the website follows. Changing one changes what customers '
+    + "can do from now on \u2014 it never changes an order that has already been placed.</p>"
+    + (todo.length
+        ? '<section class="waiting-on"><p class="eyebrow">Waiting on you</p>'
+          + "<p>" + todo.length + (todo.length === 1 ? " thing has" : " things have")
+          + " not been decided. Nothing has been chosen on your behalf.</p><ul>"
+          + todo.map(function (t) {
+              return '<li><a href="' + t[2] + '"><strong>' + esc(t[0]) + "</strong>"
+                + "<span>" + esc(t[1]) + "</span></a></li>";
+            }).join("") + "</ul></section>"
+        : "")
+    + '<div class="set-grid">' + SET_SECTIONS.map(function (s) {
+        return '<a class="set-card" href="' + s[0] + '"><h2>' + s[1] + "</h2>"
+          + "<p>" + s[2] + '</p><p class="now">' + esc(s[3]()) + "</p></a>";
+      }).join("") + "</div></main>";
+}
+
+/* ------------------------------------------------------------ the pieces */
+function setHead(title, body) {
+  return '<a class="crumb" href="#/settings">\u2190 Settings</a>'
+    + "<h1>" + title + '</h1><p class="sub">' + body + "</p>";
+}
+function setCard(title, note, body, saveKey, saveLabel, footer) {
+  return '<section class="card set-panel"><header><h2>' + title + "</h2>"
+    + (note ? '<p class="pnote">' + note + "</p>" : "") + "</header>"
+    + '<div class="body">' + body
+    + (saveKey
+        ? '<div class="save-row"><button type="button" class="btn btn-primary" data-set="'
+          + saveKey + '">' + (saveLabel || "Save") + "</button></div>"
+        : "")
+    + (footer || "") + "</div></section>";
+}
+function setField(label, id, control, hint) {
+  return '<div class="f"><label class="lab" for="' + id + '">' + label + "</label>" + control
+    + (hint ? '<p class="hint">' + hint + "</p>" : "") + "</div>";
+}
+function setSwitch(key, title, body) {
+  return '<button type="button" class="check" data-set-toggle="' + key + '">'
+    + '<span class="box' + (sOn(key) ? " on" : "") + '">' + (sOn(key) ? "\u2713" : "") + "</span>"
+    + '<span><span class="t">' + title + '</span><span class="b">' + body + "</span></span></button>";
+}
+function toDecide(text) {
+  return '<p class="to-decide"><span class="eyebrow">Still to decide</span>' + text + "</p>";
+}
+function historyNote(text) { return '<p class="hist-note">' + text + "</p>"; }
+function setFlashes() {
+  var out = "";
+  if (SET_ERR) out += '<p class="err" style="margin-bottom:20px">' + esc(SET_ERR) + "</p>";
+  if (SET_MSG) out += '<p class="flash">' + esc(SET_MSG) + "</p>";
+  return out;
+}
+
+/* ---------------------------------------------------------------- ordering */
+function viewSetOrdering() {
+  var hours = Number(S_().normal_notice_hours || 0);
+  var inDays = hours % 24 === 0 ? (hours / 24) + " day" + (hours === 24 ? "" : "s") : hours + " hours";
+  var minimum = S_().minimum_order_value_piastres;
+  var minText = !minimum || minimum === "0" ? "" : String(Number(minimum) / 100);
+
+  return "<main>" + setHead("Ordering",
+      "How much warning you need, how much you can cook in a day, and what happens when an order "
+      + "is cancelled.") + setFlashes()
+    + '<div class="stack">'
+    + setCard("How much notice you need",
+        "A regular order cannot be for a date sooner than this. It is checked when the customer "
+        + "picks a date and again when the order is written.",
+        '<div class="fgrid two">'
+        + setField("Notice, in hours", "s-notice",
+            '<input id="s-notice" inputmode="numeric" value="' + esc(S_().normal_notice_hours) + '">',
+            "That is " + inDays + ".")
+        + setField("Orders a day", "s-cap",
+            '<input id="s-cap" inputmode="numeric" value="' + esc(S_().normal_daily_capacity) + '">',
+            "How many regular orders you will cook in one day.")
+        + "</div>"
+        + setSwitch("pickup_counts_toward_capacity", "A pickup counts towards the day",
+            "Off means only deliveries fill the day up."),
+        "notice")
+    + setCard("A daily cut-off time",
+        "Nothing is set, so only the notice period above decides which dates a customer can choose.",
+        '<p class="hint">A cut-off can mean two quite different things, and they behave '
+        + "differently for the customer:</p>"
+        + '<ul class="plain"><li>&bull; Orders stop for the following day once this time passes.</li>'
+        + "<li>&bull; Orders stop for the day altogether once this time passes.</li></ul>"
+        + toDecide("Tell me which of those you mean and I will build it. Until then nothing is set, "
+            + "and the notice period is the only rule about dates \u2014 which is how the site "
+            + "behaves today."))
+    + setCard("A minimum order",
+        "The business said there is no minimum. Leave it empty to keep it that way.",
+        '<div class="fgrid two">'
+        + setField("Minimum order", "s-min",
+            '<input id="s-min" inputmode="decimal" placeholder="No minimum" value="' + esc(minText) + '">',
+            "In EGP. Empty means no minimum.") + "</div>",
+        "minimum")
+    + setCard("Cancelling",
+        "A cancellation inside the free window costs nothing. Outside it, the charge is worked out "
+        + "and recorded on the order \u2014 it is never taken automatically, because there is no "
+        + "deposit and no card on file.",
+        '<div class="fgrid two">'
+        + setField("Free window, regular orders", "s-nfree",
+            '<input id="s-nfree" inputmode="numeric" value="' + esc(S_().normal_free_cancellation_hours) + '">',
+            "In hours before the date.")
+        + setField("Free window, events", "s-efree",
+            '<input id="s-efree" inputmode="numeric" value="' + esc(S_().event_free_cancellation_hours) + '">',
+            "In hours before the date.")
+        + setField("Late cancellation", "s-pct",
+            '<input id="s-pct" inputmode="numeric" value="' + esc(S_().late_cancellation_percent) + '">',
+            "A percentage of the order total.")
+        + "</div>"
+        + setSwitch("customer_self_cancel_enabled", "Customers can cancel their own order",
+            "Off \u2014 as agreed. Cancelling is done here, by you, so there is always a conversation."),
+        "cancel")
+    + "</div>"
+    + historyNote("Changing any of these changes what can be ordered from now on. An order that "
+        + "has already been placed keeps the rules it was placed under \u2014 including the "
+        + "cancellation charge, which is worked out and written onto the order at the moment it is "
+        + "cancelled.")
+    + "</main>";
+}
+
+/* ---------------------------------------------------------------- delivery */
+function viewSetDelivery() {
+  var areas = S.settings.areas;
+  var slots = S.settings.slots;
+
+  var areaRows = areas.length
+    ? "<ul>" + areas.map(function (a, i) {
+        return '<li class="vrow">'
+          + '<span class="mv"><button type="button" data-set="area-up" data-i="' + i + '"'
+          + (i === 0 ? " disabled" : "") + ' aria-label="Move ' + esc(a.name) + ' up">\u25b2</button>'
+          + '<button type="button" data-set="area-down" data-i="' + i + '"'
+          + (i === areas.length - 1 ? " disabled" : "")
+          + ' aria-label="Move ' + esc(a.name) + ' down">\u25bc</button></span>'
+          + '<input class="n" id="a-name-' + i + '" aria-label="' + esc(a.name) + ' name" value="'
+          + esc(a.name) + '">'
+          + '<input class="p tnum" id="a-fee-' + i + '" aria-label="' + esc(a.name) + ' fee" value="'
+          + pounds(a.fee) + '">'
+          + '<button type="button" class="mini" data-set="area-save" data-i="' + i + '">Save</button>'
+          + '<button type="button" class="mini ' + (a.active ? "on" : "off")
+          + '" data-set="area-active" data-i="' + i + '">'
+          + (a.active ? "Delivering" : "Not delivering") + "</button>"
+          + '<button type="button" class="linky" data-set="area-remove" data-i="' + i + '">Remove</button>'
+          + "</li>";
+      }).join("") + "</ul>"
+    : toDecide("No areas yet. Until there are, an order's delivery fee is recorded as unknown "
+        + "rather than as zero, and the customer is not shown a fee at checkout. Add the areas you "
+        + "deliver to, with what you charge for each.");
+
+  var slotRows = slots.length
+    ? "<ul>" + slots.map(function (t, i) {
+        return '<li class="vrow">'
+          + '<span class="mv"><button type="button" data-set="slot-up" data-i="' + i + '"'
+          + (i === 0 ? " disabled" : "") + ' aria-label="Move ' + esc(t.label) + ' up">\u25b2</button>'
+          + '<button type="button" data-set="slot-down" data-i="' + i + '"'
+          + (i === slots.length - 1 ? " disabled" : "")
+          + ' aria-label="Move ' + esc(t.label) + ' down">\u25bc</button></span>'
+          + '<input class="n" id="t-label-' + i + '" aria-label="' + esc(t.label) + ' name" value="'
+          + esc(t.label) + '">'
+          + '<input class="p" type="time" id="t-start-' + i + '" aria-label="' + esc(t.label)
+          + ' from" value="' + esc(t.start) + '">'
+          + '<input class="p" type="time" id="t-end-' + i + '" aria-label="' + esc(t.label)
+          + ' to" value="' + esc(t.end) + '">'
+          + '<button type="button" class="mini" data-set="slot-save" data-i="' + i + '">Save</button>'
+          + '<button type="button" class="mini ' + (t.active ? "on" : "off")
+          + '" data-set="slot-active" data-i="' + i + '">'
+          + (t.active ? "Offered" : "Not offered") + "</button>"
+          + '<button type="button" class="linky" data-set="slot-remove" data-i="' + i + '">Remove</button>'
+          + "</li>";
+      }).join("") + "</ul>"
+    : toDecide("No times yet, so a customer types a time of their own at checkout. Add the windows "
+        + "you actually deliver in and they will choose from those instead.");
+
+  return "<main>" + setHead("Delivery &amp; pickup",
+      "Where you deliver, what you charge for it, whether people can collect, and the times you "
+      + "offer.") + setFlashes()
+    + '<div class="stack">'
+    + setCard("Delivery areas and fees",
+        "The area a customer chooses sets the delivery fee on their order. The fee is copied onto "
+        + "the order when it is placed, so changing it here never changes an order that already "
+        + "exists.",
+        areaRows
+        + '<div class="newrow">'
+        + setField("Area", "new-area", '<input id="new-area" placeholder="Maadi">')
+        + setField("Fee", "new-fee", '<input id="new-fee" inputmode="decimal" placeholder="60">', "In EGP.")
+        + '<button type="button" class="mini" data-set="area-add">Add the area</button></div>')
+    + setCard("Pickup", "Whether customers can collect an order themselves.",
+        setSwitch("pickup_enabled", "Customers can choose pickup",
+            "Off removes it from checkout, and an order that tries to use it is refused."),
+        "pickup")
+    + setCard("Delivery and pickup times",
+        "The times a customer can choose from. The one they choose is written onto the order in "
+        + "words, so renaming a time later never changes an order that used it.",
+        slotRows
+        + '<div class="newrow">'
+        + setField("Name", "new-slot", '<input id="new-slot" placeholder="Evening">')
+        + setField("From", "new-start", '<input id="new-start" type="time">')
+        + setField("To", "new-end", '<input id="new-end" type="time">')
+        + '<button type="button" class="mini" data-set="slot-add">Add the time</button></div>')
+    + "</div>"
+    + historyNote("An order copies the area's name, its fee and the time it chose at the moment it "
+        + "is placed. Changing a fee here changes what the next order pays and nothing else. An "
+        + "area or a time that an order already used cannot be deleted \u2014 it can only be "
+        + "switched off.")
+    + "</main>";
+}
+
+/* ---------------------------------------------------------------- calendar */
+function readableDate(iso) {
+  var d = new Date(iso + "T00:00:00.000Z");
+  return d.toLocaleDateString("en-GB",
+    { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+}
+
+function viewSetCalendar() {
+  var days = workingDays();
+  var chips = DAY_NAMES.map(function (name, i) {
+    var on = days.indexOf(i) >= 0;
+    return '<button type="button" class="dayc' + (on ? " on" : "") + '" data-set="day" data-i="'
+      + i + '">' + name + "</button>";
+  }).join("");
+  var off = DAY_NAMES.filter(function (_, i) { return days.indexOf(i) < 0; });
+
+  var closed = S.settings.closed.filter(function (c) { return c.closed; });
+  var capped = S.settings.closed.filter(function (c) { return !c.closed && c.max !== null; });
+
+  var list = (closed.length || capped.length)
+    ? "<ul>" + closed.map(function (c) {
+        return '<li class="closed-row"><strong>' + readableDate(c.date) + "</strong>"
+          + (c.eventNumber
+              ? '<span class="type ev">Event</span><a href="#/order/' + c.eventNumber + '">'
+                + c.eventNumber + "</a><span class=\"hint\">Held by the event. Change it on the "
+                + "event itself.</span>"
+              : '<span class="why">' + esc(c.note || "Closed.") + "</span>"
+                + '<button type="button" class="linky" data-set="unblock" data-date="' + c.date
+                + '">Open it again</button>')
+          + "</li>";
+      }).join("")
+      + capped.map(function (c) {
+        return '<li class="closed-row"><strong>' + readableDate(c.date) + "</strong>"
+          + '<span class="why">' + c.max + " order" + (c.max === 1 ? "" : "s")
+          + " that day, instead of " + S_().normal_daily_capacity + ".</span>"
+          + '<button type="button" class="linky" data-set="uncap" data-date="' + c.date
+          + '">Back to ' + S_().normal_daily_capacity + "</button></li>";
+      }).join("") + "</ul>"
+    : '<p class="hint">No days are closed or capped from today onwards.</p>';
+
+  return "<main>" + setHead("Calendar &amp; capacity",
+      "The days you work, the days you have closed, and how many orders a particular day can take.")
+    + setFlashes()
+    + '<div class="stack">'
+    + setCard("The days you work",
+        "A day switched off cannot be chosen for a regular order at all. Every day is on today, "
+        + "which is how the site behaves now.",
+        '<div class="chips">' + chips + "</div>"
+        + '<p class="hint" style="margin-top:14px">'
+        + (days.length === 7 ? "Open every day."
+           : days.length === 0 ? "Nothing can be ordered at all \u2014 turn at least one day on."
+           : "Closed on " + off.join(", ") + ".") + "</p>",
+        "days")
+    + setCard("Days you are closed",
+        "For anything the system cannot know about \u2014 travelling, a holiday, a day already "
+        + "spoken for.",
+        list
+        + '<div class="newrow">'
+        + setField("Date", "block-date", '<input id="block-date" type="date">')
+        + setField("Why", "block-note", '<input id="block-note" placeholder="Away that weekend">',
+            "For you, not the customer.")
+        + '<button type="button" class="mini" data-set="block">Close that day</button></div>'
+        + '<div class="newrow">'
+        + setField("Or cook fewer on one day", "cap-date", '<input id="cap-date" type="date">')
+        + setField("Orders that day", "cap-n", '<input id="cap-n" inputmode="numeric" placeholder="1">',
+            "Normally " + S_().normal_daily_capacity + ".")
+        + '<button type="button" class="mini" data-set="cap">Set that day</button></div>')
+    + "</div>"
+    + historyNote("Closing a day stops new orders being placed for it. It does not touch an order "
+        + "that is already booked for that day \u2014 those stay exactly as they are, and you "
+        + "cancel one deliberately if you need to.")
+    + "</main>";
+}
+
+/* ------------------------------------------------------------------ events */
+function viewSetEvents() {
+  var base = Number(String(LADDER_EXAMPLE).replace(/,/g, "")) * 100;
+  var rows = LADDER.map(function (t, i) {
+    var money = isFinite(base) && base > 0 && t.mult !== ""
+      ? ' <span class="tnum amt">= ' + egp(Math.round(base * Number(t.mult || 0))) + "</span>" : "";
+    return '<div class="band">'
+      + '<input class="g tnum" aria-label="From guests" data-l="min" data-i="' + i + '" value="'
+      + esc(t.min) + '"> to '
+      + '<input class="g tnum" aria-label="To guests" data-l="max" data-i="' + i + '" value="'
+      + esc(t.max) + '"> guests: '
+      + '<input class="m tnum" aria-label="Multiplier" data-l="mult" data-i="' + i + '" value="'
+      + esc(t.mult) + '"> \u00d7' + money
+      + '<button type="button" class="linky" data-set="band-del" data-i="' + i + '">Remove</button>'
+      + "</div>";
+  }).join("");
+
+  var mode = S_().event_default_capacity_mode;
+  var choice = function (id, title, body) {
+    return '<button type="button" class="opt-btn' + (mode === id ? " on" : "")
+      + '" data-set="mode" data-mode="' + id + '"><span class="t">' + title
+      + '</span><span class="b">' + body + "</span></button>";
+  };
+
+  return "<main>" + setHead("Events",
+      "What an event request needs, what happens if one is cancelled, and how event food is priced "
+      + "by guest count.") + setFlashes()
+    + '<div class="stack">'
+    + setCard("What an event needs",
+        "Checked when the customer asks for a date, and again when the request is written.",
+        '<div class="fgrid two">'
+        + setField("Notice, in days", "s-evnotice",
+            '<input id="s-evnotice" inputmode="numeric" value="' + esc(S_().event_notice_days) + '">',
+            "The soonest an event can be.")
+        + setField("Most guests", "s-evguests",
+            '<input id="s-evguests" inputmode="numeric" value="' + esc(S_().event_max_guests) + '">',
+            "A request for more than this is refused.")
+        + "</div>",
+        "evrules")
+    + setCard("Cancelling an event",
+        "The same rule as a regular order, with its own window. The charge is worked out and "
+        + "recorded on the order \u2014 never taken.",
+        '<div class="fgrid two">'
+        + setField("Free window", "s-evfree",
+            '<input id="s-evfree" inputmode="numeric" value="' + esc(S_().event_free_cancellation_hours) + '">',
+            "In hours before the event.")
+        + setField("Late cancellation", "s-evpct",
+            '<input id="s-evpct" inputmode="numeric" value="' + esc(S_().late_cancellation_percent) + '">',
+            "A percentage of the total.")
+        + '</div><p class="hint" style="margin-top:14px">This percentage is shared with regular '
+        + "orders \u2014 changing it here changes it there too.</p>",
+        "evcancel")
+    + setCard("When you accept an event",
+        "What happens to the rest of that day by default. You are still asked each time you confirm "
+        + "one, so this only sets which answer is offered first.",
+        '<div class="opts">'
+        + choice("BLOCK_DAY", "Block the whole day",
+            "No regular orders on a day you are catering an event.")
+        + choice("KEEP_DAY_OPEN", "Keep the day open",
+            "Regular orders keep coming in alongside the event.")
+        + "</div>",
+        "evmode")
+    + setCard("The guest-count ladder",
+        "Event food is cooked for the whole guest list, so it is priced by how many are coming. "
+        + "Every dish uses this ladder unless it has bands of its own.",
+        '<div class="newrow">'
+        + setField("Show it for a dish costing", "ladder-example",
+            '<input id="ladder-example" class="tnum" inputmode="decimal" value="'
+            + esc(String(LADDER_EXAMPLE)) + '">', "In EGP. Just for reading the ladder.")
+        + "</div>" + rows
+        + '<div class="chips" style="margin-top:16px">'
+        + '<button type="button" class="mini" data-set="band-add">Add a band</button></div>',
+        "ladder", "Save the ladder",
+        '<p class="hint" style="margin-top:18px">'
+        + (dishesWithOwnBands() === 0
+            ? "No dish has bands of its own, so every dish follows this ladder."
+            : dishesWithOwnBands() + (dishesWithOwnBands() === 1 ? " dish has" : " dishes have")
+              + " bands of their own and ignore this ladder. They are set on the dish itself.")
+        + "</p>")
+    + "</div>"
+    + historyNote("An event order stores the multiplier it was priced at and the price of every "
+        + "dish on it. Changing the ladder changes what the next event is quoted; it cannot change "
+        + "one that has already been sent.")
+    + "</main>";
+}
+
+function dishesWithOwnBands() {
+  return S.menu.dishes.filter(function (d) { return !d.archived && d.tiers && d.tiers.length; }).length;
+}
+
+/* ----------------------------------------------------------------- payment */
+function viewSetPayment() {
+  return "<main>" + setHead("Payment",
+      "How customers can pay, and the InstaPay details they are shown.") + setFlashes()
+    + '<div class="stack">'
+    + setCard("How customers can pay",
+        "Both are settled by hand: cash when the food arrives, InstaPay when you have seen the "
+        + "transfer.",
+        setSwitch("payment_cash_enabled", "Cash",
+            "Reads as cash on delivery, or payment on pickup, depending on the order.")
+        + setSwitch("payment_instapay_enabled", "InstaPay",
+            "The order arrives awaiting verification. It becomes paid when you say you have seen "
+            + "the money \u2014 never automatically."),
+        "methods")
+    + setCard("Your InstaPay details",
+        "Shown to the customer at checkout when they choose InstaPay, and on their confirmation.",
+        '<div class="fgrid">'
+        + setField("Transfer to", "s-ipn",
+            '<input id="s-ipn" value="' + esc(S_().instapay_number) + '">',
+            "The number or address customers send to.")
+        + setField("Anything else to say", "s-ipd",
+            '<input id="s-ipd" placeholder="Nothing extra" value="'
+            + esc(S_().instapay_account_details) + '">',
+            "Optional. A name to send to, a note about the reference.")
+        + "</div>",
+        "instapay")
+    + setCard("Card payments", "",
+        '<p class="hint">Paused, as agreed. The integration is built and tested against the '
+        + "provider's test mode, but card is not offered to customers and no card details are ever "
+        + "handled by this site.</p>"
+        + '<p class="hint" style="margin-top:12px">Turning it back on is a deliberate step: it '
+        + "needs the provider's keys added to the deployment, and a decision from you. It is not a "
+        + "switch on this page for that reason.</p>")
+    + "</div>"
+    + historyNote("An order records how it was paid for at the time it was placed. Changing these "
+        + "details changes what the next customer is shown; an order already waiting to be verified "
+        + "keeps its own record, and payment status is still something only you set.")
+    + "</main>";
+}
+
+/* ----------------------------------------------------------------- serving */
+function viewSetServing() {
+  var money = function (key) {
+    var v = S_()[key];
+    return v === "" ? "" : String(Number(v) / 100);
+  };
+  return "<main>" + setHead("Serving setup",
+      "Whether food goes out in your own dishes or disposable ones, and what customers are told "
+      + "about returning them.") + setFlashes()
+    + '<div class="stack">'
+    + setCard("What customers can choose", "Asked on every order, regular and event alike.",
+        setSwitch("serving_returnable_enabled", "Returnable dishes",
+            "Served in your own dishes, which you collect afterwards.")
+        + setSwitch("serving_disposable_enabled", "Disposable dishes",
+            "Served in disposable containers \u2014 nothing to return."),
+        "setups")
+    + setCard("What customers are told",
+        "Shown under the choice at checkout. Empty means nothing is said, which is the case today.",
+        '<div class="fgrid">'
+        + setField("The returnable-dish policy", "s-policy",
+            '<textarea id="s-policy" placeholder="Nothing is shown to customers yet">'
+            + esc(S_().serving_setup_policy_en) + "</textarea>",
+            "In your own words. For example, when you collect the dishes and what happens if one "
+            + "is not ready.")
+        + "</div>"
+        + (S_().serving_setup_policy_en
+            ? ""
+            : toDecide("Customers can choose returnable dishes but are told nothing about "
+                + "returning them. Write a line here whenever you are ready \u2014 nothing has been "
+                + "made up in the meantime.")),
+        "policy")
+    + setCard("Deposit, return period and late fee",
+        "Not decided, and not invented. Record a decision here when you make one \u2014 nothing is "
+        + "charged, shown to a customer or enforced from these until we build them in and you say "
+        + "so.",
+        '<div class="fgrid three">'
+        + setField("Deposit", "s-dep",
+            '<input id="s-dep" inputmode="decimal" placeholder="Not decided" value="'
+            + esc(money("returnable_deposit_piastres")) + '">', "In EGP. Empty means none.")
+        + setField("Return within", "s-days",
+            '<input id="s-days" inputmode="numeric" placeholder="Not decided" value="'
+            + esc(S_().returnable_return_days) + '">', "In days. Empty means none.")
+        + setField("Late fee", "s-late",
+            '<input id="s-late" inputmode="decimal" placeholder="Not decided" value="'
+            + esc(money("returnable_late_fee_piastres")) + '">', "In EGP. Empty means none.")
+        + '</div><p class="hint" style="margin-top:14px">These three are recorded only. Tell me '
+        + "what they should be and how they should work, and they become real: shown at checkout, "
+        + "and part of what an order records.</p>",
+        "returnable", "Record these")
+    + "</div>"
+    + historyNote("Every order records which setup it was placed with. Switching one off here "
+        + "stops it being offered from now on and changes nothing about an order already booked.")
+    + "</main>";
+}
+
+/* ----------------------------------------------------------------- contact */
+function viewSetContact() {
+  return "<main>" + setHead("Business details",
+      "The contact details the website shows customers.") + setFlashes()
+    + '<div class="stack">'
+    + setCard("How customers reach you",
+        "Shown in the footer of every page, on the confirmation of every order, and wherever the "
+        + "site offers to start a conversation.",
+        '<div class="fgrid">'
+        + setField("WhatsApp number", "s-wa",
+            '<input id="s-wa" value="' + esc(S_().whatsapp_number) + '">',
+            "With the country code, as you would write it.")
+        + setField("Instagram", "s-ig",
+            '<input id="s-ig" value="' + esc(S_().contact_instagram) + '">',
+            "The full link. Empty removes it from the site.")
+        + setField("Email", "s-em",
+            '<input id="s-em" placeholder="None" value="' + esc(S_().contact_email) + '">',
+            "Empty removes it from the site.")
+        + "</div>"
+        + (S_().contact_email
+            ? ""
+            : toDecide("No email address has been supplied, so the site shows WhatsApp and "
+                + "Instagram only. Add one whenever you want it shown.")),
+        "contact")
+    + "</div>"
+    + historyNote("These change what the site shows from now on. An order already placed keeps its "
+        + "own record of the customer's details, and nothing here touches it.")
+    + "</main>";
+}
+
+/* ---------------------------------------------------------------- editing */
+var LADDER = null;          /* the ladder being edited, before it is saved */
+var LADDER_EXAMPLE = "1000";
+
+function loadLadder() {
+  LADDER = S.menu.tiers.map(function (t) {
+    return { min: String(t.min), max: String(t.max), mult: String(t.bp / 10000) };
+  });
+}
+function readLadder() {
+  document.querySelectorAll("[data-l]").forEach(function (el) {
+    var i = Number(el.dataset.i);
+    if (LADDER[i]) LADDER[i][el.dataset.l] = el.value.trim();
+  });
+}
+
+function whole(sel, min, max, what) {
+  var v = val(sel);
+  var n = Number(v);
+  if (!/^\d+$/.test(v) || n < min || n > max) {
+    SET_ERR = what + " must be a whole number between " + min + " and " + max + ".";
+    return null;
+  }
+  return String(n);
+}
+
+document.addEventListener("click", function (e) {
+  var t = e.target.closest("button");
+  if (!t) return;
+
+  /* a switch writes straight away, like the real one */
+  if (t.dataset.setToggle) {
+    var key = t.dataset.setToggle;
+    var turningOff = sOn(key);
+    var pairs = {
+      payment_cash_enabled: ["payment_instapay_enabled",
+        "Customers need at least one way to pay. Turn the other one on first."],
+      payment_instapay_enabled: ["payment_cash_enabled",
+        "Customers need at least one way to pay. Turn the other one on first."],
+      serving_returnable_enabled: ["serving_disposable_enabled",
+        "Customers need at least one way to be served. Turn the other one on first."],
+      serving_disposable_enabled: ["serving_returnable_enabled",
+        "Customers need at least one way to be served. Turn the other one on first."]
+    };
+    SET_MSG = null; SET_ERR = null;
+    if (turningOff && pairs[key] && !sOn(pairs[key][0])) {
+      SET_ERR = pairs[key][1]; render(); return;
+    }
+    setVal(key, turningOff ? "false" : "true");
+    save(); render(); return;
+  }
+
+  if (!t.dataset.set) return;
+  var m = t.dataset.set;
+  SET_MSG = null; SET_ERR = null;
+  var i = t.dataset.i === undefined ? null : Number(t.dataset.i);
+
+  /* ---- ordering */
+  if (m === "notice") {
+    var h = whole("#s-notice", 0, 720, "The notice period");
+    var cap = whole("#s-cap", 1, 50, "The daily capacity");
+    if (h === null || cap === null) { render(); return; }
+    setVal("normal_notice_hours", h); setVal("normal_daily_capacity", cap);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "minimum") {
+    var raw = val("#s-min").replace(/,/g, "");
+    if (raw !== "" && !(isFinite(Number(raw)) && Number(raw) >= 0)) {
+      SET_ERR = "That is not an amount in EGP."; render(); return;
+    }
+    setVal("minimum_order_value_piastres", raw === "" ? "" : String(Math.round(Number(raw) * 100)));
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "cancel") {
+    var nf = whole("#s-nfree", 0, 720, "The free cancellation window");
+    var ef = whole("#s-efree", 0, 2160, "The free cancellation window");
+    var pc = whole("#s-pct", 0, 100, "The late-cancellation charge");
+    if (nf === null || ef === null || pc === null) { render(); return; }
+    setVal("normal_free_cancellation_hours", nf);
+    setVal("event_free_cancellation_hours", ef);
+    setVal("late_cancellation_percent", pc);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+
+  /* ---- delivery */
+  if (m === "pickup" || m === "methods" || m === "setups" || m === "days" || m === "evmode") {
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "area-add") {
+    var an = val("#new-area"), af = val("#new-fee").replace(/,/g, "");
+    if (!an) { SET_ERR = "An area needs a name."; render(); return; }
+    if (af === "" || !isFinite(Number(af)) || Number(af) < 0) {
+      SET_ERR = "Give the delivery fee for this area, in EGP."; render(); return;
+    }
+    S.settings.areas.push({ name: an, fee: Math.round(Number(af) * 100), active: true, used: 0 });
+    save(); render(); return;
+  }
+  if (m === "area-save") {
+    var nn = val("#a-name-" + i), nf2 = val("#a-fee-" + i).replace(/,/g, "");
+    if (!nn) { SET_ERR = "An area needs a name."; render(); return; }
+    if (nf2 === "" || !isFinite(Number(nf2)) || Number(nf2) < 0) {
+      SET_ERR = "Give the delivery fee for this area, in EGP."; render(); return;
+    }
+    S.settings.areas[i].name = nn;
+    S.settings.areas[i].fee = Math.round(Number(nf2) * 100);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "area-active") {
+    S.settings.areas[i].active = !S.settings.areas[i].active; save(); render(); return;
+  }
+  if (m === "area-remove") {
+    if (S.settings.areas[i].used > 0) {
+      SET_ERR = S.settings.areas[i].name + " is on a saved address, so it cannot be removed. "
+        + "Switch it off instead.";
+      render(); return;
+    }
+    S.settings.areas.splice(i, 1); save(); render(); return;
+  }
+  if (m === "area-up" || m === "area-down") {
+    var to = i + (m === "area-up" ? -1 : 1);
+    if (to < 0 || to >= S.settings.areas.length) return;
+    var tmp = S.settings.areas[i];
+    S.settings.areas[i] = S.settings.areas[to]; S.settings.areas[to] = tmp;
+    save(); render(); return;
+  }
+  if (m === "slot-add") {
+    var sl = val("#new-slot"), st = val("#new-start"), en = val("#new-end");
+    if (!sl) { SET_ERR = "A time needs a name, such as Evening."; render(); return; }
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(st) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(en)) {
+      SET_ERR = "A time looks like 18:00."; render(); return;
+    }
+    if (en <= st) { SET_ERR = "The end has to be after the start."; render(); return; }
+    S.settings.slots.push({ label: sl, start: st, end: en, active: true, used: 0 });
+    save(); render(); return;
+  }
+  if (m === "slot-save") {
+    var sl2 = val("#t-label-" + i), st2 = val("#t-start-" + i), en2 = val("#t-end-" + i);
+    if (!sl2) { SET_ERR = "A time needs a name, such as Evening."; render(); return; }
+    if (en2 <= st2) { SET_ERR = "The end has to be after the start."; render(); return; }
+    S.settings.slots[i].label = sl2;
+    S.settings.slots[i].start = st2;
+    S.settings.slots[i].end = en2;
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "slot-active") {
+    S.settings.slots[i].active = !S.settings.slots[i].active; save(); render(); return;
+  }
+  if (m === "slot-remove") {
+    if (S.settings.slots[i].used > 0) {
+      SET_ERR = S.settings.slots[i].label + " is on an order, so it cannot be removed. "
+        + "Switch it off instead.";
+      render(); return;
+    }
+    S.settings.slots.splice(i, 1); save(); render(); return;
+  }
+  if (m === "slot-up" || m === "slot-down") {
+    var sto = i + (m === "slot-up" ? -1 : 1);
+    if (sto < 0 || sto >= S.settings.slots.length) return;
+    var stmp = S.settings.slots[i];
+    S.settings.slots[i] = S.settings.slots[sto]; S.settings.slots[sto] = stmp;
+    save(); render(); return;
+  }
+
+  /* ---- calendar */
+  if (m === "day") {
+    var days = workingDays();
+    var at = days.indexOf(i);
+    if (at >= 0) days.splice(at, 1); else days.push(i);
+    setVal("working_days", days.sort(function (a, b) { return a - b; }).join(","));
+    render(); return;
+  }
+  if (m === "block") {
+    var d = val("#block-date");
+    if (!d) { SET_ERR = "Choose a date."; render(); return; }
+    var already = S.settings.closed.filter(function (c) { return c.date === d; })[0];
+    if (already) { already.closed = true; already.note = val("#block-note") || null; }
+    else S.settings.closed.push({ date: d, closed: true, max: null, note: val("#block-note") || null,
+      eventNumber: null });
+    S.settings.closed.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    save(); render(); return;
+  }
+  if (m === "unblock") {
+    var dd = t.dataset.date;
+    var row = S.settings.closed.filter(function (c) { return c.date === dd; })[0];
+    if (row && row.eventNumber) {
+      SET_ERR = "That day is held by event " + row.eventNumber + ". Change it on the event itself.";
+      render(); return;
+    }
+    S.settings.closed = S.settings.closed.filter(function (c) { return c.date !== dd; });
+    save(); render(); return;
+  }
+  if (m === "cap") {
+    var cd = val("#cap-date"), cn = val("#cap-n");
+    if (!cd) { SET_ERR = "Choose a date."; render(); return; }
+    if (!/^\d+$/.test(cn) || Number(cn) > 50) {
+      SET_ERR = "A day's capacity is a whole number up to 50."; render(); return;
+    }
+    var have = S.settings.closed.filter(function (c) { return c.date === cd; })[0];
+    if (have) have.max = Number(cn);
+    else S.settings.closed.push({ date: cd, closed: false, max: Number(cn), note: null,
+      eventNumber: null });
+    S.settings.closed.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    save(); render(); return;
+  }
+  if (m === "uncap") {
+    var ud = t.dataset.date;
+    S.settings.closed = S.settings.closed.filter(function (c) { return c.date !== ud; });
+    save(); render(); return;
+  }
+
+  /* ---- events */
+  if (m === "evrules") {
+    var en3 = whole("#s-evnotice", 0, 365, "The event notice period");
+    var mg = whole("#s-evguests", 1, 1000, "The maximum guest count");
+    if (en3 === null || mg === null) { render(); return; }
+    setVal("event_notice_days", en3); setVal("event_max_guests", mg);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "evcancel") {
+    var ef2 = whole("#s-evfree", 0, 2160, "The free cancellation window");
+    var pc2 = whole("#s-evpct", 0, 100, "The late-cancellation charge");
+    if (ef2 === null || pc2 === null) { render(); return; }
+    setVal("event_free_cancellation_hours", ef2); setVal("late_cancellation_percent", pc2);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "mode") { setVal("event_default_capacity_mode", t.dataset.mode); render(); return; }
+  if (m === "band-add") { readLadder(); LADDER.push({ min: "", max: "", mult: "" }); render(); return; }
+  if (m === "band-del") { readLadder(); LADDER.splice(i, 1); render(); return; }
+  if (m === "ladder") {
+    readLadder();
+    var rows = [], bad = null;
+    LADDER.forEach(function (r) {
+      var lo = Number(r.min), hi = Number(r.max), mult = Number(r.mult);
+      if (!lo || !hi || hi < lo) bad = bad || "Each band needs a guest count to run from and to.";
+      if (!mult || mult <= 0) bad = bad || "Each band needs a multiplier, such as 1.5.";
+      rows.push({ min: lo, max: hi, bp: Math.round(mult * 10000) });
+    });
+    if (!rows.length) bad = "The ladder needs at least one band.";
+    rows.sort(function (a, b) { return a.min - b.min; });
+    for (var k = 1; k < rows.length; k++) {
+      if (rows[k].min <= rows[k - 1].max) {
+        bad = bad || "Those bands overlap. Every guest count can only fall in one band.";
+      }
+    }
+    if (bad) { SET_ERR = bad; render(); return; }
+    S.menu.tiers = rows;
+    loadLadder();
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+
+  /* ---- payment, serving, contact */
+  if (m === "instapay") {
+    setVal("instapay_number", val("#s-ipn"));
+    setVal("instapay_account_details", val("#s-ipd"));
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "policy") {
+    setVal("serving_setup_policy_en", val("#s-policy"));
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "returnable") {
+    var dep = val("#s-dep").replace(/,/g, ""), late = val("#s-late").replace(/,/g, "");
+    var rd = val("#s-days");
+    if ((dep !== "" && !isFinite(Number(dep))) || (late !== "" && !isFinite(Number(late)))) {
+      SET_ERR = "That is not an amount in EGP."; render(); return;
+    }
+    if (rd !== "" && !/^\d{1,3}$/.test(rd)) {
+      SET_ERR = "That is not a number of days."; render(); return;
+    }
+    setVal("returnable_deposit_piastres", dep === "" ? "" : String(Math.round(Number(dep) * 100)));
+    setVal("returnable_late_fee_piastres", late === "" ? "" : String(Math.round(Number(late) * 100)));
+    setVal("returnable_return_days", rd);
+    SET_MSG = "Recorded."; save(); render(); return;
+  }
+  if (m === "contact") {
+    var em = val("#s-em");
+    if (em !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) {
+      SET_ERR = "That does not look like an email address."; render(); return;
+    }
+    setVal("whatsapp_number", val("#s-wa"));
+    setVal("contact_instagram", val("#s-ig"));
+    setVal("contact_email", em);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+});
+
+document.addEventListener("input", function (e) {
+  if (e.target.id === "ladder-example") {
+    LADDER_EXAMPLE = e.target.value;
+    var base = Number(String(LADDER_EXAMPLE).replace(/,/g, "")) * 100;
+    document.querySelectorAll(".band .amt").forEach(function (el, i) {
+      var mult = Number(LADDER[i] ? LADDER[i].mult : 0);
+      el.textContent = "= " + (isFinite(base) && base > 0 ? egp(Math.round(base * mult)) : "\u2014");
+    });
+  }
+});
+
 /* --------------------------------------------------------------- chrome */
 function chrome(inner) {
   var h = hash();
@@ -1878,7 +2829,8 @@ function chrome(inner) {
     + '<a class="brand" href="#/">The Diine<span class="tag">Admin</span></a>'
     + "<nav>" + link("#/", "Today", "/") + link("#/orders", "Orders", "/orders")
     + link("#/kitchen", "Kitchen", "/kitchen")
-    + '<a href="#/menu"' + (h.indexOf("/menu") === 0 ? ' class="on"' : "") + ">Menu</a></nav>"
+    + '<a href="#/menu"' + (h.indexOf("/menu") === 0 ? ' class="on"' : "") + ">Menu</a>"
+    + '<a href="#/settings"' + (h.indexOf("/settings") === 0 ? ' class="on"' : "") + ">Settings</a></nav>"
     + '<div class="who"><span>' + esc(S.admin.name) + "</span>"
     + '<button type="button" id="signout">Sign out</button></div>'
     + "</div></header>" + inner;
@@ -1900,6 +2852,14 @@ function render() {
   else if (h === "/menu/categories") body = viewCourses();
   else if (h.indexOf("/menu/") === 0) body = viewDish(decodeURIComponent(h.slice(6)));
   else if (h === "/menu") body = viewMenu();
+  else if (h === "/settings") body = viewSettings();
+  else if (h === "/settings/ordering") body = viewSetOrdering();
+  else if (h === "/settings/delivery") body = viewSetDelivery();
+  else if (h === "/settings/calendar") body = viewSetCalendar();
+  else if (h === "/settings/events") { if (LADDER === null) loadLadder(); body = viewSetEvents(); }
+  else if (h === "/settings/payment") body = viewSetPayment();
+  else if (h === "/settings/serving") body = viewSetServing();
+  else if (h === "/settings/contact") body = viewSetContact();
   else if (h === "/orders") body = viewOrders();
   else if (h === "/kitchen") body = viewKitchen();
   else body = viewToday();
@@ -1908,6 +2868,7 @@ function render() {
 }
 window.addEventListener("hashchange", function () {
   PAY_CONFIRM = null; BANDS = null; EV_CHOICE = null; RETIRING = false; MENU_ERR = null;
+  LADDER = null; SET_MSG = null; SET_ERR = null;
   if (!CARRY) MENU_MSG = null;
   CARRY = false;
   render();

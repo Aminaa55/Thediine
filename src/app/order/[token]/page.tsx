@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatEGP } from "@/lib/money";
 import { formatMultiplier } from "@/lib/event-pricing";
-import { EVENT_TYPE_LABELS, RULES } from "@/lib/ordering";
+import { EVENT_TYPE_LABELS } from "@/lib/ordering";
+import { getRules } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Your order" };
@@ -47,6 +48,7 @@ const PAYMENT_STATUS: Record<string, { label: string; body: string }> = {
 };
 
 export default async function OrderPage({ params }: Props) {
+  const rules = await getRules();
   const { token } = await params;
   const order = await db.order.findUnique({
     where: { publicToken: token },
@@ -282,7 +284,7 @@ export default async function OrderPage({ params }: Props) {
             body={
               isEvent
                 ? "We agree the details, quote anything extra you asked for, and confirm the booking."
-                : `We cook it for your chosen time. Regular orders need ${RULES.normal.noticeLabel}' notice, which yours has.`
+                : `We cook it for your chosen time. Regular orders need ${rules.normalNoticeLabel}' notice, which yours has.`
             }
           />
         </ol>

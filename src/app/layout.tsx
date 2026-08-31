@@ -6,6 +6,9 @@ import { SiteHeader } from "@/components/site-header";
 import { GlobalBack } from "@/components/global-back";
 import { SiteFooter } from "@/components/site-footer";
 import { CustomerChrome } from "@/components/customer-chrome";
+import { RulesProvider } from "@/components/rules-provider";
+import { getRules, getContact, earliestNormalFrom, earliestEventFrom } from "@/lib/settings";
+import { toDateInput } from "@/lib/ordering";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -30,11 +33,25 @@ export const metadata: Metadata = {
     "Home catering in Egypt for gatherings, hosting and events. Browse the menu and order for a chosen date.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // The rules and the contact details come from settings, so an edit in admin
+  // changes what the site says as well as what it enforces.
+  const [rules, contact] = await Promise.all([getRules(), getContact()]);
+  const publicRules = {
+    normalNoticeLabel: rules.normalNoticeLabel,
+    normalEarliest: toDateInput(earliestNormalFrom(rules)),
+    dailyCapacity: rules.dailyCapacity,
+    eventNoticeLabel: rules.eventNoticeLabel,
+    eventEarliest: toDateInput(earliestEventFrom(rules)),
+    maxGuests: rules.maxGuests,
+    pickupEnabled: rules.pickupEnabled,
+  };
+
   // lang and dir are set here so an Arabic build only changes these two values.
   return (
     <html lang="en" dir="ltr" className={`${display.variable} ${body.variable}`}>
       <body className="flex min-h-screen flex-col">
+        <RulesProvider value={publicRules}>
         <CartProvider>
           {/* The customer chrome. Admin renders its own instead. */}
           <CustomerChrome>
@@ -45,9 +62,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </CustomerChrome>
           <main className="flex-1">{children}</main>
           <CustomerChrome>
-            <SiteFooter />
+            <SiteFooter contact={contact} />
           </CustomerChrome>
         </CartProvider>
+        </RulesProvider>
       </body>
     </html>
   );

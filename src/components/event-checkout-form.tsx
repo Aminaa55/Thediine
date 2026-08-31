@@ -120,6 +120,7 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
                 value={form.servingSetup}
                 onChange={(v) => set({ servingSetup: v })}
                 policy={ctx.servingSetupPolicy}
+                offered={ctx.servingSetups}
               />
             </section>
 

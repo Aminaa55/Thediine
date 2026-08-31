@@ -18,6 +18,10 @@ export const SETTINGS: Record<string, string> = {
   normal_cutoff_time: "", // TO CONFIRM — no default invented
   normal_daily_capacity: "3",
   pickup_counts_toward_capacity: "true",
+  pickup_enabled: "true",
+  // How the site behaves today: orders can be for any day of the week. Nothing
+  // has been decided about days off, so nothing is closed here.
+  working_days: "0,1,2,3,4,5,6",
   minimum_order_value_piastres: "0", // confirmed: no minimum
 
   // Event orders
@@ -45,8 +49,18 @@ export const SETTINGS: Record<string, string> = {
 
   // Contact
   whatsapp_number: "+201123030107",
+  contact_instagram: "https://www.instagram.com/thediine/",
+  contact_email: "", // TO CONFIRM — no address supplied
 
-  // Serving setup — the choice is live, the policy text is not yet written.
+  // Serving setup — both choices are offered today. The policy text, and the
+  // returnable-dish terms below, are NOT written yet and are not invented here.
+  serving_returnable_enabled: "true",
+  serving_disposable_enabled: "true",
   serving_setup_policy_en: "", // TO CONFIRM
   serving_setup_policy_ar: "",
+  // Recorded for when the business decides them. Empty means undecided, and
+  // nothing anywhere charges or shows them while they are empty.
+  returnable_deposit_piastres: "", // TO CONFIRM
+  returnable_return_days: "", // TO CONFIRM
+  returnable_late_fee_piastres: "", // TO CONFIRM
 };

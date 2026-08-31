@@ -28,6 +28,10 @@ export default async function OrderPage({ params }: Props) {
   if (!order) notFound();
 
   const s = Object.fromEntries((await db.setting.findMany()).map((x) => [x.key, x.value]));
+  // Which answer Settings offers first when an event is accepted. The choice
+  // itself is still made here, on the event.
+  const defaultCapacityMode =
+    s.event_default_capacity_mode === "KEEP_DAY_OPEN" ? "KEEP_DAY_OPEN" as const : "BLOCK_DAY" as const;
   const terms = cancellationTerms({
     type: order.type,
     deliveryDate: order.deliveryDate,
@@ -290,7 +294,7 @@ export default async function OrderPage({ params }: Props) {
         <div className="grid gap-6 lg:sticky lg:top-8 lg:self-start">
           {order.status === "REQUESTED" ? (
             <Card title="This is a request">
-              <ConfirmEvent orderId={order.id} />
+              <ConfirmEvent orderId={order.id} defaultMode={defaultCapacityMode} />
             </Card>
           ) : (
             <Card title="Order status">

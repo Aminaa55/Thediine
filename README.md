@@ -5,12 +5,12 @@ Replaces manual order-taking over Instagram DMs.
 
 ## Status
 
-**Customer site complete, admin under way.** Homepage, menu, product pages, the
+**Customer site complete, admin nearly so.** Homepage, menu, product pages, the
 four-step event journey, the cart and both checkouts work against the real
 catalogue, with event food priced by guest count. Admin covers the day's work:
-orders, statuses, payment verification, the kitchen list, and the menu itself --
-prices, availability, allergens, priced choices and per-dish event bands.
-Settings and analytics are next.
+orders, statuses, payment verification, the kitchen list, the menu itself, and
+Settings -- the business's own rules, editable without a developer. Analytics is
+what remains.
 
 | | |
 |---|---|
@@ -236,6 +236,7 @@ down inside it.
 | **Order** | Everything about one order, and everything that can be done to it |
 | **Kitchen** | What to cook on a day, totalled by dish and broken down by order |
 | **Menu** | Every dish: price, availability, selling unit, allergens, priced choices, event bands, and the courses they sit in |
+| **Settings** | The rules the site runs on: ordering, delivery and pickup, the calendar, events, payment, serving setup and contact details |
 
 **Order status and payment status are separate panels, on purpose.** Moving an
 order along never touches the money, and confirming a payment never moves the
@@ -326,6 +327,44 @@ Inside a dish:
 **A dish is retired, never deleted.** It leaves the customer menu and stays on
 every order it was ever part of. Courses are renamed, reordered and hidden at
 `/admin/menu/categories`.
+
+### Settings
+
+At `/admin/settings`, grouped the way the business is run rather than the way the
+database is shaped, and opened on **what has not been decided** -- five things
+today, each named and left undecided rather than filled in with something
+plausible.
+
+| Section | What it holds |
+|---|---|
+| **Ordering** | Notice period, orders a day, whether a pickup counts towards the day, a minimum order, and the cancellation windows and percentage |
+| **Delivery & pickup** | Delivery areas and their fees, whether pickup is offered, and the time slots customers choose from |
+| **Calendar & capacity** | The days of the week you work, days closed by hand, and a different capacity for one day |
+| **Events** | Event notice, the guest limit, the cancellation window, what accepting an event does to the day by default, and the shared guest-count ladder |
+| **Payment** | Cash and InstaPay, and the InstaPay number and details customers are shown |
+| **Serving setup** | Which serving options are offered, the policy customers read, and somewhere to record the returnable terms when they are decided |
+| **Business details** | The WhatsApp number, Instagram and email the site shows |
+
+**Every one of these is a real rule, not a number on a page.** The notice period
+decides which dates a customer can pick and is re-checked when the order is
+written; the daily capacity is re-counted inside the write transaction; a day of
+the week switched off closes it; pickup switched off is refused server-side even
+if the form is stale. The customer site reads the same values, so the sentence a
+customer reads about notice is the sentence the server enforces.
+
+**Nothing here rewrites an order that already exists.** An order snapshots the
+fee it was charged, the area and time it chose in words, the price of every dish,
+the multiplier an event was priced at, and the cancellation charge worked out at
+the moment it was cancelled. Changing a fee, a ladder or a cancellation rule
+changes what happens next and nothing that has already happened -- and that is
+covered by a test that changes each of them and checks a placed order afterwards.
+
+**What Settings deliberately does not decide**: the daily cut-off time (two
+plausible meanings, so it asks rather than picks one), the delivery areas and
+their fees, the time slots, the returnable-dish policy, and the deposit, return
+period and late fee behind it. The returnable terms have fields so a decision can
+be recorded the day it is made; they are marked as recorded only, and nothing
+charges or shows them.
 
 ### Getting in
 

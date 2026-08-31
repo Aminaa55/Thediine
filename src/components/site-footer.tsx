@@ -1,8 +1,17 @@
 import Link from "next/link";
 import { Logo } from "./logo";
 import { BRAND } from "@/lib/brand";
+import type { Contact } from "@/lib/settings";
 
-export function SiteFooter() {
+/**
+ * The contact details come from settings so they can be changed from admin.
+ * BRAND is the fallback for a value nobody has set yet, and a detail the
+ * business has cleared is simply not shown rather than shown as empty.
+ */
+export function SiteFooter({ contact }: { contact?: Contact }) {
+  const instagram = contact?.instagram || BRAND.instagram;
+  const whatsapp = contact?.whatsapp || BRAND.whatsapp;
+  const email = contact?.email ?? "";
   return (
     <footer className="mt-24 border-t border-line bg-cream-deep">
       <div className="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
@@ -32,17 +41,26 @@ export function SiteFooter() {
             <ul className="mt-5 space-y-2.5 text-[15px] text-ink-soft">
               <li><Link href="/our-work" className="hover:text-gold">Our Work</Link></li>
               <li><Link href="/events" className="hover:text-gold">Plan an event</Link></li>
-              <li>
-                <a href={BRAND.instagram} target="_blank" rel="noreferrer" className="hover:text-gold">
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a href={`https://wa.me/${BRAND.whatsapp.replace(/[^0-9]/g, "")}`}
-                   target="_blank" rel="noreferrer" className="hover:text-gold">
-                  WhatsApp
-                </a>
-              </li>
+              {instagram && (
+                <li>
+                  <a href={instagram} target="_blank" rel="noreferrer" className="hover:text-gold">
+                    Instagram
+                  </a>
+                </li>
+              )}
+              {whatsapp && (
+                <li>
+                  <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, "")}`}
+                     target="_blank" rel="noreferrer" className="hover:text-gold">
+                    WhatsApp
+                  </a>
+                </li>
+              )}
+              {email && (
+                <li>
+                  <a href={`mailto:${email}`} className="hover:text-gold">Email</a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

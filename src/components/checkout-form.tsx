@@ -110,12 +110,15 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
               title="Delivery"
               body="We bring it to you."
             />
-            <Choice
-              on={form.fulfilment === "PICKUP"}
-              onClick={() => set({ fulfilment: "PICKUP", areaId: null })}
-              title="Pickup"
-              body="You collect it from us."
-            />
+            {/* Only offered while the business is offering it. */}
+            {ctx.pickupEnabled && (
+              <Choice
+                on={form.fulfilment === "PICKUP"}
+                onClick={() => set({ fulfilment: "PICKUP", areaId: null })}
+                title="Pickup"
+                body="You collect it from us."
+              />
+            )}
           </div>
 
           {form.fulfilment === "DELIVERY" && (
@@ -211,9 +214,8 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
 
           <p className="mt-5 text-[14px] leading-relaxed text-ink-soft">
             Regular orders need at least{" "}
-            <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>,
-            and we cook {RULES.normal.dailyCapacity} orders a day — pickup included. Full days
-            cannot be chosen.
+            <strong className="font-semibold text-ink">{ctx.limits.normalNoticeLabel}&rsquo; notice</strong>.
+            Full days cannot be chosen.
           </p>
         </section>
 
@@ -226,6 +228,7 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
             value={form.servingSetup}
             onChange={(v) => set({ servingSetup: v })}
             policy={ctx.servingSetupPolicy}
+            offered={ctx.servingSetups}
           />
         </section>
 

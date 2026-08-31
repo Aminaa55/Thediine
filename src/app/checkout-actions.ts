@@ -4,7 +4,10 @@ import { db } from "@/lib/db";
 import type { CartLine, EventDraft } from "@/lib/cart";
 import { resolveCart } from "./actions";
 import { nextOrderNumber } from "@/lib/order-number";
-import { parseGuests, earliestNormalDate, toDateInput, RULES } from "@/lib/ordering";
+import { parseGuests, toDateInput, RULES } from "@/lib/ordering";
+import {
+  getRules, getSettings, earliestNormalFrom, earliestEventFrom, type BusinessRules,
+} from "@/lib/settings";
 import { eventUnitPrice, type EventTier } from "@/lib/event-pricing";
 import { getEventTiers } from "@/lib/catalog";
 import { paymobConfig, createIntention, CARD_PAYMENTS_PAUSED } from "@/lib/paymob";
@@ -16,6 +19,8 @@ import {
   type NormalCheckout,
   type PaymentMethodId,
   type DayStatus,
+  type CheckoutLimits,
+  type ServingSetup,
 } from "@/lib/checkout";
 
 /**
@@ -43,16 +48,33 @@ export type CheckoutContext = {
   slots: { id: string; label: string; startTime: string; endTime: string }[];
   whatsapp: string;
   servingSetupPolicy: string;
+  /** Whether pickup is being offered at all. */
+  pickupEnabled: boolean;
+  /** Which serving setups the business is offering. */
+  servingSetups: ServingSetup[];
+  /** The business's own numbers, so the page says what the server enforces. */
+  limits: CheckoutLimits;
 };
 
 async function settings(): Promise<Record<string, string>> {
-  const rows = await db.setting.findMany();
-  return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  return getSettings();
+}
+
+/** The numbers a checkout page needs, in the shape both sides validate against. */
+function limitsFrom(rules: BusinessRules): CheckoutLimits {
+  return {
+    normalNoticeLabel: rules.normalNoticeLabel,
+    eventNoticeLabel: rules.eventNoticeLabel,
+    eventEarliest: toDateInput(earliestEventFrom(rules)),
+    maxGuests: rules.maxGuests,
+    minimumOrder: rules.minimumOrder,
+  };
 }
 
 export async function getCheckoutContext(): Promise<CheckoutContext> {
-  const [s, areas, slots] = await Promise.all([
+  const [s, rules, areas, slots] = await Promise.all([
     settings(),
+    getRules(),
     db.deliveryArea.findMany({
       where: { isActive: true },
       orderBy: { sortOrder: "asc" },
@@ -91,6 +113,9 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
     slots: slots.map((t) => ({ id: t.id, label: t.labelEn, startTime: t.startTime, endTime: t.endTime })),
     whatsapp: s.whatsapp_number ?? "",
     servingSetupPolicy: s.serving_setup_policy_en ?? "",
+    pickupEnabled: rules.pickupEnabled,
+    servingSetups: rules.servingSetups,
+    limits: limitsFrom(rules),
   };
 }
 
@@ -108,10 +133,10 @@ function dayKey(d: Date): string {
  * orders a day, pickup included.
  */
 export async function getNormalAvailability(days = 90): Promise<DayStatus> {
-  const s = await settings();
-  const cap = Number(s.normal_daily_capacity ?? RULES.normal.dailyCapacity) || RULES.normal.dailyCapacity;
+  const rules = await getRules();
+  const cap = rules.dailyCapacity;
 
-  const earliestDate = earliestNormalDate();
+  const earliestDate = earliestNormalFrom(rules);
   const earliest = toDateInput(earliestDate);
   const until = new Date(earliestDate);
   until.setDate(until.getDate() + days);
@@ -123,6 +148,8 @@ export async function getNormalAvailability(days = 90): Promise<DayStatus> {
         type: "NORMAL",
         status: { not: "CANCELLED" },
         deliveryDate: { gte: earliestDate, lte: until },
+        // A pickup only counts against the day when the business says it does.
+        ...(rules.pickupCountsTowardCapacity ? {} : { fulfilmentType: "DELIVERY" as const }),
       },
       _count: { _all: true },
     }),
@@ -134,6 +161,18 @@ export async function getNormalAvailability(days = 90): Promise<DayStatus> {
 
   const unavailable: Record<string, string> = {};
   const overrideBy = new Map(overrides.map((o) => [dayKey(o.date), o]));
+
+  // Days the business does not work. Every day is a working day until it says
+  // otherwise, so this closes nothing unless someone has turned a day off.
+  if (rules.workingDays.length < 7) {
+    for (let i = 0; i <= days; i++) {
+      const d = new Date(earliestDate);
+      d.setDate(d.getDate() + i);
+      if (!rules.workingDays.includes(d.getDay())) {
+        unavailable[dayKey(d)] = "We are closed that day.";
+      }
+    }
+  }
 
   for (const o of overrides) {
     if (o.isClosed) {
@@ -266,25 +305,38 @@ export async function placeNormalOrder(
   lines: CartLine[],
 ): Promise<PlacedOrder> {
   const ctx = await getCheckoutContext();
-  const day = await getNormalAvailability();
-  const check = validateNormal(input, {
-    methods: ctx.methods,
-    day,
-    hasAreas: ctx.areas.length > 0,
-  });
-  if (!check.ok) return { ok: false, errors: check.errors };
+  const [day, rules] = await Promise.all([getNormalAvailability(), getRules()]);
 
   const cart = await resolveCart(lines);
   const usable = cart.lines.filter((l) => !l.unavailable && !l.problem);
   if (usable.length === 0) {
     return { ok: false, errors: { items: "There is nothing left in this order to place." } };
   }
+  const food = usable.reduce((n, l) => n + l.lineTotal, 0);
+
+  const check = validateNormal(input, {
+    methods: ctx.methods,
+    day,
+    hasAreas: ctx.areas.length > 0,
+    limits: ctx.limits,
+    subtotal: food,
+  });
+  if (!check.ok) return { ok: false, errors: check.errors };
+
+  // Both of these are settings, so they are checked here rather than trusted
+  // from a form that was rendered before they were changed.
+  if (input.fulfilment === "PICKUP" && !rules.pickupEnabled) {
+    return { ok: false, errors: { fulfilment: "Pickup is not available at the moment." } };
+  }
+  if (!rules.servingSetups.includes(input.servingSetup)) {
+    return { ok: false, errors: { servingSetup: "That serving option is not available at the moment." } };
+  }
 
   const area = input.areaId ? ctx.areas.find((a) => a.id === input.areaId) ?? null : null;
   // Unknown until the business supplies its areas and fees: recorded as unknown,
   // never as zero, and left out of the total rather than guessed at.
   const deliveryFee = input.fulfilment === "DELIVERY" ? (area ? area.fee : null) : 0;
-  const subtotal = usable.reduce((n, l) => n + l.lineTotal, 0);
+  const subtotal = food;
   const slot = ctx.slots.find((t) => t.id === input.time) ?? null;
 
   const method = input.paymentMethod as PaymentMethodId;
@@ -295,12 +347,19 @@ export async function placeNormalOrder(
       // the same moment cannot both take the last slot of a day.
       const date = new Date(input.date + "T00:00:00.000Z");
       const [taken, override] = await Promise.all([
-        tx.order.count({ where: { type: "NORMAL", deliveryDate: date, status: { not: "CANCELLED" } } }),
+        tx.order.count({
+          where: {
+            type: "NORMAL", deliveryDate: date, status: { not: "CANCELLED" },
+            ...(rules.pickupCountsTowardCapacity ? {} : { fulfilmentType: "DELIVERY" as const }),
+          },
+        }),
         tx.dateAvailability.findUnique({ where: { date } }),
       ]);
-      const s = await tx.setting.findUnique({ where: { key: "normal_daily_capacity" } });
-      const limit = override?.maxOrders ?? Number(s?.value ?? RULES.normal.dailyCapacity);
+      const limit = override?.maxOrders ?? rules.dailyCapacity;
       if (override?.isClosed) throw new CapacityError("We are not taking orders on that date.");
+      if (rules.workingDays.length < 7 && !rules.workingDays.includes(date.getUTCDay())) {
+        throw new CapacityError("We are closed that day.");
+      }
       if (taken >= limit) {
         throw new CapacityError(`We are fully booked that day — we take ${limit} orders a day.`);
       }
@@ -367,6 +426,7 @@ export async function submitEventRequest(
   const check = validateEventSubmission(customer, event, {
     methods: ctx.methods,
     lineCount: lines.length,
+    limits: ctx.limits,
   });
   if (!check.ok) return { ok: false, errors: check.errors };
 

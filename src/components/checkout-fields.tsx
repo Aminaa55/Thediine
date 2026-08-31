@@ -103,16 +103,19 @@ export function CustomerFields({
 
 /** Returnable or disposable — asked on every order. */
 export function ServingSetupChoice({
-  value, onChange, policy,
+  value, onChange, policy, offered,
 }: {
   value: CustomerDetails["servingSetup"];
   onChange: (v: CustomerDetails["servingSetup"]) => void;
   policy?: string;
+  /** Which setups the business is offering. Both, unless it says otherwise. */
+  offered?: CustomerDetails["servingSetup"][];
 }) {
+  const shown = SERVING_SETUPS.filter((s) => !offered || offered.includes(s.id));
   return (
     <div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {SERVING_SETUPS.map((s) => (
+        {shown.map((s) => (
           <button
             key={s.id}
             type="button"

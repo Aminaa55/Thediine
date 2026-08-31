@@ -5,7 +5,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useCart, type CartLine } from "@/lib/cart";
 import { resolveCart, type ResolvedCart, type ResolvedLine } from "@/app/actions";
 import { formatEGP } from "@/lib/money";
-import { RULES } from "@/lib/ordering";
+import { useRules } from "./rules-provider";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { EventRequestSection } from "./event-request-panel";
 
@@ -98,6 +98,7 @@ function NormalOrderSection({
   onQuantity: (key: string, q: number) => void;
   onRemove: (key: string) => void;
 }) {
+  const { normalNoticeLabel: noticeLabel } = useRules();
   return (
     <section className="overflow-hidden rounded-sm border border-line bg-cream-warm">
       <header className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line bg-cream-deep px-6 py-5 sm:px-8">
@@ -130,7 +131,7 @@ function NormalOrderSection({
         </Link>
         <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
           Regular orders need at least{" "}
-          <strong className="font-semibold text-ink">{RULES.normal.noticeLabel}&rsquo; notice</strong>,
+          <strong className="font-semibold text-ink">{noticeLabel}&rsquo; notice</strong>,
           with delivery or pickup and your date chosen at checkout.
         </p>
       </div>

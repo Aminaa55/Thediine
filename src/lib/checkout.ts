@@ -94,6 +94,22 @@ export type DayStatus = {
   earliest: string;
 };
 
+/**
+ * The business's own numbers, as the server read them from settings.
+ *
+ * Passed in rather than imported so one edit in admin changes the rule, the
+ * message the customer reads and the check the server makes, all at once.
+ */
+export type CheckoutLimits = {
+  normalNoticeLabel: string;
+  eventNoticeLabel: string;
+  /** yyyy-mm-dd — the earliest an event can be, under the business's notice. */
+  eventEarliest: string;
+  maxGuests: number;
+  /** Piastres. 0 means no minimum. */
+  minimumOrder: number;
+};
+
 export function validateCustomer(
   input: CustomerDetails,
   methods: PaymentMethodId[],
@@ -126,16 +142,30 @@ export function validateCustomer(
  */
 export function validateNormal(
   input: NormalCheckout,
-  options: { methods: PaymentMethodId[]; day?: DayStatus; hasAreas: boolean },
+  options: {
+    methods: PaymentMethodId[];
+    day?: DayStatus;
+    hasAreas: boolean;
+    limits?: CheckoutLimits;
+    /** The food total, so a minimum order can be checked where one exists. */
+    subtotal?: number;
+  },
 ): Validation {
   const errors = validateCustomer(input, options.methods);
   const earliest = options.day?.earliest ?? toDateInput(earliestNormalDate());
+  const noticeLabel = options.limits?.normalNoticeLabel ?? RULES.normal.noticeLabel;
 
   if (!input.date) errors.date = "Please choose a date.";
   else if (input.date < earliest) {
-    errors.date = `We need at least ${RULES.normal.noticeLabel}. The earliest date we can take is ${earliest}.`;
+    errors.date = `We need at least ${noticeLabel}. The earliest date we can take is ${earliest}.`;
   } else if (options.day?.unavailable[input.date]) {
     errors.date = options.day.unavailable[input.date];
+  }
+
+  // Only a rule where the business has set one. It is 0 — no minimum — today.
+  const minimum = options.limits?.minimumOrder ?? 0;
+  if (minimum > 0 && options.subtotal !== undefined && options.subtotal < minimum) {
+    errors.items = `Orders start at ${(minimum / 100).toLocaleString("en-EG")} EGP.`;
   }
 
   if (!input.time) errors.time = "Please choose a time.";
@@ -162,7 +192,11 @@ export function validateEventSubmission(
     guestCount: string;
     venue: string;
   },
-  options: { methods: PaymentMethodId[]; lineCount: number },
+  options: {
+    methods: PaymentMethodId[];
+    lineCount: number;
+    limits?: CheckoutLimits;
+  },
 ): Validation {
   const errors = validateCustomer(customer, options.methods);
 
@@ -173,20 +207,22 @@ export function validateEventSubmission(
     errors.eventTypeOther = "Please tell us the occasion.";
   }
 
-  const earliest = toDateInput(earliestEventDate());
+  const earliest = options.limits?.eventEarliest ?? toDateInput(earliestEventDate());
+  const eventNotice = options.limits?.eventNoticeLabel ?? RULES.event.noticeLabel;
   if (!event.date) errors.date = "Please choose a date.";
   else if (event.date < earliest) {
-    errors.date = `Events need at least ${RULES.event.noticeLabel}. The earliest date we can take is ${earliest}.`;
+    errors.date = `Events need at least ${eventNotice}. The earliest date we can take is ${earliest}.`;
   }
 
   if (!event.time) errors.time = "Please choose a time.";
   if (!event.venue.trim()) errors.venue = "Please tell us where we are coming to.";
 
+  const maxGuests = options.limits?.maxGuests ?? EVENT_GUESTS.max;
   const guests = parseGuests(event.guestCount);
   if (guests === null) errors.guestCount = "Please tell us how many guests.";
   else if (guests < EVENT_GUESTS.min) errors.guestCount = "There must be at least one guest.";
-  else if (guests > EVENT_GUESTS.max) {
-    errors.guestCount = `We currently cater events for up to ${EVENT_GUESTS.max} guests.`;
+  else if (guests > maxGuests) {
+    errors.guestCount = `We currently cater events for up to ${maxGuests} guests.`;
   }
 
   if (options.lineCount === 0) errors.items = "Please choose the dishes for your event.";
