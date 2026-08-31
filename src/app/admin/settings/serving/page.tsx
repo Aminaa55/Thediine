@@ -1,35 +1,28 @@
-import { requireAdminPage } from "@/lib/admin-auth";
 import { getSettingsMap } from "@/lib/admin-settings";
-import { SettingsHead } from "../head";
+import { db } from "@/lib/db";
 import { ServingSettings } from "@/components/admin/settings-serving";
 import { HistoryNote } from "@/components/admin/settings-bits";
 
-export const dynamic = "force-dynamic";
 export const metadata = { title: "Serving setup · Settings" };
 
 export default async function ServingSettingsPage() {
-  await requireAdminPage();
-  const s = await getSettingsMap();
+  const [s, options] = await Promise.all([
+    getSettingsMap(),
+    db.servingOption.findMany({ orderBy: { sortOrder: "asc" } }),
+  ]);
 
   return (
     <div>
-      <SettingsHead
-        title="Serving setup"
-        body="Whether food goes out in your own dishes or disposable ones, and what customers are told about returning them."
-      />
       <ServingSettings
-        values={{
-          serving_returnable_enabled: s.serving_returnable_enabled ?? "true",
-          serving_disposable_enabled: s.serving_disposable_enabled ?? "true",
-          serving_setup_policy_en: s.serving_setup_policy_en ?? "",
-          returnable_deposit_piastres: s.returnable_deposit_piastres ?? "",
-          returnable_return_days: s.returnable_return_days ?? "",
-          returnable_late_fee_piastres: s.returnable_late_fee_piastres ?? "",
-        }}
+        options={options.map((o) => ({
+          id: o.id, builtIn: o.builtIn, nameEn: o.nameEn,
+          descriptionEn: o.descriptionEn ?? "", isAvailable: o.isAvailable,
+        }))}
+        policy={s.serving_setup_policy_en ?? ""}
       />
       <HistoryNote>
-        Every order records which setup it was placed with. Switching one off here stops it being
-        offered from now on and changes nothing about an order already booked.
+        Every order records which option it was placed with, by name. Renaming or retiring one
+        never changes an order already booked.
       </HistoryNote>
     </div>
   );

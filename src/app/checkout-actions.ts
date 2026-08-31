@@ -6,7 +6,8 @@ import { resolveCart } from "./actions";
 import { nextOrderNumber } from "@/lib/order-number";
 import { parseGuests, toDateInput, RULES } from "@/lib/ordering";
 import {
-  getRules, getSettings, earliestNormalFrom, earliestEventFrom, type BusinessRules,
+  getRules, getSettings, getPaymentOptions, getServingOptions,
+  earliestNormalFrom, earliestEventFrom, timeWithin, type BusinessRules,
 } from "@/lib/settings";
 import { eventUnitPrice, type EventTier } from "@/lib/event-pricing";
 import { getEventTiers } from "@/lib/catalog";
@@ -21,6 +22,8 @@ import {
   type DayStatus,
   type CheckoutLimits,
   type ServingSetup,
+  type PaymentChoice,
+  type ServingChoice,
 } from "@/lib/checkout";
 
 /**
@@ -37,7 +40,12 @@ import {
 // ------------------------------------------------------------------ context
 
 export type CheckoutContext = {
-  methods: PaymentMethodId[];
+  /** Every way to pay that is switched on, in the order the business set. */
+  payments: PaymentChoice[];
+  /** Every way to be served that is available. */
+  servings: ServingChoice[];
+  /** The ids of the payment options on offer, which is what is validated. */
+  methods: string[];
   /** The InstaPay number to transfer to, as supplied by the business. */
   instapayNumber: string;
   /** Anything further the business wants to say about the transfer. */
@@ -45,13 +53,10 @@ export type CheckoutContext = {
   /** Card is only offered when a provider is configured AND card is not paused. */
   cardTestMode: boolean;
   areas: { id: string; name: string; fee: number }[];
-  slots: { id: string; label: string; startTime: string; endTime: string }[];
   whatsapp: string;
   servingSetupPolicy: string;
   /** Whether pickup is being offered at all. */
   pickupEnabled: boolean;
-  /** Which serving setups the business is offering. */
-  servingSetups: ServingSetup[];
   /** The business's own numbers, so the page says what the server enforces. */
   limits: CheckoutLimits;
 };
@@ -63,6 +68,8 @@ async function settings(): Promise<Record<string, string>> {
 /** The numbers a checkout page needs, in the shape both sides validate against. */
 function limitsFrom(rules: BusinessRules): CheckoutLimits {
   return {
+    timeFrom: rules.timeFrom,
+    timeUntil: rules.timeUntil,
     normalNoticeLabel: rules.normalNoticeLabel,
     eventNoticeLabel: rules.eventNoticeLabel,
     eventEarliest: toDateInput(earliestEventFrom(rules)),
@@ -72,7 +79,7 @@ function limitsFrom(rules: BusinessRules): CheckoutLimits {
 }
 
 export async function getCheckoutContext(): Promise<CheckoutContext> {
-  const [s, rules, areas, slots] = await Promise.all([
+  const [s, rules, areas, payOptions, servOptions] = await Promise.all([
     settings(),
     getRules(),
     db.deliveryArea.findMany({
@@ -80,16 +87,9 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
       orderBy: { sortOrder: "asc" },
       select: { id: true, nameEn: true, fee: true },
     }),
-    db.timeSlot.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-      select: { id: true, labelEn: true, startTime: true, endTime: true },
-    }),
+    getPaymentOptions(),
+    getServingOptions(),
   ]);
-
-  const methods: PaymentMethodId[] = [];
-  if (s.payment_cash_enabled !== "false") methods.push("CASH");
-  if (s.payment_instapay_enabled !== "false") methods.push("INSTAPAY");
 
   /**
    * Card is paused, so it is not offered at all. When it comes back it is
@@ -97,24 +97,51 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
    * switched it off — the interface must never imply card works before it does.
    */
   const paymob = paymobConfig();
-  const allowed = !CARD_PAYMENTS_PAUSED && s.payment_card_enabled !== "false";
-  const cardOn = allowed && paymob.configured;
-  if (cardOn) methods.push("CARD");
-  if (allowed && !paymob.configured && paymob.problem) {
+  const cardAllowed = !CARD_PAYMENTS_PAUSED && paymob.configured;
+  if (!CARD_PAYMENTS_PAUSED && !paymob.configured && paymob.problem) {
     console.warn(`[paymob] card is not available: ${paymob.problem}`);
   }
 
+  const payments: PaymentChoice[] = payOptions
+    .filter((o) => {
+      if (!o.isEnabled) return false;
+      // An integrated method is only ever offered once it is really wired up.
+      if (o.kind === "INTEGRATED") return o.builtIn === "CARD" && cardAllowed;
+      return true;
+    })
+    .map((o) => ({
+      id: o.id,
+      method: (o.builtIn ?? "OTHER") as PaymentMethodId,
+      name: o.nameEn,
+      instructions:
+        o.builtIn === "INSTAPAY"
+          ? [s.instapay_number ?? "", s.instapay_account_details ?? ""].filter(Boolean).join(" — ")
+          : o.instructionsEn ?? "",
+      verifyBeforeDelivery: o.verifyBeforeDelivery,
+    }));
+
+  const servings: ServingChoice[] = servOptions
+    .filter((o) => o.isAvailable)
+    .map((o) => ({
+      id: o.id,
+      setup: (o.builtIn ?? "OTHER") as ServingSetup,
+      name: o.nameEn,
+      description: o.descriptionEn ?? "",
+    }));
+
   return {
-    methods,
+    payments,
+    servings,
+    methods: payments.map((p) => p.id),
     instapayNumber: s.instapay_number ?? "",
     instapayDetails: s.instapay_account_details ?? "",
-    cardTestMode: cardOn && paymob.mode === "test",
+    cardTestMode:
+      cardAllowed && paymob.mode === "test"
+      && payments.some((p) => p.method === "CARD"),
     areas: areas.map((a) => ({ id: a.id, name: a.nameEn, fee: a.fee })),
-    slots: slots.map((t) => ({ id: t.id, label: t.labelEn, startTime: t.startTime, endTime: t.endTime })),
     whatsapp: s.whatsapp_number ?? "",
     servingSetupPolicy: s.serving_setup_policy_en ?? "",
     pickupEnabled: rules.pickupEnabled,
-    servingSetups: rules.servingSetups,
     limits: limitsFrom(rules),
   };
 }
@@ -296,8 +323,8 @@ async function upsertCustomer(tx: Parameters<Parameters<typeof db.$transaction>[
  * that the money arrived before it becomes paid. Neither ever touches the order
  * status.
  */
-function initialPaymentStatus(method: PaymentMethodId) {
-  return method === "INSTAPAY" ? ("AWAITING_VERIFICATION" as const) : ("UNPAID" as const);
+function initialPaymentStatus(choice: { verifyBeforeDelivery: boolean }) {
+  return choice.verifyBeforeDelivery ? ("AWAITING_VERIFICATION" as const) : ("UNPAID" as const);
 }
 
 export async function placeNormalOrder(
@@ -328,7 +355,8 @@ export async function placeNormalOrder(
   if (input.fulfilment === "PICKUP" && !rules.pickupEnabled) {
     return { ok: false, errors: { fulfilment: "Pickup is not available at the moment." } };
   }
-  if (!rules.servingSetups.includes(input.servingSetup)) {
+  const serving = ctx.servings.find((x) => x.id === input.servingOptionId) ?? null;
+  if (!serving) {
     return { ok: false, errors: { servingSetup: "That serving option is not available at the moment." } };
   }
 
@@ -337,9 +365,12 @@ export async function placeNormalOrder(
   // never as zero, and left out of the total rather than guessed at.
   const deliveryFee = input.fulfilment === "DELIVERY" ? (area ? area.fee : null) : 0;
   const subtotal = food;
-  const slot = ctx.slots.find((t) => t.id === input.time) ?? null;
+  // The customer picks a time inside the business's hours; it is recorded as
+  // they gave it. Orders placed under the old named slots keep their own label.
+  const timeLabel = input.time.trim();
 
-  const method = input.paymentMethod as PaymentMethodId;
+  const payment = ctx.payments.find((x) => x.id === input.paymentOptionId)!;
+  const method = payment.method;
 
   try {
     const order = await db.$transaction(async (tx) => {
@@ -377,19 +408,22 @@ export async function placeNormalOrder(
           customerEmail: input.email.trim() || null,
           fulfilmentType: input.fulfilment,
           deliveryDate: date,
-          timeSlotId: slot ? slot.id : null,
-          timeSlotLabel: slot ? slot.label : input.time,
+          timeSlotLabel: timeLabel,
           areaId: area?.id ?? null,
           areaName: area?.name ?? null,
           addressLine: input.fulfilment === "DELIVERY" ? input.addressLine.trim() : null,
           addressDetails: input.fulfilment === "DELIVERY" ? input.addressDetails.trim() || null : null,
-          servingSetup: input.servingSetup,
+          servingSetup: serving.setup,
+          servingSetupLabel: serving.name,
           subtotal,
           deliveryFee,
           total: subtotal + (deliveryFee ?? 0),
           paymentMethod: method,
-          paymentStatus: initialPaymentStatus(method),
-          paymentReference: method === "INSTAPAY" ? input.paymentReference.trim() || null : null,
+          paymentMethodLabel: payment.name,
+          paymentStatus: initialPaymentStatus(payment),
+          paymentReference: payment.verifyBeforeDelivery
+            ? input.paymentReference.trim() || null
+            : null,
           notes: input.notes.trim() || null,
           items: { create: itemData(cart.lines) },
           statusEvents: { create: { toStatus: "NEW", note: "Placed on the website." } },
@@ -442,7 +476,12 @@ export async function submitEventRequest(
   const subtotal = usable.reduce((n, l) => n + l.lineTotal, 0);
   const tiers: EventTier[] = await getEventTiers();
   const band = eventUnitPrice(100, guests, { eventPricingEnabled: true, tiers: [] }, tiers).tier;
-  const method = customer.paymentMethod as PaymentMethodId;
+  const payment = ctx.payments.find((x) => x.id === customer.paymentOptionId)!;
+  const method = payment.method;
+  const serving = ctx.servings.find((x) => x.id === customer.servingOptionId) ?? null;
+  if (!serving) {
+    return { ok: false, errors: { servingSetup: "That serving option is not available at the moment." } };
+  }
 
   const order = await db.$transaction(async (tx) => {
     const record = await upsertCustomer(tx, customer);
@@ -462,14 +501,18 @@ export async function submitEventRequest(
         deliveryDate: new Date(event.date + "T00:00:00.000Z"),
         timeSlotLabel: event.time,
         addressLine: event.venue.trim(),
-        servingSetup: customer.servingSetup,
+        servingSetup: serving.setup,
+        servingSetupLabel: serving.name,
         subtotal,
         // Décor, setup and staff are quoted separately and are NOT in this total.
         deliveryFee: null,
         total: subtotal,
         paymentMethod: method,
-        paymentStatus: initialPaymentStatus(method),
-        paymentReference: method === "INSTAPAY" ? customer.paymentReference.trim() || null : null,
+        paymentMethodLabel: payment.name,
+        paymentStatus: initialPaymentStatus(payment),
+        paymentReference: payment.verifyBeforeDelivery
+          ? customer.paymentReference.trim() || null
+          : null,
         notes: customer.notes.trim() || null,
         items: { create: itemData(cart.lines) },
         statusEvents: { create: { toStatus: "REQUESTED", note: "Requested from the website." } },

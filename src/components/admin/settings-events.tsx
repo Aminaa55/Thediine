@@ -1,21 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { formatEGP } from "@/lib/money";
+import { formatEGP, piastresToPounds } from "@/lib/money";
 import { saveSharedLadder } from "@/app/admin/settings-actions";
-import { SettingCard, Field, input, rowInput, useSaver, useSettingsForm } from "./settings-bits";
+import {
+  SectionHead, SettingCard, Field, input, rowInput, useSaver, useSettingsForm,
+} from "./settings-bits";
 
-type Row = { minGuests: string; maxGuests: string; multiplier: string };
+type Row = { minGuests: string; maxGuests: string; price: string };
 
 /**
  * Events.
  *
- * The guest-count ladder is the part with real money in it, so it is shown with
- * an example: a dish at a chosen price, priced through every band. A dish with
- * bands of its own ignores this ladder entirely, which is said here rather than
- * left to be discovered.
+ * The ladder is set in money, never in multipliers. One shared ladder has to
+ * price seventy dishes at seventy different prices, so what it really holds is
+ * a RATIO — but a ratio is not how anyone thinks about food. So the business
+ * sets it against one price: "a dish that normally costs 1,000 EGP costs 1,500
+ * for 11-20 guests". Every other dish moves in the same proportion, and a dish
+ * with bands of its own ignores the ladder entirely.
  */
-export function EventSettings({ values, ladder, dishesWithOwnBands }: {
+export function EventSettings({ values, ladder, reference, dishesWithOwnBands, examples }: {
   values: {
     event_notice_days: string;
     event_max_guests: string;
@@ -24,7 +28,11 @@ export function EventSettings({ values, ladder, dishesWithOwnBands }: {
     event_default_capacity_mode: string;
   };
   ladder: { minGuests: number; maxGuests: number; multiplierBp: number }[];
+  /** The price the ladder is written against, in piastres. */
+  reference: number;
   dishesWithOwnBands: number;
+  /** A couple of real dishes, to show the ladder is proportional. */
+  examples: { name: string; price: number }[];
 }) {
   const rules = useSettingsForm({
     event_notice_days: values.event_notice_days,
@@ -39,20 +47,21 @@ export function EventSettings({ values, ladder, dishesWithOwnBands }: {
   });
 
   return (
-    <div className="grid max-w-3xl gap-6">
+    <div className="grid max-w-2xl gap-4">
+      <SectionHead title="Events" />
+
       <SettingCard
         title="What an event needs"
-        note="Checked when the customer asks for a date, and again when the request is written."
         state={rules.state}
         onSave={() => rules.save()}
       >
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Notice, in days" htmlFor="ev-notice" hint="The soonest an event can be.">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Notice, in days" htmlFor="ev-notice">
             <input id="ev-notice" className={input} inputMode="numeric"
               value={rules.values.event_notice_days}
               onChange={(e) => rules.set({ event_notice_days: e.target.value })} />
           </Field>
-          <Field label="Most guests" htmlFor="ev-guests" hint="A request for more than this is refused.">
+          <Field label="Most guests" htmlFor="ev-guests" hint="A request for more is refused.">
             <input id="ev-guests" className={input} inputMode="numeric"
               value={rules.values.event_max_guests}
               onChange={(e) => rules.set({ event_max_guests: e.target.value })} />
@@ -62,134 +71,131 @@ export function EventSettings({ values, ladder, dishesWithOwnBands }: {
 
       <SettingCard
         title="Cancelling an event"
-        note="The same rule as a regular order, with its own window. The charge is worked out and recorded on the order — never taken."
+        note="The percentage is shared with regular orders."
         state={cancel.state}
         onSave={() => cancel.save()}
       >
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Free window" htmlFor="ev-free" hint="In hours before the event.">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Free window" htmlFor="ev-free" hint="Hours before.">
             <input id="ev-free" className={input} inputMode="numeric"
               value={cancel.values.event_free_cancellation_hours}
               onChange={(e) => cancel.set({ event_free_cancellation_hours: e.target.value })} />
           </Field>
-          <Field label="Late cancellation" htmlFor="ev-pct" hint="A percentage of the total.">
+          <Field label="Late cancellation" htmlFor="ev-pct" hint="% of the total.">
             <input id="ev-pct" className={input} inputMode="numeric"
               value={cancel.values.late_cancellation_percent}
               onChange={(e) => cancel.set({ late_cancellation_percent: e.target.value })} />
           </Field>
         </div>
-        <p className="mt-4 text-[13.5px] leading-relaxed text-ink-faint">
-          This percentage is shared with regular orders — changing it here changes it there too.
-        </p>
       </SettingCard>
 
       <SettingCard
         title="When you accept an event"
-        note="What happens to the rest of that day by default. You are still asked each time you confirm one, so this only sets which answer is offered first."
+        note="Which answer is offered first. You are still asked each time."
         state={capacity.state}
         onSave={() => capacity.save()}
       >
-        <div className="grid gap-3">
+        {/*
+          These only change what is selected. Nothing submits, navigates or
+          reloads until Save is pressed.
+        */}
+        <div className="flex flex-wrap gap-2">
           <Choice
             on={capacity.values.event_default_capacity_mode === "BLOCK_DAY"}
             onClick={() => capacity.set({ event_default_capacity_mode: "BLOCK_DAY" })}
-            title="Block the whole day"
-            body="No regular orders on a day you are catering an event."
+            title="Block the day"
           />
           <Choice
             on={capacity.values.event_default_capacity_mode === "KEEP_DAY_OPEN"}
             onClick={() => capacity.set({ event_default_capacity_mode: "KEEP_DAY_OPEN" })}
             title="Keep the day open"
-            body="Regular orders keep coming in alongside the event."
           />
         </div>
       </SettingCard>
 
-      <LadderCard ladder={ladder} dishesWithOwnBands={dishesWithOwnBands} />
+      <LadderCard
+        ladder={ladder} reference={reference}
+        dishesWithOwnBands={dishesWithOwnBands} examples={examples}
+      />
     </div>
   );
 }
 
-function Choice({ on, onClick, title, body }: {
-  on: boolean; onClick: () => void; title: string; body: string;
-}) {
+function Choice({ on, onClick, title }: { on: boolean; onClick: () => void; title: string }) {
   return (
     <button
       type="button" onClick={onClick} aria-pressed={on}
-      className={`rounded-sm border px-5 py-4 text-start transition-colors ${
-        on ? "border-gold bg-gold-pale/40" : "border-line bg-cream hover:border-gold"
+      className={`rounded-full border px-4 py-2 text-[14px] transition-colors ${
+        on ? "border-gold bg-gold-pale/50 font-medium text-ink" : "border-line bg-cream text-ink-soft hover:border-gold"
       }`}
     >
-      <span className="block font-display text-[16.5px] font-semibold text-ink">{title}</span>
-      <span className="mt-1 block text-[14px] leading-relaxed text-ink-soft">{body}</span>
+      {title}
     </button>
   );
 }
 
-function LadderCard({ ladder, dishesWithOwnBands }: {
+function LadderCard({ ladder, reference, dishesWithOwnBands, examples }: {
   ladder: { minGuests: number; maxGuests: number; multiplierBp: number }[];
+  reference: number;
   dishesWithOwnBands: number;
+  examples: { name: string; price: number }[];
 }) {
   const state = useSaver();
+  const [base, setBase] = useState(String(piastresToPounds(reference)));
   const [rows, setRows] = useState<Row[]>(
     ladder.map((t) => ({
       minGuests: String(t.minGuests),
       maxGuests: String(t.maxGuests),
-      multiplier: String(t.multiplierBp / 10000),
+      price: String(piastresToPounds(Math.round((reference * t.multiplierBp) / 10000))),
     })),
   );
-  // A worked example, so a multiplier is read as money rather than as maths.
-  const [example, setExample] = useState("1000");
-  const base = Number(example.replace(/,/g, "")) * 100;
 
   const set = (i: number, patch: Partial<Row>) =>
     setRows(rows.map((r, j) => (i === j ? { ...r, ...patch } : r)));
 
+  const basePiastres = Math.round(Number(base.replace(/,/g, "") || 0) * 100);
+  const shown = examples.slice(0, 2);
+
   return (
     <SettingCard
-      title="The guest-count ladder"
-      note="Event food is cooked for the whole guest list, so it is priced by how many are coming. Every dish uses this ladder unless it has bands of its own."
+      title="Event prices by guest count"
+      note="Set against one dish price. Every other dish moves in the same proportion, so you never price seventy dishes by hand."
       state={state}
-      onSave={() => state.run(() => saveSharedLadder(rows))}
-      saveLabel="Save the ladder"
+      onSave={() => state.run(() => saveSharedLadder(rows, base))}
+      saveLabel="Save these prices"
       footer={
-        <p className="mt-5 text-[13.5px] leading-relaxed text-ink-faint">
+        <p className="mt-4 text-[13px] leading-relaxed text-ink-faint">
           {dishesWithOwnBands === 0
-            ? "No dish has bands of its own, so every dish follows this ladder."
-            : `${dishesWithOwnBands} ${dishesWithOwnBands === 1 ? "dish has" : "dishes have"} bands of their own and ignore this ladder. They are set on the dish itself.`}
+            ? "Every dish follows this. A dish can be given its own prices on the dish itself."
+            : `${dishesWithOwnBands} ${dishesWithOwnBands === 1 ? "dish has" : "dishes have"} their own event prices and ignore this.`}
         </p>
       }
     >
-      <div className="mb-5 flex flex-wrap items-end gap-3">
-        <Field label="Show it for a dish costing" htmlFor="example" hint="In EGP. Just for reading the ladder.">
-          <input id="example" className={`${rowInput} w-32 tabular-nums`} inputMode="decimal"
-            value={example} onChange={(e) => setExample(e.target.value)} />
+      <div className="flex flex-wrap items-end gap-2.5">
+        <Field label="For a dish that normally costs" htmlFor="base" hint="In EGP.">
+          <input id="base" className={`${rowInput} w-28 tabular-nums`} inputMode="decimal"
+            value={base} onChange={(e) => setBase(e.target.value)} />
         </Field>
       </div>
 
-      <ul className="grid gap-2">
+      <ul className="mt-4 grid gap-1.5">
         {rows.map((r, i) => (
           <li key={i} className="flex flex-wrap items-center gap-2">
             <input value={r.minGuests} inputMode="numeric" aria-label="From guests"
               onChange={(e) => set(i, { minGuests: e.target.value })}
-              className={`${rowInput} w-20 tabular-nums`} />
-            <span className="text-[14px] text-ink-faint">to</span>
+              className={`${rowInput} w-16 py-2 tabular-nums`} />
+            <span className="text-[13.5px] text-ink-faint">to</span>
             <input value={r.maxGuests} inputMode="numeric" aria-label="To guests"
               onChange={(e) => set(i, { maxGuests: e.target.value })}
-              className={`${rowInput} w-20 tabular-nums`} />
-            <span className="text-[14px] text-ink-faint">guests:</span>
-            <input value={r.multiplier} inputMode="decimal" aria-label="Multiplier"
-              onChange={(e) => set(i, { multiplier: e.target.value })}
-              className={`${rowInput} w-24 tabular-nums`} />
-            <span className="text-[14px] text-ink-faint">&times;</span>
-            {Number.isFinite(base) && base > 0 && r.multiplier !== "" && (
-              <span className="text-[14px] font-medium tabular-nums text-ink">
-                = {formatEGP(Math.round(base * Number(r.multiplier || 0)))}
-              </span>
-            )}
+              className={`${rowInput} w-16 py-2 tabular-nums`} />
+            <span className="text-[13.5px] text-ink-faint">guests</span>
+            <input value={r.price} inputMode="decimal" aria-label="Price for this band"
+              onChange={(e) => set(i, { price: e.target.value })}
+              className={`${rowInput} w-28 py-2 tabular-nums`} />
+            <span className="text-[13.5px] text-ink-faint">EGP</span>
             <button type="button"
               onClick={() => setRows(rows.filter((_, j) => j !== i))}
-              className="text-[13.5px] text-ink-faint underline underline-offset-4 hover:text-[#A6391C]">
+              className="text-[13px] text-ink-faint underline underline-offset-4 hover:text-[#A6391C]">
               Remove
             </button>
           </li>
@@ -197,10 +203,35 @@ function LadderCard({ ladder, dishesWithOwnBands }: {
       </ul>
 
       <button type="button"
-        onClick={() => setRows([...rows, { minGuests: "", maxGuests: "", multiplier: "" }])}
-        className="btn-outline mt-4">
+        onClick={() => setRows([...rows, { minGuests: "", maxGuests: "", price: "" }])}
+        className="mt-3 rounded-full border border-line bg-cream px-4 py-1.5 text-[13.5px] text-ink-soft hover:border-gold">
         Add a band
       </button>
+
+      {/* What it means for real dishes, so the proportion is not abstract. */}
+      {shown.length > 0 && basePiastres > 0 && rows.length > 0 && (
+        <div className="mt-5 border-t border-line-soft pt-4">
+          <p className="eyebrow mb-2">What that means for other dishes</p>
+          <ul className="grid gap-1">
+            {shown.map((d) => (
+              <li key={d.name} className="flex flex-wrap items-baseline gap-x-2 text-[13.5px] tabular-nums text-ink-soft">
+                <span className="text-ink">{d.name}</span>
+                <span>({formatEGP(d.price)})</span>
+                {rows.slice(0, 3).map((r, i) => {
+                  const bandPrice = Number(r.price.replace(/,/g, "") || 0) * 100;
+                  if (!bandPrice) return null;
+                  const scaled = Math.round((d.price * bandPrice) / basePiastres);
+                  return (
+                    <span key={i}>
+                      · {r.minGuests}&ndash;{r.maxGuests}: {formatEGP(scaled)}
+                    </span>
+                  );
+                })}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </SettingCard>
   );
 }

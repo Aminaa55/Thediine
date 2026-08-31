@@ -1,27 +1,25 @@
-import { requireAdminPage } from "@/lib/admin-auth";
 import { getSettingsMap, getSharedLadder } from "@/lib/admin-settings";
 import { db } from "@/lib/db";
-import { SettingsHead } from "../head";
 import { EventSettings } from "@/components/admin/settings-events";
 import { HistoryNote } from "@/components/admin/settings-bits";
 
-export const dynamic = "force-dynamic";
 export const metadata = { title: "Events · Settings" };
 
 export default async function EventSettingsPage() {
-  await requireAdminPage();
-  const [s, ladder, withOwn] = await Promise.all([
+  const [s, ladder, withOwn, examples] = await Promise.all([
     getSettingsMap(),
     getSharedLadder(),
     db.product.count({ where: { archivedAt: null, eventTiers: { some: {} } } }),
+    db.product.findMany({
+      where: { archivedAt: null, isAvailable: true, basePrice: { not: null } },
+      orderBy: { basePrice: "desc" },
+      take: 2,
+      select: { nameEn: true, basePrice: true },
+    }),
   ]);
 
   return (
     <div>
-      <SettingsHead
-        title="Events"
-        body="What an event request needs, what happens if one is cancelled, and how event food is priced by guest count."
-      />
       <EventSettings
         values={{
           event_notice_days: s.event_notice_days ?? "5",
@@ -33,12 +31,13 @@ export default async function EventSettingsPage() {
         ladder={ladder.map((t) => ({
           minGuests: t.minGuests, maxGuests: t.maxGuests, multiplierBp: t.multiplierBp,
         }))}
+        reference={Number(s.event_ladder_reference_piastres ?? "100000") || 100000}
         dishesWithOwnBands={withOwn}
+        examples={examples.map((p) => ({ name: p.nameEn, price: p.basePrice ?? 0 }))}
       />
       <HistoryNote>
-        An event order stores the multiplier it was priced at and the price of every dish on it.
-        Changing the ladder changes what the next event is quoted; it cannot change one that has
-        already been sent.
+        An event order stores the price of every dish on it and the band it was priced in. Changing
+        these prices changes the next quote, never one already sent.
       </HistoryNote>
     </div>
   );

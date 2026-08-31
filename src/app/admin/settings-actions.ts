@@ -82,7 +82,6 @@ const EDITABLE: Record<string, Check> = {
   normal_notice_hours: asWholeNumber(0, 720, "The notice period"),
   normal_daily_capacity: asWholeNumber(1, 50, "The daily capacity"),
   pickup_counts_toward_capacity: asSwitch,
-  normal_cutoff_time: asTimeOrEmpty,
   minimum_order_value_piastres: asMoney,
   normal_free_cancellation_hours: asWholeNumber(0, 720, "The free cancellation window"),
   event_free_cancellation_hours: asWholeNumber(0, 2160, "The free cancellation window"),
@@ -91,6 +90,8 @@ const EDITABLE: Record<string, Check> = {
 
   // Delivery and pickup
   pickup_enabled: asSwitch,
+  order_time_from: asTimeOrEmpty,
+  order_time_until: asTimeOrEmpty,
 
   // Calendar
   working_days: asDays,
@@ -102,19 +103,14 @@ const EDITABLE: Record<string, Check> = {
     raw === "BLOCK_DAY" || raw === "KEEP_DAY_OPEN" ? null : "That is not a capacity choice.",
 
   // Payment
-  payment_cash_enabled: asSwitch,
-  payment_instapay_enabled: asSwitch,
   instapay_number: anyText,
   instapay_account_details: anyText,
 
   // Serving setup
-  serving_returnable_enabled: asSwitch,
-  serving_disposable_enabled: asSwitch,
   serving_setup_policy_en: anyText,
-  returnable_deposit_piastres: asMoney,
-  returnable_return_days: (raw) =>
-    raw.trim() === "" || /^\d{1,3}$/.test(raw.trim()) ? null : "That is not a number of days.",
-  returnable_late_fee_piastres: asMoney,
+
+  // Events
+  event_ladder_reference_piastres: asMoney,
 
   // Contact
   whatsapp_number: anyText,
@@ -128,12 +124,23 @@ const EDITABLE: Record<string, Check> = {
 /** Money fields are typed in pounds and stored in piastres, like every price. */
 const IN_POUNDS = new Set([
   "minimum_order_value_piastres",
-  "returnable_deposit_piastres",
-  "returnable_late_fee_piastres",
+  "event_ladder_reference_piastres",
 ]);
 
 export async function saveSettings(patch: Record<string, string>): Promise<SaveResult> {
   await requireAdmin();
+
+  // The hours orders go out in are one decision, so they are checked together.
+  const from = (patch.order_time_from ?? "").trim();
+  const until = (patch.order_time_until ?? "").trim();
+  if ("order_time_from" in patch || "order_time_until" in patch) {
+    if ((from === "") !== (until === "")) {
+      return { ok: false, error: "Give both a start and an end, or leave both empty." };
+    }
+    if (from !== "" && until <= from) {
+      return { ok: false, error: "The end has to be after the start." };
+    }
+  }
 
   const writes: { key: string; value: string }[] = [];
 
@@ -150,10 +157,6 @@ export async function saveSettings(patch: Record<string, string>): Promise<SaveR
     writes.push({ key, value });
   }
 
-  // At least one way to pay, and at least one way to be served, must remain.
-  const guard = await guardPairs(writes);
-  if (guard) return { ok: false, error: guard };
-
   await db.$transaction(
     writes.map((w) =>
       db.setting.upsert({ where: { key: w.key }, update: { value: w.value }, create: w }),
@@ -161,28 +164,6 @@ export async function saveSettings(patch: Record<string, string>): Promise<SaveR
   );
   refresh();
   return { ok: true };
-}
-
-/** Some settings only make sense in pairs: both cannot be off at once. */
-async function guardPairs(writes: { key: string; value: string }[]): Promise<string | null> {
-  const pairs: [string, string, string][] = [
-    ["payment_cash_enabled", "payment_instapay_enabled",
-     "Customers need at least one way to pay. Turn the other one on first."],
-    ["serving_returnable_enabled", "serving_disposable_enabled",
-     "Customers need at least one way to be served. Turn the other one on first."],
-  ];
-
-  for (const [a, b, message] of pairs) {
-    const touching = writes.find((w) => w.key === a || w.key === b);
-    if (!touching) continue;
-    const other = touching.key === a ? b : a;
-    const otherRow = await db.setting.findUnique({ where: { key: other } });
-    const otherOn = (otherRow?.value ?? "true") !== "false";
-    const alsoWriting = writes.find((w) => w.key === other);
-    const otherFinal = alsoWriting ? alsoWriting.value !== "false" : otherOn;
-    if (touching.value === "false" && !otherFinal) return message;
-  }
-  return null;
 }
 
 // ------------------------------------------------------------ delivery areas
@@ -253,76 +234,6 @@ export async function moveArea(id: string, direction: "up" | "down"): Promise<Sa
   await db.$transaction([
     db.deliveryArea.update({ where: { id: all[at].id }, data: { sortOrder: all[to].sortOrder } }),
     db.deliveryArea.update({ where: { id: all[to].id }, data: { sortOrder: all[at].sortOrder } }),
-  ]);
-  refresh();
-  return { ok: true };
-}
-
-// --------------------------------------------------------------- time slots
-
-export async function saveSlot(
-  id: string | null,
-  labelEn: string,
-  startTime: string,
-  endTime: string,
-): Promise<SaveResult> {
-  await requireAdmin();
-  const label = labelEn.trim();
-  const start = startTime.trim();
-  const end = endTime.trim();
-  const time = /^([01]\d|2[0-3]):[0-5]\d$/;
-
-  if (!label) return { ok: false, error: "A time needs a name, such as Evening." };
-  if (!time.test(start) || !time.test(end)) return { ok: false, error: "A time looks like 18:00." };
-  if (end <= start) return { ok: false, error: "The end has to be after the start." };
-
-  if (id) {
-    await db.timeSlot.update({ where: { id }, data: { labelEn: label, startTime: start, endTime: end } });
-  } else {
-    const last = await db.timeSlot.findFirst({ orderBy: { sortOrder: "desc" } });
-    await db.timeSlot.create({
-      data: { labelEn: label, startTime: start, endTime: end, sortOrder: (last?.sortOrder ?? -1) + 1 },
-    });
-  }
-  refresh();
-  return { ok: true };
-}
-
-export async function setSlotActive(id: string, active: boolean): Promise<SaveResult> {
-  await requireAdmin();
-  await db.timeSlot.update({ where: { id }, data: { isActive: active } });
-  refresh();
-  return { ok: true };
-}
-
-/** A slot an order was placed for is never deleted — the order points at it. */
-export async function removeSlot(id: string): Promise<SaveResult> {
-  await requireAdmin();
-  const slot = await db.timeSlot.findUnique({
-    where: { id },
-    include: { _count: { select: { orders: true } } },
-  });
-  if (!slot) return { ok: false, error: "That time no longer exists." };
-  if (slot._count.orders > 0) {
-    return {
-      ok: false,
-      error: `${slot.labelEn} is on ${slot._count.orders} order${slot._count.orders === 1 ? "" : "s"}, so it cannot be removed. Switch it off instead.`,
-    };
-  }
-  await db.timeSlot.delete({ where: { id } });
-  refresh();
-  return { ok: true };
-}
-
-export async function moveSlot(id: string, direction: "up" | "down"): Promise<SaveResult> {
-  await requireAdmin();
-  const all = await db.timeSlot.findMany({ orderBy: { sortOrder: "asc" } });
-  const at = all.findIndex((t) => t.id === id);
-  const to = at + (direction === "up" ? -1 : 1);
-  if (at < 0 || to < 0 || to >= all.length) return { ok: true };
-  await db.$transaction([
-    db.timeSlot.update({ where: { id: all[at].id }, data: { sortOrder: all[to].sortOrder } }),
-    db.timeSlot.update({ where: { id: all[to].id }, data: { sortOrder: all[at].sortOrder } }),
   ]);
   refresh();
   return { ok: true };
@@ -408,7 +319,15 @@ export async function setDateCapacity(date: string, maxOrders: string): Promise<
 
 // ------------------------------------------------- the shared event ladder
 
-export type LadderRow = { minGuests: string; maxGuests: string; multiplier: string };
+/**
+ * A band as the business types it: a guest range and a price in EGP.
+ *
+ * The price is what a dish that normally costs `referenceInPounds` should cost
+ * for that many guests. That is the only way one shared ladder can price 72
+ * dishes at different prices: the ratio is what scales, so it is stored as a
+ * multiplier and nobody has to think in multipliers to set it.
+ */
+export type LadderRow = { minGuests: string; maxGuests: string; price: string };
 
 /**
  * The ladder every dish inherits unless it has bands of its own.
@@ -417,14 +336,27 @@ export type LadderRow = { minGuests: string; maxGuests: string; multiplier: stri
  * one: an event order stores the multiplier it was priced at and the price of
  * every dish on it.
  */
-export async function saveSharedLadder(rows: LadderRow[]): Promise<SaveResult> {
+export async function saveSharedLadder(
+  rows: LadderRow[],
+  referenceInPounds: string,
+): Promise<SaveResult> {
   await requireAdmin();
 
-  const parsed = rows.map((r) => ({
-    minGuests: Number(r.minGuests),
-    maxGuests: Number(r.maxGuests),
-    multiplierBp: Math.round(Number(r.multiplier) * MULTIPLIER_SCALE),
-  }));
+  const reference = Number(referenceInPounds.replace(/,/g, "").trim());
+  if (!Number.isFinite(reference) || reference <= 0) {
+    return { ok: false, error: "Give the price of a dish to work the ladder out from." };
+  }
+
+  const parsed = rows.map((r) => {
+    const price = Number(r.price.replace(/,/g, "").trim());
+    return {
+      minGuests: Number(r.minGuests),
+      maxGuests: Number(r.maxGuests),
+      // The ratio between the two prices, held as an integer.
+      multiplierBp: Math.round((price / reference) * MULTIPLIER_SCALE),
+      price,
+    };
+  });
 
   if (parsed.length === 0) return { ok: false, error: "The ladder needs at least one band." };
 
@@ -433,8 +365,8 @@ export async function saveSharedLadder(rows: LadderRow[]): Promise<SaveResult> {
       return { ok: false, error: "Each band needs a guest count to run from and to." };
     }
     if (t.maxGuests < t.minGuests) return { ok: false, error: "A band cannot end before it starts." };
-    if (!Number.isFinite(t.multiplierBp) || t.multiplierBp <= 0) {
-      return { ok: false, error: "Each band needs a multiplier, such as 1.5." };
+    if (!Number.isFinite(t.price) || t.price <= 0) {
+      return { ok: false, error: "Each band needs a price in EGP." };
     }
   }
 
@@ -447,8 +379,181 @@ export async function saveSharedLadder(rows: LadderRow[]): Promise<SaveResult> {
 
   await db.$transaction([
     db.eventPriceTier.deleteMany({}),
-    db.eventPriceTier.createMany({ data: sorted }),
+    db.eventPriceTier.createMany({
+      data: sorted.map((t) => ({
+        minGuests: t.minGuests, maxGuests: t.maxGuests, multiplierBp: t.multiplierBp,
+      })),
+    }),
+    // Remembered so the ladder is read back in the same money it was set in.
+    db.setting.upsert({
+      where: { key: "event_ladder_reference_piastres" },
+      update: { value: String(Math.round(reference * 100)) },
+      create: { key: "event_ladder_reference_piastres", value: String(Math.round(reference * 100)) },
+    }),
   ]);
+  refresh();
+  return { ok: true };
+}
+
+// ------------------------------------------------------- payment methods
+
+/**
+ * How customers may pay.
+ *
+ * A method the business adds is settled by hand: money arrives outside this
+ * system and a person confirms it. An integrated one needs a provider built and
+ * connected, so it can be described here but never switched on from here.
+ */
+export async function savePaymentOption(
+  id: string | null,
+  input: {
+    nameEn: string;
+    instructionsEn: string;
+    kind: "MANUAL" | "INTEGRATED";
+    verifyBeforeDelivery: boolean;
+  },
+): Promise<SaveResult> {
+  await requireAdmin();
+  const name = input.nameEn.trim();
+  if (!name) return { ok: false, error: "A payment method needs a name." };
+
+  if (id) {
+    const existing = await db.paymentOption.findUnique({ where: { id } });
+    if (!existing) return { ok: false, error: "That payment method no longer exists." };
+    await db.paymentOption.update({
+      where: { id },
+      data: {
+        nameEn: name,
+        instructionsEn: input.instructionsEn.trim() || null,
+        // A built-in method's kind is decided in code, not here.
+        kind: existing.builtIn ? existing.kind : input.kind,
+        verifyBeforeDelivery: existing.builtIn === "CASH" ? false : input.verifyBeforeDelivery,
+      },
+    });
+  } else {
+    const last = await db.paymentOption.findFirst({ orderBy: { sortOrder: "desc" } });
+    await db.paymentOption.create({
+      data: {
+        nameEn: name,
+        instructionsEn: input.instructionsEn.trim() || null,
+        kind: input.kind,
+        verifyBeforeDelivery: input.kind === "MANUAL" ? input.verifyBeforeDelivery : false,
+        // Nothing is offered to a customer the moment it is created.
+        isEnabled: false,
+        sortOrder: (last?.sortOrder ?? -1) + 1,
+      },
+    });
+  }
+  refresh();
+  return { ok: true };
+}
+
+export async function setPaymentOptionEnabled(id: string, enabled: boolean): Promise<SaveResult> {
+  await requireAdmin();
+  const option = await db.paymentOption.findUnique({ where: { id } });
+  if (!option) return { ok: false, error: "That payment method no longer exists." };
+
+  // An integrated method cannot be offered until a provider is actually wired
+  // up. Card is built but paused, and paused means paused.
+  if (enabled && option.kind === "INTEGRATED") {
+    return {
+      ok: false,
+      error: `${option.nameEn} needs its provider connected before customers can use it.`,
+    };
+  }
+
+  if (!enabled) {
+    const others = await db.paymentOption.count({
+      where: { id: { not: id }, isEnabled: true, kind: "MANUAL" },
+    });
+    if (others === 0) {
+      return { ok: false, error: "Customers need at least one way to pay. Turn another on first." };
+    }
+  }
+
+  await db.paymentOption.update({ where: { id }, data: { isEnabled: enabled } });
+  refresh();
+  return { ok: true };
+}
+
+/** A built-in method is never deleted; one an order used is never deleted. */
+export async function removePaymentOption(id: string): Promise<SaveResult> {
+  await requireAdmin();
+  const option = await db.paymentOption.findUnique({ where: { id } });
+  if (!option) return { ok: true };
+  if (option.builtIn) {
+    return { ok: false, error: `${option.nameEn} is built in. Switch it off instead.` };
+  }
+  const used = await db.order.count({ where: { paymentMethodLabel: option.nameEn } });
+  if (used > 0) {
+    return {
+      ok: false,
+      error: `${option.nameEn} is on ${used} order${used === 1 ? "" : "s"}. Switch it off instead.`,
+    };
+  }
+  await db.paymentOption.delete({ where: { id } });
+  refresh();
+  return { ok: true };
+}
+
+// -------------------------------------------------------- serving options
+
+export async function saveServingOption(
+  id: string | null,
+  input: { nameEn: string; descriptionEn: string },
+): Promise<SaveResult> {
+  await requireAdmin();
+  const name = input.nameEn.trim();
+  if (!name) return { ok: false, error: "A serving option needs a name." };
+
+  if (id) {
+    await db.servingOption.update({
+      where: { id },
+      data: { nameEn: name, descriptionEn: input.descriptionEn.trim() || null },
+    });
+  } else {
+    const last = await db.servingOption.findFirst({ orderBy: { sortOrder: "desc" } });
+    await db.servingOption.create({
+      data: {
+        nameEn: name,
+        descriptionEn: input.descriptionEn.trim() || null,
+        isAvailable: true,
+        sortOrder: (last?.sortOrder ?? -1) + 1,
+      },
+    });
+  }
+  refresh();
+  return { ok: true };
+}
+
+export async function setServingOptionAvailable(id: string, available: boolean): Promise<SaveResult> {
+  await requireAdmin();
+  if (!available) {
+    const others = await db.servingOption.count({ where: { id: { not: id }, isAvailable: true } });
+    if (others === 0) {
+      return { ok: false, error: "Customers need at least one way to be served. Turn another on first." };
+    }
+  }
+  await db.servingOption.update({ where: { id }, data: { isAvailable: available } });
+  refresh();
+  return { ok: true };
+}
+
+export async function removeServingOption(id: string): Promise<SaveResult> {
+  await requireAdmin();
+  const option = await db.servingOption.findUnique({ where: { id } });
+  if (!option) return { ok: true };
+  if (option.builtIn) {
+    return { ok: false, error: `${option.nameEn} is built in. Switch it off instead.` };
+  }
+  const used = await db.order.count({ where: { servingSetupLabel: option.nameEn } });
+  if (used > 0) {
+    return {
+      ok: false,
+      error: `${option.nameEn} is on ${used} order${used === 1 ? "" : "s"}. Switch it off instead.`,
+    };
+  }
+  await db.servingOption.delete({ where: { id } });
   refresh();
   return { ok: true };
 }

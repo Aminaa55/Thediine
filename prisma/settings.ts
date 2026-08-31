@@ -15,10 +15,13 @@ export const SETTINGS: Record<string, string> = {
 
   // Normal orders
   normal_notice_hours: "48",
-  normal_cutoff_time: "", // TO CONFIRM — no default invented
   normal_daily_capacity: "3",
   pickup_counts_toward_capacity: "true",
   pickup_enabled: "true",
+  // The hours orders go out in. A customer picks a time inside this range
+  // rather than choosing from named slots. Empty means any time.
+  order_time_from: "",  // TO CONFIRM
+  order_time_until: "", // TO CONFIRM
   // How the site behaves today: orders can be for any day of the week. Nothing
   // has been decided about days off, so nothing is closed here.
   working_days: "0,1,2,3,4,5,6",
@@ -52,15 +55,13 @@ export const SETTINGS: Record<string, string> = {
   contact_instagram: "https://www.instagram.com/thediine/",
   contact_email: "", // TO CONFIRM — no address supplied
 
-  // Serving setup — both choices are offered today. The policy text, and the
-  // returnable-dish terms below, are NOT written yet and are not invented here.
-  serving_returnable_enabled: "true",
-  serving_disposable_enabled: "true",
+  // Serving setup — the options themselves are rows in ServingOption. This is
+  // only the line customers read about returning dishes, which is not written.
   serving_setup_policy_en: "", // TO CONFIRM
   serving_setup_policy_ar: "",
-  // Recorded for when the business decides them. Empty means undecided, and
-  // nothing anywhere charges or shows them while they are empty.
-  returnable_deposit_piastres: "", // TO CONFIRM
-  returnable_return_days: "", // TO CONFIRM
-  returnable_late_fee_piastres: "", // TO CONFIRM
+
+  // Event pricing is configured in EGP against one reference price: "a dish
+  // that normally costs this much costs that much for 20 guests". The ladder
+  // itself is stored as multipliers so it scales to every dish.
+  event_ladder_reference_piastres: "100000",
 };

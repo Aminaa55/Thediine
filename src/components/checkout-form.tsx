@@ -31,7 +31,7 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
   const router = useRouter();
   const { normalLines, hasEvent, ready, clearNormal } = useCart();
 
-  const [form, setForm] = useState<NormalCheckout>(EMPTY_NORMAL);
+  const [form, setForm] = useState<NormalCheckout>(() => firstServing(EMPTY_NORMAL, ctx));
   const [cart, setCart] = useState<ResolvedCart | null>(null);
   const [touched, setTouched] = useState(false);
   const [serverErrors, setServerErrors] = useState<Errors>({});
@@ -188,28 +188,23 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
               />
             </Field>
 
-            {ctx.slots.length > 0 ? (
-              <Field label="Time" htmlFor="time" error={errors.time}>
-                <select
-                  id="time" value={form.time}
-                  onChange={(e) => set({ time: e.target.value })}
-                  className={input(!!errors.time)}
-                >
-                  <option value="">Choose a time</option>
-                  {ctx.slots.map((t) => (
-                    <option key={t.id} value={t.id}>{t.label}</option>
-                  ))}
-                </select>
-              </Field>
-            ) : (
-              <Field label="Time" htmlFor="time" error={errors.time} hint="We confirm the exact time with you.">
-                <input
-                  id="time" type="time" value={form.time}
-                  onChange={(e) => set({ time: e.target.value })}
-                  className={input(!!errors.time)}
-                />
-              </Field>
-            )}
+            {/* A time inside the hours the business goes out in. */}
+            <Field
+              label="Time" htmlFor="time" error={errors.time}
+              hint={
+                ctx.limits.timeFrom && ctx.limits.timeUntil
+                  ? `We go out between ${ctx.limits.timeFrom} and ${ctx.limits.timeUntil}.`
+                  : "We confirm the exact time with you."
+              }
+            >
+              <input
+                id="time" type="time" value={form.time}
+                min={ctx.limits.timeFrom ?? undefined}
+                max={ctx.limits.timeUntil ?? undefined}
+                onChange={(e) => set({ time: e.target.value })}
+                className={input(!!errors.time)}
+              />
+            </Field>
           </div>
 
           <p className="mt-5 text-[14px] leading-relaxed text-ink-soft">
@@ -225,10 +220,10 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
         <section>
           <SectionHeading step="Step three" title="How should it be served?" />
           <ServingSetupChoice
-            value={form.servingSetup}
-            onChange={(v) => set({ servingSetup: v })}
+            options={ctx.servings}
+            value={form.servingOptionId}
+            onChange={(o) => set({ servingOptionId: o.id, servingSetup: o.setup })}
             policy={ctx.servingSetupPolicy}
-            offered={ctx.servingSetups}
           />
         </section>
 
@@ -257,9 +252,9 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
           <PaymentChoice
             ctx={ctx}
             fulfilment={form.fulfilment}
-            value={form.paymentMethod}
+            value={form.paymentOptionId}
             reference={form.paymentReference}
-            onChange={(m: PaymentMethodId) => set({ paymentMethod: m })}
+            onChange={(o) => set({ paymentOptionId: o.id, paymentMethod: o.method })}
             onReference={(r) => set({ paymentReference: r })}
             errors={errors}
           />
@@ -362,4 +357,17 @@ function Choice({
       <span className="mt-1.5 block text-[14.5px] text-ink-soft">{body}</span>
     </button>
   );
+}
+
+/**
+ * The serving option a form opens on: the first one being offered, so a
+ * customer never has to choose something before they can read the page.
+ */
+function firstServing<T extends { servingSetup: "RETURNABLE" | "DISPOSABLE" | "OTHER"; servingOptionId: string }>(
+  base: T,
+  ctx: { servings: { id: string; setup: "RETURNABLE" | "DISPOSABLE" | "OTHER" }[] },
+): T {
+  const first = ctx.servings[0];
+  if (!first) return base;
+  return { ...base, servingSetup: first.setup, servingOptionId: first.id };
 }

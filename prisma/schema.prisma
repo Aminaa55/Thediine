@@ -365,12 +365,68 @@ enum FulfilmentType {
 enum ServingSetup {
   RETURNABLE
   DISPOSABLE
+  /// A serving option the business added itself. The order also stores its
+  /// name, so it still reads correctly if the option is renamed or retired.
+  OTHER
 }
 
 enum PaymentMethod {
   CASH
   INSTAPAY
   CARD // structured, disabled until a gateway is integrated
+  /// A payment method the business added itself, settled by hand. The order
+  /// stores its name too, for the same reason.
+  OTHER
+}
+
+/// How customers may pay, as the business defines it.
+///
+/// The three built-in methods are rows here as well, so one screen lists
+/// everything; `builtIn` marks them, because their behaviour is in code and
+/// they cannot be deleted. Anything the business adds is MANUAL: money that
+/// arrives outside this system and is confirmed by a person. INTEGRATED means
+/// a provider has to be built and connected before it can ever be offered.
+model PaymentOption {
+  id      String  @id @default(cuid())
+  /// "CASH", "INSTAPAY", "CARD" for the built-ins; null for anything added.
+  builtIn String? @unique
+
+  nameEn String
+  /// Shown to the customer when they choose it: where to send the money.
+  instructionsEn String?
+
+  kind      PaymentOptionKind @default(MANUAL)
+  isEnabled Boolean           @default(false)
+  /// Whether the money is expected before delivery, which is what decides
+  /// where the payment starts: awaiting verification, or simply unpaid.
+  verifyBeforeDelivery Boolean @default(false)
+  /// Set for an integrated method once a provider is actually wired up.
+  providerKey String?
+
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PaymentOptionKind {
+  MANUAL
+  INTEGRATED
+}
+
+/// How the food is served. Returnable and disposable are built in; the
+/// business can add more without a developer.
+model ServingOption {
+  id      String  @id @default(cuid())
+  /// "RETURNABLE" or "DISPOSABLE" for the built-ins; null for anything added.
+  builtIn String? @unique
+
+  nameEn        String
+  descriptionEn String?
+  isAvailable   Boolean @default(true)
+
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// Deliberately independent of OrderStatus: a delivered order can be unpaid.
@@ -411,6 +467,9 @@ model Order {
   addressDetails String?
 
   servingSetup ServingSetup
+  /// The name of the serving option as it was when the order was placed.
+  /// Snapshotted so renaming or retiring an option never rewrites an order.
+  servingSetupLabel String?
 
   // All piastres.
   subtotal    Int
@@ -422,6 +481,8 @@ model Order {
   total       Int
 
   paymentMethod     PaymentMethod
+  /// The name of the payment method as it was when the order was placed.
+  paymentMethodLabel String?
   paymentStatus     PaymentStatus @default(UNPAID)
   /// The customer's own reference for a transfer they say they have made.
   paymentReference  String?

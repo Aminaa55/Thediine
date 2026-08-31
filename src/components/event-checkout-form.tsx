@@ -29,7 +29,7 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
   const router = useRouter();
   const { eventLines, event, hasEvent, ready, clearEvent } = useCart();
 
-  const [form, setForm] = useState<CustomerDetails>(EMPTY_CUSTOMER);
+  const [form, setForm] = useState<CustomerDetails>(() => firstServing(EMPTY_CUSTOMER, ctx));
   const [cart, setCart] = useState<ResolvedCart | null>(null);
   const [touched, setTouched] = useState(false);
   const [serverErrors, setServerErrors] = useState<Errors>({});
@@ -117,10 +117,10 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
             <section>
               <SectionHeading step="Step one" title="How should it be served?" />
               <ServingSetupChoice
-                value={form.servingSetup}
-                onChange={(v) => set({ servingSetup: v })}
+                options={ctx.servings}
+                value={form.servingOptionId}
+                onChange={(o) => set({ servingOptionId: o.id, servingSetup: o.setup })}
                 policy={ctx.servingSetupPolicy}
-                offered={ctx.servingSetups}
               />
             </section>
 
@@ -147,9 +147,9 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
               <PaymentChoice
                 ctx={ctx}
                 fulfilment="DELIVERY"
-                value={form.paymentMethod}
+                value={form.paymentOptionId}
                 reference={form.paymentReference}
-                onChange={(m) => set({ paymentMethod: m })}
+                onChange={(o) => set({ paymentOptionId: o.id, paymentMethod: o.method })}
                 onReference={(r) => set({ paymentReference: r })}
                 errors={errors}
               />
@@ -276,4 +276,17 @@ function longDate(iso: string) {
   const d = new Date(iso + "T00:00:00");
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+
+/**
+ * The serving option a form opens on: the first one being offered, so a
+ * customer never has to choose something before they can read the page.
+ */
+function firstServing<T extends { servingSetup: "RETURNABLE" | "DISPOSABLE" | "OTHER"; servingOptionId: string }>(
+  base: T,
+  ctx: { servings: { id: string; setup: "RETURNABLE" | "DISPOSABLE" | "OTHER" }[] },
+): T {
+  const first = ctx.servings[0];
+  if (!first) return base;
+  return { ...base, servingSetup: first.setup, servingOptionId: first.id };
 }

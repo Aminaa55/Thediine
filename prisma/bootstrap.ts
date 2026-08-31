@@ -26,6 +26,7 @@ const prisma = new PrismaClient();
 const added = {
   allergens: 0, settings: 0, eventTiers: 0, categories: 0,
   products: 0, variants: 0, optionChoices: 0, allergenTags: 0, gallery: 0,
+  paymentOptions: 0, servingOptions: 0,
 };
 
 async function main() {
@@ -51,6 +52,40 @@ async function main() {
     if (exists) continue;
     await prisma.setting.create({ data: { key, value } });
     added.settings++;
+  }
+
+  // --- how customers may pay, and how the food is served -------------------
+  // The built-in rows, created once. Anything the business adds later is its
+  // own, and nothing here ever overwrites a row that exists.
+  const PAYMENTS = [
+    { builtIn: "CASH", nameEn: "Cash", kind: "MANUAL" as const,
+      isEnabled: true, verifyBeforeDelivery: false, sortOrder: 0,
+      instructionsEn: null },
+    { builtIn: "INSTAPAY", nameEn: "InstaPay", kind: "MANUAL" as const,
+      isEnabled: true, verifyBeforeDelivery: true, sortOrder: 1,
+      instructionsEn: null },
+    { builtIn: "CARD", nameEn: "Card payment", kind: "INTEGRATED" as const,
+      isEnabled: false, verifyBeforeDelivery: false, sortOrder: 2,
+      instructionsEn: null },
+  ];
+  for (const p of PAYMENTS) {
+    const exists = await prisma.paymentOption.findUnique({ where: { builtIn: p.builtIn } });
+    if (exists) continue;
+    await prisma.paymentOption.create({ data: p });
+    added.paymentOptions++;
+  }
+
+  const SERVINGS = [
+    { builtIn: "RETURNABLE", nameEn: "Returnable dishes", sortOrder: 0,
+      descriptionEn: "Served in our own dishes, which we collect afterwards." },
+    { builtIn: "DISPOSABLE", nameEn: "Disposable dishes", sortOrder: 1,
+      descriptionEn: "Served in disposable containers \u2014 nothing to return." },
+  ];
+  for (const o of SERVINGS) {
+    const exists = await prisma.servingOption.findUnique({ where: { builtIn: o.builtIn } });
+    if (exists) continue;
+    await prisma.servingOption.create({ data: o });
+    added.servingOptions++;
   }
 
   // --- the shared event pricing ladder -------------------------------------
@@ -208,6 +243,8 @@ async function main() {
     if (added.eventTiers) console.log(`  event tiers      ${added.eventTiers}`);
     if (added.settings) console.log(`  settings         ${added.settings}`);
     if (added.gallery) console.log(`  gallery images   ${added.gallery}`);
+    if (added.paymentOptions) console.log(`  payment methods  ${added.paymentOptions}`);
+    if (added.servingOptions) console.log(`  serving options  ${added.servingOptions}`);
     console.log("");
   }
 

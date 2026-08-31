@@ -484,42 +484,88 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 
 
 /* --------------------------------------------------------------- settings */
-.waiting-on{margin-top:28px; border:1px solid rgba(168,126,46,.5); background:rgba(239,226,190,.4);
-  border-radius:2px; padding:20px 24px}
-.waiting-on > p{margin-top:8px; font-size:15px}
-.waiting-on ul{margin-top:16px; display:grid; gap:12px}
-.waiting-on a strong{display:block; font-family:Fraunces,Georgia,serif; font-size:16.5px;
-  font-weight:600}
-.waiting-on a:hover strong{color:var(--gold)}
-.waiting-on a span{display:block; margin-top:2px; max-width:44rem; font-size:14px;
-  line-height:1.55; color:var(--ink-soft)}
-.set-grid{display:grid; gap:16px; margin-top:32px}
-@media(min-width:700px){.set-grid{grid-template-columns:1fr 1fr}}
-.set-card{display:block; border:1px solid var(--line); background:var(--cream-warm);
-  border-radius:2px; padding:20px 24px; transition:border-color .2s}
-.set-card:hover{border-color:var(--gold)}
-.set-card h2{font-size:18px}
-.set-card p{margin-top:6px; font-size:14px; line-height:1.55; color:var(--ink-soft)}
-.set-card .now{margin-top:12px; font-size:14px; color:var(--gold)}
-.set-panel .save-row{display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:22px}
-.set-panel ul.plain{margin-top:10px; display:grid; gap:6px; font-size:14.5px; line-height:1.55;
+.set-top{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
+  gap:8px 32px}
+.set-top h1{margin-top:6px; font-size:26px}
+.set-shell{display:grid; gap:32px; margin-top:28px}
+@media(min-width:900px){.set-shell{grid-template-columns:188px minmax(0,1fr)}}
+.set-side ul{display:flex; gap:4px; overflow-x:auto; scrollbar-width:none}
+.set-side ul::-webkit-scrollbar{display:none}
+@media(min-width:900px){.set-side{position:sticky; top:24px; align-self:start}
+  .set-side ul{display:grid; gap:2px; overflow:visible}}
+.set-side a{display:flex; align-items:center; gap:8px; white-space:nowrap; border-radius:2px;
+  padding:8px 12px; font-size:14.5px; color:var(--ink-soft); transition:background-color .15s}
+.set-side a:hover{background:var(--cream-warm); color:var(--ink)}
+.set-side a.on{background:var(--cream-deep); font-weight:700; color:var(--ink)}
+.set-side .dot{width:6px; height:6px; border-radius:999px; background:var(--gold)}
+.set-body{min-width:0; display:grid; gap:16px}
+.set-h{font-size:21px}
+.set-card{border:1px solid var(--line); background:var(--cream-warm); border-radius:2px;
+  padding:16px 20px}
+.set-card h3{font-size:16.5px}
+.set-card > .note{margin-top:4px; max-width:44rem; font-size:13px; line-height:1.55;
   color:var(--ink-soft)}
-.to-decide{margin-top:16px; border:1px solid rgba(168,126,46,.45); background:rgba(239,226,190,.4);
-  border-radius:2px; padding:12px 16px; font-size:14px; line-height:1.6}
-.to-decide .eyebrow{display:block; margin-bottom:4px}
-.hist-note{margin-top:28px; max-width:52rem; font-size:13.5px; line-height:1.7; color:var(--ink-faint)}
-.dayc{border:1px solid var(--line); background:var(--cream); border-radius:999px; padding:8px 16px;
-  font-size:14px; color:var(--ink-faint)}
-.dayc:hover{border-color:rgba(59,35,16,.3)}
-.dayc.on{border-color:rgba(46,107,69,.45); background:rgba(46,107,69,.08); color:var(--paid)}
-.closed-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:12px 0;
+.set-card .f{margin-top:14px}
+.set-card .fgrid .f{margin-top:0}
+.set-card ul{margin-top:12px}
+.set-card .hint{margin-top:4px; font-size:12.5px; color:var(--ink-faint)}
+.save-row{display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:16px}
+.btn-save{border:1px solid var(--ink); background:var(--ink); color:var(--cream);
+  border-radius:999px; padding:8px 20px; font-size:14px}
+.btn-save:hover{background:rgba(59,35,16,.9)}
+.pillbtn{white-space:nowrap; border:1px solid; border-radius:999px; padding:6px 14px;
+  font-size:13px}
+.pillbtn.on{border-color:rgba(46,107,69,.4); background:rgba(46,107,69,.08); color:var(--paid)}
+.pillbtn.off{border-color:rgba(166,57,28,.4); background:rgba(166,57,28,.07); color:var(--alert)}
+.orow{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; padding:12px 0;
   border-bottom:1px solid var(--line-soft)}
-.closed-row:last-child{border-bottom:0}
-.closed-row strong{font-family:Fraunces,Georgia,serif; font-size:16px; font-weight:600}
-.closed-row .why{flex:1; font-size:14.5px; color:var(--ink-soft)}
-.closed-row .hint{font-size:13.5px}
-.closed-row a{font-size:14px; color:var(--gold)}
-.fgrid.three{display:grid; gap:18px}
+.orow:last-child{border-bottom:0}
+.orow .who{flex:1; min-width:12rem}
+.orow .nm{display:block; font-size:15px; font-weight:500}
+.orow .sub{display:block; margin-top:2px; font-size:13px; color:var(--ink-soft)}
+.orow .tag{border:1px solid var(--line); border-radius:999px; padding:4px 12px; font-size:12.5px;
+  color:var(--ink-faint)}
+.editrow{flex-basis:100%; margin-top:10px; border:1px solid var(--line); background:var(--cream);
+  border-radius:2px; padding:12px 16px}
+.addbox{margin-top:14px; border-top:1px solid var(--line-soft); padding-top:14px}
+.choicep{border:1px solid var(--line); background:var(--cream); border-radius:999px;
+  padding:8px 16px; font-size:14px; color:var(--ink-soft)}
+.choicep.on{border-color:var(--gold); background:rgba(239,226,190,.5); font-weight:500;
+  color:var(--ink)}
+.cal{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-top:14px; text-align:center}
+.cal .hd{padding-bottom:4px; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint)}
+.dcell{border:1px solid var(--line-soft); border-radius:2px; padding:6px 2px; font-size:13px;
+  font-variant-numeric:tabular-nums; background:var(--cream-warm); color:var(--ink)}
+.dcell:hover:not(:disabled){border-color:var(--gold)}
+.dcell .sub{display:block; font-size:10px; line-height:1.2}
+.dcell.past{background:var(--cream); color:rgba(154,126,98,.5); cursor:default}
+.dcell.shut{background:rgba(166,57,28,.07); color:var(--alert)}
+.dcell.held{background:rgba(239,226,190,.6)}
+.dcell.sel{border-color:var(--ink); background:var(--cream-deep)}
+.day-panel{margin-top:14px; border:1px solid var(--line); background:var(--cream);
+  border-radius:2px; padding:12px 16px}
+.day-panel .d{font-family:Fraunces,Georgia,serif; font-size:15.5px; font-weight:600}
+.day-panel.held p{font-size:14.5px}
+.day-panel.held a{color:var(--gold)}
+.cap-row{align-items:center}
+.cap-row label{font-size:13.5px; color:var(--ink-soft)}
+.means{margin-top:16px; border-top:1px solid var(--line-soft); padding-top:12px}
+.means p{margin-top:4px; font-size:13.5px; font-variant-numeric:tabular-nums;
+  color:var(--ink-soft)}
+.means .nm{color:var(--ink)}
+.to-decide{margin-top:12px; border:1px solid rgba(168,126,46,.45); background:rgba(239,226,190,.4);
+  border-radius:2px; padding:10px 14px; font-size:13.5px; line-height:1.6}
+.to-decide .eyebrow{display:block; margin-bottom:2px}
+.hist-note{margin-top:20px; max-width:52rem; font-size:13px; line-height:1.7; color:var(--ink-faint)}
+.dayc{border:1px solid var(--line); background:var(--cream); border-radius:999px; padding:7px 14px;
+  font-size:13.5px; color:var(--ink-faint)}
+.dayc.on{border-color:rgba(46,107,69,.45); background:rgba(46,107,69,.08); color:var(--paid)}
+.set-card textarea{width:100%; margin-top:12px; border:1px solid var(--line);
+  background:var(--cream); border-radius:2px; padding:10px 14px; font-size:15px; min-height:64px}
+.set-card input[type=time],.set-card .newrow input{border:1px solid var(--line);
+  background:var(--cream); border-radius:2px; padding:9px 12px; font-size:14.5px}
+.fgrid.three{display:grid; gap:16px}
 @media(min-width:720px){.fgrid.three{grid-template-columns:repeat(3,1fr)}}
 
 /* ------------------------------------------------------------ the prep sheet
@@ -625,7 +671,8 @@ var SETTINGS_SEED = {
   normal_daily_capacity: "3",
   pickup_counts_toward_capacity: "true",
   pickup_enabled: "true",
-  normal_cutoff_time: "",
+  order_time_from: "",
+  order_time_until: "",
   minimum_order_value_piastres: "0",
   normal_free_cancellation_hours: "24",
   event_free_cancellation_hours: "48",
@@ -635,16 +682,10 @@ var SETTINGS_SEED = {
   event_notice_days: "5",
   event_max_guests: "100",
   event_default_capacity_mode: "BLOCK_DAY",
-  payment_cash_enabled: "true",
-  payment_instapay_enabled: "true",
+  event_ladder_reference_piastres: "100000",
   instapay_number: "+20 1119992417",
   instapay_account_details: "",
-  serving_returnable_enabled: "true",
-  serving_disposable_enabled: "true",
   serving_setup_policy_en: "",
-  returnable_deposit_piastres: "",
-  returnable_return_days: "",
-  returnable_late_fee_piastres: "",
   whatsapp_number: "+201123030107",
   contact_instagram: "https://www.instagram.com/thediine/",
   contact_email: ""
@@ -1942,123 +1983,124 @@ document.addEventListener("click", function (e) {
 
 
 /* ================================================================ settings
-   The business's own rules. Grouped the way the business is run, opened on
-   what has not been decided, and saved a card at a time. The rules here are
-   the ones the real admin writes; the preview keeps them in this browser. */
+   The business's own rules. A list down the side, one page at a time, and a
+   save per card. The rules mirrored here are the ones the real admin writes;
+   the preview keeps them in this browser. */
+
 function freshSettings() {
-  return { values: JSON.parse(JSON.stringify(SETTINGS_SEED)), areas: [], slots: [], closed: [] };
+  return {
+    values: JSON.parse(JSON.stringify(SETTINGS_SEED)),
+    areas: [],
+    closed: [],
+    payments: [
+      { id: "cash", builtIn: "CASH", name: "Cash", instructions: "", kind: "MANUAL",
+        enabled: true, verify: false, used: 0 },
+      { id: "instapay", builtIn: "INSTAPAY", name: "InstaPay", instructions: "", kind: "MANUAL",
+        enabled: true, verify: true, used: 0 },
+      { id: "card", builtIn: "CARD", name: "Card payment", instructions: "", kind: "INTEGRATED",
+        enabled: false, verify: false, used: 0 }
+    ],
+    servings: [
+      { id: "returnable", builtIn: "RETURNABLE", name: "Returnable dishes",
+        description: "Served in our own dishes, which we collect afterwards.",
+        available: true, used: 0 },
+      { id: "disposable", builtIn: "DISPOSABLE", name: "Disposable dishes",
+        description: "Served in disposable containers \u2014 nothing to return.",
+        available: true, used: 0 }
+    ]
+  };
 }
 
 var SET_MSG = null;
 var SET_ERR = null;
+var SET_DAY = null;      /* the calendar day being looked at */
+var SET_ADD = null;      /* which "add" form is open */
+var SET_OPEN = null;     /* which row is being edited */
+var LADDER = null;       /* the ladder being edited, in EGP */
+var LADDER_BASE = null;  /* the dish price it is written against, in EGP */
 
 function S_() { return S.settings.values; }
 function sOn(key) { return S_()[key] !== "false"; }
 function setVal(key, value) { S_()[key] = value; }
 
 var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function workingDays() {
   var raw = S_().working_days;
   if (!raw) return [];
   return raw.split(",").filter(function (d) { return d !== ""; }).map(Number);
 }
-function hoursLabel(h) { return Number(h) === 1 ? "1 hour" : h + " hours"; }
-
-function undecided() {
-  var out = [];
-  if (!S.settings.areas.length) out.push(["Delivery areas and fees",
-    "No areas have been set up, so an order records its delivery fee as unknown rather than as "
-    + "zero, and the customer is not shown a fee.", "#/settings/delivery"]);
-  if (!S.settings.slots.length) out.push(["Delivery and pickup times",
-    "No time slots exist, so the customer types a time of their own instead of choosing one of "
-    + "yours.", "#/settings/delivery"]);
-  if (!S_().normal_cutoff_time) out.push(["A daily cut-off time",
-    "Nothing is set, so only the notice period decides which dates can be chosen. Say what a "
-    + "cut-off should mean and it can be added.", "#/settings/ordering"]);
-  if (!S_().serving_setup_policy_en) out.push(["The returnable-dish policy",
-    "Customers can choose returnable dishes, but nothing tells them how or when to return them. "
-    + "No deposit, return period or fee has been invented.", "#/settings/serving"]);
-  if (!S_().contact_email) out.push(["A contact email address",
-    "None supplied, so the site shows WhatsApp and Instagram only.", "#/settings/contact"]);
-  return out;
-}
 
 var SET_SECTIONS = [
-  ["#/settings/ordering", "Ordering", "Notice period, how many orders a day, cancellations.",
-   function () { return hoursLabel(S_().normal_notice_hours) + " notice, "
-     + S_().normal_daily_capacity + " orders a day"; }],
-  ["#/settings/delivery", "Delivery & pickup", "Areas and their fees, pickup, and the times you deliver.",
-   function () {
-     if (!S.settings.areas.length) return "No areas set up yet";
-     var a = S.settings.areas.filter(function (x) { return x.active; }).length;
-     var t = S.settings.slots.filter(function (x) { return x.active; }).length;
-     return a + " of " + S.settings.areas.length + " areas, " + t + " of " + S.settings.slots.length + " times";
-   }],
-  ["#/settings/calendar", "Calendar & capacity", "Working days, days you are closed, and a day's own capacity.",
-   function () {
-     var d = workingDays();
-     var base = d.length === 7 ? "Every day"
-       : d.length === 0 ? "No days"
-       : d.map(function (x) { return DAY_NAMES[x].slice(0, 3); }).join(", ");
-     var shut = S.settings.closed.filter(function (c) { return c.closed; }).length;
-     return base + (shut ? " \u00b7 " + shut + " day" + (shut === 1 ? "" : "s") + " closed ahead" : "");
-   }],
-  ["#/settings/events", "Events", "Notice, guest limit, cancellation, and the guest-count ladder.",
-   function () { return S_().event_notice_days + " days notice, up to " + S_().event_max_guests + " guests"; }],
-  ["#/settings/payment", "Payment", "Cash and InstaPay, and the number transfers go to.",
-   function () {
-     var on = [];
-     if (sOn("payment_cash_enabled")) on.push("Cash");
-     if (sOn("payment_instapay_enabled")) on.push("InstaPay");
-     return on.length ? on.join(" and ") : "No payment method is on";
-   }],
-  ["#/settings/serving", "Serving setup", "Returnable and disposable dishes, and what customers are told.",
-   function () {
-     var on = [];
-     if (sOn("serving_returnable_enabled")) on.push("Returnable");
-     if (sOn("serving_disposable_enabled")) on.push("Disposable");
-     return on.join(" and ");
-   }],
-  ["#/settings/contact", "Business details", "The WhatsApp number, Instagram and email the site shows.",
-   function () { return S_().whatsapp_number || "No WhatsApp number"; }]
+  ["#/settings/business", "Business details"],
+  ["#/settings/ordering", "Ordering"],
+  ["#/settings/delivery", "Delivery & pickup"],
+  ["#/settings/calendar", "Calendar & capacity"],
+  ["#/settings/events", "Events"],
+  ["#/settings/payment", "Payment"],
+  ["#/settings/serving", "Serving setup"]
 ];
 
-function viewSettings() {
-  var todo = undecided();
-  return "<main>"
-    + '<p class="eyebrow">Settings</p><h1>How the business runs</h1>'
-    + '<p class="sub">These are the rules the website follows. Changing one changes what customers '
-    + "can do from now on \u2014 it never changes an order that has already been placed.</p>"
-    + (todo.length
-        ? '<section class="waiting-on"><p class="eyebrow">Waiting on you</p>'
-          + "<p>" + todo.length + (todo.length === 1 ? " thing has" : " things have")
-          + " not been decided. Nothing has been chosen on your behalf.</p><ul>"
-          + todo.map(function (t) {
-              return '<li><a href="' + t[2] + '"><strong>' + esc(t[0]) + "</strong>"
-                + "<span>" + esc(t[1]) + "</span></a></li>";
-            }).join("") + "</ul></section>"
-        : "")
-    + '<div class="set-grid">' + SET_SECTIONS.map(function (s) {
-        return '<a class="set-card" href="' + s[0] + '"><h2>' + s[1] + "</h2>"
-          + "<p>" + s[2] + '</p><p class="now">' + esc(s[3]()) + "</p></a>";
-      }).join("") + "</div></main>";
+function undecided() {
+  var out = {};
+  if (!S.settings.areas.length) out["#/settings/delivery"] = true;
+  if (!S_().order_time_from || !S_().order_time_until) out["#/settings/delivery"] = true;
+  if (!S_().serving_setup_policy_en) out["#/settings/serving"] = true;
+  if (!S_().contact_email) out["#/settings/business"] = true;
+  return out;
+}
+function undecidedCount() {
+  var n = 0;
+  if (!S.settings.areas.length) n++;
+  if (!S_().order_time_from || !S_().order_time_until) n++;
+  if (!S_().serving_setup_policy_en) n++;
+  if (!S_().contact_email) n++;
+  return n;
 }
 
-/* ------------------------------------------------------------ the pieces */
-function setHead(title, body) {
-  return '<a class="crumb" href="#/settings">\u2190 Settings</a>'
-    + "<h1>" + title + '</h1><p class="sub">' + body + "</p>";
-}
-function setCard(title, note, body, saveKey, saveLabel, footer) {
-  return '<section class="card set-panel"><header><h2>' + title + "</h2>"
-    + (note ? '<p class="pnote">' + note + "</p>" : "") + "</header>"
-    + '<div class="body">' + body
-    + (saveKey
-        ? '<div class="save-row"><button type="button" class="btn btn-primary" data-set="'
-          + saveKey + '">' + (saveLabel || "Save") + "</button></div>"
+/* --------------------------------------------------------------- the shell */
+function settingsShell(inner) {
+  var h = hash();
+  var flags = undecided();
+  var n = undecidedCount();
+
+  return "<main>"
+    + '<div class="set-top"><div><p class="eyebrow">Settings</p>'
+    + "<h1>How the business runs</h1></div>"
+    + '<p class="hint">Changes apply from now on. They never rewrite an order already placed.</p>'
+    + "</div>"
+    + '<div class="set-shell"><nav class="set-side" aria-label="Settings sections"><ul>'
+    + SET_SECTIONS.map(function (s) {
+        return '<li><a href="' + s[0] + '"' + (h === s[0].slice(1) ? ' class="on"' : "") + ">"
+          + s[1] + (flags[s[0]] ? '<span class="dot"></span>' : "") + "</a></li>";
+      }).join("")
+    + "</ul></nav>"
+    + '<div class="set-body">' + setFlashes() + inner + "</div></div>"
+    + (n
+        ? '<p class="hist-note">' + n + (n === 1 ? " thing is" : " things are")
+          + " still undecided, marked in gold where they belong. Nothing has been chosen on your "
+          + "behalf.</p>"
         : "")
-    + (footer || "") + "</div></section>";
+    + "</main>";
+}
+
+function setFlashes() {
+  var out = "";
+  if (SET_ERR) out += '<p class="err" style="margin-bottom:16px">' + esc(SET_ERR) + "</p>";
+  if (SET_MSG) out += '<p class="flash">' + esc(SET_MSG) + "</p>";
+  return out;
+}
+function setHead(title) { return '<h2 class="set-h">' + title + "</h2>"; }
+function setCard(title, note, body, saveKey, saveLabel, footer) {
+  return '<section class="set-card"><h3>' + title + "</h3>"
+    + (note ? '<p class="note">' + note + "</p>" : "")
+    + body
+    + (saveKey
+        ? '<div class="save-row"><button type="button" class="btn-save" data-set="' + saveKey
+          + '">' + (saveLabel || "Save") + "</button></div>"
+        : "")
+    + (footer || "") + "</section>";
 }
 function setField(label, id, control, hint) {
   return '<div class="f"><label class="lab" for="' + id + '">' + label + "</label>" + control
@@ -2067,92 +2109,94 @@ function setField(label, id, control, hint) {
 function setSwitch(key, title, body) {
   return '<button type="button" class="check" data-set-toggle="' + key + '">'
     + '<span class="box' + (sOn(key) ? " on" : "") + '">' + (sOn(key) ? "\u2713" : "") + "</span>"
-    + '<span><span class="t">' + title + '</span><span class="b">' + body + "</span></span></button>";
+    + '<span><span class="t">' + title + "</span>"
+    + (body ? '<span class="b">' + body + "</span>" : "") + "</span></button>";
 }
 function toDecide(text) {
   return '<p class="to-decide"><span class="eyebrow">Still to decide</span>' + text + "</p>";
 }
 function historyNote(text) { return '<p class="hist-note">' + text + "</p>"; }
-function setFlashes() {
-  var out = "";
-  if (SET_ERR) out += '<p class="err" style="margin-bottom:20px">' + esc(SET_ERR) + "</p>";
-  if (SET_MSG) out += '<p class="flash">' + esc(SET_MSG) + "</p>";
-  return out;
+function pill(on, onLabel, offLabel, action, id) {
+  return '<button type="button" class="pillbtn ' + (on ? "on" : "off") + '" data-set="' + action
+    + '" data-id="' + id + '">' + (on ? onLabel : offLabel) + "</button>";
+}
+
+/* ------------------------------------------------------- business details */
+function viewSetBusiness() {
+  return settingsShell(setHead("Business details")
+    + setCard("How customers reach you",
+        "Shown in the footer of every page and on every order's confirmation.",
+        '<div class="fgrid two">'
+        + setField("WhatsApp number", "s-wa",
+            '<input id="s-wa" value="' + esc(S_().whatsapp_number) + '">',
+            "With the country code.")
+        + setField("Email", "s-em",
+            '<input id="s-em" placeholder="None" value="' + esc(S_().contact_email) + '">',
+            "Empty removes it from the site.")
+        + "</div>"
+        + '<div class="fgrid" style="margin-top:16px">'
+        + setField("Instagram", "s-ig",
+            '<input id="s-ig" value="' + esc(S_().contact_instagram) + '">', "The full link.")
+        + "</div>"
+        + (S_().contact_email
+            ? ""
+            : toDecide("No email supplied, so the site shows WhatsApp and Instagram only.")),
+        "contact")
+    + historyNote("An order already placed keeps its own record of the customer's details; "
+        + "nothing here touches it."));
 }
 
 /* ---------------------------------------------------------------- ordering */
 function viewSetOrdering() {
   var hours = Number(S_().normal_notice_hours || 0);
-  var inDays = hours % 24 === 0 ? (hours / 24) + " day" + (hours === 24 ? "" : "s") : hours + " hours";
+  var inDays = hours % 24 === 0 && hours >= 24
+    ? (hours / 24) + " day" + (hours === 24 ? "" : "s") : hours + " hours";
   var minimum = S_().minimum_order_value_piastres;
   var minText = !minimum || minimum === "0" ? "" : String(Number(minimum) / 100);
 
-  return "<main>" + setHead("Ordering",
-      "How much warning you need, how much you can cook in a day, and what happens when an order "
-      + "is cancelled.") + setFlashes()
-    + '<div class="stack">'
-    + setCard("How much notice you need",
-        "A regular order cannot be for a date sooner than this. It is checked when the customer "
-        + "picks a date and again when the order is written.",
+  return settingsShell(setHead("Ordering")
+    + setCard("Notice and capacity",
+        "Checked when a customer picks a date, and again when the order is written.",
         '<div class="fgrid two">'
         + setField("Notice, in hours", "s-notice",
             '<input id="s-notice" inputmode="numeric" value="' + esc(S_().normal_notice_hours) + '">',
             "That is " + inDays + ".")
         + setField("Orders a day", "s-cap",
-            '<input id="s-cap" inputmode="numeric" value="' + esc(S_().normal_daily_capacity) + '">',
-            "How many regular orders you will cook in one day.")
+            '<input id="s-cap" inputmode="numeric" value="' + esc(S_().normal_daily_capacity) + '">')
         + "</div>"
-        + setSwitch("pickup_counts_toward_capacity", "A pickup counts towards the day",
-            "Off means only deliveries fill the day up."),
+        + setSwitch("pickup_counts_toward_capacity", "A pickup counts towards the day"),
         "notice")
-    + setCard("A daily cut-off time",
-        "Nothing is set, so only the notice period above decides which dates a customer can choose.",
-        '<p class="hint">A cut-off can mean two quite different things, and they behave '
-        + "differently for the customer:</p>"
-        + '<ul class="plain"><li>&bull; Orders stop for the following day once this time passes.</li>'
-        + "<li>&bull; Orders stop for the day altogether once this time passes.</li></ul>"
-        + toDecide("Tell me which of those you mean and I will build it. Until then nothing is set, "
-            + "and the notice period is the only rule about dates \u2014 which is how the site "
-            + "behaves today."))
-    + setCard("A minimum order",
-        "The business said there is no minimum. Leave it empty to keep it that way.",
-        '<div class="fgrid two">'
+    + setCard("Minimum order", "Empty means no minimum, which is what you said.",
+        '<div class="fgrid">'
         + setField("Minimum order", "s-min",
             '<input id="s-min" inputmode="decimal" placeholder="No minimum" value="' + esc(minText) + '">',
-            "In EGP. Empty means no minimum.") + "</div>",
+            "In EGP.") + "</div>",
         "minimum")
     + setCard("Cancelling",
-        "A cancellation inside the free window costs nothing. Outside it, the charge is worked out "
-        + "and recorded on the order \u2014 it is never taken automatically, because there is no "
-        + "deposit and no card on file.",
-        '<div class="fgrid two">'
-        + setField("Free window, regular orders", "s-nfree",
+        "Inside the window costs nothing. Outside it, the charge is recorded on the order and "
+        + "never taken automatically.",
+        '<div class="fgrid three">'
+        + setField("Free window, orders", "s-nfree",
             '<input id="s-nfree" inputmode="numeric" value="' + esc(S_().normal_free_cancellation_hours) + '">',
-            "In hours before the date.")
+            "Hours before.")
         + setField("Free window, events", "s-efree",
             '<input id="s-efree" inputmode="numeric" value="' + esc(S_().event_free_cancellation_hours) + '">',
-            "In hours before the date.")
+            "Hours before.")
         + setField("Late cancellation", "s-pct",
             '<input id="s-pct" inputmode="numeric" value="' + esc(S_().late_cancellation_percent) + '">',
-            "A percentage of the order total.")
+            "% of the total.")
         + "</div>"
         + setSwitch("customer_self_cancel_enabled", "Customers can cancel their own order",
-            "Off \u2014 as agreed. Cancelling is done here, by you, so there is always a conversation."),
+            "Off \u2014 cancelling is done here, so there is always a conversation."),
         "cancel")
-    + "</div>"
-    + historyNote("Changing any of these changes what can be ordered from now on. An order that "
-        + "has already been placed keeps the rules it was placed under \u2014 including the "
-        + "cancellation charge, which is worked out and written onto the order at the moment it is "
-        + "cancelled.")
-    + "</main>";
+    + historyNote("An order keeps the rules it was placed under, including the cancellation "
+        + "charge, which is worked out and written onto the order when it is cancelled."));
 }
 
 /* ---------------------------------------------------------------- delivery */
 function viewSetDelivery() {
   var areas = S.settings.areas;
-  var slots = S.settings.slots;
-
-  var areaRows = areas.length
+  var rows = areas.length
     ? "<ul>" + areas.map(function (a, i) {
         return '<li class="vrow">'
           + '<span class="mv"><button type="button" data-set="area-up" data-i="' + i + '"'
@@ -2165,370 +2209,234 @@ function viewSetDelivery() {
           + '<input class="p tnum" id="a-fee-' + i + '" aria-label="' + esc(a.name) + ' fee" value="'
           + pounds(a.fee) + '">'
           + '<button type="button" class="mini" data-set="area-save" data-i="' + i + '">Save</button>'
-          + '<button type="button" class="mini ' + (a.active ? "on" : "off")
+          + '<button type="button" class="pillbtn ' + (a.active ? "on" : "off")
           + '" data-set="area-active" data-i="' + i + '">'
           + (a.active ? "Delivering" : "Not delivering") + "</button>"
           + '<button type="button" class="linky" data-set="area-remove" data-i="' + i + '">Remove</button>'
           + "</li>";
       }).join("") + "</ul>"
-    : toDecide("No areas yet. Until there are, an order's delivery fee is recorded as unknown "
-        + "rather than as zero, and the customer is not shown a fee at checkout. Add the areas you "
-        + "deliver to, with what you charge for each.");
+    : toDecide("No areas yet, so an order's delivery fee is recorded as unknown rather than as "
+        + "zero and the customer is not shown a fee.");
 
-  var slotRows = slots.length
-    ? "<ul>" + slots.map(function (t, i) {
-        return '<li class="vrow">'
-          + '<span class="mv"><button type="button" data-set="slot-up" data-i="' + i + '"'
-          + (i === 0 ? " disabled" : "") + ' aria-label="Move ' + esc(t.label) + ' up">\u25b2</button>'
-          + '<button type="button" data-set="slot-down" data-i="' + i + '"'
-          + (i === slots.length - 1 ? " disabled" : "")
-          + ' aria-label="Move ' + esc(t.label) + ' down">\u25bc</button></span>'
-          + '<input class="n" id="t-label-' + i + '" aria-label="' + esc(t.label) + ' name" value="'
-          + esc(t.label) + '">'
-          + '<input class="p" type="time" id="t-start-' + i + '" aria-label="' + esc(t.label)
-          + ' from" value="' + esc(t.start) + '">'
-          + '<input class="p" type="time" id="t-end-' + i + '" aria-label="' + esc(t.label)
-          + ' to" value="' + esc(t.end) + '">'
-          + '<button type="button" class="mini" data-set="slot-save" data-i="' + i + '">Save</button>'
-          + '<button type="button" class="mini ' + (t.active ? "on" : "off")
-          + '" data-set="slot-active" data-i="' + i + '">'
-          + (t.active ? "Offered" : "Not offered") + "</button>"
-          + '<button type="button" class="linky" data-set="slot-remove" data-i="' + i + '">Remove</button>'
-          + "</li>";
-      }).join("") + "</ul>"
-    : toDecide("No times yet, so a customer types a time of their own at checkout. Add the windows "
-        + "you actually deliver in and they will choose from those instead.");
+  var hoursSet = S_().order_time_from && S_().order_time_until;
 
-  return "<main>" + setHead("Delivery &amp; pickup",
-      "Where you deliver, what you charge for it, whether people can collect, and the times you "
-      + "offer.") + setFlashes()
-    + '<div class="stack">'
+  return settingsShell(setHead("Delivery &amp; pickup")
     + setCard("Delivery areas and fees",
-        "The area a customer chooses sets the delivery fee on their order. The fee is copied onto "
-        + "the order when it is placed, so changing it here never changes an order that already "
-        + "exists.",
-        areaRows
+        "The fee is copied onto an order when it is placed, so changing it here never changes an "
+        + "order that already exists.",
+        rows
         + '<div class="newrow">'
         + setField("Area", "new-area", '<input id="new-area" placeholder="Maadi">')
-        + setField("Fee", "new-fee", '<input id="new-fee" inputmode="decimal" placeholder="60">', "In EGP.")
-        + '<button type="button" class="mini" data-set="area-add">Add the area</button></div>')
-    + setCard("Pickup", "Whether customers can collect an order themselves.",
-        setSwitch("pickup_enabled", "Customers can choose pickup",
+        + setField("Fee", "new-fee", '<input id="new-fee" inputmode="decimal" placeholder="60">', "EGP.")
+        + '<button type="button" class="mini" data-set="area-add">Add area</button></div>')
+    + setCard("When orders go out",
+        "Customers choose a time inside this range. Leave both empty to accept any time.",
+        '<div class="newrow">'
+        + setField("Available from", "s-from",
+            '<input id="s-from" type="time" value="' + esc(S_().order_time_from) + '">')
+        + setField("Available until", "s-until",
+            '<input id="s-until" type="time" value="' + esc(S_().order_time_until) + '">')
+        + "</div>"
+        + (hoursSet ? "" : toDecide("No hours set, so a customer can ask for any time of day.")),
+        "hours")
+    + setCard("Pickup",
+        "",
+        setSwitch("pickup_enabled", "Customers can collect an order themselves",
             "Off removes it from checkout, and an order that tries to use it is refused."),
         "pickup")
-    + setCard("Delivery and pickup times",
-        "The times a customer can choose from. The one they choose is written onto the order in "
-        + "words, so renaming a time later never changes an order that used it.",
-        slotRows
-        + '<div class="newrow">'
-        + setField("Name", "new-slot", '<input id="new-slot" placeholder="Evening">')
-        + setField("From", "new-start", '<input id="new-start" type="time">')
-        + setField("To", "new-end", '<input id="new-end" type="time">')
-        + '<button type="button" class="mini" data-set="slot-add">Add the time</button></div>')
-    + "</div>"
-    + historyNote("An order copies the area's name, its fee and the time it chose at the moment it "
-        + "is placed. Changing a fee here changes what the next order pays and nothing else. An "
-        + "area or a time that an order already used cannot be deleted \u2014 it can only be "
-        + "switched off.")
-    + "</main>";
+    + historyNote("An order copies the area's name, its fee and the time it chose when it is "
+        + "placed. An area an address already uses cannot be deleted \u2014 only switched off."));
 }
 
 /* ---------------------------------------------------------------- calendar */
-function readableDate(iso) {
-  var d = new Date(iso + "T00:00:00.000Z");
-  return d.toLocaleDateString("en-GB",
-    { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-}
-
 function viewSetCalendar() {
   var days = workingDays();
   var chips = DAY_NAMES.map(function (name, i) {
-    var on = days.indexOf(i) >= 0;
-    return '<button type="button" class="dayc' + (on ? " on" : "") + '" data-set="day" data-i="'
-      + i + '">' + name + "</button>";
+    return '<button type="button" class="dayc' + (days.indexOf(i) >= 0 ? " on" : "")
+      + '" data-set="day" data-i="' + i + '">' + name + "</button>";
   }).join("");
-  var off = DAY_NAMES.filter(function (_, i) { return days.indexOf(i) < 0; });
 
-  var closed = S.settings.closed.filter(function (c) { return c.closed; });
-  var capped = S.settings.closed.filter(function (c) { return !c.closed && c.max !== null; });
+  var byDate = {};
+  S.settings.closed.forEach(function (c) { byDate[c.date] = c; });
 
-  var list = (closed.length || capped.length)
-    ? "<ul>" + closed.map(function (c) {
-        return '<li class="closed-row"><strong>' + readableDate(c.date) + "</strong>"
-          + (c.eventNumber
-              ? '<span class="type ev">Event</span><a href="#/order/' + c.eventNumber + '">'
-                + c.eventNumber + "</a><span class=\"hint\">Held by the event. Change it on the "
-                + "event itself.</span>"
-              : '<span class="why">' + esc(c.note || "Closed.") + "</span>"
-                + '<button type="button" class="linky" data-set="unblock" data-date="' + c.date
-                + '">Open it again</button>')
-          + "</li>";
-      }).join("")
-      + capped.map(function (c) {
-        return '<li class="closed-row"><strong>' + readableDate(c.date) + "</strong>"
-          + '<span class="why">' + c.max + " order" + (c.max === 1 ? "" : "s")
-          + " that day, instead of " + S_().normal_daily_capacity + ".</span>"
-          + '<button type="button" class="linky" data-set="uncap" data-date="' + c.date
-          + '">Back to ' + S_().normal_daily_capacity + "</button></li>";
-      }).join("") + "</ul>"
-    : '<p class="hint">No days are closed or capped from today onwards.</p>';
+  var start = new Date();
+  start.setUTCHours(0, 0, 0, 0);
+  start.setUTCDate(start.getUTCDate() - start.getUTCDay());
+  var today = new Date().toISOString().slice(0, 10);
+  var cells = [];
+  for (var i = 0; i < 42; i++) {
+    var d = new Date(start);
+    d.setUTCDate(d.getUTCDate() + i);
+    var key = d.toISOString().slice(0, 10);
+    cells.push(byDate[key] || { date: key, closed: false, max: null, note: null, eventNumber: null });
+  }
 
-  return "<main>" + setHead("Calendar &amp; capacity",
-      "The days you work, the days you have closed, and how many orders a particular day can take.")
-    + setFlashes()
-    + '<div class="stack">'
+  var grid = DAY_SHORT.map(function (s) { return '<span class="hd">' + s + "</span>"; }).join("")
+    + cells.map(function (c) {
+        var weekday = new Date(c.date + "T00:00:00.000Z").getUTCDay();
+        var weeklyOff = days.indexOf(weekday) < 0;
+        var past = c.date < today;
+        var held = !!c.eventNumber;
+        var shut = c.closed || weeklyOff;
+        var cls = past ? "past" : held ? "held" : shut ? "shut" : "open";
+        return '<button type="button" class="dcell ' + cls
+          + (SET_DAY === c.date ? " sel" : "") + '" data-set="pick-day" data-date="' + c.date + '"'
+          + (past ? " disabled" : "") + ">"
+          + "<span>" + Number(c.date.slice(8, 10)) + "</span>"
+          + '<span class="sub">'
+          + (held ? "event" : shut ? "closed" : c.max !== null ? "max " + c.max : "")
+          + "</span></button>";
+      }).join("");
+
+  var picked = SET_DAY ? (byDate[SET_DAY] || { date: SET_DAY, closed: false, max: null, note: null, eventNumber: null }) : null;
+
+  return settingsShell(setHead("Calendar &amp; capacity")
     + setCard("The days you work",
-        "A day switched off cannot be chosen for a regular order at all. Every day is on today, "
-        + "which is how the site behaves now.",
-        '<div class="chips">' + chips + "</div>"
-        + '<p class="hint" style="margin-top:14px">'
-        + (days.length === 7 ? "Open every day."
-           : days.length === 0 ? "Nothing can be ordered at all \u2014 turn at least one day on."
-           : "Closed on " + off.join(", ") + ".") + "</p>",
-        "days")
-    + setCard("Days you are closed",
-        "For anything the system cannot know about \u2014 travelling, a holiday, a day already "
-        + "spoken for.",
-        list
-        + '<div class="newrow">'
-        + setField("Date", "block-date", '<input id="block-date" type="date">')
-        + setField("Why", "block-note", '<input id="block-note" placeholder="Away that weekend">',
-            "For you, not the customer.")
-        + '<button type="button" class="mini" data-set="block">Close that day</button></div>'
-        + '<div class="newrow">'
-        + setField("Or cook fewer on one day", "cap-date", '<input id="cap-date" type="date">')
-        + setField("Orders that day", "cap-n", '<input id="cap-n" inputmode="numeric" placeholder="1">',
-            "Normally " + S_().normal_daily_capacity + ".")
-        + '<button type="button" class="mini" data-set="cap">Set that day</button></div>')
+        "A day switched off is closed every week. Use the calendar below for a single date.",
+        '<div class="chips">' + chips + "</div>", "days")
+    + setCard("The weeks ahead",
+        "Click a day to close it, or to cook a different number that day. Usually "
+        + S_().normal_daily_capacity + " orders a day.",
+        '<div class="cal">' + grid + "</div>"
+        + (picked ? dayPanel(picked) : '<p class="hint" style="margin-top:12px">Red is closed, '
+            + "gold is an event you have accepted.</p>"))
+    + historyNote("Closing a day stops new orders for it. An order already booked for that day is "
+        + "untouched \u2014 cancel one deliberately if you need to."));
+}
+
+function dayPanel(day) {
+  var readable = new Date(day.date + "T00:00:00.000Z").toLocaleDateString("en-GB",
+    { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+
+  if (day.eventNumber) {
+    return '<div class="day-panel held"><p><strong>' + readable + "</strong> is held by event "
+      + '<a href="#/order/' + day.eventNumber + '">' + day.eventNumber + "</a>. "
+      + "Change it on the event itself.</p></div>";
+  }
+
+  return '<div class="day-panel"><p class="d">' + readable + "</p>"
+    + '<div class="newrow">'
+    + (day.closed
+        ? '<button type="button" class="mini" data-set="open-day" data-date="' + day.date
+          + '">Open this day</button>'
+        : '<input id="close-why" placeholder="Why, for you" aria-label="Why it is closed">'
+          + '<button type="button" class="pillbtn off" data-set="close-day" data-date="' + day.date
+          + '">Close this day</button>')
     + "</div>"
-    + historyNote("Closing a day stops new orders being placed for it. It does not touch an order "
-        + "that is already booked for that day \u2014 those stay exactly as they are, and you "
-        + "cancel one deliberately if you need to.")
-    + "</main>";
+    + (day.closed
+        ? ""
+        : '<div class="newrow cap-row"><label for="day-cap">Orders this day</label>'
+          + '<input id="day-cap" class="tnum" inputmode="numeric" placeholder="'
+          + S_().normal_daily_capacity + '" value="' + (day.max === null ? "" : day.max) + '">'
+          + '<button type="button" class="mini" data-set="day-cap" data-date="' + day.date
+          + '">Save</button>'
+          + (day.max !== null
+              ? '<button type="button" class="linky" data-set="day-uncap" data-date="' + day.date
+                + '">Back to ' + S_().normal_daily_capacity + "</button>"
+              : "")
+          + "</div>")
+    + "</div>";
 }
 
 /* ------------------------------------------------------------------ events */
 function viewSetEvents() {
-  var base = Number(String(LADDER_EXAMPLE).replace(/,/g, "")) * 100;
+  if (LADDER === null) loadLadder();
+  var base = Number(String(LADDER_BASE).replace(/,/g, "")) * 100;
+
   var rows = LADDER.map(function (t, i) {
-    var money = isFinite(base) && base > 0 && t.mult !== ""
-      ? ' <span class="tnum amt">= ' + egp(Math.round(base * Number(t.mult || 0))) + "</span>" : "";
     return '<div class="band">'
       + '<input class="g tnum" aria-label="From guests" data-l="min" data-i="' + i + '" value="'
       + esc(t.min) + '"> to '
       + '<input class="g tnum" aria-label="To guests" data-l="max" data-i="' + i + '" value="'
-      + esc(t.max) + '"> guests: '
-      + '<input class="m tnum" aria-label="Multiplier" data-l="mult" data-i="' + i + '" value="'
-      + esc(t.mult) + '"> \u00d7' + money
+      + esc(t.max) + '"> guests '
+      + '<input class="x tnum" aria-label="Price for this band" data-l="price" data-i="' + i
+      + '" value="' + esc(t.price) + '"> EGP'
       + '<button type="button" class="linky" data-set="band-del" data-i="' + i + '">Remove</button>'
       + "</div>";
   }).join("");
 
-  var mode = S_().event_default_capacity_mode;
-  var choice = function (id, title, body) {
-    return '<button type="button" class="opt-btn' + (mode === id ? " on" : "")
-      + '" data-set="mode" data-mode="' + id + '"><span class="t">' + title
-      + '</span><span class="b">' + body + "</span></button>";
-  };
+  var examples = S.menu.dishes
+    .filter(function (d) { return !d.archived && d.price !== null; })
+    .sort(function (a, b) { return b.price - a.price; })
+    .slice(0, 2);
 
-  return "<main>" + setHead("Events",
-      "What an event request needs, what happens if one is cancelled, and how event food is priced "
-      + "by guest count.") + setFlashes()
-    + '<div class="stack">'
-    + setCard("What an event needs",
-        "Checked when the customer asks for a date, and again when the request is written.",
+  var meaning = examples.length && base > 0 && LADDER.length
+    ? '<div class="means"><p class="eyebrow">What that means for other dishes</p>'
+      + examples.map(function (d) {
+          return "<p><span class=\"nm\">" + esc(d.name) + "</span> (" + egp(d.price) + ")"
+            + LADDER.slice(0, 3).map(function (t) {
+                var p = Number(String(t.price).replace(/,/g, "")) * 100;
+                if (!p) return "";
+                return " \u00b7 " + t.min + "\u2013" + t.max + ": "
+                  + egp(Math.round((d.price * p) / base));
+              }).join("") + "</p>";
+        }).join("") + "</div>"
+    : "";
+
+  var mode = S_().event_default_capacity_mode;
+  var choice = function (id, title) {
+    return '<button type="button" class="choicep' + (mode === id ? " on" : "")
+      + '" data-set="mode" data-mode="' + id + '">' + title + "</button>";
+  };
+  var own = S.menu.dishes.filter(function (d) {
+    return !d.archived && d.tiers && d.tiers.length;
+  }).length;
+
+  return settingsShell(setHead("Events")
+    + setCard("What an event needs", "",
         '<div class="fgrid two">'
         + setField("Notice, in days", "s-evnotice",
-            '<input id="s-evnotice" inputmode="numeric" value="' + esc(S_().event_notice_days) + '">',
-            "The soonest an event can be.")
+            '<input id="s-evnotice" inputmode="numeric" value="' + esc(S_().event_notice_days) + '">')
         + setField("Most guests", "s-evguests",
             '<input id="s-evguests" inputmode="numeric" value="' + esc(S_().event_max_guests) + '">',
-            "A request for more than this is refused.")
+            "A request for more is refused.")
         + "</div>",
         "evrules")
-    + setCard("Cancelling an event",
-        "The same rule as a regular order, with its own window. The charge is worked out and "
-        + "recorded on the order \u2014 never taken.",
+    + setCard("Cancelling an event", "The percentage is shared with regular orders.",
         '<div class="fgrid two">'
         + setField("Free window", "s-evfree",
             '<input id="s-evfree" inputmode="numeric" value="' + esc(S_().event_free_cancellation_hours) + '">',
-            "In hours before the event.")
+            "Hours before.")
         + setField("Late cancellation", "s-evpct",
             '<input id="s-evpct" inputmode="numeric" value="' + esc(S_().late_cancellation_percent) + '">',
-            "A percentage of the total.")
-        + '</div><p class="hint" style="margin-top:14px">This percentage is shared with regular '
-        + "orders \u2014 changing it here changes it there too.</p>",
+            "% of the total.")
+        + "</div>",
         "evcancel")
     + setCard("When you accept an event",
-        "What happens to the rest of that day by default. You are still asked each time you confirm "
-        + "one, so this only sets which answer is offered first.",
-        '<div class="opts">'
-        + choice("BLOCK_DAY", "Block the whole day",
-            "No regular orders on a day you are catering an event.")
-        + choice("KEEP_DAY_OPEN", "Keep the day open",
-            "Regular orders keep coming in alongside the event.")
-        + "</div>",
+        "Which answer is offered first. You are still asked each time.",
+        '<div class="chips">' + choice("BLOCK_DAY", "Block the day")
+        + choice("KEEP_DAY_OPEN", "Keep the day open") + "</div>",
         "evmode")
-    + setCard("The guest-count ladder",
-        "Event food is cooked for the whole guest list, so it is priced by how many are coming. "
-        + "Every dish uses this ladder unless it has bands of its own.",
+    + setCard("Event prices by guest count",
+        "Set against one dish price. Every other dish moves in the same proportion, so you never "
+        + "price seventy dishes by hand.",
         '<div class="newrow">'
-        + setField("Show it for a dish costing", "ladder-example",
-            '<input id="ladder-example" class="tnum" inputmode="decimal" value="'
-            + esc(String(LADDER_EXAMPLE)) + '">', "In EGP. Just for reading the ladder.")
+        + setField("For a dish that normally costs", "ladder-base",
+            '<input id="ladder-base" class="tnum" inputmode="decimal" value="'
+            + esc(String(LADDER_BASE)) + '">', "In EGP.")
         + "</div>" + rows
-        + '<div class="chips" style="margin-top:16px">'
-        + '<button type="button" class="mini" data-set="band-add">Add a band</button></div>',
-        "ladder", "Save the ladder",
-        '<p class="hint" style="margin-top:18px">'
-        + (dishesWithOwnBands() === 0
-            ? "No dish has bands of its own, so every dish follows this ladder."
-            : dishesWithOwnBands() + (dishesWithOwnBands() === 1 ? " dish has" : " dishes have")
-              + " bands of their own and ignore this ladder. They are set on the dish itself.")
+        + '<div class="chips" style="margin-top:12px">'
+        + '<button type="button" class="mini" data-set="band-add">Add a band</button></div>'
+        + meaning,
+        "ladder", "Save these prices",
+        '<p class="hint" style="margin-top:14px">'
+        + (own === 0
+            ? "Every dish follows this. A dish can be given its own prices on the dish itself."
+            : own + (own === 1 ? " dish has" : " dishes have")
+              + " their own event prices and ignore this.")
         + "</p>")
-    + "</div>"
-    + historyNote("An event order stores the multiplier it was priced at and the price of every "
-        + "dish on it. Changing the ladder changes what the next event is quoted; it cannot change "
-        + "one that has already been sent.")
-    + "</main>";
+    + historyNote("An event order stores the price of every dish on it and the band it was priced "
+        + "in. Changing these prices changes the next quote, never one already sent."));
 }
-
-function dishesWithOwnBands() {
-  return S.menu.dishes.filter(function (d) { return !d.archived && d.tiers && d.tiers.length; }).length;
-}
-
-/* ----------------------------------------------------------------- payment */
-function viewSetPayment() {
-  return "<main>" + setHead("Payment",
-      "How customers can pay, and the InstaPay details they are shown.") + setFlashes()
-    + '<div class="stack">'
-    + setCard("How customers can pay",
-        "Both are settled by hand: cash when the food arrives, InstaPay when you have seen the "
-        + "transfer.",
-        setSwitch("payment_cash_enabled", "Cash",
-            "Reads as cash on delivery, or payment on pickup, depending on the order.")
-        + setSwitch("payment_instapay_enabled", "InstaPay",
-            "The order arrives awaiting verification. It becomes paid when you say you have seen "
-            + "the money \u2014 never automatically."),
-        "methods")
-    + setCard("Your InstaPay details",
-        "Shown to the customer at checkout when they choose InstaPay, and on their confirmation.",
-        '<div class="fgrid">'
-        + setField("Transfer to", "s-ipn",
-            '<input id="s-ipn" value="' + esc(S_().instapay_number) + '">',
-            "The number or address customers send to.")
-        + setField("Anything else to say", "s-ipd",
-            '<input id="s-ipd" placeholder="Nothing extra" value="'
-            + esc(S_().instapay_account_details) + '">',
-            "Optional. A name to send to, a note about the reference.")
-        + "</div>",
-        "instapay")
-    + setCard("Card payments", "",
-        '<p class="hint">Paused, as agreed. The integration is built and tested against the '
-        + "provider's test mode, but card is not offered to customers and no card details are ever "
-        + "handled by this site.</p>"
-        + '<p class="hint" style="margin-top:12px">Turning it back on is a deliberate step: it '
-        + "needs the provider's keys added to the deployment, and a decision from you. It is not a "
-        + "switch on this page for that reason.</p>")
-    + "</div>"
-    + historyNote("An order records how it was paid for at the time it was placed. Changing these "
-        + "details changes what the next customer is shown; an order already waiting to be verified "
-        + "keeps its own record, and payment status is still something only you set.")
-    + "</main>";
-}
-
-/* ----------------------------------------------------------------- serving */
-function viewSetServing() {
-  var money = function (key) {
-    var v = S_()[key];
-    return v === "" ? "" : String(Number(v) / 100);
-  };
-  return "<main>" + setHead("Serving setup",
-      "Whether food goes out in your own dishes or disposable ones, and what customers are told "
-      + "about returning them.") + setFlashes()
-    + '<div class="stack">'
-    + setCard("What customers can choose", "Asked on every order, regular and event alike.",
-        setSwitch("serving_returnable_enabled", "Returnable dishes",
-            "Served in your own dishes, which you collect afterwards.")
-        + setSwitch("serving_disposable_enabled", "Disposable dishes",
-            "Served in disposable containers \u2014 nothing to return."),
-        "setups")
-    + setCard("What customers are told",
-        "Shown under the choice at checkout. Empty means nothing is said, which is the case today.",
-        '<div class="fgrid">'
-        + setField("The returnable-dish policy", "s-policy",
-            '<textarea id="s-policy" placeholder="Nothing is shown to customers yet">'
-            + esc(S_().serving_setup_policy_en) + "</textarea>",
-            "In your own words. For example, when you collect the dishes and what happens if one "
-            + "is not ready.")
-        + "</div>"
-        + (S_().serving_setup_policy_en
-            ? ""
-            : toDecide("Customers can choose returnable dishes but are told nothing about "
-                + "returning them. Write a line here whenever you are ready \u2014 nothing has been "
-                + "made up in the meantime.")),
-        "policy")
-    + setCard("Deposit, return period and late fee",
-        "Not decided, and not invented. Record a decision here when you make one \u2014 nothing is "
-        + "charged, shown to a customer or enforced from these until we build them in and you say "
-        + "so.",
-        '<div class="fgrid three">'
-        + setField("Deposit", "s-dep",
-            '<input id="s-dep" inputmode="decimal" placeholder="Not decided" value="'
-            + esc(money("returnable_deposit_piastres")) + '">', "In EGP. Empty means none.")
-        + setField("Return within", "s-days",
-            '<input id="s-days" inputmode="numeric" placeholder="Not decided" value="'
-            + esc(S_().returnable_return_days) + '">', "In days. Empty means none.")
-        + setField("Late fee", "s-late",
-            '<input id="s-late" inputmode="decimal" placeholder="Not decided" value="'
-            + esc(money("returnable_late_fee_piastres")) + '">', "In EGP. Empty means none.")
-        + '</div><p class="hint" style="margin-top:14px">These three are recorded only. Tell me '
-        + "what they should be and how they should work, and they become real: shown at checkout, "
-        + "and part of what an order records.</p>",
-        "returnable", "Record these")
-    + "</div>"
-    + historyNote("Every order records which setup it was placed with. Switching one off here "
-        + "stops it being offered from now on and changes nothing about an order already booked.")
-    + "</main>";
-}
-
-/* ----------------------------------------------------------------- contact */
-function viewSetContact() {
-  return "<main>" + setHead("Business details",
-      "The contact details the website shows customers.") + setFlashes()
-    + '<div class="stack">'
-    + setCard("How customers reach you",
-        "Shown in the footer of every page, on the confirmation of every order, and wherever the "
-        + "site offers to start a conversation.",
-        '<div class="fgrid">'
-        + setField("WhatsApp number", "s-wa",
-            '<input id="s-wa" value="' + esc(S_().whatsapp_number) + '">',
-            "With the country code, as you would write it.")
-        + setField("Instagram", "s-ig",
-            '<input id="s-ig" value="' + esc(S_().contact_instagram) + '">',
-            "The full link. Empty removes it from the site.")
-        + setField("Email", "s-em",
-            '<input id="s-em" placeholder="None" value="' + esc(S_().contact_email) + '">',
-            "Empty removes it from the site.")
-        + "</div>"
-        + (S_().contact_email
-            ? ""
-            : toDecide("No email address has been supplied, so the site shows WhatsApp and "
-                + "Instagram only. Add one whenever you want it shown.")),
-        "contact")
-    + "</div>"
-    + historyNote("These change what the site shows from now on. An order already placed keeps its "
-        + "own record of the customer's details, and nothing here touches it.")
-    + "</main>";
-}
-
-/* ---------------------------------------------------------------- editing */
-var LADDER = null;          /* the ladder being edited, before it is saved */
-var LADDER_EXAMPLE = "1000";
 
 function loadLadder() {
+  var ref = Number(S_().event_ladder_reference_piastres || 100000);
+  LADDER_BASE = String(ref / 100);
   LADDER = S.menu.tiers.map(function (t) {
-    return { min: String(t.min), max: String(t.max), mult: String(t.bp / 10000) };
+    return {
+      min: String(t.min), max: String(t.max),
+      price: String(Math.round((ref * t.bp) / 10000) / 100)
+    };
   });
 }
 function readLadder() {
@@ -2536,7 +2444,151 @@ function readLadder() {
     var i = Number(el.dataset.i);
     if (LADDER[i]) LADDER[i][el.dataset.l] = el.value.trim();
   });
+  if ($("#ladder-base")) LADDER_BASE = $("#ladder-base").value.trim();
 }
+
+/* ----------------------------------------------------------------- payment */
+function viewSetPayment() {
+  var rows = "<ul>" + S.settings.payments.map(function (o) {
+    var integrated = o.kind === "INTEGRATED";
+    return '<li class="orow">'
+      + '<span class="who"><span class="nm">' + esc(o.name) + "</span>"
+      + '<span class="sub">'
+      + (integrated
+          ? "Needs an integration before customers can use it"
+          : o.verify ? "Paid before delivery \u2014 you verify it" : "Paid when the food arrives")
+      + (o.builtIn ? " \u00b7 built in" : "") + "</span></span>"
+      + (integrated
+          ? '<span class="tag">Not available</span>'
+          : pill(o.enabled, "Offered", "Not offered", "pay-toggle", o.id))
+      + '<button type="button" class="linky" data-set="pay-edit" data-id="' + o.id + '">'
+      + (SET_OPEN === o.id ? "Close" : "Edit") + "</button>"
+      + (SET_OPEN === o.id
+          ? '<div class="editrow"><div class="fgrid two">'
+            + setField("Name", "pe-name", '<input id="pe-name" value="' + esc(o.name) + '">')
+            + (o.builtIn === "INSTAPAY" ? ""
+                : setField("Details for the customer", "pe-inst",
+                    '<input id="pe-inst" value="' + esc(o.instructions) + '">'))
+            + "</div>"
+            + (!integrated && o.builtIn !== "CASH"
+                ? '<button type="button" class="check" data-set="pay-verify" data-id="' + o.id + '">'
+                  + '<span class="box' + (o.verify ? " on" : "") + '">' + (o.verify ? "\u2713" : "")
+                  + '</span><span><span class="t">The money comes before delivery</span></span></button>'
+                : "")
+            + '<div class="chips" style="margin-top:12px">'
+            + '<button type="button" class="mini" data-set="pay-save" data-id="' + o.id + '">Save</button>'
+            + (o.builtIn ? ""
+                : '<button type="button" class="linky" data-set="pay-remove" data-id="' + o.id
+                  + '">Remove</button>')
+            + "</div></div>"
+          : "")
+      + "</li>";
+  }).join("") + "</ul>";
+
+  var adder = SET_ADD === null
+    ? '<div class="newrow"><span class="hint">Add payment method</span>'
+      + '<button type="button" class="mini" data-set="add-manual">Manual</button>'
+      + '<button type="button" class="mini" data-set="add-integrated">Needs an integration</button>'
+      + "</div>"
+    : '<div class="addbox"><p class="hint">'
+      + (SET_ADD === "MANUAL"
+          ? "Money that arrives outside this website \u2014 a bank transfer, a wallet. You confirm "
+            + "each one by hand."
+          : "A provider that has to be built and connected first. It is recorded here, and stays "
+            + "off to customers until that work is done.")
+      + '</p><div class="fgrid two">'
+      + setField("Name", "pm-name", '<input id="pm-name" placeholder="Bank transfer">',
+          "What the customer sees.")
+      + setField("Details for the customer", "pm-inst",
+          '<input id="pm-inst" placeholder="Account number, name">', "Where to send it.")
+      + "</div>"
+      + (SET_ADD === "MANUAL"
+          ? '<button type="button" class="check" data-set="new-verify">'
+            + '<span class="box' + (NEW_VERIFY ? " on" : "") + '">' + (NEW_VERIFY ? "\u2713" : "")
+            + '</span><span><span class="t">The money comes before delivery</span>'
+            + '<span class="b">Those orders arrive awaiting verification.</span></span></button>'
+          : "")
+      + '<div class="chips" style="margin-top:12px">'
+      + '<button type="button" class="btn-save" data-set="pay-add">Add it</button>'
+      + '<button type="button" class="linky" data-set="add-cancel">Cancel</button></div></div>';
+
+  var instapay = S.settings.payments.filter(function (o) { return o.builtIn === "INSTAPAY"; })[0];
+
+  return settingsShell(setHead("Payment")
+    + setCard("How customers can pay",
+        "Everything here is settled by hand: someone confirms the money arrived.",
+        rows + adder)
+    + (instapay
+        ? setCard("InstaPay details", "Shown at checkout when a customer chooses InstaPay.",
+            '<div class="fgrid two">'
+            + setField("Transfer to", "s-ipn",
+                '<input id="s-ipn" value="' + esc(S_().instapay_number) + '">')
+            + setField("Anything else to say", "s-ipd",
+                '<input id="s-ipd" placeholder="Nothing extra" value="'
+                + esc(S_().instapay_account_details) + '">')
+            + "</div>",
+            "instapay")
+        : "")
+    + historyNote("An order records how it was paid for, by name, at the time it was placed. "
+        + "Renaming or retiring a method never changes it, and payment status is still only ever "
+        + "set by you."));
+}
+
+/* ----------------------------------------------------------------- serving */
+function viewSetServing() {
+  var rows = "<ul>" + S.settings.servings.map(function (o) {
+    return '<li class="orow">'
+      + '<span class="who"><span class="nm">' + esc(o.name) + "</span>"
+      + (o.description ? '<span class="sub">' + esc(o.description) + "</span>" : "")
+      + "</span>"
+      + pill(o.available, "Available", "Unavailable", "serv-toggle", o.id)
+      + '<button type="button" class="linky" data-set="serv-edit" data-id="' + o.id + '">'
+      + (SET_OPEN === o.id ? "Close" : "Edit") + "</button>"
+      + (SET_OPEN === o.id
+          ? '<div class="editrow"><div class="fgrid two">'
+            + setField("Name", "se-name", '<input id="se-name" value="' + esc(o.name) + '">')
+            + setField("Description", "se-desc",
+                '<input id="se-desc" value="' + esc(o.description) + '">')
+            + '</div><div class="chips" style="margin-top:12px">'
+            + '<button type="button" class="mini" data-set="serv-save" data-id="' + o.id + '">Save</button>'
+            + (o.builtIn ? ""
+                : '<button type="button" class="linky" data-set="serv-remove" data-id="' + o.id
+                  + '">Remove</button>')
+            + "</div></div>"
+          : "")
+      + "</li>";
+  }).join("") + "</ul>";
+
+  var adder = SET_ADD === "SERVING"
+    ? '<div class="addbox"><div class="fgrid two">'
+      + setField("Name", "so-name", '<input id="so-name" placeholder="Chafing dishes">',
+          "What the customer sees.")
+      + setField("Description", "so-desc",
+          '<input id="so-desc" placeholder="Kept warm and collected afterwards">',
+          "One line, for the customer.")
+      + '</div><div class="chips" style="margin-top:12px">'
+      + '<button type="button" class="btn-save" data-set="serv-add">Add it</button>'
+      + '<button type="button" class="linky" data-set="add-cancel">Cancel</button></div></div>'
+    : '<div class="newrow"><button type="button" class="mini" data-set="add-serving">'
+      + "Add serving option</button></div>";
+
+  return settingsShell(setHead("Serving setup")
+    + setCard("How the food can be served", "Asked on every order, regular and event alike.",
+        rows + adder)
+    + setCard("What customers are told about returning dishes", "",
+        '<textarea id="s-policy" placeholder="Nothing is shown to customers yet">'
+        + esc(S_().serving_setup_policy_en) + "</textarea>"
+        + (S_().serving_setup_policy_en
+            ? ""
+            : toDecide("Customers can choose returnable dishes but are told nothing about "
+                + "returning them. Nothing has been made up in the meantime.")),
+        "policy")
+    + historyNote("Every order records which option it was placed with, by name. Renaming or "
+        + "retiring one never changes an order already booked."));
+}
+
+/* ---------------------------------------------------------------- actions */
+var NEW_VERIFY = true;
 
 function whole(sel, min, max, what) {
   var v = val(sel);
@@ -2547,30 +2599,17 @@ function whole(sel, min, max, what) {
   }
   return String(n);
 }
+function payBy(id) { return S.settings.payments.filter(function (o) { return o.id === id; })[0]; }
+function servBy(id) { return S.settings.servings.filter(function (o) { return o.id === id; })[0]; }
 
 document.addEventListener("click", function (e) {
   var t = e.target.closest("button");
   if (!t) return;
 
-  /* a switch writes straight away, like the real one */
   if (t.dataset.setToggle) {
     var key = t.dataset.setToggle;
-    var turningOff = sOn(key);
-    var pairs = {
-      payment_cash_enabled: ["payment_instapay_enabled",
-        "Customers need at least one way to pay. Turn the other one on first."],
-      payment_instapay_enabled: ["payment_cash_enabled",
-        "Customers need at least one way to pay. Turn the other one on first."],
-      serving_returnable_enabled: ["serving_disposable_enabled",
-        "Customers need at least one way to be served. Turn the other one on first."],
-      serving_disposable_enabled: ["serving_returnable_enabled",
-        "Customers need at least one way to be served. Turn the other one on first."]
-    };
     SET_MSG = null; SET_ERR = null;
-    if (turningOff && pairs[key] && !sOn(pairs[key][0])) {
-      SET_ERR = pairs[key][1]; render(); return;
-    }
-    setVal(key, turningOff ? "false" : "true");
+    setVal(key, sOn(key) ? "false" : "true");
     save(); render(); return;
   }
 
@@ -2578,6 +2617,19 @@ document.addEventListener("click", function (e) {
   var m = t.dataset.set;
   SET_MSG = null; SET_ERR = null;
   var i = t.dataset.i === undefined ? null : Number(t.dataset.i);
+  var id = t.dataset.id;
+
+  /* ---- business details */
+  if (m === "contact") {
+    var em = val("#s-em");
+    if (em !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) {
+      SET_ERR = "That does not look like an email address."; render(); return;
+    }
+    setVal("whatsapp_number", val("#s-wa"));
+    setVal("contact_instagram", val("#s-ig"));
+    setVal("contact_email", em);
+    SET_MSG = "Saved."; save(); render(); return;
+  }
 
   /* ---- ordering */
   if (m === "notice") {
@@ -2607,7 +2659,18 @@ document.addEventListener("click", function (e) {
   }
 
   /* ---- delivery */
-  if (m === "pickup" || m === "methods" || m === "setups" || m === "days" || m === "evmode") {
+  if (m === "pickup" || m === "days" || m === "evmode") {
+    SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "hours") {
+    var from = val("#s-from"), until = val("#s-until");
+    if ((from === "") !== (until === "")) {
+      SET_ERR = "Give both a start and an end, or leave both empty."; render(); return;
+    }
+    if (from !== "" && until <= from) {
+      SET_ERR = "The end has to be after the start."; render(); return;
+    }
+    setVal("order_time_from", from); setVal("order_time_until", until);
     SET_MSG = "Saved."; save(); render(); return;
   }
   if (m === "area-add") {
@@ -2632,56 +2695,12 @@ document.addEventListener("click", function (e) {
   if (m === "area-active") {
     S.settings.areas[i].active = !S.settings.areas[i].active; save(); render(); return;
   }
-  if (m === "area-remove") {
-    if (S.settings.areas[i].used > 0) {
-      SET_ERR = S.settings.areas[i].name + " is on a saved address, so it cannot be removed. "
-        + "Switch it off instead.";
-      render(); return;
-    }
-    S.settings.areas.splice(i, 1); save(); render(); return;
-  }
+  if (m === "area-remove") { S.settings.areas.splice(i, 1); save(); render(); return; }
   if (m === "area-up" || m === "area-down") {
     var to = i + (m === "area-up" ? -1 : 1);
     if (to < 0 || to >= S.settings.areas.length) return;
     var tmp = S.settings.areas[i];
     S.settings.areas[i] = S.settings.areas[to]; S.settings.areas[to] = tmp;
-    save(); render(); return;
-  }
-  if (m === "slot-add") {
-    var sl = val("#new-slot"), st = val("#new-start"), en = val("#new-end");
-    if (!sl) { SET_ERR = "A time needs a name, such as Evening."; render(); return; }
-    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(st) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(en)) {
-      SET_ERR = "A time looks like 18:00."; render(); return;
-    }
-    if (en <= st) { SET_ERR = "The end has to be after the start."; render(); return; }
-    S.settings.slots.push({ label: sl, start: st, end: en, active: true, used: 0 });
-    save(); render(); return;
-  }
-  if (m === "slot-save") {
-    var sl2 = val("#t-label-" + i), st2 = val("#t-start-" + i), en2 = val("#t-end-" + i);
-    if (!sl2) { SET_ERR = "A time needs a name, such as Evening."; render(); return; }
-    if (en2 <= st2) { SET_ERR = "The end has to be after the start."; render(); return; }
-    S.settings.slots[i].label = sl2;
-    S.settings.slots[i].start = st2;
-    S.settings.slots[i].end = en2;
-    SET_MSG = "Saved."; save(); render(); return;
-  }
-  if (m === "slot-active") {
-    S.settings.slots[i].active = !S.settings.slots[i].active; save(); render(); return;
-  }
-  if (m === "slot-remove") {
-    if (S.settings.slots[i].used > 0) {
-      SET_ERR = S.settings.slots[i].label + " is on an order, so it cannot be removed. "
-        + "Switch it off instead.";
-      render(); return;
-    }
-    S.settings.slots.splice(i, 1); save(); render(); return;
-  }
-  if (m === "slot-up" || m === "slot-down") {
-    var sto = i + (m === "slot-up" ? -1 : 1);
-    if (sto < 0 || sto >= S.settings.slots.length) return;
-    var stmp = S.settings.slots[i];
-    S.settings.slots[i] = S.settings.slots[sto]; S.settings.slots[sto] = stmp;
     save(); render(); return;
   }
 
@@ -2693,40 +2712,34 @@ document.addEventListener("click", function (e) {
     setVal("working_days", days.sort(function (a, b) { return a - b; }).join(","));
     render(); return;
   }
-  if (m === "block") {
-    var d = val("#block-date");
-    if (!d) { SET_ERR = "Choose a date."; render(); return; }
-    var already = S.settings.closed.filter(function (c) { return c.date === d; })[0];
-    if (already) { already.closed = true; already.note = val("#block-note") || null; }
-    else S.settings.closed.push({ date: d, closed: true, max: null, note: val("#block-note") || null,
-      eventNumber: null });
-    S.settings.closed.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+  if (m === "pick-day") {
+    SET_DAY = SET_DAY === t.dataset.date ? null : t.dataset.date;
+    render(); return;
+  }
+  if (m === "close-day") {
+    var d = t.dataset.date;
+    var row = S.settings.closed.filter(function (c) { return c.date === d; })[0];
+    var why = val("#close-why") || null;
+    if (row) { row.closed = true; row.note = why; }
+    else S.settings.closed.push({ date: d, closed: true, max: null, note: why, eventNumber: null });
     save(); render(); return;
   }
-  if (m === "unblock") {
-    var dd = t.dataset.date;
-    var row = S.settings.closed.filter(function (c) { return c.date === dd; })[0];
-    if (row && row.eventNumber) {
-      SET_ERR = "That day is held by event " + row.eventNumber + ". Change it on the event itself.";
-      render(); return;
-    }
-    S.settings.closed = S.settings.closed.filter(function (c) { return c.date !== dd; });
+  if (m === "open-day") {
+    var od = t.dataset.date;
+    S.settings.closed = S.settings.closed.filter(function (c) { return c.date !== od; });
     save(); render(); return;
   }
-  if (m === "cap") {
-    var cd = val("#cap-date"), cn = val("#cap-n");
-    if (!cd) { SET_ERR = "Choose a date."; render(); return; }
+  if (m === "day-cap") {
+    var cd = t.dataset.date, cn = val("#day-cap");
     if (!/^\d+$/.test(cn) || Number(cn) > 50) {
       SET_ERR = "A day's capacity is a whole number up to 50."; render(); return;
     }
     var have = S.settings.closed.filter(function (c) { return c.date === cd; })[0];
     if (have) have.max = Number(cn);
-    else S.settings.closed.push({ date: cd, closed: false, max: Number(cn), note: null,
-      eventNumber: null });
-    S.settings.closed.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-    save(); render(); return;
+    else S.settings.closed.push({ date: cd, closed: false, max: Number(cn), note: null, eventNumber: null });
+    SET_MSG = "Saved."; save(); render(); return;
   }
-  if (m === "uncap") {
+  if (m === "day-uncap") {
     var ud = t.dataset.date;
     S.settings.closed = S.settings.closed.filter(function (c) { return c.date !== ud; });
     save(); render(); return;
@@ -2734,10 +2747,10 @@ document.addEventListener("click", function (e) {
 
   /* ---- events */
   if (m === "evrules") {
-    var en3 = whole("#s-evnotice", 0, 365, "The event notice period");
+    var en = whole("#s-evnotice", 0, 365, "The event notice period");
     var mg = whole("#s-evguests", 1, 1000, "The maximum guest count");
-    if (en3 === null || mg === null) { render(); return; }
-    setVal("event_notice_days", en3); setVal("event_max_guests", mg);
+    if (en === null || mg === null) { render(); return; }
+    setVal("event_notice_days", en); setVal("event_max_guests", mg);
     SET_MSG = "Saved."; save(); render(); return;
   }
   if (m === "evcancel") {
@@ -2747,17 +2760,23 @@ document.addEventListener("click", function (e) {
     setVal("event_free_cancellation_hours", ef2); setVal("late_cancellation_percent", pc2);
     SET_MSG = "Saved."; save(); render(); return;
   }
+  /* Only changes what is selected. Nothing saves until Save is pressed. */
   if (m === "mode") { setVal("event_default_capacity_mode", t.dataset.mode); render(); return; }
-  if (m === "band-add") { readLadder(); LADDER.push({ min: "", max: "", mult: "" }); render(); return; }
+  if (m === "band-add") { readLadder(); LADDER.push({ min: "", max: "", price: "" }); render(); return; }
   if (m === "band-del") { readLadder(); LADDER.splice(i, 1); render(); return; }
   if (m === "ladder") {
     readLadder();
+    var ref = Number(String(LADDER_BASE).replace(/,/g, ""));
+    if (!isFinite(ref) || ref <= 0) {
+      SET_ERR = "Give the price of a dish to work the ladder out from."; render(); return;
+    }
     var rows = [], bad = null;
     LADDER.forEach(function (r) {
-      var lo = Number(r.min), hi = Number(r.max), mult = Number(r.mult);
+      var lo = Number(r.min), hi = Number(r.max);
+      var price = Number(String(r.price).replace(/,/g, ""));
       if (!lo || !hi || hi < lo) bad = bad || "Each band needs a guest count to run from and to.";
-      if (!mult || mult <= 0) bad = bad || "Each band needs a multiplier, such as 1.5.";
-      rows.push({ min: lo, max: hi, bp: Math.round(mult * 10000) });
+      if (!price || price <= 0) bad = bad || "Each band needs a price in EGP.";
+      rows.push({ min: lo, max: hi, bp: Math.round((price / ref) * 10000) });
     });
     if (!rows.length) bad = "The ladder needs at least one band.";
     rows.sort(function (a, b) { return a.min - b.min; });
@@ -2768,54 +2787,103 @@ document.addEventListener("click", function (e) {
     }
     if (bad) { SET_ERR = bad; render(); return; }
     S.menu.tiers = rows;
+    setVal("event_ladder_reference_piastres", String(Math.round(ref * 100)));
     loadLadder();
     SET_MSG = "Saved."; save(); render(); return;
   }
 
-  /* ---- payment, serving, contact */
+  /* ---- payment methods */
+  if (m === "add-manual") { SET_ADD = "MANUAL"; NEW_VERIFY = true; render(); return; }
+  if (m === "add-integrated") { SET_ADD = "INTEGRATED"; NEW_VERIFY = false; render(); return; }
+  if (m === "add-serving") { SET_ADD = "SERVING"; render(); return; }
+  if (m === "add-cancel") { SET_ADD = null; render(); return; }
+  if (m === "new-verify") { NEW_VERIFY = !NEW_VERIFY; render(); return; }
+  if (m === "pay-add") {
+    var pn = val("#pm-name");
+    if (!pn) { SET_ERR = "A payment method needs a name."; render(); return; }
+    S.settings.payments.push({
+      id: "pm-" + Date.now(), builtIn: null, name: pn, instructions: val("#pm-inst"),
+      kind: SET_ADD, enabled: false, verify: SET_ADD === "MANUAL" ? NEW_VERIFY : false, used: 0
+    });
+    SET_ADD = null; save(); render(); return;
+  }
+  if (m === "pay-toggle") {
+    var po = payBy(id);
+    if (po.kind === "INTEGRATED") {
+      SET_ERR = po.name + " needs its provider connected before customers can use it.";
+      render(); return;
+    }
+    if (po.enabled) {
+      var others = S.settings.payments.filter(function (o) {
+        return o.id !== id && o.enabled && o.kind === "MANUAL";
+      }).length;
+      if (others === 0) {
+        SET_ERR = "Customers need at least one way to pay. Turn another on first.";
+        render(); return;
+      }
+    }
+    po.enabled = !po.enabled; save(); render(); return;
+  }
+  if (m === "pay-edit") { SET_OPEN = SET_OPEN === id ? null : id; render(); return; }
+  if (m === "pay-verify") { payBy(id).verify = !payBy(id).verify; render(); return; }
+  if (m === "pay-save") {
+    var pe = payBy(id);
+    var nm = val("#pe-name");
+    if (!nm) { SET_ERR = "A payment method needs a name."; render(); return; }
+    pe.name = nm;
+    if ($("#pe-inst")) pe.instructions = val("#pe-inst");
+    SET_OPEN = null; SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "pay-remove") {
+    var pr = payBy(id);
+    if (pr.builtIn) { SET_ERR = pr.name + " is built in. Switch it off instead."; render(); return; }
+    S.settings.payments = S.settings.payments.filter(function (o) { return o.id !== id; });
+    SET_OPEN = null; save(); render(); return;
+  }
   if (m === "instapay") {
     setVal("instapay_number", val("#s-ipn"));
     setVal("instapay_account_details", val("#s-ipd"));
     SET_MSG = "Saved."; save(); render(); return;
   }
+
+  /* ---- serving options */
+  if (m === "serv-add") {
+    var sn = val("#so-name");
+    if (!sn) { SET_ERR = "A serving option needs a name."; render(); return; }
+    S.settings.servings.push({
+      id: "so-" + Date.now(), builtIn: null, name: sn, description: val("#so-desc"),
+      available: true, used: 0
+    });
+    SET_ADD = null; save(); render(); return;
+  }
+  if (m === "serv-toggle") {
+    var so = servBy(id);
+    if (so.available) {
+      var left = S.settings.servings.filter(function (o) { return o.id !== id && o.available; }).length;
+      if (left === 0) {
+        SET_ERR = "Customers need at least one way to be served. Turn another on first.";
+        render(); return;
+      }
+    }
+    so.available = !so.available; save(); render(); return;
+  }
+  if (m === "serv-edit") { SET_OPEN = SET_OPEN === id ? null : id; render(); return; }
+  if (m === "serv-save") {
+    var se = servBy(id);
+    var sname = val("#se-name");
+    if (!sname) { SET_ERR = "A serving option needs a name."; render(); return; }
+    se.name = sname; se.description = val("#se-desc");
+    SET_OPEN = null; SET_MSG = "Saved."; save(); render(); return;
+  }
+  if (m === "serv-remove") {
+    var sr = servBy(id);
+    if (sr.builtIn) { SET_ERR = sr.name + " is built in. Switch it off instead."; render(); return; }
+    S.settings.servings = S.settings.servings.filter(function (o) { return o.id !== id; });
+    SET_OPEN = null; save(); render(); return;
+  }
   if (m === "policy") {
     setVal("serving_setup_policy_en", val("#s-policy"));
     SET_MSG = "Saved."; save(); render(); return;
-  }
-  if (m === "returnable") {
-    var dep = val("#s-dep").replace(/,/g, ""), late = val("#s-late").replace(/,/g, "");
-    var rd = val("#s-days");
-    if ((dep !== "" && !isFinite(Number(dep))) || (late !== "" && !isFinite(Number(late)))) {
-      SET_ERR = "That is not an amount in EGP."; render(); return;
-    }
-    if (rd !== "" && !/^\d{1,3}$/.test(rd)) {
-      SET_ERR = "That is not a number of days."; render(); return;
-    }
-    setVal("returnable_deposit_piastres", dep === "" ? "" : String(Math.round(Number(dep) * 100)));
-    setVal("returnable_late_fee_piastres", late === "" ? "" : String(Math.round(Number(late) * 100)));
-    setVal("returnable_return_days", rd);
-    SET_MSG = "Recorded."; save(); render(); return;
-  }
-  if (m === "contact") {
-    var em = val("#s-em");
-    if (em !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) {
-      SET_ERR = "That does not look like an email address."; render(); return;
-    }
-    setVal("whatsapp_number", val("#s-wa"));
-    setVal("contact_instagram", val("#s-ig"));
-    setVal("contact_email", em);
-    SET_MSG = "Saved."; save(); render(); return;
-  }
-});
-
-document.addEventListener("input", function (e) {
-  if (e.target.id === "ladder-example") {
-    LADDER_EXAMPLE = e.target.value;
-    var base = Number(String(LADDER_EXAMPLE).replace(/,/g, "")) * 100;
-    document.querySelectorAll(".band .amt").forEach(function (el, i) {
-      var mult = Number(LADDER[i] ? LADDER[i].mult : 0);
-      el.textContent = "= " + (isFinite(base) && base > 0 ? egp(Math.round(base * mult)) : "\u2014");
-    });
   }
 });
 
@@ -2852,26 +2920,26 @@ function render() {
   else if (h === "/menu/categories") body = viewCourses();
   else if (h.indexOf("/menu/") === 0) body = viewDish(decodeURIComponent(h.slice(6)));
   else if (h === "/menu") body = viewMenu();
-  else if (h === "/settings") body = viewSettings();
+  else if (h === "/settings" || h === "/settings/business") body = viewSetBusiness();
   else if (h === "/settings/ordering") body = viewSetOrdering();
   else if (h === "/settings/delivery") body = viewSetDelivery();
   else if (h === "/settings/calendar") body = viewSetCalendar();
-  else if (h === "/settings/events") { if (LADDER === null) loadLadder(); body = viewSetEvents(); }
+  else if (h === "/settings/events") body = viewSetEvents();
   else if (h === "/settings/payment") body = viewSetPayment();
   else if (h === "/settings/serving") body = viewSetServing();
-  else if (h === "/settings/contact") body = viewSetContact();
   else if (h === "/orders") body = viewOrders();
   else if (h === "/kitchen") body = viewKitchen();
   else body = viewToday();
   $("#app").innerHTML = chrome(body);
-  window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", function () {
   PAY_CONFIRM = null; BANDS = null; EV_CHOICE = null; RETIRING = false; MENU_ERR = null;
-  LADDER = null; SET_MSG = null; SET_ERR = null;
+  LADDER = null; SET_MSG = null; SET_ERR = null; SET_DAY = null; SET_ADD = null; SET_OPEN = null;
   if (!CARRY) MENU_MSG = null;
   CARRY = false;
   render();
+  // Only a change of page goes back to the top; an edit stays where it was.
+  window.scrollTo(0, 0);
 });
 
 /* ---------------------------------------------------------------- events */
@@ -2962,8 +3030,10 @@ document.addEventListener("click", function (e) {
 
   var order = byNumber(decodeURIComponent(hash().slice(7)));
 
-  if (t.dataset.mode) {
-    document.querySelectorAll("[data-mode]").forEach(function (b) {
+  /* The capacity choice on an EVENT page. Settings has its own buttons with a
+     data-mode of their own, and they re-render themselves. */
+  if (t.dataset.mode && !t.dataset.set) {
+    document.querySelectorAll("[data-mode]:not([data-set])").forEach(function (b) {
       b.classList.toggle("on", b === t);
     });
     return;

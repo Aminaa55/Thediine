@@ -1,13 +1,10 @@
 "use client";
 
-import { SettingCard, Field, ToDecide, input, useSettingsForm } from "./settings-bits";
+import { SectionHead, SettingCard, Field, ToDecide, input, useSettingsForm } from "./settings-bits";
 
 /**
- * The details the site shows customers.
- *
- * These are read by the website itself — the footer, the WhatsApp links, the
- * confirmation page — so changing one here changes it everywhere. A detail left
- * empty is simply not shown rather than shown as a blank.
+ * The details the site shows customers: the footer, the WhatsApp links, the
+ * confirmation of every order. A detail left empty is not shown at all.
  */
 export function ContactSettings({ values }: {
   values: { whatsapp_number: string; contact_instagram: string; contact_email: string };
@@ -19,34 +16,33 @@ export function ContactSettings({ values }: {
   });
 
   return (
-    <div className="grid max-w-3xl gap-6">
+    <div className="grid max-w-2xl gap-4">
+      <SectionHead title="Business details" />
+
       <SettingCard
         title="How customers reach you"
-        note="Shown in the footer of every page, on the confirmation of every order, and wherever the site offers to start a conversation."
+        note="Shown in the footer of every page and on every order's confirmation."
         state={form.state}
         onSave={() => form.save()}
       >
-        <div className="grid gap-5">
-          <Field label="WhatsApp number" htmlFor="wa" hint="With the country code, as you would write it.">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="WhatsApp number" htmlFor="wa" hint="With the country code.">
             <input id="wa" className={input} value={form.values.whatsapp_number}
               onChange={(e) => form.set({ whatsapp_number: e.target.value })} />
-          </Field>
-          <Field label="Instagram" htmlFor="ig" hint="The full link. Empty removes it from the site.">
-            <input id="ig" className={input} value={form.values.contact_instagram}
-              onChange={(e) => form.set({ contact_instagram: e.target.value })} />
           </Field>
           <Field label="Email" htmlFor="em" hint="Empty removes it from the site.">
             <input id="em" className={input} placeholder="None"
               value={form.values.contact_email}
               onChange={(e) => form.set({ contact_email: e.target.value })} />
           </Field>
+          <Field label="Instagram" htmlFor="ig" full hint="The full link.">
+            <input id="ig" className={input} value={form.values.contact_instagram}
+              onChange={(e) => form.set({ contact_instagram: e.target.value })} />
+          </Field>
         </div>
 
         {!values.contact_email.trim() && (
-          <ToDecide>
-            No email address has been supplied, so the site shows WhatsApp and Instagram only. Add
-            one whenever you want it shown.
-          </ToDecide>
+          <ToDecide>No email supplied, so the site shows WhatsApp and Instagram only.</ToDecide>
         )}
       </SettingCard>
     </div>

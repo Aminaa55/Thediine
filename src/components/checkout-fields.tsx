@@ -2,11 +2,11 @@
 
 import { formatEGP } from "@/lib/money";
 import {
-  SERVING_SETUPS,
   type CustomerDetails,
   type Errors,
   type Fulfilment,
-  type PaymentMethodId,
+  type ServingChoice,
+  type PaymentChoice as PaymentChoiceOption,
 } from "@/lib/checkout";
 import type { CheckoutContext } from "@/app/checkout-actions";
 
@@ -101,32 +101,35 @@ export function CustomerFields({
   );
 }
 
-/** Returnable or disposable — asked on every order. */
+/** How the food is served. The options are the business's own. */
 export function ServingSetupChoice({
-  value, onChange, policy, offered,
+  options, value, onChange, policy,
 }: {
-  value: CustomerDetails["servingSetup"];
-  onChange: (v: CustomerDetails["servingSetup"]) => void;
+  options: ServingChoice[];
+  /** The chosen option's id. */
+  value: string;
+  onChange: (option: ServingChoice) => void;
   policy?: string;
-  /** Which setups the business is offering. Both, unless it says otherwise. */
-  offered?: CustomerDetails["servingSetup"][];
 }) {
-  const shown = SERVING_SETUPS.filter((s) => !offered || offered.includes(s.id));
   return (
     <div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {shown.map((s) => (
+        {options.map((s) => (
           <button
             key={s.id}
             type="button"
-            onClick={() => onChange(s.id)}
+            onClick={() => onChange(s)}
             aria-pressed={value === s.id}
             className={`rounded-sm border px-5 py-5 text-start transition-colors ${
               value === s.id ? "border-gold bg-gold-pale/40" : "border-line bg-cream-warm hover:border-gold"
             }`}
           >
-            <span className="block font-display text-[18px] font-semibold text-ink">{s.title}</span>
-            <span className="mt-1.5 block text-[14.5px] leading-relaxed text-ink-soft">{s.body}</span>
+            <span className="block font-display text-[18px] font-semibold text-ink">{s.name}</span>
+            {s.description && (
+              <span className="mt-1.5 block text-[14.5px] leading-relaxed text-ink-soft">
+                {s.description}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -149,50 +152,58 @@ export function PaymentChoice({
 }: {
   ctx: CheckoutContext;
   fulfilment: Fulfilment;
-  value: PaymentMethodId | null;
+  /** The chosen option's id. */
+  value: string;
   reference: string;
-  onChange: (m: PaymentMethodId) => void;
+  onChange: (option: PaymentChoiceOption) => void;
   onReference: (r: string) => void;
   errors: Errors;
 }) {
-  const cashLabel = fulfilment === "PICKUP" ? "Payment on pickup" : "Cash on delivery";
-  const cashBody =
-    fulfilment === "PICKUP"
-      ? "Pay in cash when you collect your order."
-      : "Pay in cash when your order is handed to you.";
+  const chosen = ctx.payments.find((p) => p.id === value) ?? null;
+
+  // Cash reads differently depending on where the food is going.
+  const wording = (p: PaymentChoiceOption): { title: string; body: string } => {
+    if (p.method === "CASH") {
+      return fulfilment === "PICKUP"
+        ? { title: "Payment on pickup", body: "Pay in cash when you collect your order." }
+        : { title: "Cash on delivery", body: "Pay in cash when your order is handed to you." };
+    }
+    if (p.method === "INSTAPAY") {
+      return {
+        title: p.name,
+        body: "Transfer to us, and we confirm once we have seen the payment arrive.",
+      };
+    }
+    if (p.method === "CARD") {
+      return {
+        title: p.name,
+        body: "You are taken to our payment provider's secure page to pay. We never see or store your card details.",
+      };
+    }
+    return {
+      title: p.name,
+      body: p.verifyBeforeDelivery
+        ? "Send the payment to us, and we confirm once we have seen it arrive."
+        : "Pay when your order is handed to you.",
+    };
+  };
 
   return (
     <div>
       <div className="grid gap-3">
-        {ctx.methods.includes("CASH") && (
-          <Method
-            on={value === "CASH"} onClick={() => onChange("CASH")}
-            title={cashLabel} body={cashBody}
-          />
-        )}
-
-        {ctx.methods.includes("INSTAPAY") && (
-          <Method
-            on={value === "INSTAPAY"} onClick={() => onChange("INSTAPAY")}
-            title="InstaPay"
-            body="Transfer to us, and we confirm once we have seen the payment arrive."
-          />
-        )}
-
-        {/*
-          Card appears only when it is actually available. While it is paused it
-          is not shown at all — not as "coming soon" either, because a customer
-          should not be offered something they cannot use.
-        */}
-        {ctx.methods.includes("CARD") && (
-          <Method
-            on={value === "CARD"}
-            onClick={() => onChange("CARD")}
-            title="Card payment"
-            body="You are taken to our payment provider's secure page to pay. We never see or store your card details."
-            badge={ctx.cardTestMode ? "Test mode" : undefined}
-          />
-        )}
+        {ctx.payments.map((p) => {
+          const w = wording(p);
+          return (
+            <Method
+              key={p.id}
+              on={value === p.id}
+              onClick={() => onChange(p)}
+              title={w.title}
+              body={w.body}
+              badge={p.method === "CARD" && ctx.cardTestMode ? "Test mode" : undefined}
+            />
+          );
+        })}
       </div>
 
       {errors.paymentMethod && (
@@ -203,7 +214,7 @@ export function PaymentChoice({
         Test mode must be unmistakable. A card entered here is a test card, and
         nobody should be able to mistake this for a real payment.
       */}
-      {value === "CARD" && ctx.cardTestMode && (
+      {chosen?.method === "CARD" && ctx.cardTestMode && (
         <div className="mt-5 rounded-sm border border-[#A6391C]/35 bg-[#A6391C]/[0.06] px-5 py-5">
           <p className="text-[11px] uppercase tracking-widest text-[#A6391C]">Test mode</p>
           <p className="mt-3 text-[15.5px] leading-relaxed text-ink">
@@ -213,7 +224,7 @@ export function PaymentChoice({
         </div>
       )}
 
-      {value === "CARD" && !ctx.cardTestMode && (
+      {chosen?.method === "CARD" && !ctx.cardTestMode && (
         <div className="mt-5 rounded-sm border border-gold/40 bg-gold-pale/35 px-5 py-5">
           <p className="text-[15.5px] leading-relaxed text-ink-soft">
             You will be taken to our payment provider&rsquo;s secure page to pay. Your order is
@@ -223,32 +234,31 @@ export function PaymentChoice({
         </div>
       )}
 
-      {value === "INSTAPAY" && (
+      {/*
+        Anything settled by hand where the money is expected first: the details
+        to send to, and a plain statement that choosing it is not paying.
+      */}
+      {chosen && chosen.verifyBeforeDelivery && (
         <div className="mt-5 rounded-sm border border-gold/40 bg-gold-pale/35 px-5 py-5">
-          <p className="eyebrow">Transfer details</p>
-          {ctx.instapayNumber ? (
-            <p className="mt-3 text-[16px] leading-relaxed text-ink">
-              Transfer to{" "}
+          <p className="eyebrow">{chosen.method === "INSTAPAY" ? "Transfer details" : chosen.name}</p>
+          {chosen.instructions ? (
+            <p className="mt-3 whitespace-pre-line text-[16px] leading-relaxed text-ink">
+              {chosen.method === "INSTAPAY" ? "Transfer to " : ""}
               <strong className="font-display text-[19px] font-semibold tracking-wide">
-                {ctx.instapayNumber}
+                {chosen.instructions}
               </strong>
             </p>
           ) : (
             <p className="mt-3 text-[15.5px] leading-relaxed text-ink-soft">
-              We will send you the transfer details on WhatsApp as soon as we have your order.
-            </p>
-          )}
-          {ctx.instapayDetails && (
-            <p className="mt-2 whitespace-pre-line text-[15.5px] leading-relaxed text-ink-soft">
-              {ctx.instapayDetails}
+              We will send you the details on WhatsApp as soon as we have your order.
             </p>
           )}
 
           <p className="mt-4 border-t border-gold/30 pt-4 text-[14.5px] leading-relaxed text-ink-soft">
-            Choosing InstaPay does <strong className="font-semibold text-ink">not</strong> mark your
+            Choosing this does <strong className="font-semibold text-ink">not</strong> mark your
             order as paid. Your payment shows as{" "}
             <strong className="font-semibold text-ink">awaiting verification</strong> until we have
-            checked that the transfer arrived, and we confirm it with you.
+            checked that it arrived, and we confirm it with you.
           </p>
 
           <div className="mt-5">

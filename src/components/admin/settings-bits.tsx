@@ -42,7 +42,13 @@ export function useSaver() {
   return { run, pending, saved, error };
 }
 
-/** A card holding one decision, with its own save and its own answer. */
+/**
+ * A card holding one decision, with its own save and its own answer.
+ *
+ * Compact on purpose: this is a place someone comes back to for one small
+ * change, so the note is one line where it prevents a mistake, and absent
+ * where the field speaks for itself.
+ */
 export function SettingCard({
   title, note, children, onSave, saveLabel = "Save", state, footer,
 }: {
@@ -55,32 +61,43 @@ export function SettingCard({
   footer?: React.ReactNode;
 }) {
   return (
-    <section className="rounded-sm border border-line bg-cream-warm">
-      <header className="border-b border-line px-6 py-4">
-        <h2 className="font-display text-[18px] font-semibold text-ink">{title}</h2>
-        {note && <p className="mt-1.5 max-w-2xl text-[13.5px] leading-relaxed text-ink-soft">{note}</p>}
+    <section className="rounded-sm border border-line bg-cream-warm px-5 py-4">
+      <header className="mb-4">
+        <h2 className="font-display text-[16.5px] font-semibold text-ink">{title}</h2>
+        {note && <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-ink-soft">{note}</p>}
       </header>
-      <div className="px-6 py-5">
-        {children}
 
-        {state.error && (
-          <p className="mt-4 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.07] px-4 py-2.5 text-[14px] text-[#A6391C]">
-            {state.error}
-          </p>
-        )}
+      {children}
 
-        {onSave && (
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            <button type="button" disabled={state.pending} onClick={onSave}
-              className="btn-primary disabled:bg-ink/25">
-              {saveLabel}
-            </button>
-            {state.saved && <span className="text-[14px] text-[#2E6B45]">Saved.</span>}
-          </div>
-        )}
-        {footer}
-      </div>
+      {state.error && (
+        <p className="mt-3 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.07] px-3.5 py-2 text-[13.5px] text-[#A6391C]">
+          {state.error}
+        </p>
+      )}
+
+      {onSave && (
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button
+            type="button" disabled={state.pending} onClick={onSave}
+            className="rounded-full border border-ink bg-ink px-5 py-2 text-[14px] text-cream transition-colors hover:bg-ink/90 disabled:border-ink/25 disabled:bg-ink/25"
+          >
+            {saveLabel}
+          </button>
+          {state.saved && <span className="text-[13.5px] text-[#2E6B45]">Saved.</span>}
+        </div>
+      )}
+      {footer}
     </section>
+  );
+}
+
+/** The page's own heading, above its cards. */
+export function SectionHead({ title, body }: { title: string; body?: string }) {
+  return (
+    <div className="mb-4">
+      <h2 className="font-display text-[21px] font-semibold text-ink">{title}</h2>
+      {body && <p className="mt-1 max-w-2xl text-[14px] leading-relaxed text-ink-soft">{body}</p>}
+    </div>
   );
 }
 
@@ -89,9 +106,9 @@ export function Field({ label, htmlFor, hint, children, full = false }: {
 }) {
   return (
     <div className={full ? "sm:col-span-2" : undefined}>
-      <label htmlFor={htmlFor} className="eyebrow mb-2 block">{label}</label>
+      <label htmlFor={htmlFor} className="eyebrow mb-1.5 block">{label}</label>
       {children}
-      {hint && <p className="mt-1.5 text-[13px] leading-relaxed text-ink-faint">{hint}</p>}
+      {hint && <p className="mt-1 text-[12.5px] leading-relaxed text-ink-faint">{hint}</p>}
     </div>
   );
 }
@@ -100,35 +117,57 @@ export function Switch({ on, title, body, onChange, pending }: {
   on: boolean; title: string; body?: string; onChange: (v: boolean) => void; pending?: boolean;
 }) {
   return (
-    <label className="flex items-start gap-3 text-[15px] text-ink">
+    <label className="flex items-start gap-2.5 text-[14.5px] text-ink">
       <input
         type="checkbox" checked={on} disabled={pending}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-1 h-4 w-4 accent-[#A87E2E]"
+        className="mt-0.5 h-4 w-4 accent-[#A87E2E]"
       />
       <span>
         {title}
-        {body && <span className="mt-0.5 block text-[13.5px] leading-relaxed text-ink-soft">{body}</span>}
+        {body && <span className="mt-0.5 block text-[13px] leading-relaxed text-ink-soft">{body}</span>}
       </span>
     </label>
+  );
+}
+
+/** On or off, as a pill. Used where the state matters more than the label. */
+export function Pill({ on, onLabel, offLabel, onClick, pending, tone = "green" }: {
+  on: boolean;
+  onLabel: string;
+  offLabel: string;
+  onClick: () => void;
+  pending?: boolean;
+  tone?: "green" | "gold";
+}) {
+  const live = tone === "green"
+    ? "border-[#2E6B45]/40 bg-[#2E6B45]/[0.08] text-[#2E6B45]"
+    : "border-gold/50 bg-gold-pale/50 text-ink";
+  return (
+    <button
+      type="button" disabled={pending} onClick={onClick} aria-pressed={on}
+      className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
+        on ? live : "border-[#A6391C]/40 bg-[#A6391C]/[0.07] text-[#A6391C]"
+      }`}
+    >
+      {on ? onLabel : offLabel}
+    </button>
   );
 }
 
 /** Something the business has not decided. Said plainly, never filled in. */
 export function ToDecide({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-4 rounded-sm border border-gold/45 bg-gold-pale/40 px-4 py-3 text-[14px] leading-relaxed text-ink">
-      <span className="eyebrow mb-1 block">Still to decide</span>
+    <p className="mt-3 rounded-sm border border-gold/45 bg-gold-pale/40 px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink">
+      <span className="eyebrow mb-0.5 block">Still to decide</span>
       {children}
     </p>
   );
 }
 
-/** The line every settings page carries: this changes nothing already placed. */
+/** Where it prevents a mistake: this changes nothing already placed. */
 export function HistoryNote({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mt-8 text-[13.5px] leading-relaxed text-ink-faint">{children}</p>
-  );
+  return <p className="mt-6 text-[13px] leading-relaxed text-ink-faint">{children}</p>;
 }
 
 /** A card that writes settings keys directly, for the simple ones. */

@@ -1,114 +1,169 @@
 "use client";
 
-import { SettingCard, Field, Switch, ToDecide, input, useSettingsForm } from "./settings-bits";
+import { useState } from "react";
+import {
+  saveServingOption, setServingOptionAvailable, removeServingOption,
+} from "@/app/admin/settings-actions";
+import {
+  SectionHead, SettingCard, Field, Pill, ToDecide, input, rowInput, useSaver, useSettingsForm,
+} from "./settings-bits";
+
+export type ServingRow = {
+  id: string;
+  builtIn: string | null;
+  nameEn: string;
+  descriptionEn: string;
+  isAvailable: boolean;
+};
 
 /**
  * Serving setup.
  *
- * The choice itself is live: every order says whether it goes out in your own
- * dishes or in disposable ones. The policy behind returnable dishes has not
- * been written, so nothing here invents a deposit, a return period or a fee.
- * The fields exist, empty, so a decision can be recorded the day it is made.
+ * The options are the business's own rows, so another can be added without a
+ * developer. Nothing here invents terms for returning dishes: the policy is
+ * whatever the business writes, and it has not written one.
  */
-export function ServingSettings({ values }: {
-  values: {
-    serving_returnable_enabled: string;
-    serving_disposable_enabled: string;
-    serving_setup_policy_en: string;
-    returnable_deposit_piastres: string;
-    returnable_return_days: string;
-    returnable_late_fee_piastres: string;
-  };
-}) {
-  const offered = useSettingsForm({
-    serving_returnable_enabled: values.serving_returnable_enabled,
-    serving_disposable_enabled: values.serving_disposable_enabled,
-  });
-  const policy = useSettingsForm({
-    serving_setup_policy_en: values.serving_setup_policy_en,
-  });
-  const terms = useSettingsForm({
-    returnable_deposit_piastres:
-      values.returnable_deposit_piastres === "" ? "" : String(Number(values.returnable_deposit_piastres) / 100),
-    returnable_return_days: values.returnable_return_days,
-    returnable_late_fee_piastres:
-      values.returnable_late_fee_piastres === "" ? "" : String(Number(values.returnable_late_fee_piastres) / 100),
-  });
+export function ServingSettings({ options, policy }: { options: ServingRow[]; policy: string }) {
+  const state = useSaver();
+  const words = useSettingsForm({ serving_setup_policy_en: policy });
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState({ name: "", description: "" });
 
   return (
-    <div className="grid max-w-3xl gap-6">
+    <div className="grid max-w-2xl gap-4">
+      <SectionHead title="Serving setup" />
+
       <SettingCard
-        title="What customers can choose"
+        title="How the food can be served"
         note="Asked on every order, regular and event alike."
-        state={offered.state}
-        onSave={() => offered.save()}
+        state={state}
       >
-        <div className="grid gap-4">
-          <Switch
-            on={offered.values.serving_returnable_enabled !== "false"}
-            onChange={(v) => offered.set({ serving_returnable_enabled: v ? "true" : "false" })}
-            title="Returnable dishes"
-            body="Served in your own dishes, which you collect afterwards."
-          />
-          <Switch
-            on={offered.values.serving_disposable_enabled !== "false"}
-            onChange={(v) => offered.set({ serving_disposable_enabled: v ? "true" : "false" })}
-            title="Disposable dishes"
-            body="Served in disposable containers — nothing to return."
-          />
+        <ul className="divide-y divide-line-soft">
+          {options.map((o) => (
+            <OptionRow key={o.id} option={o} state={state} />
+          ))}
+        </ul>
+
+        <div className="mt-4 border-t border-line-soft pt-4">
+          {!adding ? (
+            <button type="button" onClick={() => setAdding(true)}
+              className="rounded-full border border-line bg-cream px-4 py-1.5 text-[13.5px] text-ink-soft hover:border-gold">
+              Add serving option
+            </button>
+          ) : (
+            <div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Name" htmlFor="so-name" hint="What the customer sees.">
+                  <input id="so-name" className={input} placeholder="Chafing dishes"
+                    value={draft.name} onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))} />
+                </Field>
+                <Field label="Description" htmlFor="so-desc" hint="One line, for the customer.">
+                  <input id="so-desc" className={input} placeholder="Kept warm and collected afterwards"
+                    value={draft.description}
+                    onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))} />
+                </Field>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <button type="button" disabled={state.pending || !draft.name.trim()}
+                  onClick={() => state.run(async () => {
+                    const r = await saveServingOption(null, {
+                      nameEn: draft.name, descriptionEn: draft.description,
+                    });
+                    if (r.ok) { setAdding(false); setDraft({ name: "", description: "" }); }
+                    return r;
+                  })}
+                  className="rounded-full border border-ink bg-ink px-4 py-2 text-[13.5px] text-cream disabled:bg-ink/25">
+                  Add it
+                </button>
+                <button type="button" onClick={() => setAdding(false)}
+                  className="text-[13px] text-ink-faint underline underline-offset-4 hover:text-ink">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </SettingCard>
 
       <SettingCard
-        title="What customers are told"
-        note="Shown under the choice at checkout. Empty means nothing is said, which is the case today."
-        state={policy.state}
-        onSave={() => policy.save()}
+        title="What customers are told about returning dishes"
+        state={words.state}
+        onSave={() => words.save()}
       >
-        <Field label="The returnable-dish policy" htmlFor="policy" full
-          hint="In your own words. For example, when you collect the dishes and what happens if one is not ready.">
-          <textarea id="policy" rows={3} className={input}
-            placeholder="Nothing is shown to customers yet"
-            value={policy.values.serving_setup_policy_en}
-            onChange={(e) => policy.set({ serving_setup_policy_en: e.target.value })} />
-        </Field>
-        {!values.serving_setup_policy_en.trim() && (
+        <textarea
+          id="policy" rows={2} className={input}
+          placeholder="Nothing is shown to customers yet"
+          value={words.values.serving_setup_policy_en}
+          onChange={(e) => words.set({ serving_setup_policy_en: e.target.value })}
+        />
+        {!policy.trim() && (
           <ToDecide>
-            Customers can choose returnable dishes but are told nothing about returning them. Write
-            a line here whenever you are ready — nothing has been made up in the meantime.
+            Customers can choose returnable dishes but are told nothing about returning them.
+            Nothing has been made up in the meantime.
           </ToDecide>
         )}
       </SettingCard>
-
-      <SettingCard
-        title="Deposit, return period and late fee"
-        note="Not decided, and not invented. Record a decision here when you make one — nothing is charged, shown to a customer or enforced from these until we build them in and you say so."
-        state={terms.state}
-        onSave={() => terms.save()}
-        saveLabel="Record these"
-      >
-        <div className="grid gap-5 sm:grid-cols-3">
-          <Field label="Deposit" htmlFor="dep" hint="In EGP. Empty means none.">
-            <input id="dep" className={input} inputMode="decimal" placeholder="Not decided"
-              value={terms.values.returnable_deposit_piastres}
-              onChange={(e) => terms.set({ returnable_deposit_piastres: e.target.value })} />
-          </Field>
-          <Field label="Return within" htmlFor="days" hint="In days. Empty means none.">
-            <input id="days" className={input} inputMode="numeric" placeholder="Not decided"
-              value={terms.values.returnable_return_days}
-              onChange={(e) => terms.set({ returnable_return_days: e.target.value })} />
-          </Field>
-          <Field label="Late fee" htmlFor="late" hint="In EGP. Empty means none.">
-            <input id="late" className={input} inputMode="decimal" placeholder="Not decided"
-              value={terms.values.returnable_late_fee_piastres}
-              onChange={(e) => terms.set({ returnable_late_fee_piastres: e.target.value })} />
-          </Field>
-        </div>
-        <p className="mt-4 text-[13.5px] leading-relaxed text-ink-faint">
-          These three are recorded only. Tell me what they should be and how they should work, and
-          they become real: shown at checkout, and part of what an order records.
-        </p>
-      </SettingCard>
     </div>
+  );
+}
+
+function OptionRow({ option, state }: { option: ServingRow; state: ReturnType<typeof useSaver> }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(option.nameEn);
+  const [description, setDescription] = useState(option.descriptionEn);
+
+  return (
+    <li className="py-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-medium text-ink">{option.nameEn}</span>
+          {option.descriptionEn && (
+            <span className="mt-0.5 block text-[13px] text-ink-soft">{option.descriptionEn}</span>
+          )}
+        </span>
+
+        <Pill
+          on={option.isAvailable} onLabel="Available" offLabel="Unavailable" pending={state.pending}
+          onClick={() => state.run(() => setServingOptionAvailable(option.id, !option.isAvailable))}
+        />
+        <button type="button" onClick={() => setOpen(!open)}
+          className="text-[13px] text-ink-faint underline underline-offset-4 hover:text-ink">
+          {open ? "Close" : "Edit"}
+        </button>
+      </div>
+
+      {open && (
+        <div className="mt-3 rounded-sm border border-line bg-cream px-4 py-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Name" htmlFor={`sn-${option.id}`}>
+              <input id={`sn-${option.id}`} className={`${rowInput} w-full py-2`}
+                value={name} onChange={(e) => setName(e.target.value)} />
+            </Field>
+            <Field label="Description" htmlFor={`sd-${option.id}`}>
+              <input id={`sd-${option.id}`} className={`${rowInput} w-full py-2`}
+                value={description} onChange={(e) => setDescription(e.target.value)} />
+            </Field>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <button type="button" disabled={state.pending}
+              onClick={() => state.run(async () => {
+                const r = await saveServingOption(option.id, { nameEn: name, descriptionEn: description });
+                if (r.ok) setOpen(false);
+                return r;
+              })}
+              className="rounded-full border border-line bg-cream-warm px-4 py-1.5 text-[13.5px] text-ink-soft hover:border-gold">
+              Save
+            </button>
+            {!option.builtIn && (
+              <button type="button" disabled={state.pending}
+                onClick={() => state.run(() => removeServingOption(option.id))}
+                className="text-[13px] text-ink-faint underline underline-offset-4 hover:text-[#A6391C]">
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </li>
   );
 }

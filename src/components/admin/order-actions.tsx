@@ -129,7 +129,7 @@ export function PaymentActions({
   orderId, method, current, reference, total,
 }: {
   orderId: string;
-  method: "CASH" | "INSTAPAY" | "CARD";
+  method: "CASH" | "INSTAPAY" | "CARD" | "OTHER";
   current: PaymentStatus;
   reference: string | null;
   total: number;
@@ -172,8 +172,14 @@ export function PaymentActions({
         </>
       )}
 
-      {/* A transfer reference only exists for a transfer. Cash has none. */}
-      {method === "INSTAPAY" && (
+      {/*
+        A transfer reference only exists for a transfer. Cash has none — and a
+        method the business added itself counts as a transfer when the money
+        was expected first, which is exactly when it starts awaiting checking.
+      */}
+      {(method === "INSTAPAY"
+        || current === "AWAITING_VERIFICATION"
+        || reference !== null) && (
         <div className="mt-5">
           <label htmlFor="ref" className="eyebrow mb-2 block">
             Transfer reference <span className="normal-case tracking-normal text-ink-faint">optional</span>

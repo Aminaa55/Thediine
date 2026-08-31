@@ -51,6 +51,56 @@ export async function getBlockedDates() {
   });
 }
 
+/**
+ * The weeks ahead, as the calendar shows them: what is closed, what an event
+ * holds, what a day's own capacity is, and how many orders it already has.
+ */
+export async function getCalendarDays() {
+  const start = new Date();
+  start.setUTCHours(0, 0, 0, 0);
+  start.setUTCDate(start.getUTCDate() - start.getUTCDay());
+  const until = new Date(start);
+  until.setUTCDate(until.getUTCDate() + 42);
+
+  const [overrides, counts] = await Promise.all([
+    db.dateAvailability.findMany({
+      where: { date: { gte: start, lte: until } },
+      include: { blockedByOrder: { select: { id: true, orderNumber: true } } },
+    }),
+    db.order.groupBy({
+      by: ["deliveryDate"],
+      where: { status: { not: "CANCELLED" }, deliveryDate: { gte: start, lte: until } },
+      _count: { _all: true },
+    }),
+  ]);
+
+  const takenBy = new Map(
+    counts.map((c) => [c.deliveryDate.toISOString().slice(0, 10), c._count._all]),
+  );
+
+  return overrides
+    .map((o) => {
+      const date = o.date.toISOString().slice(0, 10);
+      return {
+        date,
+        closed: o.isClosed,
+        maxOrders: o.maxOrders,
+        note: o.note,
+        eventOrderId: o.blockedByOrder?.id ?? null,
+        eventOrderNumber: o.blockedByOrder?.orderNumber ?? null,
+        taken: takenBy.get(date) ?? 0,
+      };
+    })
+    .concat(
+      [...takenBy.entries()]
+        .filter(([d]) => !overrides.some((o) => o.date.toISOString().slice(0, 10) === d))
+        .map(([date, taken]) => ({
+          date, closed: false, maxOrders: null, note: null,
+          eventOrderId: null, eventOrderNumber: null, taken,
+        })),
+    );
+}
+
 export async function getSharedLadder() {
   return db.eventPriceTier.findMany({ orderBy: { minGuests: "asc" } });
 }
@@ -68,7 +118,7 @@ export function workingDaysText(days: number[]): string {
  * They are listed rather than defaulted.
  */
 export async function undecided(): Promise<Undecided[]> {
-  const [s, areas, slots] = await Promise.all([getSettings(), getAreas(), getSlots()]);
+  const [s, areas] = await Promise.all([getSettings(), getAreas()]);
   const out: Undecided[] = [];
 
   if (areas.length === 0) {
@@ -76,34 +126,23 @@ export async function undecided(): Promise<Undecided[]> {
       key: "areas",
       title: "Delivery areas and fees",
       detail:
-        "No areas have been set up, so an order records its delivery fee as unknown rather than as zero, and the customer is not shown a fee.",
+        "No areas set up, so an order records its delivery fee as unknown rather than as zero.",
       where: "/admin/settings/delivery",
     });
   }
-  if (slots.length === 0) {
+  if (!(s.order_time_from ?? "").trim() || !(s.order_time_until ?? "").trim()) {
     out.push({
-      key: "slots",
-      title: "Delivery and pickup times",
-      detail:
-        "No time slots exist, so the customer types a time of their own instead of choosing one of yours.",
+      key: "hours",
+      title: "The hours orders go out in",
+      detail: "Not set, so a customer can ask for any time of day.",
       where: "/admin/settings/delivery",
-    });
-  }
-  if (!(s.normal_cutoff_time ?? "").trim()) {
-    out.push({
-      key: "cutoff",
-      title: "A daily cut-off time",
-      detail:
-        "Nothing is set, so only the notice period decides which dates can be chosen. Say what a cut-off should mean and it can be added.",
-      where: "/admin/settings/ordering",
     });
   }
   if (!(s.serving_setup_policy_en ?? "").trim()) {
     out.push({
       key: "returnable",
       title: "The returnable-dish policy",
-      detail:
-        "Customers can choose returnable dishes, but nothing tells them how or when to return them. No deposit, return period or fee has been invented.",
+      detail: "Customers can choose returnable dishes but are told nothing about returning them.",
       where: "/admin/settings/serving",
     });
   }
@@ -112,40 +151,9 @@ export async function undecided(): Promise<Undecided[]> {
       key: "email",
       title: "A contact email address",
       detail: "None supplied, so the site shows WhatsApp and Instagram only.",
-      where: "/admin/settings/contact",
+      where: "/admin/settings/business",
     });
   }
 
   return out;
-}
-
-/** The one-line summary each section shows on the Settings page. */
-export async function sectionSummaries() {
-  const [s, areas, slots, blocked] = await Promise.all([
-    getSettings(), getAreas(), getSlots(), getBlockedDates(),
-  ]);
-  const rules = rulesFrom(s);
-  const activeAreas = areas.filter((a) => a.isActive).length;
-  const activeSlots = slots.filter((t) => t.isActive).length;
-  const closures = blocked.filter((b) => b.isClosed).length;
-
-  return {
-    ordering: `${rules.normalNoticeLabel} notice, ${rules.dailyCapacity} orders a day`,
-    delivery:
-      areas.length === 0
-        ? "No areas set up yet"
-        : `${activeAreas} of ${areas.length} areas, ${activeSlots} of ${slots.length} times`,
-    calendar: `${workingDaysText(rules.workingDays)}${closures > 0 ? ` · ${closures} day${closures === 1 ? "" : "s"} closed ahead` : ""}`,
-    events: `${rules.eventNoticeLabel} notice, up to ${rules.maxGuests} guests`,
-    payment: (() => {
-      const on: string[] = [];
-      if ((s.payment_cash_enabled ?? "true") !== "false") on.push("Cash");
-      if ((s.payment_instapay_enabled ?? "true") !== "false") on.push("InstaPay");
-      return on.length ? on.join(" and ") : "No payment method is on";
-    })(),
-    serving: rules.servingSetups
-      .map((x) => (x === "RETURNABLE" ? "Returnable" : "Disposable"))
-      .join(" and "),
-    contact: (s.whatsapp_number ?? "").trim() || "No WhatsApp number",
-  };
 }

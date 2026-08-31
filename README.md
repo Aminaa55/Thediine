@@ -330,27 +330,44 @@ every order it was ever part of. Courses are renamed, reordered and hidden at
 
 ### Settings
 
-At `/admin/settings`, grouped the way the business is run rather than the way the
-database is shaped, and opened on **what has not been decided** -- five things
-today, each named and left undecided rather than filled in with something
-plausible.
+At `/admin/settings`: a list down the side, one page at a time, and a save per
+card. Business details first -- the plainest facts about the business, not an
+afterthought. A gold dot in the list marks a section still holding a decision.
 
 | Section | What it holds |
 |---|---|
-| **Ordering** | Notice period, orders a day, whether a pickup counts towards the day, a minimum order, and the cancellation windows and percentage |
-| **Delivery & pickup** | Delivery areas and their fees, whether pickup is offered, and the time slots customers choose from |
-| **Calendar & capacity** | The days of the week you work, days closed by hand, and a different capacity for one day |
-| **Events** | Event notice, the guest limit, the cancellation window, what accepting an event does to the day by default, and the shared guest-count ladder |
-| **Payment** | Cash and InstaPay, and the InstaPay number and details customers are shown |
-| **Serving setup** | Which serving options are offered, the policy customers read, and somewhere to record the returnable terms when they are decided |
 | **Business details** | The WhatsApp number, Instagram and email the site shows |
+| **Ordering** | Notice period, orders a day, whether a pickup counts towards the day, a minimum order, and the cancellation windows and percentage |
+| **Delivery & pickup** | Delivery areas and their fees, whether pickup is offered, and the hours orders go out in |
+| **Calendar & capacity** | The days of the week you work, and a calendar of the weeks ahead where one date can be closed or given its own capacity |
+| **Events** | Event notice, the guest limit, the cancellation window, what accepting an event does to the day by default, and event prices by guest count |
+| **Payment** | Every way to pay, including ones the business adds itself |
+| **Serving setup** | Every way the food can be served, including ones the business adds itself, and the policy customers read |
+
+**Event prices are set in money, never in multipliers.** One shared ladder has
+to price seventy dishes at seventy different prices, so what it holds is a
+ratio -- but a ratio is not how anyone thinks about food. So it is set against
+one price: *a dish that normally costs 1,000 EGP costs 1,500 for 11--20 guests*.
+Every other dish moves in the same proportion, the page shows what that means
+for two real dishes, and the multiplier stays where it belongs -- in the
+database. A dish with its own event prices ignores the ladder entirely.
+
+**Payment methods and serving options are rows, not code.** Cash, InstaPay and
+Card are built in and marked as such; anything else the business adds is its
+own. A **manual** method is money that arrives outside this website and is
+confirmed by a person -- it can be added and offered immediately. An
+**integrated** one needs a provider built and connected, so it can be described
+here but never switched on from here: Card stays paused and unavailable to
+customers. The last enabled method cannot be switched off, and neither can the
+last serving option.
 
 **Every one of these is a real rule, not a number on a page.** The notice period
 decides which dates a customer can pick and is re-checked when the order is
 written; the daily capacity is re-counted inside the write transaction; a day of
 the week switched off closes it; pickup switched off is refused server-side even
-if the form is stale. The customer site reads the same values, so the sentence a
-customer reads about notice is the sentence the server enforces.
+if the form is stale; a time outside the hours is refused the same way. The
+customer site reads the same values, so the sentence a customer reads about
+notice is the sentence the server enforces.
 
 **Nothing here rewrites an order that already exists.** An order snapshots the
 fee it was charged, the area and time it chose in words, the price of every dish,
@@ -359,12 +376,11 @@ the moment it was cancelled. Changing a fee, a ladder or a cancellation rule
 changes what happens next and nothing that has already happened -- and that is
 covered by a test that changes each of them and checks a placed order afterwards.
 
-**What Settings deliberately does not decide**: the daily cut-off time (two
-plausible meanings, so it asks rather than picks one), the delivery areas and
-their fees, the time slots, the returnable-dish policy, and the deposit, return
-period and late fee behind it. The returnable terms have fields so a decision can
-be recorded the day it is made; they are marked as recorded only, and nothing
-charges or shows them.
+**What Settings deliberately does not decide**: the delivery areas and their
+fees, the hours orders go out in, the returnable-dish policy, and a contact
+email. Nothing invents a deposit, a return period or a late fee for returnable
+dishes -- those have not been decided, so the admin does not present them as
+rules.
 
 ### Getting in
 
@@ -403,8 +419,9 @@ Nothing has been invented to fill a gap.
 - **Allergens** — 50 tags, pre-tagged only from ingredients named in the menu
   text, every one marked unreviewed. Gluten and egg are under-tagged on purpose:
   they need recipe knowledge, not menu wording.
-- **Delivery areas, fees, time slots, working days** — tables exist, unpopulated.
-  Checkout works without them and says the fee is still to be confirmed.
+- **Delivery areas, fees, the hours orders go out in** — editable in Settings and
+  not supplied. Checkout works without them: the fee is recorded as unknown
+  rather than as zero, and any time of day can be asked for.
 - **InstaPay account details** — the setting exists and is empty. Nothing about
   the account is written into the source.
 - **Per-dish event scaling** — the structure is there, no dish has been given an

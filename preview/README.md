@@ -30,8 +30,9 @@ flagged where the dish has been marked as needing one, and a dish is retired
 rather than deleted -- which is a different thing from being unavailable today.
 
 The settings screens are mirrored too, with the same rules and the same refusals:
-a capacity that is not a whole number, a time that ends before it starts, bands
-that overlap, the last payment method being switched off. What the preview cannot
+a capacity that is not a whole number, hours that end before they start, guest
+bands that overlap, the last payment method or serving option being switched off,
+and an integrated payment method that cannot be offered until it is built. What the preview cannot
 show is the part that matters most -- that changing a rule leaves existing orders
 untouched -- because that is enforced by the real database. It is covered by a
 test against the real application instead.

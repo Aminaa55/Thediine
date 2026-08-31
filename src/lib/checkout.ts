@@ -12,8 +12,28 @@
 import { EVENT_GUESTS, RULES, earliestNormalDate, earliestEventDate, parseGuests, toDateInput } from "./ordering";
 
 export type Fulfilment = "DELIVERY" | "PICKUP";
-export type ServingSetup = "RETURNABLE" | "DISPOSABLE";
-export type PaymentMethodId = "CASH" | "INSTAPAY" | "CARD";
+/** The built-in setups, plus anything the business has added. */
+export type ServingSetup = "RETURNABLE" | "DISPOSABLE" | "OTHER";
+export type PaymentMethodId = "CASH" | "INSTAPAY" | "CARD" | "OTHER";
+
+/** One way to pay, as offered to a customer. */
+export type PaymentChoice = {
+  /** The option's own id. Built-in methods carry their name here too. */
+  id: string;
+  method: PaymentMethodId;
+  name: string;
+  instructions: string;
+  /** Money expected before delivery, so it starts awaiting verification. */
+  verifyBeforeDelivery: boolean;
+};
+
+/** One way the food can be served. */
+export type ServingChoice = {
+  id: string;
+  setup: ServingSetup;
+  name: string;
+  description: string;
+};
 
 /** What every order needs, whichever kind it is. */
 export type CustomerDetails = {
@@ -21,7 +41,11 @@ export type CustomerDetails = {
   mobile: string;
   email: string;
   servingSetup: ServingSetup;
+  /** Which serving option was chosen, by id. */
+  servingOptionId: string;
   paymentMethod: PaymentMethodId | null;
+  /** Which payment option was chosen, by id. */
+  paymentOptionId: string;
   /** The customer's own InstaPay reference, if they have already transferred. */
   paymentReference: string;
   notes: string;
@@ -32,7 +56,9 @@ export const EMPTY_CUSTOMER: CustomerDetails = {
   mobile: "",
   email: "",
   servingSetup: "DISPOSABLE",
+  servingOptionId: "",
   paymentMethod: null,
+  paymentOptionId: "",
   paymentReference: "",
   notes: "",
 };
@@ -101,6 +127,9 @@ export type DayStatus = {
  * message the customer reads and the check the server makes, all at once.
  */
 export type CheckoutLimits = {
+  /** The hours orders go out in, as "HH:mm". Null means any time. */
+  timeFrom: string | null;
+  timeUntil: string | null;
   normalNoticeLabel: string;
   eventNoticeLabel: string;
   /** yyyy-mm-dd — the earliest an event can be, under the business's notice. */
@@ -112,7 +141,7 @@ export type CheckoutLimits = {
 
 export function validateCustomer(
   input: CustomerDetails,
-  methods: PaymentMethodId[],
+  methods: string[],
 ): Errors {
   const errors: Errors = {};
 
@@ -126,8 +155,9 @@ export function validateCustomer(
 
   if (!isValidEmail(input.email)) errors.email = "Please check the email address.";
 
-  if (!input.paymentMethod) errors.paymentMethod = "Please choose how you would like to pay.";
-  else if (!methods.includes(input.paymentMethod)) {
+  // Checked by the option's id, so two manual methods are never confused.
+  if (!input.paymentOptionId) errors.paymentMethod = "Please choose how you would like to pay.";
+  else if (!methods.includes(input.paymentOptionId)) {
     errors.paymentMethod = "That payment method is not available yet.";
   }
 
@@ -143,7 +173,7 @@ export function validateCustomer(
 export function validateNormal(
   input: NormalCheckout,
   options: {
-    methods: PaymentMethodId[];
+    methods: string[];
     day?: DayStatus;
     hasAreas: boolean;
     limits?: CheckoutLimits;
@@ -169,6 +199,13 @@ export function validateNormal(
   }
 
   if (!input.time) errors.time = "Please choose a time.";
+  else {
+    const from = options.limits?.timeFrom;
+    const until = options.limits?.timeUntil;
+    if ((from && input.time < from) || (until && input.time > until)) {
+      errors.time = `We go out between ${from} and ${until}.`;
+    }
+  }
 
   if (input.fulfilment === "DELIVERY") {
     if (!input.addressLine.trim()) errors.addressLine = "Please give the delivery address.";
@@ -193,7 +230,7 @@ export function validateEventSubmission(
     venue: string;
   },
   options: {
-    methods: PaymentMethodId[];
+    methods: string[];
     lineCount: number;
     limits?: CheckoutLimits;
   },
@@ -230,6 +267,10 @@ export function validateEventSubmission(
   return { ok: Object.keys(errors).length === 0, errors };
 }
 
+/**
+ * The two the business started with. They are rows in the database now, and
+ * these are only the wording used when a row has not been given its own.
+ */
 export const SERVING_SETUPS: { id: ServingSetup; title: string; body: string }[] = [
   {
     id: "RETURNABLE",

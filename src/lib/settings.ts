@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { db } from "./db";
 import { RULES, EVENT_GUESTS } from "./ordering";
-import type { ServingSetup } from "./checkout";
 
 /**
  * The business's own rules, read from the database.
@@ -31,14 +30,14 @@ export type BusinessRules = {
   pickupEnabled: boolean;
   /** Piastres. 0 means there is no minimum, which is what the business said. */
   minimumOrder: number;
-  /** "HH:mm", or null while the business has not decided one. */
-  cutoffTime: string | null;
+  /** The hours orders go out in, as "HH:mm". Null means any time. */
+  timeFrom: string | null;
+  timeUntil: string | null;
   eventNoticeDays: number;
   eventNoticeLabel: string;
   maxGuests: number;
   /** Days of the week orders can be taken, 0 = Sunday. Empty means every day. */
   workingDays: number[];
-  servingSetups: ServingSetup[];
   cancellation: Cancellation;
 };
 
@@ -89,9 +88,6 @@ export function parseWorkingDays(raw: string | undefined): number[] {
 export function rulesFrom(s: Record<string, string>): BusinessRules {
   const noticeHours = num(s, "normal_notice_hours", RULES.normal.noticeHours);
   const eventDays = num(s, "event_notice_days", RULES.event.noticeDays);
-  const setups: ServingSetup[] = [];
-  if (on(s, "serving_returnable_enabled")) setups.push("RETURNABLE");
-  if (on(s, "serving_disposable_enabled")) setups.push("DISPOSABLE");
 
   return {
     normalNoticeHours: noticeHours,
@@ -100,13 +96,12 @@ export function rulesFrom(s: Record<string, string>): BusinessRules {
     pickupCountsTowardCapacity: on(s, "pickup_counts_toward_capacity"),
     pickupEnabled: on(s, "pickup_enabled"),
     minimumOrder: num(s, "minimum_order_value_piastres", 0),
-    cutoffTime: (s.normal_cutoff_time ?? "").trim() || null,
+    timeFrom: (s.order_time_from ?? "").trim() || null,
+    timeUntil: (s.order_time_until ?? "").trim() || null,
     eventNoticeDays: eventDays,
     eventNoticeLabel: daysLabel(eventDays),
     maxGuests: num(s, "event_max_guests", EVENT_GUESTS.max),
     workingDays: parseWorkingDays(s.working_days),
-    // Never empty: a customer must be able to choose something.
-    servingSetups: setups.length > 0 ? setups : ["DISPOSABLE"],
     cancellation: {
       normalFreeHours: num(s, "normal_free_cancellation_hours", 24),
       eventFreeHours: num(s, "event_free_cancellation_hours", 48),
@@ -146,3 +141,32 @@ export function earliestEventFrom(rules: BusinessRules, now = new Date()): Date 
 }
 
 export const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+/**
+ * How customers may pay and how the food may be served.
+ *
+ * Both are rows the business owns, so a method or an option can be added
+ * without a developer. The built-in ones are rows too, marked as built in
+ * because their behaviour is in code.
+ */
+export const getPaymentOptions = cache(async () =>
+  db.paymentOption.findMany({ orderBy: { sortOrder: "asc" } }),
+);
+
+export const getServingOptions = cache(async () =>
+  db.servingOption.findMany({ orderBy: { sortOrder: "asc" } }),
+);
+
+/** Whether a time is inside the hours the business goes out in. */
+export function timeWithin(time: string, rules: BusinessRules): boolean {
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return true;
+  if (rules.timeFrom && time < rules.timeFrom) return false;
+  if (rules.timeUntil && time > rules.timeUntil) return false;
+  return true;
+}
+
+/** "12:00 to 22:00", or null while no hours are set. */
+export function timeRangeLabel(rules: BusinessRules): string | null {
+  if (!rules.timeFrom || !rules.timeUntil) return null;
+  return `${rules.timeFrom} to ${rules.timeUntil}`;
+}
