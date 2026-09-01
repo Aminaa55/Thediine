@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import type { CartLine, EventDraft } from "@/lib/cart";
 import { resolveCart } from "./actions";
 import { nextOrderNumber } from "@/lib/order-number";
-import { parseGuests, toDateInput, RULES } from "@/lib/ordering";
+import { parseGuests, toDateInput, formatDay, plural, RULES } from "@/lib/ordering";
 import {
   getRules, getSettings, getPaymentOptions, getServingOptions,
   earliestNormalFrom, earliestEventFrom, timeWithin, type BusinessRules,
@@ -201,23 +201,60 @@ export async function getNormalAvailability(days = 90): Promise<DayStatus> {
     }
   }
 
+  const closedSoon: string[] = [];
   for (const o of overrides) {
     if (o.isClosed) {
-      unavailable[dayKey(o.date)] = o.blockedByOrderId
+      const key = dayKey(o.date);
+      unavailable[key] = o.blockedByOrderId
         ? "We are catering an event that day."
         : o.note || "We are not taking orders that day.";
+      closedSoon.push(key);
     }
   }
 
+  const fullSoon: string[] = [];
   for (const c of counts) {
     const key = dayKey(c.deliveryDate);
     const limit = overrideBy.get(key)?.maxOrders ?? cap;
     if (c._count._all >= limit && !unavailable[key]) {
-      unavailable[key] = `We are fully booked that day — we take ${limit} orders a day.`;
+      unavailable[key] = `We are fully booked that day — we take ${plural(limit, "order")} a day.`;
+      fullSoon.push(key);
     }
   }
 
-  return { unavailable, earliest };
+  /**
+   * The first few dates that can actually be taken.
+   *
+   * Worked out here because only the database knows what is full; the checkout
+   * offers them so nobody has to hunt through a date picker for an open day.
+   */
+  const nextAvailable: string[] = [];
+  for (let i = 0; i <= days && nextAvailable.length < 3; i++) {
+    const d = new Date(earliestDate);
+    d.setDate(d.getDate() + i);
+    const key = dayKey(d);
+    if (!unavailable[key]) nextAvailable.push(key);
+  }
+
+  // Only what is close enough to matter: a fortnight of dates a customer might
+  // actually be choosing between.
+  const soon = (list: string[]) =>
+    list
+      .filter((k) => {
+        const at = (new Date(k + "T00:00:00.000Z").getTime() - earliestDate.getTime()) / 86_400_000;
+        return at >= 0 && at <= 14;
+      })
+      .sort()
+      .slice(0, 4);
+
+  return {
+    unavailable,
+    earliest,
+    closedWeekdays: [0, 1, 2, 3, 4, 5, 6].filter((d) => !rules.workingDays.includes(d)),
+    fullSoon: soon(fullSoon),
+    closedSoon: soon(closedSoon),
+    nextAvailable,
+  };
 }
 
 // -------------------------------------------------------------- placing one
@@ -387,12 +424,16 @@ export async function placeNormalOrder(
         tx.dateAvailability.findUnique({ where: { date } }),
       ]);
       const limit = override?.maxOrders ?? rules.dailyCapacity;
-      if (override?.isClosed) throw new CapacityError("We are not taking orders on that date.");
+      if (override?.isClosed) {
+        throw new CapacityError(`We are not taking orders on ${formatDay(input.date)}.`);
+      }
       if (rules.workingDays.length < 7 && !rules.workingDays.includes(date.getUTCDay())) {
-        throw new CapacityError("We are closed that day.");
+        throw new CapacityError(`We are closed on ${formatDay(input.date)}.`);
       }
       if (taken >= limit) {
-        throw new CapacityError(`We are fully booked that day — we take ${limit} orders a day.`);
+        throw new CapacityError(
+          `We are fully booked on ${formatDay(input.date)} — we take ${plural(limit, "order")} a day.`,
+        );
       }
 
       const customer = await upsertCustomer(tx, input);
@@ -420,6 +461,7 @@ export async function placeNormalOrder(
           total: subtotal + (deliveryFee ?? 0),
           paymentMethod: method,
           paymentMethodLabel: payment.name,
+          paymentInstructions: payment.instructions || null,
           paymentStatus: initialPaymentStatus(payment),
           paymentReference: payment.verifyBeforeDelivery
             ? input.paymentReference.trim() || null
@@ -509,6 +551,7 @@ export async function submitEventRequest(
         total: subtotal,
         paymentMethod: method,
         paymentMethodLabel: payment.name,
+        paymentInstructions: payment.instructions || null,
         paymentStatus: initialPaymentStatus(payment),
         paymentReference: payment.verifyBeforeDelivery
           ? customer.paymentReference.trim() || null

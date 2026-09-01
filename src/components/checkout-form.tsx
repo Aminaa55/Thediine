@@ -7,6 +7,7 @@ import { useCart } from "@/lib/cart";
 import { resolveCart, type ResolvedCart } from "@/app/actions";
 import { placeNormalOrder, type CheckoutContext } from "@/app/checkout-actions";
 import { formatEGP } from "@/lib/money";
+import { formatDay, formatDayShort, weekdayNames } from "@/lib/ordering";
 import { RULES } from "@/lib/ordering";
 import {
   EMPTY_NORMAL, validateNormal,
@@ -29,11 +30,20 @@ import {
  */
 export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatus }) {
   const router = useRouter();
-  const { normalLines, hasEvent, ready, clearNormal } = useCart();
+  const { normalLines, hasEvent, ready, clearNormal, removeLine } = useCart();
 
   const [form, setForm] = useState<NormalCheckout>(() => firstServing(EMPTY_NORMAL, ctx));
   const [cart, setCart] = useState<ResolvedCart | null>(null);
   const [touched, setTouched] = useState(false);
+  /**
+   * Fields answered so far.
+   *
+   * A date or a time is checked the moment it is chosen — being told on the
+   * last click that a day is full, after typing an address, is the worst
+   * possible moment to hear it. Everything else waits until Place is pressed,
+   * so the form does not scold someone halfway through typing their name.
+   */
+  const [answered, setAnswered] = useState<Record<string, boolean>>({});
   const [serverErrors, setServerErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
 
@@ -41,6 +51,7 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
     setForm((f) => ({ ...f, ...patch }));
     setServerErrors({});
   };
+  const answer = (field: string) => setAnswered((a) => ({ ...a, [field]: true }));
 
   useEffect(() => {
     if (!ready) return;
@@ -51,8 +62,16 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
     methods: ctx.methods,
     day,
     hasAreas: ctx.areas.length > 0,
+    limits: ctx.limits,
+    subtotal: cart?.subtotal,
   });
-  const errors: Errors = { ...(touched ? check.errors : {}), ...serverErrors };
+
+  // Shown at once for what has been answered; the rest waits for Place.
+  const live: Errors = {};
+  for (const [field, message] of Object.entries(check.errors)) {
+    if (answered[field]) live[field] = message;
+  }
+  const errors: Errors = { ...(touched ? check.errors : live), ...serverErrors };
 
   const area = useMemo(
     () => ctx.areas.find((a) => a.id === form.areaId) ?? null,
@@ -103,7 +122,7 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
         {/* 1 — delivery or pickup */}
         <section>
           <SectionHeading step="Step one" title="How would you like it?" />
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className={`grid gap-3 ${ctx.pickupEnabled ? "sm:grid-cols-2" : ""}`}>
             <Choice
               on={form.fulfilment === "DELIVERY"}
               onClick={() => set({ fulfilment: "DELIVERY" })}
@@ -179,11 +198,12 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
           <div className="grid gap-6 sm:grid-cols-2">
             <Field
               label="Date" htmlFor="date" error={errors.date}
-              hint={`Earliest available: ${day.earliest}`}
+              hint={`Earliest we can cook: ${formatDay(day.earliest)}`}
             >
               <input
                 id="date" type="date" value={form.date} min={day.earliest}
-                onChange={(e) => set({ date: e.target.value })}
+                onChange={(e) => { set({ date: e.target.value }); answer("date"); }}
+                onBlur={() => answer("date")}
                 className={input(!!errors.date)}
               />
             </Field>
@@ -201,16 +221,18 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
                 id="time" type="time" value={form.time}
                 min={ctx.limits.timeFrom ?? undefined}
                 max={ctx.limits.timeUntil ?? undefined}
-                onChange={(e) => set({ time: e.target.value })}
+                onChange={(e) => { set({ time: e.target.value }); answer("time"); }}
+                onBlur={() => answer("time")}
                 className={input(!!errors.time)}
               />
             </Field>
           </div>
 
-          <p className="mt-5 text-[14px] leading-relaxed text-ink-soft">
+          <DayNotes day={day} onPick={(d) => { set({ date: d }); answer("date"); }} />
+
+          <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
             Regular orders need at least{" "}
             <strong className="font-semibold text-ink">{ctx.limits.normalNoticeLabel}&rsquo; notice</strong>.
-            Full days cannot be chosen.
           </p>
         </section>
 
@@ -262,24 +284,57 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
       </div>
 
       {/* The review, beside the form on a wide screen and beneath it on a phone. */}
-      <aside className="lg:sticky lg:top-24 lg:self-start">
+      {/*
+        The summary follows the form down the page on a wide screen — the header
+        is sticky, so it sits below it — and scrolls inside itself if the order
+        is long. On a phone it is simply the last thing on the page, which is
+        where it belongs.
+      */}
+      <aside className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
         <div className="rounded-sm border border-line bg-cream-warm px-6 py-7">
           <h2 className="font-display text-[21px] font-semibold text-ink">Your order</h2>
 
           <ul className="mt-5">
-            {cart.lines.map((l) => (
-              <li key={l.key} className="flex items-start justify-between gap-4 border-b border-line-soft py-3 last:border-0">
-                <span className="min-w-0 text-[15px] text-ink">
-                  <span className="tabular-nums text-ink-faint">{l.quantity}&times;</span>{" "}
-                  {l.productName}
-                  {l.variantName && <span className="text-ink-soft"> · {l.variantName}</span>}
-                  {l.problem && <span className="block text-[13.5px] text-[#A6391C]">{l.problem}</span>}
-                </span>
-                <span className="whitespace-nowrap text-[15px] tabular-nums text-ink">
-                  {formatEGP(l.lineTotal)}
-                </span>
-              </li>
-            ))}
+            {cart.lines.map((l) => {
+              const out = l.unavailable || !!l.problem;
+              return (
+                <li
+                  key={l.key}
+                  className={`flex items-start justify-between gap-4 border-b border-line-soft py-3 last:border-0 ${
+                    out ? "-mx-3 rounded-sm border-b-0 bg-[#A6391C]/[0.06] px-3" : ""
+                  }`}
+                >
+                  <span className="min-w-0 text-[15px] text-ink">
+                    <span className="tabular-nums text-ink-faint">{l.quantity}&times;</span>{" "}
+                    <span className={out ? "text-ink-soft line-through" : undefined}>
+                      {l.productName}
+                    </span>
+                    {l.variantName && <span className="text-ink-soft"> · {l.variantName}</span>}
+                    {/* Never dropped quietly: said plainly, and removable here. */}
+                    {out && (
+                      <span className="mt-1 block text-[13.5px] leading-relaxed text-[#A6391C]">
+                        {l.productName} is currently unavailable and will not be included in this
+                        order.{" "}
+                        <button
+                          type="button"
+                          onClick={() => removeLine("normal", l.key)}
+                          className="underline underline-offset-4 hover:text-ink"
+                        >
+                          Remove it
+                        </button>
+                      </span>
+                    )}
+                  </span>
+                  <span
+                    className={`whitespace-nowrap text-[15px] tabular-nums ${
+                      out ? "text-ink-faint line-through" : "text-ink"
+                    }`}
+                  >
+                    {formatEGP(l.lineTotal)}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
 
           <dl className="mt-5 border-t border-line pt-4">
@@ -304,6 +359,11 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
           </div>
           {deliveryFee === null && (
             <p className="mt-1.5 text-[13.5px] text-ink-faint">Before the delivery fee.</p>
+          )}
+          {ctx.limits.minimumOrder > 0 && (
+            <p className="mt-1.5 text-[13.5px] text-ink-faint">
+              Orders start at {formatEGP(ctx.limits.minimumOrder)}.
+            </p>
           )}
 
           {Object.keys(errors).length > 0 && touched && (
@@ -363,6 +423,50 @@ function Choice({
  * The serving option a form opens on: the first one being offered, so a
  * customer never has to choose something before they can read the page.
  */
+/**
+ * Which days are out, in one line, and the next few that are not.
+ *
+ * Deliberately a sentence and three chips rather than a calendar: the customer
+ * needs to know why a day is refused before they pick it, not to browse a month.
+ */
+function DayNotes({ day, onPick }: { day: DayStatus; onPick: (date: string) => void }) {
+  const parts: string[] = [];
+  if (day.closedWeekdays.length > 0 && day.closedWeekdays.length < 7) {
+    parts.push(`Closed ${weekdayNames(day.closedWeekdays)}`);
+  }
+  if (day.fullSoon.length > 0) {
+    parts.push(`Fully booked: ${day.fullSoon.map(formatDayShort).join(", ")}`);
+  }
+  if (day.closedSoon.length > 0) {
+    parts.push(`Not cooking: ${day.closedSoon.map(formatDayShort).join(", ")}`);
+  }
+
+  if (parts.length === 0 && day.nextAvailable.length === 0) return null;
+
+  return (
+    <div className="mt-5">
+      {parts.length > 0 && (
+        <p className="text-[14px] leading-relaxed text-ink-soft">{parts.join(" · ")}</p>
+      )}
+      {day.nextAvailable.length > 0 && (
+        <div className="mt-2.5 flex flex-wrap items-center gap-2">
+          <span className="text-[13.5px] text-ink-faint">Soonest we can cook:</span>
+          {day.nextAvailable.map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => onPick(d)}
+              className="rounded-full border border-line bg-cream-warm px-3.5 py-1.5 text-[13.5px] text-ink-soft transition-colors hover:border-gold hover:text-ink"
+            >
+              {formatDayShort(d)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function firstServing<T extends { servingSetup: "RETURNABLE" | "DISPOSABLE" | "OTHER"; servingOptionId: string }>(
   base: T,
   ctx: { servings: { id: string; setup: "RETURNABLE" | "DISPOSABLE" | "OTHER" }[] },

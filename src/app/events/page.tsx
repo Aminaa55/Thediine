@@ -4,6 +4,7 @@ import { getGallery } from "@/lib/gallery";
 import { OurWork } from "@/components/our-work";
 import { EventEntry } from "@/components/event-entry";
 import { Curve, GoldArc } from "@/components/curve";
+import { getRules } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Plan an Event" };
@@ -16,7 +17,7 @@ const HOW = [
 ];
 
 export default async function EventsPage() {
-  const gallery = await getGallery("EVENTS", 5);
+  const [gallery, rules] = await Promise.all([getGallery("EVENTS", 5), getRules()]);
 
   return (
     <>
@@ -87,8 +88,8 @@ export default async function EventsPage() {
             Ready when you are
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-ink-soft">
-            Events need at least five days&rsquo; notice. Everything you send is a request
-            until we confirm it with you.
+            Events need at least {rules.eventNoticeLabel}&rsquo; notice. Everything you send is a
+            request until we confirm it with you.
           </p>
           <EventEntry compact />
         </div>

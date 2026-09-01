@@ -100,3 +100,41 @@ export function validateEvent(input: {
 
   return { ok: Object.keys(errors).length === 0, errors };
 }
+
+/**
+ * A date as a person reads it: "Friday, 4 September 2026".
+ *
+ * Every customer-facing date goes through here. A raw 2026-09-04 is a database
+ * value, not something to put in front of someone ordering dinner.
+ */
+export function formatDay(iso: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso;
+  const d = new Date(iso + "T00:00:00.000Z");
+  const weekday = d.toLocaleDateString("en-GB", { weekday: "long", timeZone: "UTC" });
+  const rest = d.toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+  });
+  return `${weekday}, ${rest}`;
+}
+
+/** The same date, short, for a list of them: "6 September". */
+export function formatDayShort(iso: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso;
+  return new Date(iso + "T00:00:00.000Z").toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", timeZone: "UTC",
+  });
+}
+
+/** "Mondays", "Mondays and Tuesdays", "Mondays, Tuesdays and Sundays". */
+export function weekdayNames(days: number[]): string {
+  const names = ["Sundays", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays"];
+  const chosen = days.map((d) => names[d]).filter(Boolean);
+  if (chosen.length === 0) return "";
+  if (chosen.length === 1) return chosen[0];
+  return `${chosen.slice(0, -1).join(", ")} and ${chosen[chosen.length - 1]}`;
+}
+
+/** "1 order", "3 orders" — a plural that reads like a person wrote it. */
+export function plural(n: number, one: string, many = one + "s"): string {
+  return `${n} ${n === 1 ? one : many}`;
+}

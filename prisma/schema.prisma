@@ -483,6 +483,10 @@ model Order {
   paymentMethod     PaymentMethod
   /// The name of the payment method as it was when the order was placed.
   paymentMethodLabel String?
+  /// What the customer was told to do to pay — the transfer details as they
+  /// stood that day. Snapshotted so a later change never rewrites what an
+  /// order asked for.
+  paymentInstructions String?
   paymentStatus     PaymentStatus @default(UNPAID)
   /// The customer's own reference for a transfer they say they have made.
   paymentReference  String?

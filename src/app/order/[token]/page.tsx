@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { formatEGP } from "@/lib/money";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { EVENT_TYPE_LABELS } from "@/lib/ordering";
-import { getRules } from "@/lib/settings";
+import { getRules, getContact } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Your order" };
@@ -48,7 +48,8 @@ const PAYMENT_STATUS: Record<string, { label: string; body: string }> = {
 };
 
 export default async function OrderPage({ params }: Props) {
-  const rules = await getRules();
+  const [rules, contact] = await Promise.all([getRules(), getContact()]);
+  const whatsapp = contact.whatsapp.replace(/[^0-9]/g, "");
   const { token } = await params;
   const order = await db.order.findUnique({
     where: { publicToken: token },
@@ -69,16 +70,34 @@ export default async function OrderPage({ params }: Props) {
       : EVENT_TYPE_LABELS[detail.eventType]
     : null;
 
+  /**
+   * What this order was actually placed with.
+   *
+   * The name is the one saved onto the order, so a method the business added
+   * itself reads as itself, and renaming one later never rewrites this page.
+   */
+  const methodName =
+    order.paymentMethodLabel
+    ?? (order.paymentMethod === "CASH" ? "Cash"
+      : order.paymentMethod === "INSTAPAY" ? "InstaPay"
+      : order.paymentMethod === "CARD" ? "Card" : "Payment");
+
   const paymentLabel =
     order.paymentMethod === "CASH"
       ? order.fulfilmentType === "PICKUP"
         ? "Payment on pickup"
         : "Cash on delivery"
-      : order.paymentMethod === "INSTAPAY"
-        ? "InstaPay"
-        : order.paymentProviderMode === "test"
-          ? "Card (test mode)"
-          : "Card";
+      : order.paymentMethod === "CARD" && order.paymentProviderMode === "test"
+        ? `${methodName} (test mode)`
+        : methodName;
+
+  const servingLabel =
+    order.servingSetupLabel
+    ?? (order.servingSetup === "RETURNABLE" ? "Returnable dishes" : "Disposable dishes");
+
+  /** Money expected before the food is: that is what awaiting verification means. */
+  const paidUpFront =
+    order.paymentStatus === "AWAITING_VERIFICATION" || !!order.paymentInstructions;
 
   // A card payment that did not go through leaves the order placed and unpaid.
   const cardUnpaid = order.paymentMethod === "CARD" && order.paymentStatus === "UNPAID";
@@ -114,6 +133,19 @@ export default async function OrderPage({ params }: Props) {
           <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
             Your order is placed and safe — it is simply still unpaid. We will agree the payment
             with you when we confirm the order.
+          </p>
+        </div>
+      )}
+
+      {/* What they were told to do to pay, as it stood when they ordered. */}
+      {order.paymentStatus === "AWAITING_VERIFICATION" && order.paymentInstructions && (
+        <div className="mt-6 rounded-sm border border-gold/40 bg-gold-pale/35 px-6 py-5">
+          <p className="text-[11px] uppercase tracking-widest text-gold">{methodName}</p>
+          <p className="mt-2 whitespace-pre-line text-[16px] leading-relaxed text-ink">
+            {order.paymentInstructions}
+          </p>
+          <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">
+            Send us the reference once you have paid and we will confirm it.
           </p>
         </div>
       )}
@@ -154,10 +186,7 @@ export default async function OrderPage({ params }: Props) {
             } />
           )}
           {order.areaName && <Row label="Area" value={order.areaName} />}
-          <Row
-            label="Serving setup"
-            value={order.servingSetup === "RETURNABLE" ? "Returnable dishes" : "Disposable dishes"}
-          />
+          <Row label="Serving setup" value={servingLabel} />
           <Row label="Name" value={order.customerName} />
           <Row label="Mobile" value={order.customerMobile} />
           {order.customerEmail && <Row label="Email" value={order.customerEmail} />}
@@ -254,7 +283,26 @@ export default async function OrderPage({ params }: Props) {
       <div className="mt-8 rounded-sm border border-line bg-cream-warm px-6 py-6">
         <h2 className="font-display text-[19px] font-semibold text-ink">What happens next</h2>
         <ol className="mt-4 grid gap-3">
-          <Next n={1} body="We message you on WhatsApp to confirm everything." />
+          <Next
+            n={1}
+            body={
+              whatsapp ? (
+                <>
+                  We message you on{" "}
+                  <a
+                    href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello, about order ${order.orderNumber}`)}`}
+                    target="_blank" rel="noreferrer"
+                    className="text-gold underline underline-offset-4 hover:text-ink"
+                  >
+                    WhatsApp
+                  </a>{" "}
+                  to confirm everything — you can message us there too.
+                </>
+              ) : (
+                "We message you on WhatsApp to confirm everything."
+              )
+            }
+          />
           {order.paymentMethod === "CARD" ? (
             <Next
               n={2}
@@ -264,18 +312,27 @@ export default async function OrderPage({ params }: Props) {
                   : "Your card payment did not go through, so this order is still unpaid. We will sort the payment out with you when we call."
               }
             />
-          ) : order.paymentMethod === "INSTAPAY" ? (
+          ) : paidUpFront ? (
             <Next
               n={2}
-              body="Once your transfer arrives we check it and mark your payment as paid. Until then it stays as awaiting verification."
+              body={`Once your ${methodName.toLowerCase()} arrives we check it and mark your payment as paid. Until then it stays as awaiting verification.`}
             />
-          ) : (
+          ) : order.paymentMethod === "CASH" ? (
             <Next
               n={2}
               body={
                 order.fulfilmentType === "PICKUP"
                   ? "You pay in cash when you collect the order."
                   : "You pay in cash when the order reaches you."
+              }
+            />
+          ) : (
+            <Next
+              n={2}
+              body={
+                order.fulfilmentType === "PICKUP"
+                  ? `You pay by ${methodName.toLowerCase()} when you collect the order.`
+                  : `You pay by ${methodName.toLowerCase()} when the order reaches you.`
               }
             />
           )}
@@ -307,7 +364,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-function Next({ n, body }: { n: number; body: string }) {
+function Next({ n, body }: { n: number; body: React.ReactNode }) {
   return (
     <li className="flex gap-4">
       <span className="font-display text-[15px] tabular-nums text-gold">0{n}</span>

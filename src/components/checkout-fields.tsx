@@ -184,7 +184,9 @@ export function PaymentChoice({
       title: p.name,
       body: p.verifyBeforeDelivery
         ? "Send the payment to us, and we confirm once we have seen it arrive."
-        : "Pay when your order is handed to you.",
+        : fulfilment === "PICKUP"
+          ? "Pay when you collect your order."
+          : "Pay when your order is handed to you.",
     };
   };
 

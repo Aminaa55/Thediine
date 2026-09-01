@@ -9,7 +9,9 @@
  * a form, because they follow different rules and become different records.
  */
 
-import { EVENT_GUESTS, RULES, earliestNormalDate, earliestEventDate, parseGuests, toDateInput } from "./ordering";
+import {
+  EVENT_GUESTS, RULES, earliestNormalDate, earliestEventDate, parseGuests, toDateInput, formatDay,
+} from "./ordering";
 
 export type Fulfilment = "DELIVERY" | "PICKUP";
 /** The built-in setups, plus anything the business has added. */
@@ -118,6 +120,14 @@ export type DayStatus = {
   unavailable: Record<string, string>;
   /** The earliest date the notice period allows, as yyyy-mm-dd. */
   earliest: string;
+  /** Days of the week the business never works, 0 = Sunday. */
+  closedWeekdays: number[];
+  /** Dates soon that are already full, so they can be said before they are picked. */
+  fullSoon: string[];
+  /** Dates soon closed by hand or by an event. */
+  closedSoon: string[];
+  /** The first few dates that can actually be taken. */
+  nextAvailable: string[];
 };
 
 /**
@@ -187,7 +197,7 @@ export function validateNormal(
 
   if (!input.date) errors.date = "Please choose a date.";
   else if (input.date < earliest) {
-    errors.date = `We need at least ${noticeLabel}. The earliest date we can take is ${earliest}.`;
+    errors.date = `We need at least ${noticeLabel}. The earliest date we can take is ${formatDay(earliest)}.`;
   } else if (options.day?.unavailable[input.date]) {
     errors.date = options.day.unavailable[input.date];
   }
@@ -248,7 +258,7 @@ export function validateEventSubmission(
   const eventNotice = options.limits?.eventNoticeLabel ?? RULES.event.noticeLabel;
   if (!event.date) errors.date = "Please choose a date.";
   else if (event.date < earliest) {
-    errors.date = `Events need at least ${eventNotice}. The earliest date we can take is ${earliest}.`;
+    errors.date = `Events need at least ${eventNotice}. The earliest date we can take is ${formatDay(earliest)}.`;
   }
 
   if (!event.time) errors.time = "Please choose a time.";

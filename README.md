@@ -429,6 +429,33 @@ Nothing has been invented to fill a gap.
 
 Items still open are listed in section 10 of the spec.
 
+## The customer journey, against the rules
+
+The normal order is wired to Settings and to the Menu, and every rule is
+enforced twice: as the customer answers, and again inside the write.
+
+- **As it is answered.** A date or a time is checked the moment it is chosen —
+  a full day, a day the business is closed, a time outside its hours, a date
+  inside the notice period. Being told on the last click, after typing an
+  address, is the worst possible moment to hear it. Everything else waits for
+  Place, so the form does not scold someone mid-sentence.
+- **Before it is answered.** Under the date field: which weekdays are closed,
+  which nearby dates are full or not being cooked, and the next three dates
+  that can actually be taken, each one a chip that fills the field.
+- **Menu availability.** An unavailable dish is never dropped quietly: the line
+  is struck through, says *"X is currently unavailable and will not be included
+  in this order"*, carries a Remove, and leaves the subtotal.
+- **What an order records.** The area name and its fee, the time, the price of
+  every dish, and the names of the payment method and serving option it was
+  placed with — including ones the business added itself. The confirmation and
+  the admin both read those names, so nothing renames itself later.
+- **Payment wording follows the method.** Cash reads differently for delivery
+  and pickup; anything settled before delivery repeats the details it was given
+  and says plainly that the payment is not made yet.
+- **Every customer-facing number comes from Settings** — the notice period, the
+  hours, the guest limit, the contact details. There is no rule written into the
+  customer pages any more.
+
 ## What the website does
 
 - **Homepage** with the two paths: *Order from The Diine* and *Plan an Event*.

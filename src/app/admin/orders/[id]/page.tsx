@@ -50,7 +50,10 @@ export default async function OrderPage({ params }: Props) {
   const paymentLabel =
     order.paymentMethod === "CASH"
       ? order.fulfilmentType === "PICKUP" ? "Payment on pickup" : "Cash on delivery"
-      : order.paymentMethod === "INSTAPAY" ? "InstaPay" : "Card";
+      // The name the order was placed with, so a method the business added
+      // itself reads as itself here too.
+      : order.paymentMethodLabel
+        ?? (order.paymentMethod === "INSTAPAY" ? "InstaPay" : "Card");
 
   const extras = [
     detail?.decorRequested && "Table décor",
@@ -125,7 +128,13 @@ export default async function OrderPage({ params }: Props) {
               {!isEvent && (
                 <Row label="Fulfilment" value={order.fulfilmentType === "PICKUP" ? "Pickup" : "Delivery"} />
               )}
-              <Row label="Serving setup" value={order.servingSetup === "RETURNABLE" ? "Returnable dishes" : "Disposable dishes"} />
+              <Row
+                label="Serving setup"
+                value={
+                  order.servingSetupLabel
+                  ?? (order.servingSetup === "RETURNABLE" ? "Returnable dishes" : "Disposable dishes")
+                }
+              />
               <Row label="Placed" value={order.createdAt.toLocaleString("en-GB", { timeZone: "Africa/Cairo" })} />
             </dl>
           </Card>
