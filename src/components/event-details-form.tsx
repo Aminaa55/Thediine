@@ -5,12 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart";
 import { EventHeader, EventNotice } from "./event-steps";
-import { validateEvent } from "@/lib/ordering";
+import { formatDay, validateEvent } from "@/lib/ordering";
 import { useRules } from "./rules-provider";
 import { GuestInput } from "./event-request-panel";
 import { EventExtras } from "./event-extras";
 
-/** Step two: the day itself. The date field enforces the five-day rule. */
+/** Step two: the day itself. The date field enforces the notice period. */
 export function EventDetailsForm() {
   const router = useRouter();
   const { event, updateEvent, ready } = useCart();
@@ -18,7 +18,7 @@ export function EventDetailsForm() {
 
   const rules = useRules();
   const min = rules.eventEarliest;
-  const check = validateEvent(event);
+  const check = validateEvent(event, rules);
 
   if (ready && !event.eventType) {
     return (
@@ -49,7 +49,7 @@ export function EventDetailsForm() {
         </h1>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <Field label="Event date" htmlFor="date" hint={`Earliest available: ${min}`}>
+          <Field label="Event date" htmlFor="date" hint={`Earliest available: ${formatDay(min)}`}>
             <input
               id="date" type="date" value={event.date} min={min}
               onChange={(e) => updateEvent({ date: e.target.value })}

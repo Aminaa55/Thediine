@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BackLink } from "./back-link";
+import { useRules } from "./rules-provider";
 
 /**
  * The five steps, each a real URL — so the browser's own history moves
@@ -57,12 +58,14 @@ export function EventHeader({ current }: { current: StepKey }) {
   );
 }
 
-/** The five-day rule, shown only inside the event journey. */
+/** The notice period, shown only inside the event journey. */
 export function EventNotice({ className = "" }: { className?: string }) {
+  const { eventNoticeLabel } = useRules();
   return (
     <p className={`text-[14px] text-ink-soft ${className}`}>
-      Events need at least <strong className="font-semibold text-ink">5 days&rsquo; notice</strong>,
-      and are sent as a request — we confirm every event with you personally before it is booked.
+      Events need at least{" "}
+      <strong className="font-semibold text-ink">{eventNoticeLabel}&rsquo; notice</strong>, and are
+      sent as a request — we confirm every event with you personally before it is booked.
     </p>
   );
 }

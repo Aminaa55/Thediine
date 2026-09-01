@@ -30,7 +30,11 @@ export const RULES = {
 /** Event capacity. Mirrors the `event_max_guests` setting the admin can edit. */
 export const EVENT_GUESTS = { min: 1, max: 100 } as const;
 
-export const GUEST_LIMIT_MESSAGE = `We currently cater events for up to ${EVENT_GUESTS.max} guests.`;
+export function guestLimitMessage(max: number): string {
+  return `We currently cater events for up to ${max} guests.`;
+}
+
+export const GUEST_LIMIT_MESSAGE = guestLimitMessage(EVENT_GUESTS.max);
 
 export function earliestNormalDate(now = new Date()): Date {
   const d = new Date(now);
@@ -63,19 +67,40 @@ export function parseGuests(raw: string): number | null {
 export type EventValidation = { ok: boolean; errors: Record<string, string> };
 
 /**
+ * The live numbers this validation should use.
+ *
+ * The notice period and the guest ceiling are settings the business edits, so
+ * they are passed in rather than read from a constant. Anything not passed
+ * falls back to the rules the business started with, which is what happens if
+ * a page somehow renders outside the rules provider.
+ */
+export type EventLimits = {
+  /** Earliest date we can cater, as YYYY-MM-DD. */
+  eventEarliest?: string;
+  /** How that notice period reads: "5 days". */
+  eventNoticeLabel?: string;
+  maxGuests?: number;
+};
+
+/**
  * The single source of truth for whether an event request is valid.
  *
- * Used by the browser AND by the server action, so the 100-guest limit is a
- * real business rule rather than a message on a form.
+ * Used by the browser AND by the server action, so the guest ceiling and the
+ * notice period are real business rules rather than messages on a form. Both
+ * come from settings: change them in admin and every message here changes
+ * with them, with no deploy.
  */
-export function validateEvent(input: {
-  eventType: string | null;
-  eventTypeOther: string;
-  date: string;
-  time: string;
-  guestCount: string;
-  venue: string;
-}): EventValidation {
+export function validateEvent(
+  input: {
+    eventType: string | null;
+    eventTypeOther: string;
+    date: string;
+    time: string;
+    guestCount: string;
+    venue: string;
+  },
+  limits: EventLimits = {},
+): EventValidation {
   const errors: Record<string, string> = {};
 
   if (!input.eventType) errors.eventType = "Please choose the occasion.";
@@ -83,18 +108,20 @@ export function validateEvent(input: {
     errors.eventTypeOther = "Please tell us the occasion.";
   }
 
-  const min = toDateInput(earliestEventDate());
+  const min = limits.eventEarliest ?? toDateInput(earliestEventDate());
+  const noticeLabel = limits.eventNoticeLabel ?? RULES.event.noticeLabel;
   if (!input.date) errors.date = "Please choose a date.";
   else if (input.date < min) {
-    errors.date = `We need at least ${RULES.event.noticeLabel} to prepare an event. The earliest date we can take is ${min}.`;
+    errors.date = `We need at least ${noticeLabel} to prepare an event. The earliest date we can take is ${formatDay(min)}.`;
   }
 
   if (!input.time) errors.time = "Please choose a time.";
 
+  const maxGuests = limits.maxGuests ?? EVENT_GUESTS.max;
   const guests = parseGuests(input.guestCount);
   if (guests === null) errors.guestCount = "Please tell us how many guests.";
   else if (guests < EVENT_GUESTS.min) errors.guestCount = "There must be at least one guest.";
-  else if (guests > EVENT_GUESTS.max) errors.guestCount = GUEST_LIMIT_MESSAGE;
+  else if (guests > maxGuests) errors.guestCount = guestLimitMessage(maxGuests);
 
   if (!input.venue.trim()) errors.venue = "Please tell us where we are coming to.";
 

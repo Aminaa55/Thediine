@@ -202,10 +202,10 @@ function missing(
 /**
  * Server-side validation of an event request.
  *
- * The 100-guest ceiling is a business rule, not a message on a form: a request
- * over the limit is rejected here even if the browser is bypassed entirely.
- * The ceiling is read from the `event_max_guests` setting so it can be changed
- * from admin without a deploy.
+ * The guest ceiling and the notice period are business rules, not messages on
+ * a form: a request over the limit, or too close to the day, is rejected here
+ * even if the browser is bypassed entirely. Both are read from settings, so
+ * changing them in admin changes what the server enforces without a deploy.
  */
 export async function validateEventRequest(input: {
   eventType: string | null;
@@ -215,19 +215,13 @@ export async function validateEventRequest(input: {
   guestCount: string;
   venue: string;
 }): Promise<{ ok: boolean; errors: Record<string, string> }> {
-  const { validateEvent, EVENT_GUESTS } = await import("@/lib/ordering");
+  const { validateEvent, toDateInput } = await import("@/lib/ordering");
+  const { getRules, earliestEventFrom } = await import("@/lib/settings");
 
-  const result = validateEvent(input);
-
-  const setting = await db.setting.findUnique({ where: { key: "event_max_guests" } });
-  const max = setting ? Number(setting.value) : EVENT_GUESTS.max;
-  const guests = parseGuests(input.guestCount);
-
-  if (Number.isFinite(max) && guests !== null && guests > max) {
-    return {
-      ok: false,
-      errors: { ...result.errors, guestCount: `We currently cater events for up to ${max} guests.` },
-    };
-  }
-  return result;
+  const rules = await getRules();
+  return validateEvent(input, {
+    eventEarliest: toDateInput(earliestEventFrom(rules)),
+    eventNoticeLabel: rules.eventNoticeLabel,
+    maxGuests: rules.maxGuests,
+  });
 }

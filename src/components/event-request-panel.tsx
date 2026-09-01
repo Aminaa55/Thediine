@@ -30,7 +30,9 @@ export function EventRequestSection({
 }) {
   const { event, cancelEvent } = useCart();
   const [editing, setEditing] = useState(false);
-  const check = validateEvent(event);
+  const rules = useRules();
+  const check = validateEvent(event, rules);
+
 
   const occasion =
     event.eventType === "OTHER"
@@ -251,8 +253,8 @@ export function EventRequestSection({
         </Link>
         <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
           Events need at least{" "}
-          <strong className="font-semibold text-ink">5 days&rsquo; notice</strong> and are
-          confirmed by us personally before they are booked.
+          <strong className="font-semibold text-ink">{rules.eventNoticeLabel}&rsquo; notice</strong>{" "}
+          and are confirmed by us personally before they are booked.
         </p>
 
         <button
@@ -269,8 +271,9 @@ export function EventRequestSection({
 
 function EditDetails({ onDone }: { onDone: () => void }) {
   const { event, updateEvent } = useCart();
-  const { eventEarliest: min, maxGuests } = useRules();
-  const check = validateEvent(event);
+  const rules = useRules();
+  const { eventEarliest: min, maxGuests } = rules;
+  const check = validateEvent(event, rules);
 
   return (
     <div className="border-b border-line px-6 py-7 sm:px-8">
