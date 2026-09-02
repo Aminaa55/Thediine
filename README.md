@@ -30,14 +30,23 @@ what remains.
 | Category | Products | Price rows |
 |---|---:|---:|
 | Main Courses | 21 | 21 |
-| Side Dishes | 19 | 23 |
+| Side Dishes | 19 | 30 |
 | Salads | 8 | 8 |
-| Desserts | 24 | 25 |
-| **Total** | **72** | **77** |
+| Desserts | 22 | 23 |
+| **Total** | **70** | **82** |
 
-Noodles, Spring Rolls and Tres Leches are single products with priced variants.
-Eleven main courses carry required accompaniment choices; all cost 0 EGP, per
-instruction. Verified end to end against a real PostgreSQL instance.
+Prices and portions are the confirmed revision supplied by the business.
+Seven dishes sell by size rather than at one price — Mahshi, Noodles, Spring
+Rolls, Cream Spinach with Chicken, Lasagna, Negresco and Tres Leches — and where
+the portion differs by size it is stated in the size's own name, because a size
+carries no unit of its own. Eleven main courses carry required accompaniment
+choices; all cost 0 EGP, per instruction. Verified end to end against a real
+PostgreSQL instance.
+
+Six dishes have been retired (archived, never deleted, so past orders still read
+correctly): Vine Leaves, 12 Lotus Cinnabons, Lotus Brownies, Profiteroles with
+Kunafa & Pistachio Sauce, Mini Bites Baklava with Lotus, and the Bonbon Chocolate
+Box. Warak 3enab remains, as a size under Mahshi.
 
 ## Confirmed business rules
 
@@ -412,10 +421,11 @@ are no images, so a customer never sees an empty frame.
 
 Nothing has been invented to fill a gap.
 
-- **Selling units** — no product has one. Tray sizes, weights and piece counts
-  were never supplied, so the field is empty and flagged in admin.
-- **Cut-off time, InstaPay details, serving-setup policy** — settings exist with
-  empty values rather than made-up defaults.
+- **Selling units** — SUPPLIED. Every dish now carries the portion the business
+  gave: "Serves 5", "1 kg / serves 5", "25 pieces". The three that sell by size
+  state the portion in the size name instead.
+- **InstaPay details, serving-setup policy** — settings exist with empty values
+  rather than made-up defaults.
 - **Allergens** — 50 tags, pre-tagged only from ingredients named in the menu
   text, every one marked unreviewed. Gluten and egg are under-tagged on purpose:
   they need recipe knowledge, not menu wording.

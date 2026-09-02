@@ -108,9 +108,9 @@ async function main() {
         descriptionEn: p.description ?? null,
         categoryId: category.id,
         basePrice: p.price !== undefined ? poundsToPiastres(p.price) : null,
-        // Selling units were not supplied — left empty, flagged for admin.
-        sellingUnitEn: null,
-        unitConfirmed: false,
+        // The portion, as the business supplied it. Confirmed by that fact.
+        sellingUnitEn: p.unit ?? null,
+        unitConfirmed: p.unit !== undefined,
         reviewNote: p.note ?? null,
         sortOrder: pIndex,
         // Every dish follows the shared ladder unless the catalogue says
@@ -125,7 +125,7 @@ async function main() {
         create: { slug: p.slug, ...data },
       });
       productCount++;
-      unitsMissing++;
+      if (p.unit === undefined) unitsMissing++;
 
       // A dish's own bands replace the shared ladder for that dish. None are
       // supplied yet: the business has not given per-dish scaling.
@@ -205,7 +205,7 @@ async function main() {
   const exceptions = await prisma.productEventTier.groupBy({ by: ["productId"] });
   console.log(`  event pricing    ${scaling} dishes scale by guest count, ` +
     `${exceptions.length} with their own bands`);
-  console.log(`\n  ${unitsMissing} products have no selling unit yet — expected.`);
+  console.log(`\n  ${unitsMissing} products still have no portion.`);
   console.log("  All allergen tags are unreviewed and need checking before launch.\n");
 }
 

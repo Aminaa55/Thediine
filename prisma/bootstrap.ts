@@ -142,9 +142,9 @@ async function main() {
           descriptionEn: p.description ?? null,
           categoryId: category.id,
           basePrice: p.price !== undefined ? poundsToPiastres(p.price) : null,
-          // Selling units were never supplied; left empty and flagged for admin.
-          sellingUnitEn: null,
-          unitConfirmed: false,
+          // The portion, as the business supplied it. Confirmed by that fact.
+          sellingUnitEn: p.unit ?? null,
+          unitConfirmed: p.unit !== undefined,
           reviewNote: p.note ?? null,
           sortOrder: pIndex,
           // Every dish follows the shared ladder unless the catalogue says
