@@ -157,6 +157,81 @@ export async function endSession() {
  * wrong, and a failure always costs the same short pause, so the form cannot be
  * used to find out which accounts exist.
  */
+/**
+ * First-run setup.
+ *
+ * The very first account cannot be created from inside admin, because signing
+ * in is exactly what it does not have yet. So there is one door, held shut by
+ * two locks at the same time:
+ *
+ *   1. the site must have NO admin accounts at all, and
+ *   2. whoever opens it must type the code held in ADMIN_SETUP_TOKEN.
+ *
+ * The moment the first account exists the door is shut for good, whatever the
+ * code says — so the safe thing after setup is simply to sign in, and the
+ * code can be deleted at leisure.
+ *
+ * The password is typed by the owner into their own browser, hashed here, and
+ * only ever stored as that hash. Nobody else, including whoever set the site
+ * up, ever sees it.
+ */
+export function setupCode(): string | null {
+  const s = (process.env.ADMIN_SETUP_TOKEN ?? "").trim();
+  return s.length >= 16 ? s : null;
+}
+
+/** True only while the site has no admin at all. */
+export async function setupNeeded(): Promise<boolean> {
+  return (await db.adminUser.count()) === 0;
+}
+
+export type SetupInput = { code: string; name: string; email: string; password: string };
+
+export async function createFirstAdmin(
+  input: SetupInput,
+): Promise<{ ok: boolean; error?: string }> {
+  if (!adminConfigured()) {
+    return { ok: false, error: "This deployment has no ADMIN_SESSION_SECRET yet." };
+  }
+  const want = setupCode();
+  if (!want) {
+    return { ok: false, error: "Setup is not switched on for this deployment." };
+  }
+  // Checked again here, not only when the page rendered: between the two, a
+  // second person could have finished setup first.
+  if (!(await setupNeeded())) {
+    return { ok: false, error: "This site already has an admin account. Please sign in instead." };
+  }
+  if (lockedOut("setup")) {
+    return { ok: false, error: "Too many attempts. Please wait a few minutes and try again." };
+  }
+
+  const given = Buffer.from(input.code.trim(), "utf8");
+  const expected = Buffer.from(want, "utf8");
+  const codeOk = given.length === expected.length && timingSafeEqual(given, expected);
+  if (!codeOk) {
+    recordFailure("setup");
+    await new Promise((r) => setTimeout(r, 400));
+    return { ok: false, error: "That setup code is not right." };
+  }
+
+  const name = input.name.trim();
+  const email = input.email.trim().toLowerCase();
+  if (name.length < 2) return { ok: false, error: "Please give your name." };
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return { ok: false, error: "Please give a valid email address." };
+  }
+  if (input.password.length < 10) {
+    return { ok: false, error: "Please use a password of at least 10 characters." };
+  }
+
+  await db.adminUser.create({
+    data: { name, email, passwordHash: hashPassword(input.password), role: "OWNER" },
+  });
+  attempts.delete("setup");
+  return { ok: true };
+}
+
 export async function signIn(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
   if (!adminConfigured()) {
     return { ok: false, error: "Admin is not set up on this deployment." };
