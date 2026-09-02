@@ -104,6 +104,5 @@ export function longDate(d: Date) {
   });
 }
 
-export function dayKey(d: Date) {
-  return d.toISOString().slice(0, 10);
-}
+/** The day in Cairo, not on the server's clock. See cairoDayKey. */
+export { cairoDayKey as dayKey } from "@/lib/ordering";

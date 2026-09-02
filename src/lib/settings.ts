@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { db } from "./db";
-import { RULES, EVENT_GUESTS } from "./ordering";
+import { RULES, EVENT_GUESTS, cairoDay } from "./ordering";
 
 /**
  * The business's own rules, read from the database.
@@ -129,15 +129,13 @@ export const getContact = cache(async (): Promise<Contact> => {
 export function earliestNormalFrom(rules: BusinessRules, now = new Date()): Date {
   const d = new Date(now);
   d.setHours(d.getHours() + rules.normalNoticeHours);
-  d.setHours(0, 0, 0, 0);
-  return d;
+  return cairoDay(d);
 }
 
 export function earliestEventFrom(rules: BusinessRules, now = new Date()): Date {
   const d = new Date(now);
   d.setDate(d.getDate() + rules.eventNoticeDays);
-  d.setHours(0, 0, 0, 0);
-  return d;
+  return cairoDay(d);
 }
 
 export const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

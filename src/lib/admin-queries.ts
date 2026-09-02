@@ -1,4 +1,5 @@
 import { db } from "./db";
+import { cairoDay } from "./ordering";
 import { OPEN_STATUSES } from "./admin-orders";
 import type { FulfilmentType, OrderStatus, OrderType, PaymentStatus } from "@prisma/client";
 
@@ -107,8 +108,8 @@ export async function needsAttention() {
  * is about what is still ahead.
  */
 export async function upcomingEvents(take = 6) {
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  // Cairo's today, not the server's — see cairoDay.
+  const today = cairoDay();
 
   return db.order.findMany({
     where: {

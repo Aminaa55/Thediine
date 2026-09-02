@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireAdminPage } from "@/lib/admin-auth";
 import { needsAttention, ordersForDay, upcomingEvents } from "@/lib/admin-queries";
-import { EVENT_TYPE_LABELS } from "@/lib/ordering";
+import { EVENT_TYPE_LABELS, cairoDay } from "@/lib/ordering";
 import { Card, Money, PaymentPill, Stat, StatusPill, TypePill, dayKey, longDate } from "@/components/admin/bits";
 
 export const dynamic = "force-dynamic";
@@ -129,7 +129,7 @@ export default async function AdminHome() {
                     : EVENT_TYPE_LABELS[e.eventDetail.eventType]
                   : "Event";
                 const days = Math.round(
-                  (e.deliveryDate.getTime() - new Date().setHours(0, 0, 0, 0)) / 86_400_000,
+                  (e.deliveryDate.getTime() - cairoDay().getTime()) / 86_400_000,
                 );
                 return (
                   <li key={e.id}>

@@ -18,6 +18,37 @@ import { db } from "./db";
 const COOKIE = "diine_admin";
 const SESSION_DAYS = 7;
 
+/**
+ * A limit on guessing.
+ *
+ * Without one, somebody who finds /admin can try passwords for as long as
+ * they like. After a handful of failures the account stops accepting
+ * attempts for a few minutes, whether or not the password is right — which
+ * turns guessing from a matter of hours into a matter of years.
+ *
+ * Held in memory rather than the database: it is deliberately cheap, it
+ * costs nothing to lose on a restart, and there is one person signing in.
+ */
+const MAX_ATTEMPTS = 6;
+const LOCKOUT_MS = 10 * 60_000;
+const attempts = new Map<string, { count: number; until: number }>();
+
+function lockedOut(key: string): boolean {
+  const a = attempts.get(key);
+  if (!a) return false;
+  if (Date.now() > a.until) { attempts.delete(key); return false; }
+  return a.count >= MAX_ATTEMPTS;
+}
+
+function recordFailure(key: string) {
+  const a = attempts.get(key);
+  const fresh = !a || Date.now() > a.until;
+  attempts.set(key, {
+    count: fresh ? 1 : a!.count + 1,
+    until: Date.now() + LOCKOUT_MS,
+  });
+}
+
 function sessionSecret(): string | null {
   const s = (process.env.ADMIN_SESSION_SECRET ?? "").trim();
   return s.length >= 24 ? s : null;
@@ -131,6 +162,14 @@ export async function signIn(email: string, password: string): Promise<{ ok: boo
     return { ok: false, error: "Admin is not set up on this deployment." };
   }
 
+  const key = email.trim().toLowerCase();
+  if (lockedOut(key)) {
+    return {
+      ok: false,
+      error: "Too many attempts. Please wait a few minutes and try again.",
+    };
+  }
+
   const admin = await db.adminUser.findUnique({
     where: { email: email.trim().toLowerCase() },
     select: { id: true, passwordHash: true, isActive: true },
@@ -138,10 +177,12 @@ export async function signIn(email: string, password: string): Promise<{ ok: boo
 
   const valid = admin?.isActive === true && verifyPassword(password, admin.passwordHash);
   if (!valid) {
+    recordFailure(key);
     await new Promise((r) => setTimeout(r, 400));
     return { ok: false, error: "That email and password do not match." };
   }
 
+  attempts.delete(key);
   await startSession(admin!.id);
   return { ok: true };
 }

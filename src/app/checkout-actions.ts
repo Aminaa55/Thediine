@@ -148,6 +148,7 @@ export async function getCheckoutContext(): Promise<CheckoutContext> {
 
 // ------------------------------------------------------------- availability
 
+/** Dates are stored at UTC midnight, so the key is just the date part. */
 function dayKey(d: Date): string {
   return d.toISOString().slice(0, 10);
 }

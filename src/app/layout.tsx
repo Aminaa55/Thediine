@@ -27,6 +27,18 @@ const body = Karla({
   display: "swap",
 });
 
+/**
+ * Nothing on this site is baked at build time.
+ *
+ * Every page hangs off this layout, and this layout reads the business's own
+ * settings — the notice periods, the guest limit, the opening hours. Left to
+ * itself Next would pre-render the quieter pages once, at deploy, and freeze
+ * those numbers into them: change the event notice in admin and the event
+ * pages would keep quoting the old one until the next deploy. So the whole
+ * site is rendered per request, and an edit in admin is live immediately.
+ */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: {
     default: "The Diine — Food Made With Passion",

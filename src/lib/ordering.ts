@@ -55,6 +55,27 @@ export function toDateInput(d: Date): string {
 }
 
 /**
+ * Which day it is IN CAIRO, wherever the server happens to be running.
+ *
+ * The site is hosted abroad and its clock is UTC, but the kitchen's day is
+ * Cairo's. Without this, between midnight and 2 or 3 in the morning Cairo
+ * time the server still thinks it is yesterday: admin's Today page would show
+ * the wrong day's cooking, and the earliest date a customer can order for
+ * would be a day early. Everything that decides "what day is it" goes through
+ * here.
+ */
+export function cairoDayKey(d: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Cairo", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+}
+
+/** Cairo's day, as a Date at UTC midnight — how dates are stored here. */
+export function cairoDay(d: Date = new Date()): Date {
+  return new Date(cairoDayKey(d) + "T00:00:00.000Z");
+}
+
+/**
  * Guest count is kept as the exact string the customer typed and only parsed
  * here. It is never round-tripped through a number input's stepper, which is
  * what silently turned 153 into 152.
