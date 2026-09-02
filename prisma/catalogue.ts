@@ -137,7 +137,7 @@ export const CATALOGUE: SeedCategory[] = [
         name: "Sweet & Sour Shrimps",
         price: 3000,
         unit: "1 kg / serves 5",
-        allergens: ["seafood", "gluten"],
+        allergens: ["seafood", "gluten", "soy"],
         options: [
           { name: "Served with", choices: ["Basmati rice", "Noodles with vegetables"] },
         ],
@@ -146,7 +146,7 @@ export const CATALOGUE: SeedCategory[] = [
         slug: "sweet-sour-chicken",
         name: "Sweet & Sour Chicken",
         price: 1000,
-        allergens: ["gluten"],
+        allergens: ["gluten", "soy"],
         unit: "1 kg / serves 5",
         options: [
           { name: "Served with", choices: ["Basmati rice", "Noodles with vegetables"] },
@@ -220,6 +220,7 @@ export const CATALOGUE: SeedCategory[] = [
         slug: "filet-meat",
         name: "Fillet Meat",
         price: 3500,
+        allergens: ["dairy"],
         unit: "Serves 5",
         options: [
           { name: "Sauce", choices: SAUCE_4 },
@@ -230,6 +231,7 @@ export const CATALOGUE: SeedCategory[] = [
         slug: "roast-beef",
         name: "Roast Beef",
         price: 3000,
+        allergens: ["dairy"],
         unit: "Serves 6–8",
         options: [
           { name: "Sauce", choices: SAUCE_4 },
@@ -304,7 +306,7 @@ export const CATALOGUE: SeedCategory[] = [
         description: "Served with chicken, Egyptian rice & walnuts.",
         price: 3000,
         unit: "Serves 6–8",
-        allergens: ["nuts"],
+        allergens: ["nuts", "gluten"],
       },
       {
         slug: "heart-kidneys-shareya",
@@ -358,7 +360,7 @@ export const CATALOGUE: SeedCategory[] = [
           { name: "With chicken", price: 800 },
           { name: "With shrimps", price: 1500 },
         ],
-        allergens: ["seafood", "gluten"],
+        allergens: ["seafood", "gluten", "egg"],
         note: "Seafood applies to the shrimps variant only — allergens are currently held per product, not per variant, so the warning shows on all three.",
       },
       {
@@ -395,13 +397,16 @@ export const CATALOGUE: SeedCategory[] = [
         slug: "mushroom-saute",
         name: "Mushroom Sauté with Caramelized Onions & Parsley",
         price: 800,
+        allergens: ["dairy"],
         unit: "Serves 4–5",
       },
       {
         slug: "rokak-minced-meat",
         name: "Rokak with Minced Meat",
+        // "no ghee" read as "no milk — ghee". Ghee is a milk fat and is
+        // declarable as dairy, so the tag stands either way it was meant.
         price: 1000,
-        allergens: ["gluten"],
+        allergens: ["dairy", "gluten"],
         unit: "Serves 6–8",
       },
       {
@@ -418,7 +423,7 @@ export const CATALOGUE: SeedCategory[] = [
           { name: "Medium — serves 4–5", price: 1000 },
           { name: "Large — serves 6–8", price: 1400 },
         ],
-        allergens: ["dairy", "gluten"],
+        allergens: ["dairy", "gluten", "egg"],
       },
       {
         slug: "negresco",
@@ -525,7 +530,7 @@ export const CATALOGUE: SeedCategory[] = [
         slug: "coleslaw",
         name: "Coleslaw",
         price: 400,
-        allergens: ["egg"],
+        allergens: ["dairy", "egg"],
         unit: "Serves 10",
       },
     ],
