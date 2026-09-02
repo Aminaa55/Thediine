@@ -47,26 +47,38 @@ export default async function HomePage() {
         </svg>
 
         <div className="relative mx-auto max-w-content px-5 pb-28 pt-24 sm:px-8 sm:pb-36 sm:pt-32 lg:pb-44 lg:pt-40">
-          <div className="max-w-3xl animate-rise">
-            <p className="label-rule">{BRAND.tagline}</p>
-
-            {/* Playful hierarchy: the middle line steps in and turns italic. */}
-            <h1 className="mt-8 font-display text-[46px] font-semibold leading-[0.98] tracking-tight text-ink sm:text-[66px] lg:text-[82px]">
-              For the tables
-              <span className="ms-[0.14em] block italic font-normal text-gold sm:ms-[0.18em]">
-                that matter
+          <div className="animate-rise">
+            {/*
+              One composition, not three lines of a heading: TABLES sits pale
+              and enormous behind, and the sentence crosses it. The giant word
+              is drawn in CSS rather than written here, so the heading is still
+              just "For the tables that matter most." to a reader, a search
+              engine or a link preview. See .hero-slogan in globals.css for how
+              the alignments are held.
+            */}
+            <h1 className="hero-slogan">
+              <span className="hs-lead">For the tables</span>
+              <span className="hs-l1">
+                <span className="hs-that">that</span>
+                <span className="hs-matter">matter</span>
               </span>
-              <span className="block">most.</span>
+              <span className="hs-l2">
+                <span className="hs-that hs-spacer" aria-hidden="true">that</span>
+                <span className="hs-dot" aria-hidden="true" />
+                <span className="hs-most">most.</span>
+              </span>
             </h1>
 
-            <p className="mt-9 max-w-lg text-[18px] leading-relaxed text-ink-soft sm:text-[20px]">
-              Dishes made by hand and sent out by the tray — the warmth of food cooked at
-              home, for the gatherings you would rather spend with your guests.
-            </p>
+            <div className="max-w-3xl">
+              <p className="mt-9 max-w-lg text-[18px] leading-relaxed text-ink-soft sm:text-[20px]">
+                Dishes made by hand and sent out by the tray — the warmth of food cooked at
+                home, for the gatherings you would rather spend with your guests.
+              </p>
 
-            <div className="mt-11 flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <Link href="/menu" className="btn-primary">Order from The Diine</Link>
-              <Link href="/events" className="btn-outline">Plan an Event</Link>
+              <div className="mt-11 flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <Link href="/menu" className="btn-primary">Order from The Diine</Link>
+                <Link href="/events" className="btn-outline">Plan an Event</Link>
+              </div>
             </div>
           </div>
         </div>

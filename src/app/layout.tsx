@@ -10,9 +10,12 @@ import { RulesProvider } from "@/components/rules-provider";
 import { getRules, getContact, earliestNormalFrom, earliestEventFrom } from "@/lib/settings";
 import { toDateInput } from "@/lib/ordering";
 
+// Loaded as the variable font it is, with its real italic. The homepage
+// slogan needs Light and a true italic — not a browser-slanted one — and
+// every other italic on the site becomes the drawn one rather than a fake.
 const display = Fraunces({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
   variable: "--font-display",
   display: "swap",
 });

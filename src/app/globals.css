@@ -47,6 +47,87 @@
   }
   .bracket::before { @apply left-0 top-0 border-l border-t; }
   .bracket::after { @apply bottom-0 right-0 border-b border-r; }
+
+  /* ------------------------------------------------------- the slogan */
+  /*
+   * "For the tables that matter most." as ONE composition: the word TABLES
+   * enormous and pale behind, the readable sentence crossing it.
+   *
+   * Two alignments hold it together, and neither is a number anyone tuned
+   * by eye — which is what makes it safe at every screen size:
+   *
+   *   1. "most." sits on the SAME BASELINE as the giant TABLES. Fraunces
+   *      puts its baseline 0.86 of the font size below the top of a
+   *      line-height:1 box, at every weight and in italic, so lifting
+   *      TABLES by the difference between the two ascents lands the two
+   *      baselines on each other exactly.
+   *
+   *   2. The m of "most" starts under the m of "matter", because the second
+   *      line is indented by an INVISIBLE COPY of the word "that", set in
+   *      the same face and size as the real one. Whatever width that word
+   *      happens to be, the two m's stay locked together.
+   *
+   * Every size is measured from the width of the block (cqi) rather than the
+   * window, so the whole composition scales as one piece and the phone
+   * version is the same design rather than a rebuilt one.
+   */
+  .hero-slogan {
+    container-type: inline-size;
+    position: relative;
+    --asc: 0.86;
+    --fg: clamp(84px, 26cqi, 268px);   /* TABLES  */
+    --fm: clamp(30px, 6.6cqi, 68px);   /* "most." */
+    --dot: clamp(4px, 0.55cqi, 6px);
+    --gap: 0.24em;
+    /* room for the giant word's descender, so nothing below runs into it */
+    padding-bottom: calc((1 - var(--asc)) * (var(--fg) - var(--fm)));
+  }
+
+  .hs-lead {
+    @apply relative z-[2] block font-body text-[11px] uppercase text-gold sm:text-[12px];
+    letter-spacing: 0.3em;
+  }
+
+  .hs-l1, .hs-l2 {
+    position: relative;
+    display: flex; align-items: baseline; flex-wrap: nowrap;
+    gap: 0 var(--gap);
+  }
+  .hs-l1 { margin-top: clamp(10px, 1.6cqi, 20px); z-index: 2; }
+  .hs-l2 { margin-top: clamp(8px, 2.4cqi, 26px); }
+
+  .hs-that, .hs-matter, .hs-most { @apply font-display; line-height: 1; }
+  .hs-that   { @apply italic text-ink-soft; font-weight: 300; font-size: clamp(22px, 4.4cqi, 46px); }
+  .hs-matter { @apply text-ink;             font-weight: 600; font-size: clamp(36px, 8.4cqi, 86px); }
+  .hs-most   { @apply relative z-[1] italic text-gold; font-weight: 300; font-size: var(--fm); }
+
+  /* The invisible "that" that indents line two to exactly "matter"'s edge. */
+  .hs-spacer { visibility: hidden; user-select: none; }
+
+  /* Pulled back over the invisible word, so it costs no width and cannot
+     push the two m's out of line. */
+  .hs-dot {
+    @apply relative z-[1] shrink-0 self-center rounded-full bg-gold;
+    width: var(--dot); aspect-ratio: 1;
+    margin-inline-start: calc(-1 * (var(--dot) + var(--gap)));
+  }
+
+  /*
+   * TABLES is drawn as a pseudo-element on purpose. It is decoration, not
+   * words: this keeps it out of the page's text entirely, so the heading
+   * still reads "For the tables that matter most." to a search engine, a
+   * link preview and a screen reader alike. Absolute positioning also keeps
+   * it from becoming a flex item on the line it sits in.
+   */
+  .hs-l2::before {
+    content: "Tables";
+    @apply absolute z-0 font-display uppercase text-cream-toast;
+    inset-inline-start: -0.04em;
+    top: calc(-1 * var(--asc) * (var(--fg) - var(--fm)));
+    font-weight: 700; letter-spacing: -0.03em;
+    font-size: var(--fg); line-height: 1;
+    white-space: nowrap; user-select: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
