@@ -15,9 +15,12 @@
  *    than deleted, because an order line may point at it.
  *  - A dish that has left the menu is ARCHIVED, never deleted — the same safe
  *    retirement admin uses.
- *  - Options, choices and allergens on an existing dish are left ALONE. The
- *    revision changed prices and portions, not accompaniments, and the
- *    allergen review is still outstanding.
+ *  - Options and choices on an existing dish are left ALONE: the revision
+ *    changed prices and portions, not accompaniments.
+ *  - Allergen tags are only ever ADDED, never removed. A warning already on a
+ *    dish stays, and one already confirmed by a human keeps that confirmation;
+ *    new tags land unreviewed like every other, because nothing here has been
+ *    checked against a recipe.
  *  - No order, order line, customer or payment is touched. Orders carry their
  *    own copies of names and prices, so none of this rewrites history.
  *
@@ -169,6 +172,25 @@ async function main() {
           await db.productVariant.update({ where: { id: v.id }, data: { isAvailable: false } });
           moves.push(`- size "${v.nameEn}" hidden`);
         }
+      }
+
+      // ------------------------------------------------------- allergens
+      // Added only. Removing a warning is never safe to do automatically, and
+      // a tag a human has already confirmed must keep that confirmation.
+      const held = new Set(
+        (await db.productAllergen.findMany({
+          where: { productId: existing.id },
+          select: { allergen: { select: { slug: true } } },
+        })).map((a) => a.allergen.slug),
+      );
+      for (const slug of p.allergens ?? []) {
+        if (held.has(slug)) continue;
+        const allergenId = allergenIds.get(slug);
+        if (!allergenId) throw new Error(`${p.slug}: unknown allergen "${slug}"`);
+        await db.productAllergen.create({
+          data: { productId: existing.id, allergenId, reviewed: false },
+        });
+        moves.push(`+ allergen ${slug}`);
       }
 
       if (moves.length) note(changed, `${p.name} — ${moves.join(", ")}`);
