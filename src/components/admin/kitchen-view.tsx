@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { PrepDish } from "@/lib/admin-queries";
+import { cairoDayKey } from "@/lib/ordering";
 
 /**
  * The kitchen's day.
@@ -22,7 +23,8 @@ export function DayPicker({ date }: { date: string }) {
     d.setUTCDate(d.getUTCDate() + days);
     return `/admin/kitchen?date=${d.toISOString().slice(0, 10)}`;
   };
-  const today = new Date().toISOString().slice(0, 10);
+  // Cairo's today, not the viewer's device or the server's clock.
+  const today = cairoDayKey();
 
   return (
     <div className="no-print flex flex-wrap items-center gap-3">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { blockDate, unblockDate, setDateCapacity } from "@/app/admin/settings-actions";
 import { SectionHead, SettingCard, rowInput, useSaver, useSettingsForm } from "./settings-bits";
+import { cairoDayKey } from "@/lib/ordering";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -63,7 +64,8 @@ export function CalendarSettings({ workingDays, capacity, days }: {
       eventOrderId: null, eventOrderNumber: null, taken: 0,
     });
   }
-  const today = new Date().toISOString().slice(0, 10);
+  // Cairo's today, not the viewer's device or the server's clock.
+  const today = cairoDayKey();
   // Every day in the grid can be selected, including one with nothing on it.
   const picked = selected ? cells.find((c) => c.date === selected) ?? null : null;
 

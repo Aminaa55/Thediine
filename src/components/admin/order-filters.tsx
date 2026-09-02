@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { cairoDayKey } from "@/lib/ordering";
 
 /**
  * Narrowing the list.
@@ -35,12 +36,9 @@ export function OrderFilterBar({ shown }: { shown: number }) {
   const open = !type && !status && !payment && !fulfilment && !from && !to && !all;
   const anyFilter = !open;
 
-  const today = new Date().toISOString().slice(0, 10);
-  const inDays = (n: number) => {
-    const d = new Date();
-    d.setDate(d.getDate() + n);
-    return d.toISOString().slice(0, 10);
-  };
+  // Cairo's today, not the viewer's device or the server's clock.
+  const today = cairoDayKey();
+  const inDays = (n: number) => cairoDayKey(new Date(Date.now() + n * 86_400_000));
 
   return (
     <div className="mt-7 grid gap-4">
