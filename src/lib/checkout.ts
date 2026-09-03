@@ -256,6 +256,8 @@ export function validateEventSubmission(
     methods: string[];
     lineCount: number;
     limits?: CheckoutLimits;
+    /** Dates the kitchen is shut, with the reason. Only the database knows these. */
+    unavailable?: Record<string, string>;
   },
 ): Validation {
   const errors = validateCustomer(customer, options.methods);
@@ -272,6 +274,8 @@ export function validateEventSubmission(
   if (!event.date) errors.date = "Please choose a date.";
   else if (event.date < earliest) {
     errors.date = `Events need at least ${eventNotice}. The earliest date we can take is ${formatDay(earliest)}.`;
+  } else if (options.unavailable?.[event.date]) {
+    errors.date = options.unavailable[event.date];
   }
 
   if (!event.time) errors.time = "Please choose a time.";

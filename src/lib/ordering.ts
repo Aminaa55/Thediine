@@ -101,6 +101,12 @@ export type EventLimits = {
   /** How that notice period reads: "5 days". */
   eventNoticeLabel?: string;
   maxGuests?: number;
+  /**
+   * Dates the kitchen is shut, as yyyy-mm-dd, with the reason to show. Only
+   * the database knows these — a day closed by hand in admin, or one already
+   * given to another event — so they are passed in rather than worked out here.
+   */
+  unavailable?: Record<string, string>;
 };
 
 /**
@@ -134,6 +140,8 @@ export function validateEvent(
   if (!input.date) errors.date = "Please choose a date.";
   else if (input.date < min) {
     errors.date = `We need at least ${noticeLabel} to prepare an event. The earliest date we can take is ${formatDay(min)}.`;
+  } else if (limits.unavailable?.[input.date]) {
+    errors.date = limits.unavailable[input.date];
   }
 
   if (!input.time) errors.time = "Please choose a time.";

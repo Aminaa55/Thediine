@@ -5,20 +5,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart";
 import { EventHeader, EventNotice } from "./event-steps";
-import { formatDay, validateEvent } from "@/lib/ordering";
+import { formatDay, formatDayShort, validateEvent } from "@/lib/ordering";
 import { useRules } from "./rules-provider";
 import { GuestInput } from "./event-request-panel";
 import { EventExtras } from "./event-extras";
 
-/** Step two: the day itself. The date field enforces the notice period. */
-export function EventDetailsForm() {
+/**
+ * Step two: the day itself. The date field enforces the notice period, and the
+ * days the kitchen is shut — which only the database knows, so they are handed
+ * in by the page rather than worked out here.
+ */
+export function EventDetailsForm({ unavailable = {}, closedSoon = [] }: {
+  unavailable?: Record<string, string>;
+  closedSoon?: string[];
+}) {
   const router = useRouter();
   const { event, updateEvent, ready } = useCart();
   const [touched, setTouched] = useState(false);
 
   const rules = useRules();
   const min = rules.eventEarliest;
-  const check = validateEvent(event, rules);
+  const check = validateEvent(event, { ...rules, unavailable });
 
   if (ready && !event.eventType) {
     return (
@@ -49,12 +56,23 @@ export function EventDetailsForm() {
         </h1>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <Field label="Event date" htmlFor="date" hint={`Earliest available: ${formatDay(min)}`}>
+          <Field
+            label="Event date" htmlFor="date"
+            hint={`Earliest available: ${formatDay(min)}`}
+            // A closed day is said the moment it is picked. Being told on the
+            // last click that the kitchen is shut is the worst possible moment.
+            error={(touched || !!unavailable[event.date]) ? check.errors.date : undefined}
+          >
             <input
               id="date" type="date" value={event.date} min={min}
               onChange={(e) => updateEvent({ date: e.target.value })}
-              className={input(touched && !!check.errors.date)}
+              className={input((touched || !!unavailable[event.date]) && !!check.errors.date)}
             />
+            {closedSoon.length > 0 && (
+              <p className="mt-2 text-[13px] leading-relaxed text-ink-faint">
+                Closed: {closedSoon.map(formatDayShort).join(", ")}
+              </p>
+            )}
           </Field>
 
           <Field label="Event time" htmlFor="time">
@@ -109,13 +127,20 @@ function input(invalid: boolean) {
 }
 
 function Field({
-  label, htmlFor, hint, full = false, children,
-}: { label: string; htmlFor: string; hint?: string; full?: boolean; children: React.ReactNode }) {
+  label, htmlFor, hint, error, full = false, children,
+}: {
+  label: string; htmlFor: string; hint?: string; error?: string;
+  full?: boolean; children: React.ReactNode;
+}) {
   return (
     <div className={full ? "sm:col-span-2" : undefined}>
       <label htmlFor={htmlFor} className="eyebrow mb-3 block">{label}</label>
       {children}
-      {hint && <p className="mt-2 text-[13px] text-ink-faint">{hint}</p>}
+      {error ? (
+        <p className="mt-2 text-[13.5px] text-[#A6391C]">{error}</p>
+      ) : (
+        hint && <p className="mt-2 text-[13px] text-ink-faint">{hint}</p>
+      )}
     </div>
   );
 }

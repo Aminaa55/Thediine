@@ -262,6 +262,63 @@ export async function blockDate(date: string, note: string): Promise<SaveResult>
   return { ok: true };
 }
 
+/** The longest stretch that can be closed in one go, so a slip cannot shut a year. */
+const MAX_RANGE_DAYS = 92;
+
+/**
+ * Close every day from one date to another, inclusive.
+ *
+ * The same closure a single day gets — this only saves clicking fourteen days
+ * one at a time. A day already held by a confirmed event is left alone and
+ * reported back, because the event owns that date, not this.
+ */
+export async function blockDateRange(from: string, to: string, note: string): Promise<SaveResult> {
+  await requireAdmin();
+  const first = asDate(from);
+  const last = asDate(to || from);
+  if (!first || !last) return { ok: false, error: "Choose both dates." };
+  if (last < first) return { ok: false, error: "The last day cannot be before the first." };
+
+  const span = Math.round((last.getTime() - first.getTime()) / 86_400_000) + 1;
+  if (span > MAX_RANGE_DAYS) {
+    return { ok: false, error: `That is ${span} days. Close up to ${MAX_RANGE_DAYS} at a time.` };
+  }
+
+  const dates: Date[] = [];
+  for (let i = 0; i < span; i++) {
+    const d = new Date(first);
+    d.setUTCDate(d.getUTCDate() + i);
+    dates.push(d);
+  }
+
+  // A day an event holds is skipped rather than overwritten: the event decides
+  // that date, and its note must survive.
+  const held = new Set(
+    (await db.dateAvailability.findMany({
+      where: { date: { in: dates }, blockedByOrderId: { not: null } },
+      select: { date: true },
+    })).map((r) => r.date.toISOString().slice(0, 10)),
+  );
+
+  const trimmed = note.trim() || null;
+  let closed = 0;
+  for (const day of dates) {
+    if (held.has(day.toISOString().slice(0, 10))) continue;
+    await db.dateAvailability.upsert({
+      where: { date: day },
+      update: { isClosed: true, note: trimmed },
+      create: { date: day, isClosed: true, note: trimmed },
+    });
+    closed++;
+  }
+
+  refresh();
+  if (closed === 0) {
+    return { ok: false, error: "Every day in that range is already held by an event." };
+  }
+  return { ok: true };
+}
+
 /**
  * Re-open a day.
  *

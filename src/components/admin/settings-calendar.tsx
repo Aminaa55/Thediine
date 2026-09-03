@@ -2,12 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { blockDate, unblockDate, setDateCapacity } from "@/app/admin/settings-actions";
+import { blockDate, blockDateRange, unblockDate, setDateCapacity } from "@/app/admin/settings-actions";
 import { SectionHead, SettingCard, rowInput, useSaver, useSettingsForm } from "./settings-bits";
 import { cairoDayKey } from "@/lib/ordering";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+/** One date the kitchen is shut, as the list of closures shows it. */
+export type ClosedDate = {
+  /** yyyy-mm-dd */
+  date: string;
+  note: string | null;
+  eventOrderId: string | null;
+  eventOrderNumber: string | null;
+};
 
 export type DayState = {
   /** yyyy-mm-dd */
@@ -25,14 +34,22 @@ export type DayState = {
 /**
  * The calendar.
  *
- * One grid of the weeks ahead, and one way to close a day: click it. The days
- * of the week decide the pattern; a single date is an exception to it. There is
- * deliberately no second list of closed dates to keep in step with this.
+ * Four cards, in the order they are reached for. The days of the week decide
+ * the pattern; everything below them is an exception to it — click one day in
+ * the grid, close a stretch of them at once, and read back every date that is
+ * shut.
+ *
+ * The list at the bottom is a view of the same rows the grid draws, not a
+ * second copy: both come from DateAvailability, so they cannot drift apart.
+ * It exists because the grid only reaches six weeks, and a holiday closed for
+ * next spring has to be findable.
  */
-export function CalendarSettings({ workingDays, capacity, days }: {
+export function CalendarSettings({ workingDays, capacity, days, closed }: {
   workingDays: number[];
   capacity: number;
   days: DayState[];
+  /** Every date closed from today onwards, however far ahead. */
+  closed: ClosedDate[];
 }) {
   const week = useSettingsForm({ working_days: workingDays.join(",") });
   const state = useSaver();
@@ -153,7 +170,133 @@ export function CalendarSettings({ workingDays, capacity, days }: {
           </p>
         )}
       </SettingCard>
+
+      <CloseARange state={state} today={today} />
+      <ClosedList closed={closed} state={state} today={today} />
     </div>
+  );
+}
+
+/**
+ * Closing a stretch of days at once.
+ *
+ * The same closure clicking a day gives, applied from one date to another —
+ * a week away, a holiday — without clicking each one. Leave the second date
+ * empty to close only the first.
+ */
+function CloseARange({ state, today }: { state: ReturnType<typeof useSaver>; today: string }) {
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [note, setNote] = useState("");
+
+  return (
+    <SettingCard
+      title="Close several days"
+      note="From one date to another, for a trip or a holiday. Leave the second date empty to close just the one day."
+      state={state}
+    >
+      <div className="flex flex-wrap items-end gap-2.5">
+        <label className="grid gap-1.5">
+          <span className="text-[11px] uppercase tracking-widest text-ink-faint">First day</span>
+          <input
+            type="date" value={from} min={today}
+            onChange={(e) => setFrom(e.target.value)}
+            className={`${rowInput} py-2`}
+          />
+        </label>
+        <label className="grid gap-1.5">
+          <span className="text-[11px] uppercase tracking-widest text-ink-faint">Last day</span>
+          <input
+            type="date" value={to} min={from || today}
+            onChange={(e) => setTo(e.target.value)}
+            className={`${rowInput} py-2`}
+          />
+        </label>
+        <label className="grid flex-1 gap-1.5">
+          <span className="text-[11px] uppercase tracking-widest text-ink-faint">Why, for you</span>
+          <input
+            value={note} onChange={(e) => setNote(e.target.value)}
+            placeholder="Travelling"
+            className={`${rowInput} w-full min-w-0 py-2`}
+          />
+        </label>
+        <button
+          type="button"
+          disabled={state.pending || !from}
+          onClick={() => state.run(async () => {
+            const r = await blockDateRange(from, to, note);
+            if (r.ok) { setFrom(""); setTo(""); setNote(""); }
+            return r;
+          })}
+          className="rounded-full border border-[#A6391C]/45 bg-[#A6391C]/[0.07] px-4 py-2 text-[13.5px] text-[#A6391C] hover:border-[#A6391C] disabled:opacity-40"
+        >
+          Close these days
+        </button>
+      </div>
+    </SettingCard>
+  );
+}
+
+/**
+ * Every closure, in one list.
+ *
+ * The grid above only reaches six weeks; anything further ahead would otherwise
+ * be invisible. A day an event holds is listed but not re-openable here — that
+ * belongs to the event.
+ */
+function ClosedList({ closed, state, today }: {
+  closed: ClosedDate[];
+  state: ReturnType<typeof useSaver>;
+  today: string;
+}) {
+  const upcoming = closed.filter((c) => c.date >= today);
+
+  return (
+    <SettingCard
+      title="Days you have closed"
+      note="Only the dates you closed by hand, and the days an accepted event holds. The weekly days off are set above and are not listed here."
+      state={state}
+    >
+      {upcoming.length === 0 ? (
+        <p className="text-[14.5px] text-ink-soft">No dates are closed. The weekly pattern above still applies.</p>
+      ) : (
+        <ul className="divide-y divide-line-soft">
+          {upcoming.map((c) => (
+            <li key={c.date} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 py-2.5">
+              <span className="min-w-0">
+                <span className="text-[15px] text-ink">
+                  {new Date(c.date + "T00:00:00.000Z").toLocaleDateString("en-GB", {
+                    weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+                  })}
+                </span>
+                {c.eventOrderNumber ? (
+                  <span className="ms-2 text-[13.5px] text-gold">
+                    held by event{" "}
+                    <Link href={`/admin/orders/${c.eventOrderId}`} className="hover:underline">
+                      {c.eventOrderNumber}
+                    </Link>
+                  </span>
+                ) : c.note ? (
+                  <span className="ms-2 text-[13.5px] text-ink-faint">{c.note}</span>
+                ) : null}
+              </span>
+              {c.eventOrderNumber ? (
+                <span className="text-[13px] text-ink-faint">Change it on the event</span>
+              ) : (
+                <button
+                  type="button"
+                  disabled={state.pending}
+                  onClick={() => state.run(() => unblockDate(c.date))}
+                  className="rounded-full border border-line bg-cream-warm px-3.5 py-1.5 text-[13px] text-ink-soft hover:border-gold disabled:opacity-40"
+                >
+                  Open this day
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </SettingCard>
   );
 }
 

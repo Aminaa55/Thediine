@@ -101,6 +101,32 @@ export async function getCalendarDays() {
     );
 }
 
+/**
+ * Every date closed from today onwards, however far ahead.
+ *
+ * The calendar grid only reaches six weeks; a holiday closed for next spring
+ * would otherwise be invisible the moment it scrolled out of view. Weekly days
+ * off are NOT here — those are a pattern, not dates, and they are edited as a
+ * pattern above.
+ */
+export async function getClosedDates() {
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  const rows = await db.dateAvailability.findMany({
+    where: { isClosed: true, date: { gte: today } },
+    include: { blockedByOrder: { select: { id: true, orderNumber: true } } },
+    orderBy: { date: "asc" },
+  });
+
+  return rows.map((o) => ({
+    date: o.date.toISOString().slice(0, 10),
+    note: o.note,
+    eventOrderId: o.blockedByOrder?.id ?? null,
+    eventOrderNumber: o.blockedByOrder?.orderNumber ?? null,
+  }));
+}
+
 export async function getSharedLadder() {
   return db.eventPriceTier.findMany({ orderBy: { minGuests: "asc" } });
 }

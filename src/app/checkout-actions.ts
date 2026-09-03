@@ -156,6 +156,57 @@ function dayKey(d: Date): string {
 }
 
 /**
+ * The dates an EVENT cannot be held on, and why.
+ *
+ * Only closures: a day shut by hand in admin, or one already given to another
+ * event. Deliberately NOT the weekly working days — an event is a booking the
+ * business takes on deliberately, and it has always been free to accept one on
+ * a day it does not normally cook. The daily capacity is not here either: that
+ * counts regular orders, and an event is not one of them.
+ */
+export type EventAvailability = {
+  /** yyyy-mm-dd → the reason to show. */
+  unavailable: Record<string, string>;
+  /** The earliest date the event notice period allows, as yyyy-mm-dd. */
+  earliest: string;
+  /** The closed dates soon, so they can be said before one is picked. */
+  closedSoon: string[];
+};
+
+export async function getEventAvailability(days = 365): Promise<EventAvailability> {
+  const rules = await getRules();
+  const earliestDate = earliestEventFrom(rules);
+  const until = new Date(earliestDate);
+  until.setDate(until.getDate() + days);
+
+  const closures = await db.dateAvailability.findMany({
+    where: { isClosed: true, date: { gte: earliestDate, lte: until } },
+    select: { date: true, note: true, blockedByOrderId: true },
+    orderBy: { date: "asc" },
+  });
+
+  const unavailable: Record<string, string> = {};
+  for (const c of closures) {
+    unavailable[dayKey(c.date)] = c.blockedByOrderId
+      ? "We are already catering an event that day."
+      : c.note || "We are closed that day.";
+  }
+
+  return {
+    unavailable,
+    earliest: toDateInput(earliestDate),
+    // A fortnight of dates someone might actually be choosing between.
+    closedSoon: Object.keys(unavailable)
+      .filter((k) => {
+        const at = (new Date(k + "T00:00:00.000Z").getTime() - earliestDate.getTime()) / 86_400_000;
+        return at >= 0 && at <= 45;
+      })
+      .sort()
+      .slice(0, 6),
+  };
+}
+
+/**
  * Which of the next `days` dates cannot be taken, and why.
  *
  * Three things can close a date: the notice period, an explicit closure or a
@@ -522,11 +573,12 @@ export async function submitEventRequest(
   event: EventDraft,
   lines: CartLine[],
 ): Promise<PlacedOrder> {
-  const ctx = await getCheckoutContext();
+  const [ctx, availability] = await Promise.all([getCheckoutContext(), getEventAvailability()]);
   const check = validateEventSubmission(customer, event, {
     methods: ctx.methods,
     lineCount: lines.length,
     limits: ctx.limits,
+    unavailable: availability.unavailable,
   });
   if (!check.ok) return { ok: false, errors: check.errors };
 
@@ -549,62 +601,86 @@ export async function submitEventRequest(
     return { ok: false, errors: { servingSetup: "That serving option is not available at the moment." } };
   }
 
-  const order = await db.$transaction(async (tx) => {
-    const record = await upsertCustomer(tx, customer);
+  const eventDate = new Date(event.date + "T00:00:00.000Z");
 
-    return tx.order.create({
-      data: {
-        orderNumber: await nextOrderNumber(tx, "EVENT"),
-        type: "EVENT",
-        // A request. It becomes an accepted order only when the business says so.
-        status: "REQUESTED",
-        customerId: record.id,
-        customerName: customer.name.trim(),
-        customerMobile: normaliseMobile(customer.mobile),
-        customerEmail: customer.email.trim() || null,
-        // An event is catered where the customer is; the venue is the address.
-        fulfilmentType: "DELIVERY",
-        deliveryDate: new Date(event.date + "T00:00:00.000Z"),
-        timeSlotLabel: event.time,
-        addressLine: event.venue.trim(),
-        servingSetup: serving.setup,
-        servingSetupLabel: serving.name,
-        subtotal,
-        // Décor, setup and staff are quoted separately and are NOT in this total.
-        deliveryFee: null,
-        total: subtotal,
-        paymentMethod: method,
-        paymentMethodLabel: payment.name,
-        paymentInstructions: payment.instructions || null,
-        paymentStatus: initialPaymentStatus(payment),
-        paymentReference: payment.verifyBeforeDelivery
-          ? customer.paymentReference.trim() || null
-          : null,
-        notes: customer.notes.trim() || null,
-        items: { create: itemData(cart.lines) },
-        statusEvents: { create: { toStatus: "REQUESTED", note: "Requested from the website." } },
-        eventDetail: {
-          create: {
-            eventType: event.eventType as "BIRTHDAY" | "ENGAGEMENT" | "WEDDING" | "OTHER",
-            eventTypeOther: event.eventType === "OTHER" ? event.eventTypeOther.trim() : null,
-            guestCount: guests,
-            eventTime: event.time,
-            pricingMultiplierBp: band?.multiplierBp ?? null,
-            decorRequested: event.decorRequested,
-            setupRequested: event.setupRequested,
-            servingStaffRequested: event.servingStaffRequested,
-            extrasNotes: event.extrasNotes.trim() || null,
-            venueName: event.venue.trim(),
+  try {
+    const order = await db.$transaction(async (tx) => {
+      // Re-read inside the transaction: a date closed between choosing it and
+      // sending the request must not slip through on a stale page.
+      const closure = await tx.dateAvailability.findUnique({
+        where: { date: eventDate },
+        select: { isClosed: true, note: true, blockedByOrderId: true },
+      });
+      if (closure?.isClosed) {
+        throw new ClosedDateError(
+          closure.blockedByOrderId
+            ? `We are already catering an event on ${formatDay(event.date)}.`
+            : closure.note || `We are closed on ${formatDay(event.date)}.`,
+        );
+      }
+
+      const record = await upsertCustomer(tx, customer);
+
+      return tx.order.create({
+        data: {
+          orderNumber: await nextOrderNumber(tx, "EVENT"),
+          type: "EVENT",
+          // A request. It becomes an accepted order only when the business says so.
+          status: "REQUESTED",
+          customerId: record.id,
+          customerName: customer.name.trim(),
+          customerMobile: normaliseMobile(customer.mobile),
+          customerEmail: customer.email.trim() || null,
+          // An event is catered where the customer is; the venue is the address.
+          fulfilmentType: "DELIVERY",
+          deliveryDate: eventDate,
+          timeSlotLabel: event.time,
+          addressLine: event.venue.trim(),
+          servingSetup: serving.setup,
+          servingSetupLabel: serving.name,
+          subtotal,
+          // Décor, setup and staff are quoted separately and are NOT in this total.
+          deliveryFee: null,
+          total: subtotal,
+          paymentMethod: method,
+          paymentMethodLabel: payment.name,
+          paymentInstructions: payment.instructions || null,
+          paymentStatus: initialPaymentStatus(payment),
+          paymentReference: payment.verifyBeforeDelivery
+            ? customer.paymentReference.trim() || null
+            : null,
+          notes: customer.notes.trim() || null,
+          items: { create: itemData(cart.lines) },
+          statusEvents: { create: { toStatus: "REQUESTED", note: "Requested from the website." } },
+          eventDetail: {
+            create: {
+              eventType: event.eventType as "BIRTHDAY" | "ENGAGEMENT" | "WEDDING" | "OTHER",
+              eventTypeOther: event.eventType === "OTHER" ? event.eventTypeOther.trim() : null,
+              guestCount: guests,
+              eventTime: event.time,
+              pricingMultiplierBp: band?.multiplierBp ?? null,
+              decorRequested: event.decorRequested,
+              setupRequested: event.setupRequested,
+              servingStaffRequested: event.servingStaffRequested,
+              extrasNotes: event.extrasNotes.trim() || null,
+              venueName: event.venue.trim(),
+            },
           },
         },
-      },
-      select: { id: true, orderNumber: true, publicToken: true, total: true },
+        select: { id: true, orderNumber: true, publicToken: true, total: true },
+      });
     });
-  });
 
-  if (method === "CARD") {
-    const payAt = await startCardPayment(order, customer, event.venue.trim() || null);
-    return { ok: true, orderNumber: order.orderNumber, token: order.publicToken, payAt: payAt ?? undefined };
+    if (method === "CARD") {
+      const payAt = await startCardPayment(order, customer, event.venue.trim() || null);
+      return { ok: true, orderNumber: order.orderNumber, token: order.publicToken, payAt: payAt ?? undefined };
+    }
+    return { ok: true, orderNumber: order.orderNumber, token: order.publicToken };
+  } catch (e) {
+    if (e instanceof ClosedDateError) return { ok: false, errors: { date: e.message } };
+    throw e;
   }
-  return { ok: true, orderNumber: order.orderNumber, token: order.publicToken };
 }
+
+/** The kitchen is shut that day. Thrown inside the transaction, shown on the date. */
+class ClosedDateError extends Error {}
