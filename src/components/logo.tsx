@@ -13,11 +13,17 @@ export function Logo({
   onDark = false,
 }: {
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "header" | "sm" | "md" | "lg";
   onDark?: boolean;
 }) {
-  const heights = { sm: "h-8", md: "h-10", lg: "h-16" };
-  const text = { sm: "text-[14px]", md: "text-[16px]", lg: "text-[22px]" };
+  // "header" grows with the bar it sits in: 44px inside the 64px mobile bar,
+  // 56px inside the 80px one on desktop. Same file, same proportions — only
+  // the height is set, so the width follows on its own.
+  const heights = { header: "h-11 sm:h-14", sm: "h-8", md: "h-10", lg: "h-16" };
+  const text = {
+    header: "text-[17px] sm:text-[20px]",
+    sm: "text-[14px]", md: "text-[16px]", lg: "text-[22px]",
+  };
 
   if (LOGO_SRC) {
     // eslint-disable-next-line @next/next/no-img-element

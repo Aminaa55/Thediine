@@ -40,7 +40,7 @@ export function SiteHeader() {
           </button>
 
           <Link href="/" aria-label="The Diine, home">
-            <Logo size="sm" />
+            <Logo size="header" />
           </Link>
 
           <nav className="ms-10 hidden items-center gap-9 md:flex">
