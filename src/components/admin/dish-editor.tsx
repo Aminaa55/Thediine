@@ -28,7 +28,7 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
     basePrice: number | null; sellingUnitEn: string | null;
     unitConfirmed: boolean; unitRequired: boolean;
     servesMin: number | null; servesMax: number | null;
-    minQuantity: number; quantityStep: number; reviewNote: string | null;
+    minQuantity: number; quantityStep: number; menuGroups: string[]; reviewNote: string | null;
     isAvailable: boolean; isFeatured: boolean;
     eventPricingEnabled: boolean; eventPricingNote: string | null;
     variants: { id: string; nameEn: string; price: number; isAvailable: boolean }[];
@@ -37,7 +37,7 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
     eventTiers: { id: string; minGuests: number; maxGuests: number; multiplierBp: number | null; fixedPrice: number | null }[];
     orderCount: number;
   };
-  categories: { id: string; nameEn: string }[];
+  categories: { id: string; nameEn: string; groupsEn: string[] }[];
   allergens: { id: string; nameEn: string }[];
   sharedTiers: { minGuests: number; maxGuests: number; multiplierBp: number }[];
 }) {
@@ -69,6 +69,7 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
     servesMax: product.servesMax === null ? "" : String(product.servesMax),
     minQuantity: String(product.minQuantity),
     quantityStep: String(product.quantityStep),
+    menuGroups: product.menuGroups,
     reviewNote: product.reviewNote ?? "",
   });
   const set = (patch: Partial<ProductDetails>) => setDetails((d) => ({ ...d, ...patch }));
@@ -127,10 +128,53 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
 
           <Field label="Course" htmlFor="cat">
             <select id="cat" value={details.categoryId}
-              onChange={(e) => set({ categoryId: e.target.value })} className={input}>
+              onChange={(e) => set({ categoryId: e.target.value, menuGroups: [] })} className={input}>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.nameEn}</option>)}
             </select>
           </Field>
+
+          {/* Only shown for a course that is actually divided into sections. */}
+          {(categories.find((c) => c.id === details.categoryId)?.groupsEn ?? []).length > 0 && (
+            <Field
+              label="Section"
+              htmlFor="section-0"
+              full
+              hint="Where it sits inside the course. A dish can be in more than one — it is still one dish, listed twice."
+            >
+              <div className="flex flex-wrap gap-2">
+                {(categories.find((c) => c.id === details.categoryId)?.groupsEn ?? []).map((g, i) => {
+                  const on = details.menuGroups.includes(g);
+                  return (
+                    <button
+                      key={g}
+                      id={i === 0 ? "section-0" : undefined}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() =>
+                        set({
+                          menuGroups: on
+                            ? details.menuGroups.filter((x) => x !== g)
+                            : [...details.menuGroups, g],
+                        })
+                      }
+                      className={`rounded-full border px-4 py-2 text-[14px] transition-colors ${
+                        on
+                          ? "border-ink bg-ink text-cream"
+                          : "border-line bg-cream-warm text-ink-soft hover:border-gold"
+                      }`}
+                    >
+                      {g}
+                    </button>
+                  );
+                })}
+              </div>
+              {details.menuGroups.length === 0 && (
+                <p className="mt-2 text-[13px] text-ink-faint">
+                  In no section — it will show above them, on its own.
+                </p>
+              )}
+            </Field>
+          )}
 
           <Field
             label="Regular price" htmlFor="price"

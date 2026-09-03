@@ -26,7 +26,7 @@ const prisma = new PrismaClient();
 const added = {
   allergens: 0, settings: 0, eventTiers: 0, categories: 0,
   products: 0, variants: 0, optionChoices: 0, allergenTags: 0, gallery: 0,
-  paymentOptions: 0, servingOptions: 0,
+  paymentOptions: 0, servingOptions: 0, menuGroups: 0,
 };
 
 async function main() {
@@ -114,9 +114,18 @@ async function main() {
     let category = await prisma.category.findUnique({ where: { slug: cat.slug } });
     if (!category) {
       category = await prisma.category.create({
-        data: { slug: cat.slug, nameEn: cat.name, sortOrder: catIndex },
+        data: {
+          slug: cat.slug, nameEn: cat.name, sortOrder: catIndex,
+          groupsEn: cat.groups ?? [],
+        },
       });
       added.categories++;
+    } else if (category.groupsEn.length === 0 && (cat.groups?.length ?? 0) > 0) {
+      // Same rule as a product: a blank is filled once, and never touched again.
+      category = await prisma.category.update({
+        where: { id: category.id },
+        data: { groupsEn: cat.groups! },
+      });
     }
 
     for (const [pIndex, p] of cat.products.entries()) {
@@ -132,8 +141,27 @@ async function main() {
       // A product that already exists is left completely alone — its price, its
       // variants and its options may have been edited since, and this must not
       // undo that.
-      const existing = await prisma.product.findUnique({ where: { slug: p.slug } });
-      if (existing) continue;
+      //
+      // The ONE exception is a field that is still empty on it. A new field —
+      // menu sections, when Main Courses was first divided into Meat, Poultry
+      // and Seafood — arrives after the dishes already exist, so it would
+      // otherwise stay blank on a database set up before it existed. Filling a
+      // blank is not overwriting: the moment the field holds anything, whether
+      // seeded here or chosen in admin, this leaves it alone for good.
+      const existing = await prisma.product.findUnique({
+        where: { slug: p.slug },
+        select: { id: true, menuGroups: true },
+      });
+      if (existing) {
+        if (existing.menuGroups.length === 0 && (p.groups?.length ?? 0) > 0) {
+          await prisma.product.update({
+            where: { id: existing.id },
+            data: { menuGroups: p.groups! },
+          });
+          added.menuGroups++;
+        }
+        continue;
+      }
 
       const product = await prisma.product.create({
         data: {
@@ -144,6 +172,7 @@ async function main() {
           basePrice: p.price !== undefined ? poundsToPiastres(p.price) : null,
           // The portion, as the business supplied it. Confirmed by that fact.
           sellingUnitEn: p.unit ?? null,
+          menuGroups: p.groups ?? [],
           unitConfirmed: p.unit !== undefined,
           reviewNote: p.note ?? null,
           sortOrder: pIndex,
@@ -245,6 +274,7 @@ async function main() {
     if (added.gallery) console.log(`  gallery images   ${added.gallery}`);
     if (added.paymentOptions) console.log(`  payment methods  ${added.paymentOptions}`);
     if (added.servingOptions) console.log(`  serving options  ${added.servingOptions}`);
+    if (added.menuGroups) console.log(`  menu sections    ${added.menuGroups} dishes labelled`);
     console.log("");
   }
 

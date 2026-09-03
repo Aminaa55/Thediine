@@ -60,6 +60,7 @@ export default async function DishPage({ params }: Props) {
             servesMax: product.servesMax,
             minQuantity: product.minQuantity,
             quantityStep: product.quantityStep,
+            menuGroups: product.menuGroups,
             reviewNote: product.reviewNote,
             isAvailable: product.isAvailable,
             isFeatured: product.isFeatured,
@@ -81,7 +82,7 @@ export default async function DishPage({ params }: Props) {
             })),
             orderCount: product._count.orderItems,
           }}
-          categories={categories.map((c) => ({ id: c.id, nameEn: c.nameEn }))}
+          categories={categories.map((c) => ({ id: c.id, nameEn: c.nameEn, groupsEn: c.groupsEn }))}
           allergens={allergens.map((a) => ({ id: a.id, nameEn: a.nameEn }))}
           sharedTiers={sharedTiers.map((t) => ({
             minGuests: t.minGuests, maxGuests: t.maxGuests, multiplierBp: t.multiplierBp,

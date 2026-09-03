@@ -22,7 +22,7 @@ export function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-line-soft bg-cream/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-5 sm:h-20 sm:px-8">
+        <div className="mx-auto flex h-[72px] max-w-content items-center gap-4 px-5 sm:h-24 sm:px-8">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

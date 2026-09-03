@@ -47,6 +47,8 @@ export type SeedEventPricing = {
 export type SeedProduct = {
   slug: string;
   name: string;
+  /** Which sections of its category it appears under. May be more than one. */
+  groups?: string[];
   description?: string;
   /** The NORMAL ORDER price, in EGP. Event prices are derived, never stored here. */
   price?: number;
@@ -62,6 +64,8 @@ export type SeedProduct = {
 export type SeedCategory = {
   slug: string;
   name: string;
+  /** Sections inside this category, in display order. Absent means one list. */
+  groups?: string[];
   products: SeedProduct[];
 };
 
@@ -95,9 +99,11 @@ export const CATALOGUE: SeedCategory[] = [
   {
     slug: "main-courses",
     name: "Main Courses",
+    groups: ["Meat", "Poultry", "Seafood"],
     products: [
       {
         slug: "stuffed-pigeons",
+        groups: ["Poultry"],
         name: "Stuffed Pigeons",
         price: 2000,
         unit: "3 pairs / 6 pigeons",
@@ -111,6 +117,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "stuffed-chicken-lesan-asfour",
+        groups: ["Poultry"],
         name: "Stuffed Chicken with Lesan Asfour",
         price: 650,
         allergens: ["gluten"],
@@ -118,6 +125,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "egyptian-fattah-moza",
+        groups: ["Meat"],
         name: "Egyptian Fattah with Moza",
         price: 2200,
         allergens: ["gluten"],
@@ -125,6 +133,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "lebanese-fattah-chicken",
+        groups: ["Poultry"],
         name: "Lebanese Fattah with Chicken",
         description:
           "With chicken and yogurt, served with basmati rice, almonds & fried Lebanese bread.",
@@ -134,6 +143,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "sweet-sour-shrimps",
+        groups: ["Seafood"],
         name: "Sweet & Sour Shrimps",
         price: 3000,
         unit: "1 kg / serves 5",
@@ -144,6 +154,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "sweet-sour-chicken",
+        groups: ["Poultry"],
         name: "Sweet & Sour Chicken",
         price: 1000,
         allergens: ["gluten", "soy"],
@@ -154,6 +165,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "roast-fakhda",
+        groups: ["Meat"],
         name: "Roast Fakhda",
         price: 6500,
         unit: "Serves 10–12",
@@ -162,6 +174,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "roast-turkey",
+        groups: ["Poultry"],
         name: "Roast Turkey",
         price: 6500,
         unit: "Serves 10–12",
@@ -171,6 +184,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "roast-salmon-side",
+        groups: ["Seafood"],
         name: "Roast Salmon Side",
         price: 3800,
         unit: "Serves 10–12",
@@ -189,6 +203,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "grilled-shrimps",
+        groups: ["Seafood"],
         name: "Grilled Shrimps",
         price: 3000,
         unit: "Serves 5",
@@ -202,6 +217,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "duck-shanks",
+        groups: ["Poultry"],
         name: "Duck Shanks",
         price: 4500,
         unit: "Serves 6–8",
@@ -218,6 +234,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "filet-meat",
+        groups: ["Meat"],
         name: "Fillet Meat",
         price: 3500,
         allergens: ["dairy"],
@@ -229,6 +246,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "roast-beef",
+        groups: ["Meat"],
         name: "Roast Beef",
         price: 3000,
         allergens: ["dairy"],
@@ -240,6 +258,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "roast-turkey-breasts",
+        groups: ["Poultry"],
         name: "Roast Turkey Breasts",
         description: "With special brown sauce.",
         price: 4000,
@@ -259,6 +278,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "grilled-kofta-mini-chicken-shish",
+        groups: ["Meat", "Poultry"],
         name: "Grilled Kofta with Mini Chicken Shish",
         price: 5000,
         unit: "Serves 10",
@@ -272,6 +292,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "swedish-meatballs",
+        groups: ["Meat"],
         name: "Swedish Meatballs",
         description: "Served with jasmine rice.",
         price: 1500,
@@ -280,6 +301,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "chicken-breast-mushroom-mozzarella",
+        groups: ["Poultry"],
         name: "Chicken Breast stuffed with Mushroom & Mozzarella in Creamy Spinach White Sauce",
         price: 1500,
         unit: "Serves 5",
@@ -287,6 +309,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "lemon-butter-chicken",
+        groups: ["Poultry"],
         name: "Lemon & Butter Chicken",
         description: "Served with basmati rice.",
         price: 1300,
@@ -295,6 +318,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "tagine-meammar-pigeon-fillet",
+        groups: ["Poultry"],
         name: "Tagine Meammar with Pigeon Fillet",
         price: 3000,
         allergens: ["dairy"],
@@ -302,6 +326,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "sharkasia",
+        groups: ["Poultry"],
         name: "Sharkasia",
         description: "Served with chicken, Egyptian rice & walnuts.",
         price: 3000,
@@ -310,6 +335,7 @@ export const CATALOGUE: SeedCategory[] = [
       },
       {
         slug: "heart-kidneys-shareya",
+        groups: ["Meat"],
         name: "Heart & Kidneys with Sha'reya",
         description: "Served with sha'reya & almonds.",
         price: 2500,

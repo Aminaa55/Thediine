@@ -16,12 +16,12 @@ export function Logo({
   size?: "header" | "sm" | "md" | "lg";
   onDark?: boolean;
 }) {
-  // "header" grows with the bar it sits in: 44px inside the 64px mobile bar,
-  // 56px inside the 80px one on desktop. Same file, same proportions — only
+  // "header" grows with the bar it sits in: 56px inside the 72px mobile bar,
+  // 72px inside the 96px one on desktop. Same file, same proportions — only
   // the height is set, so the width follows on its own.
-  const heights = { header: "h-11 sm:h-14", sm: "h-8", md: "h-10", lg: "h-16" };
+  const heights = { header: "h-14 sm:h-[72px]", sm: "h-8", md: "h-10", lg: "h-16" };
   const text = {
-    header: "text-[17px] sm:text-[20px]",
+    header: "text-[19px] sm:text-[24px]",
     sm: "text-[14px]", md: "text-[16px]", lg: "text-[22px]",
   };
 

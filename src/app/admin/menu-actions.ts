@@ -96,8 +96,20 @@ export type ProductDetails = {
   servesMax: string;
   minQuantity: string;
   quantityStep: string;
+  /** Which sections of its course this dish shows under. May be more than one. */
+  menuGroups: string[];
   reviewNote: string;
 };
+
+/** Keeps only the sections that the course being saved into really offers. */
+async function allowedGroups(categoryId: string, wanted: string[]): Promise<string[]> {
+  const category = await db.category.findUnique({
+    where: { id: categoryId },
+    select: { groupsEn: true },
+  });
+  const offered = new Set(category?.groupsEn ?? []);
+  return (category?.groupsEn ?? []).filter((g) => offered.has(g) && wanted.includes(g));
+}
 
 export async function saveProduct(id: string, input: ProductDetails): Promise<SaveResult> {
   await requireAdmin();
@@ -145,6 +157,9 @@ export async function saveProduct(id: string, input: ProductDetails): Promise<Sa
       servesMax: input.servesMax.trim() ? int(input.servesMax, 1) : null,
       minQuantity: int(input.minQuantity, 1),
       quantityStep: int(input.quantityStep, 1),
+      // Only sections the chosen course actually has; anything else is dropped
+      // rather than saved as a heading that would never be shown.
+      menuGroups: await allowedGroups(input.categoryId, input.menuGroups),
       reviewNote: input.reviewNote.trim() || null,
     },
   });

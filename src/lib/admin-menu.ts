@@ -68,7 +68,7 @@ export async function getCategories() {
     orderBy: { sortOrder: "asc" },
     select: {
       id: true, slug: true, nameEn: true, descriptionEn: true,
-      isActive: true, sortOrder: true,
+      isActive: true, sortOrder: true, groupsEn: true,
       _count: { select: { products: { where: { archivedAt: null } } } },
     },
   });

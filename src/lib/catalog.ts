@@ -21,6 +21,7 @@ const productSelect = {
     select: { minGuests: true, maxGuests: true, multiplierBp: true, fixedPrice: true },
   },
   sellingUnitEn: true,
+  menuGroups: true,
   servesMin: true,
   servesMax: true,
   minQuantity: true,
@@ -67,6 +68,7 @@ export async function getMenu() {
       slug: true,
       nameEn: true,
       descriptionEn: true,
+      groupsEn: true,
       products: {
         where: { archivedAt: null },
         orderBy: { sortOrder: "asc" },

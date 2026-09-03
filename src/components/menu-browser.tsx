@@ -7,7 +7,13 @@ import { ProductCard } from "./product-card";
 import type { ListedProduct } from "@/lib/catalog";
 import { DEFAULT_EVENT_TIERS, type EventTier } from "@/lib/event-pricing";
 
-type Category = { slug: string; nameEn: string; products: ListedProduct[] };
+type Category = {
+  slug: string;
+  nameEn: string;
+  /** Sections inside this course, in order. Empty means one flat list. */
+  groupsEn?: string[];
+  products: ListedProduct[];
+};
 
 /**
  * Browsing 70+ dishes.
@@ -132,16 +138,79 @@ export function MenuBrowser({
               </div>
               <span className="hair mt-3" aria-hidden="true" />
 
-              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {category.products.map((p) => (
-                  <ProductCard key={p.id} product={p} forEvent={forEvent} tiers={tiers} />
-                ))}
-              </div>
+              <CourseDishes category={category} forEvent={forEvent} tiers={tiers} />
             </section>
           ))
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * A course's dishes, in sections where the course has them.
+ *
+ * Main Courses is divided into Meat, Poultry and Seafood; everything else is
+ * one list and reads exactly as it always did. A dish may belong to more than
+ * one section and is then listed in each — it is still one dish, with one
+ * price and one page, shown twice.
+ */
+function CourseDishes({
+  category, forEvent, tiers,
+}: { category: Category; forEvent: boolean; tiers: EventTier[] }) {
+  const grid = "mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3";
+  const sections = (category.groupsEn ?? []).filter((g) =>
+    category.products.some((p) => p.menuGroups?.includes(g)),
+  );
+
+  if (sections.length === 0) {
+    return (
+      <div className={grid}>
+        {category.products.map((p) => (
+          <ProductCard key={p.id} product={p} forEvent={forEvent} tiers={tiers} />
+        ))}
+      </div>
+    );
+  }
+
+  // Anything not put in a section leads, rather than being stranded at the end.
+  const loose = category.products.filter((p) => (p.menuGroups?.length ?? 0) === 0);
+
+  return (
+    <>
+      {loose.length > 0 && (
+        <div className={grid}>
+          {loose.map((p) => (
+            <ProductCard key={p.id} product={p} forEvent={forEvent} tiers={tiers} />
+          ))}
+        </div>
+      )}
+
+      {sections.map((section) => {
+        const dishes = category.products.filter((p) => p.menuGroups?.includes(section));
+        return (
+          <section key={section} className="mt-12 first:mt-8">
+            <div className="flex items-baseline gap-4">
+              <h3 className="font-display text-[21px] font-semibold text-ink sm:text-[24px]">
+                {section}
+              </h3>
+              <span className="text-[13px] tabular-nums text-ink-faint">{dishes.length}</span>
+              <span className="h-px flex-1 bg-line-soft" aria-hidden="true" />
+            </div>
+            <div className={grid}>
+              {dishes.map((p) => (
+                <ProductCard
+                  key={`${section}-${p.id}`}
+                  product={p}
+                  forEvent={forEvent}
+                  tiers={tiers}
+                />
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </>
   );
 }
 

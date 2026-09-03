@@ -92,7 +92,7 @@ async function main() {
     const category = await prisma.category.upsert({
       where: { slug: cat.slug },
       update: { nameEn: cat.name, sortOrder: catIndex },
-      create: { slug: cat.slug, nameEn: cat.name, sortOrder: catIndex },
+      create: { slug: cat.slug, nameEn: cat.name, sortOrder: catIndex, groupsEn: cat.groups ?? [] },
     });
 
     for (const [pIndex, p] of cat.products.entries()) {
@@ -110,6 +110,7 @@ async function main() {
         basePrice: p.price !== undefined ? poundsToPiastres(p.price) : null,
         // The portion, as the business supplied it. Confirmed by that fact.
         sellingUnitEn: p.unit ?? null,
+        menuGroups: p.groups ?? [],
         unitConfirmed: p.unit !== undefined,
         reviewNote: p.note ?? null,
         sortOrder: pIndex,

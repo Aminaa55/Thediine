@@ -20,6 +20,9 @@ datasource db {
 
 // ---------------------------------------------------------------- catalogue
 
+/// Sections INSIDE a category, in the order they are shown — Main Courses is
+/// split into Meat, Poultry and Seafood. Empty means the category is one flat
+/// list, which is how every other course still reads.
 model Category {
   id            String    @id @default(cuid())
   slug          String    @unique
@@ -30,6 +33,10 @@ model Category {
   imageUrl      String?
   sortOrder     Int       @default(0)
   isActive      Boolean   @default(true)
+  /// The sections this category is divided into, in display order.
+  /// Empty (the default) means no division at all.
+  groupsEn String[] @default([])
+
   products      Product[]
 
   @@index([sortOrder])
@@ -80,6 +87,12 @@ model Product {
 
   /// Overrides the global notice period for dishes needing longer.
   leadTimeDaysOverride Int?
+
+  /// Which of its category's sections this dish appears under. A dish may sit
+  /// in more than one — Grilled Kofta with Mini Chicken Shish is both meat and
+  /// poultry — and it is still ONE product, listed twice, never duplicated.
+  /// Empty means it shows above the sections, ungrouped.
+  menuGroups String[] @default([])
 
   imageUrl    String?
   isAvailable Boolean   @default(true)

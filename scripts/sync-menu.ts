@@ -52,8 +52,8 @@ async function main() {
   for (const [catIndex, cat] of CATALOGUE.entries()) {
     const category = await db.category.upsert({
       where: { slug: cat.slug },
-      update: {},
-      create: { slug: cat.slug, nameEn: cat.name, sortOrder: catIndex },
+      update: { groupsEn: cat.groups ?? [] },
+      create: { slug: cat.slug, nameEn: cat.name, sortOrder: catIndex, groupsEn: cat.groups ?? [] },
     });
 
     for (const [pIndex, p] of cat.products.entries()) {
@@ -78,6 +78,7 @@ async function main() {
             basePrice,
             sellingUnitEn: p.unit ?? null,
             unitConfirmed: p.unit !== undefined,
+            menuGroups: p.groups ?? [],
             reviewNote: p.note ?? null,
             sortOrder: pIndex,
             variants: {
@@ -113,6 +114,7 @@ async function main() {
       const before = {
         price: existing.basePrice,
         unit: existing.sellingUnitEn,
+        groups: existing.menuGroups.join(", "),
       };
 
       await db.product.update({
@@ -125,6 +127,7 @@ async function main() {
           basePrice: wantsVariants ? null : basePrice,
           sellingUnitEn: p.unit ?? null,
           unitConfirmed: p.unit !== undefined,
+          menuGroups: p.groups ?? [],
           // Cleared: the portion is stated once, in the words the business
           // used. Printing a number as well gives "1 kg / serves 5 · Serves 5-5".
           servesMin: null,
@@ -140,6 +143,10 @@ async function main() {
       }
       if (before.unit !== (p.unit ?? null)) {
         moves.push(`portion ${before.unit ? `"${before.unit}"` : "—"} → "${p.unit ?? "—"}"`);
+      }
+      const wantGroups = (p.groups ?? []).join(", ");
+      if (before.groups !== wantGroups) {
+        moves.push(`section ${before.groups || "—"} → ${wantGroups || "—"}`);
       }
 
       // ---------------------------------------------------------- variants
