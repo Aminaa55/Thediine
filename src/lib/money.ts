@@ -13,6 +13,18 @@ export function piastresToPounds(piastres: number): number {
   return piastres / PIASTRES_PER_POUND;
 }
 
+/**
+ * Splits a total into a deposit due now and a remainder due later.
+ *
+ * The deposit is rounded to the nearest piastre and the remainder is whatever
+ * is left, so the two always add back up to the total exactly — nothing is
+ * lost or invented to rounding.
+ */
+export function splitDeposit(total: number, percent: number): { deposit: number; remaining: number } {
+  const deposit = Math.round((total * percent) / 100);
+  return { deposit, remaining: total - deposit };
+}
+
 /** "1,250 EGP" — whole pounds unless there are piastres to show. */
 export function formatEGP(piastres: number): string {
   const pounds = piastres / PIASTRES_PER_POUND;

@@ -1,6 +1,7 @@
 "use client";
 
-import { formatEGP } from "@/lib/money";
+import { formatEGP, splitDeposit } from "@/lib/money";
+import { NORMAL_ORDER_DEPOSIT_PERCENT } from "@/lib/checkout";
 import {
   type CustomerDetails,
   type Errors,
@@ -148,7 +149,7 @@ export function ServingSetupChoice({
  * no card details are collected anywhere on this site.
  */
 export function PaymentChoice({
-  ctx, fulfilment, value, reference, onChange, onReference, errors,
+  ctx, fulfilment, value, reference, onChange, onReference, errors, depositTotal,
 }: {
   ctx: CheckoutContext;
   fulfilment: Fulfilment;
@@ -158,8 +159,16 @@ export function PaymentChoice({
   onChange: (option: PaymentChoiceOption) => void;
   onReference: (r: string) => void;
   errors: Errors;
+  /**
+   * A Normal order's own total, so a deposit can be worked out and shown once
+   * a method that expects money before delivery is chosen. `null` while the
+   * total is not fully known yet (delivery, no area chosen). Left `undefined`
+   * entirely on an event request, which never carries a deposit.
+   */
+  depositTotal?: number | null;
 }) {
   const chosen = ctx.payments.find((p) => p.id === value) ?? null;
+  const depositEnabled = depositTotal !== undefined;
 
   // Cash reads differently depending on where the food is going.
   const wording = (p: PaymentChoiceOption): { title: string; body: string } => {
@@ -171,7 +180,9 @@ export function PaymentChoice({
     if (p.method === "INSTAPAY") {
       return {
         title: p.name,
-        body: "Transfer to us, and we confirm once we have seen the payment arrive.",
+        body: depositEnabled
+          ? "Transfer the deposit, and we confirm your order once we have seen it arrive."
+          : "Transfer to us, and we confirm once we have seen the payment arrive.",
       };
     }
     if (p.method === "CARD") {
@@ -256,11 +267,58 @@ export function PaymentChoice({
             </p>
           )}
 
+          {/*
+            A Normal order paying by a method the money is expected on before
+            delivery pays half now and half on receipt. The amount is worked
+            out from the order's own total, which by this step is always
+            known — Place is refused before it — except while depositTotal is
+            explicitly null, which only happens for a split second before an
+            area is chosen.
+          */}
+          {depositEnabled && (
+            depositTotal === null ? (
+              <p className="mt-4 border-t border-gold/30 pt-4 text-[14.5px] leading-relaxed text-ink-soft">
+                We will show your deposit amount once your delivery area is chosen.
+              </p>
+            ) : (
+              <div className="mt-4 border-t border-gold/30 pt-4">
+                <p className="text-[15px] leading-relaxed text-ink">
+                  A {NORMAL_ORDER_DEPOSIT_PERCENT}% deposit is required to confirm your order. Please
+                  transfer the deposit via {chosen.name} after submitting your order. The remaining{" "}
+                  {100 - NORMAL_ORDER_DEPOSIT_PERCENT}% is paid when you receive your order.
+                </p>
+                <dl className="mt-4 grid gap-2">
+                  {(() => {
+                    const { deposit, remaining } = splitDeposit(depositTotal, NORMAL_ORDER_DEPOSIT_PERCENT);
+                    return (
+                      <>
+                        <DepositRow label="Order total" value={depositTotal} />
+                        <DepositRow label="Deposit due now" value={deposit} strong />
+                        <DepositRow label="Remaining on receipt" value={remaining} />
+                      </>
+                    );
+                  })()}
+                </dl>
+              </div>
+            )
+          )}
+
           <p className="mt-4 border-t border-gold/30 pt-4 text-[14.5px] leading-relaxed text-ink-soft">
             Choosing this does <strong className="font-semibold text-ink">not</strong> mark your
-            order as paid. Your payment shows as{" "}
-            <strong className="font-semibold text-ink">awaiting verification</strong> until we have
-            checked that it arrived, and we confirm it with you.
+            order as paid.{" "}
+            {depositEnabled ? (
+              <>
+                Your deposit shows as{" "}
+                <strong className="font-semibold text-ink">awaiting verification</strong> until we
+                have checked that it arrived, and we confirm your order once it does.
+              </>
+            ) : (
+              <>
+                Your payment shows as{" "}
+                <strong className="font-semibold text-ink">awaiting verification</strong> until we
+                have checked that it arrived, and we confirm it with you.
+              </>
+            )}
           </p>
 
           <div className="mt-5">
@@ -278,6 +336,18 @@ export function PaymentChoice({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/** One line of the deposit breakdown: total, deposit, or remaining. */
+function DepositRow({ label, value, strong = false }: { label: string; value: number; strong?: boolean }) {
+  return (
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+      <dt className={`text-[14.5px] ${strong ? "font-semibold text-ink" : "text-ink-soft"}`}>{label}</dt>
+      <dd className={`tabular-nums ${strong ? "text-[17px] font-semibold text-ink" : "text-[14.5px] text-ink-soft"}`}>
+        {formatEGP(value)}
+      </dd>
     </div>
   );
 }

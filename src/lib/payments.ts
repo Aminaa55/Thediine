@@ -29,6 +29,22 @@ export async function markAwaitingVerification(orderId: string, reference?: stri
 }
 
 /**
+ * The business has seen the DEPOSIT arrive, on a Normal order that requires
+ * one. This is what actually unblocks the order — it can now be confirmed and
+ * cooked — while the remaining half stays due on receipt.
+ */
+export async function markDepositReceived(orderId: string, reference?: string) {
+  return db.order.update({
+    where: { id: orderId },
+    data: {
+      paymentStatus: "PARTIALLY_PAID",
+      paymentReference: reference?.trim() || undefined,
+      paymentVerifiedAt: new Date(),
+    },
+  });
+}
+
+/**
  * The business has seen the money arrive. This is the manual confirmation step
  * an InstaPay order waits on — nothing automatic ever sets it.
  */

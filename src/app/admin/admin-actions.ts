@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { currentAdmin, signIn, endSession } from "@/lib/admin-auth";
-import { cancellationTerms, nextStatuses } from "@/lib/admin-orders";
-import { markPaid, markUnpaid, markRefunded, markAwaitingVerification } from "@/lib/payments";
+import { cancellationTerms, nextStatuses, depositUnconfirmed } from "@/lib/admin-orders";
+import { markPaid, markUnpaid, markRefunded, markAwaitingVerification, markDepositReceived } from "@/lib/payments";
 import type { OrderStatus, PaymentStatus } from "@prisma/client";
 
 /**
@@ -52,7 +52,10 @@ export async function setOrderStatus(orderId: string, to: OrderStatus, note?: st
   const admin = await requireAdmin();
   const order = await db.order.findUnique({
     where: { id: orderId },
-    select: { id: true, status: true, fulfilmentType: true, type: true },
+    select: {
+      id: true, status: true, fulfilmentType: true, type: true,
+      paymentStatus: true, depositAmount: true,
+    },
   });
   if (!order) throw new Error("That order no longer exists.");
 
@@ -60,6 +63,9 @@ export async function setOrderStatus(orderId: string, to: OrderStatus, note?: st
     throw new Error(`An order that is ${order.status} cannot become ${to}.`);
   }
   if (to === "CANCELLED") throw new Error("Use the cancel action, which records the terms.");
+  if (depositUnconfirmed(order)) {
+    throw new Error("Confirm the deposit has arrived before moving this order along — see Payment.");
+  }
 
   await db.$transaction(async (tx) => {
     await tx.order.update({ where: { id: orderId }, data: { status: to } });
@@ -195,6 +201,7 @@ export async function setPaymentStatus(orderId: string, to: PaymentStatus, refer
   if (!order) throw new Error("That order no longer exists.");
 
   if (to === "PAID") await markPaid(orderId, reference);
+  else if (to === "PARTIALLY_PAID") await markDepositReceived(orderId, reference);
   else if (to === "AWAITING_VERIFICATION") await markAwaitingVerification(orderId, reference);
   else if (to === "UNPAID") await markUnpaid(orderId);
   else if (to === "REFUNDED") await markRefunded(orderId);

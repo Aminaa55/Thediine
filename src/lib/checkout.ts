@@ -13,6 +13,14 @@ import {
   EVENT_GUESTS, RULES, earliestNormalDate, earliestEventDate, parseGuests, toDateInput, formatDay,
 } from "./ordering";
 
+/**
+ * A Normal order paid by a method the money is expected on before delivery
+ * (InstaPay today, or any manual method the business adds with the same
+ * setting) requires this much of the total as a deposit before the order is
+ * confirmed. The rest is paid when the order is received.
+ */
+export const NORMAL_ORDER_DEPOSIT_PERCENT = 50;
+
 export type Fulfilment = "DELIVERY" | "PICKUP";
 /** The built-in setups, plus anything the business has added. */
 export type ServingSetup = "RETURNABLE" | "DISPOSABLE" | "OTHER";

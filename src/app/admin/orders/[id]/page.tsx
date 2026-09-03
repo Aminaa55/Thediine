@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { requireAdminPage } from "@/lib/admin-auth";
 import { getOrder } from "@/lib/admin-queries";
 import { db } from "@/lib/db";
-import { nextStatuses, cancellationTerms, STATUS_LABELS } from "@/lib/admin-orders";
+import { nextStatuses, cancellationTerms, STATUS_LABELS, depositUnconfirmed } from "@/lib/admin-orders";
 import { EVENT_TYPE_LABELS } from "@/lib/ordering";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { formatEGP } from "@/lib/money";
@@ -226,6 +226,12 @@ export default async function OrderPage({ params }: Props) {
               <Line label="Total" value={formatEGP(order.total)} strong />
             </dl>
 
+            {order.depositAmount !== null && (
+              <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">
+                Deposit {formatEGP(order.depositAmount)}, remaining {formatEGP(order.total - order.depositAmount)} on receipt.
+              </p>
+            )}
+
             {isEvent && detail?.pricingMultiplierBp && (
               <p className="mt-2 text-[13.5px] text-ink-soft">
                 Priced for {detail.guestCount} guests at {formatMultiplier(detail.pricingMultiplierBp)} the regular menu price.
@@ -310,7 +316,11 @@ export default async function OrderPage({ params }: Props) {
               <p className="mb-4 text-[14.5px] text-ink-soft">
                 Now: <strong className="font-semibold text-ink">{STATUS_LABELS[order.status]}</strong>
               </p>
-              <StatusActions orderId={order.id} next={nextStatuses(order.status, order.fulfilmentType)} />
+              <StatusActions
+                orderId={order.id}
+                next={nextStatuses(order.status, order.fulfilmentType)}
+                depositPending={depositUnconfirmed(order)}
+              />
             </Card>
           )}
 
@@ -325,6 +335,7 @@ export default async function OrderPage({ params }: Props) {
               current={order.paymentStatus}
               reference={order.paymentReference}
               total={order.total}
+              depositAmount={order.depositAmount}
             />
             {order.paymentVerifiedAt && (
               <p className="mt-4 border-t border-line-soft pt-3 text-[13.5px] text-ink-faint">

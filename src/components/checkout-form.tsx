@@ -297,6 +297,9 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
             onChange={(o) => set({ paymentOptionId: o.id, paymentMethod: o.method })}
             onReference={(r) => set({ paymentReference: r })}
             errors={errors}
+            // Pickup's total is known the moment the cart resolves. A delivery
+            // order's total needs its area too — null until one is chosen.
+            depositTotal={form.fulfilment === "PICKUP" ? subtotal : deliveryFee === null ? null : subtotal + deliveryFee}
           />
         </section>
       </div>

@@ -43,9 +43,25 @@ function Err({ message }: { message: string | null }) {
 }
 
 /** The one next step, and nothing competing with it. */
-export function StatusActions({ orderId, next }: { orderId: string; next: OrderStatus[] }) {
+export function StatusActions({
+  orderId, next, depositPending = false,
+}: {
+  orderId: string;
+  next: OrderStatus[];
+  /** A deposit is required and has not been confirmed yet — nothing here moves until it has. */
+  depositPending?: boolean;
+}) {
   const { pending, error, run } = useAction();
   const moves = next.filter((s) => s !== "CANCELLED");
+
+  if (depositPending) {
+    return (
+      <p className="rounded-sm border border-gold/45 bg-gold-pale/40 px-4 py-3 text-[14.5px] leading-relaxed text-ink-soft">
+        Waiting on the deposit. Confirm it under{" "}
+        <strong className="font-semibold text-ink">Payment</strong> before this order can move on.
+      </p>
+    );
+  }
 
   if (moves.length === 0) {
     return <p className="text-[15px] text-ink-soft">This order has reached the end of its journey.</p>;
@@ -124,28 +140,39 @@ export function ConfirmEvent({ orderId, defaultMode = "BLOCK_DAY" }: {
  * An InstaPay transfer waiting to be checked gets one obvious action: mark it
  * paid, once you have seen the money. Everything else is a correction, so it
  * sits quietly underneath — and the two that undo something ask first.
+ *
+ * A Normal order that requires a deposit splits this into two obvious steps
+ * instead of one: mark the deposit received, then — once the rest arrives on
+ * delivery or pickup — mark the order fully paid. Everything else here, an
+ * order with no deposit included, behaves exactly as it always has.
  */
 export function PaymentActions({
-  orderId, method, current, reference, total,
+  orderId, method, current, reference, total, depositAmount,
 }: {
   orderId: string;
   method: "CASH" | "INSTAPAY" | "CARD" | "OTHER";
   current: PaymentStatus;
   reference: string | null;
   total: number;
+  /** This order's own deposit, snapshotted when it was placed. Null: no deposit applies. */
+  depositAmount: number | null;
 }) {
   const { pending, error, run } = useAction();
   const [ref, setRef] = useState(reference ?? "");
   const [confirming, setConfirming] = useState<PaymentStatus | null>(null);
 
-  const waiting = current === "AWAITING_VERIFICATION";
-  const others = (["UNPAID", "AWAITING_VERIFICATION", "PAID", "REFUNDED"] as PaymentStatus[])
-    .filter((s) => s !== current && !(waiting && s === "PAID"));
+  const remaining = depositAmount !== null ? total - depositAmount : null;
+  const waitingOnDeposit = current === "AWAITING_VERIFICATION" && depositAmount !== null;
+  const waitingOnFull = current === "AWAITING_VERIFICATION" && depositAmount === null;
+  const depositReceived = current === "PARTIALLY_PAID";
+
+  const others = (["UNPAID", "AWAITING_VERIFICATION", "PARTIALLY_PAID", "PAID", "REFUNDED"] as PaymentStatus[])
+    .filter((s) => s !== current && !(current === "AWAITING_VERIFICATION" && s === "PAID"));
 
   // Undoing something asks first; simply recording where a payment has got to
   // does not need a second click.
   const needsConfirming = (s: PaymentStatus) =>
-    s === "REFUNDED" || (s === "UNPAID" && current === "PAID");
+    s === "REFUNDED" || (s === "UNPAID" && (current === "PAID" || current === "PARTIALLY_PAID"));
 
   const apply = (s: PaymentStatus) => {
     if (needsConfirming(s) && confirming !== s) return setConfirming(s);
@@ -155,7 +182,26 @@ export function PaymentActions({
 
   return (
     <div>
-      {waiting && (
+      {waitingOnDeposit && (
+        <>
+          <p className="rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.06] px-4 py-3 text-[14.5px] leading-relaxed text-[#A6391C]">
+            Waiting on you: check that the <strong className="font-semibold">{formatEGP(depositAmount!)}</strong>{" "}
+            deposit arrived before marking it received. The remaining{" "}
+            <strong className="font-semibold">{formatEGP(remaining!)}</strong> is paid when the order
+            is received.
+          </p>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => apply("PARTIALLY_PAID")}
+            className="mt-4 flex w-full items-center justify-center rounded-full border border-[#2E6B45] bg-[#2E6B45] px-6 py-4 text-[16px] text-cream transition-colors hover:bg-[#255739] disabled:opacity-50"
+          >
+            {pending ? "Marking received…" : "I have checked it — mark deposit received"}
+          </button>
+        </>
+      )}
+
+      {waitingOnFull && (
         <>
           <p className="rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.06] px-4 py-3 text-[14.5px] leading-relaxed text-[#A6391C]">
             Waiting on you: check that <strong className="font-semibold">{formatEGP(total)}</strong>{" "}
@@ -172,6 +218,24 @@ export function PaymentActions({
         </>
       )}
 
+      {depositReceived && (
+        <>
+          <p className="rounded-sm border border-gold/45 bg-gold-pale/40 px-4 py-3 text-[14.5px] leading-relaxed text-ink">
+            Deposit of <strong className="font-semibold">{formatEGP(depositAmount!)}</strong> received.{" "}
+            <strong className="font-semibold">{formatEGP(remaining!)}</strong> is due when the order
+            is received.
+          </p>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => apply("PAID")}
+            className="mt-4 flex w-full items-center justify-center rounded-full border border-[#2E6B45] bg-[#2E6B45] px-6 py-4 text-[16px] text-cream transition-colors hover:bg-[#255739] disabled:opacity-50"
+          >
+            {pending ? "Marking paid…" : "The rest has arrived — mark fully paid"}
+          </button>
+        </>
+      )}
+
       {/*
         A transfer reference only exists for a transfer. Cash has none — and a
         method the business added itself counts as a transfer when the money
@@ -179,6 +243,7 @@ export function PaymentActions({
       */}
       {(method === "INSTAPAY"
         || current === "AWAITING_VERIFICATION"
+        || current === "PARTIALLY_PAID"
         || reference !== null) && (
         <div className="mt-5">
           <label htmlFor="ref" className="eyebrow mb-2 block">

@@ -445,7 +445,8 @@ model ServingOption {
 /// Deliberately independent of OrderStatus: a delivered order can be unpaid.
 enum PaymentStatus {
   UNPAID
-  AWAITING_VERIFICATION // InstaPay transfer claimed, not yet checked
+  AWAITING_VERIFICATION // transfer claimed (the deposit, on a deposit order), not yet checked
+  PARTIALLY_PAID // the deposit is confirmed; the remainder is due on receipt
   PAID
   REFUNDED
 }
@@ -492,6 +493,13 @@ model Order {
   deliveryFee Int?
   discount    Int  @default(0)
   total       Int
+  /// Set only for a Normal order paying by a method the money is expected on
+  /// before delivery (InstaPay today). Half of `total` at the moment the order
+  /// was placed, snapshotted so a later change to the deposit rule never
+  /// rewrites an order already sitting on it. NULL means no deposit applies —
+  /// every order placed before this existed, every event, and every order
+  /// paying cash or by card.
+  depositAmount Int?
 
   paymentMethod     PaymentMethod
   /// The name of the payment method as it was when the order was placed.

@@ -24,6 +24,7 @@ const STATUS_TONE: Record<OrderStatus, string> = {
 const PAYMENT_TONE: Record<PaymentStatus, string> = {
   UNPAID: "border-line bg-cream text-ink-soft",
   AWAITING_VERIFICATION: "border-[#A6391C]/35 bg-[#A6391C]/[0.07] text-[#A6391C]",
+  PARTIALLY_PAID: "border-gold/50 bg-gold-pale/50 text-ink",
   PAID: "border-[#2E6B45]/35 bg-[#2E6B45]/[0.08] text-[#2E6B45]",
   REFUNDED: "border-line bg-cream text-ink-faint",
 };

@@ -16,6 +16,7 @@ import {
   validateNormal,
   validateEventSubmission,
   normaliseMobile,
+  NORMAL_ORDER_DEPOSIT_PERCENT,
   type CustomerDetails,
   type NormalCheckout,
   type PaymentMethodId,
@@ -25,6 +26,7 @@ import {
   type PaymentChoice,
   type ServingChoice,
 } from "@/lib/checkout";
+import { splitDeposit } from "@/lib/money";
 
 /**
  * Placing an order.
@@ -421,6 +423,15 @@ export async function placeNormalOrder(
   const payment = ctx.payments.find((x) => x.id === input.paymentOptionId)!;
   const method = payment.method;
 
+  // A Normal order paid by a method the money is expected on before delivery
+  // requires a deposit; everything else — cash, card, pickup or delivery
+  // alike — does not. Worked out from the order's own total and frozen onto
+  // it, so a later change to the deposit rule never rewrites an order already
+  // sitting on it.
+  const depositAmount = payment.verifyBeforeDelivery
+    ? splitDeposit(subtotal + deliveryFee, NORMAL_ORDER_DEPOSIT_PERCENT).deposit
+    : null;
+
   try {
     const order = await db.$transaction(async (tx) => {
       // Capacity is re-counted inside the transaction, so two orders placed at
@@ -471,6 +482,7 @@ export async function placeNormalOrder(
           subtotal,
           deliveryFee,
           total: subtotal + deliveryFee,
+          depositAmount,
           paymentMethod: method,
           paymentMethodLabel: payment.name,
           paymentInstructions: payment.instructions || null,

@@ -66,6 +66,7 @@ export function CartView() {
         <NormalOrderSection
           cart={normal}
           pending={pending}
+          soleOrder={!hasEvent}
           onQuantity={(k, q) => setQuantity("normal", k, q)}
           onRemove={(k) => removeLine("normal", k)}
         />
@@ -91,10 +92,16 @@ export function CartView() {
 }
 
 function NormalOrderSection({
-  cart, pending, onQuantity, onRemove,
+  cart, pending, soleOrder, onQuantity, onRemove,
 }: {
   cart: ResolvedCart;
   pending: boolean;
+  /**
+   * True when there is no event request alongside this in the cart — nothing
+   * to distinguish it from, so it is simply "your order" rather than the
+   * "normal order" half of a pair.
+   */
+  soleOrder: boolean;
   onQuantity: (key: string, q: number) => void;
   onRemove: (key: string) => void;
 }) {
@@ -103,9 +110,9 @@ function NormalOrderSection({
     <section className="overflow-hidden rounded-sm border border-line bg-cream-warm">
       <header className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line bg-cream-deep px-6 py-5 sm:px-8">
         <div>
-          <p className="text-[11px] uppercase tracking-widest text-ink-faint">Normal order</p>
-          <h2 className="mt-1.5 font-display text-[24px] font-semibold leading-tight text-ink">
-            Your regular order
+          {!soleOrder && <p className="text-[11px] uppercase tracking-widest text-ink-faint">Normal order</p>}
+          <h2 className={`font-display text-[24px] font-semibold leading-tight text-ink ${soleOrder ? "" : "mt-1.5"}`}>
+            {soleOrder ? "Your order" : "Your regular order"}
           </h2>
         </div>
         <Link href="/menu" className="link-sweep text-[14.5px]">Add more dishes</Link>

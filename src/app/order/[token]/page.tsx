@@ -42,6 +42,10 @@ const PAYMENT_STATUS: Record<string, { label: string; body: string }> = {
     label: "Awaiting verification",
     body: "We check the transfer and confirm it with you. Until then this is not marked as paid.",
   },
+  PARTIALLY_PAID: {
+    label: "Deposit received",
+    body: "Your deposit is confirmed. The remaining amount is paid when you receive your order.",
+  },
   PAID: { label: "Paid", body: "We have received your payment." },
   // Kept for completeness; a card payment that fails simply stays UNPAID.
   REFUNDED: { label: "Refunded", body: "This payment was refunded." },
@@ -99,6 +103,11 @@ export default async function OrderPage({ params }: Props) {
   const paidUpFront =
     order.paymentStatus === "AWAITING_VERIFICATION" || !!order.paymentInstructions;
 
+  // A deposit order carries its own snapshot of what was due; everything else
+  // — cash, card, an order placed before this existed — has none.
+  const remaining = order.depositAmount !== null ? order.total - order.depositAmount : null;
+  const depositPending = order.depositAmount !== null && order.paymentStatus === "AWAITING_VERIFICATION";
+
   // A card payment that did not go through leaves the order placed and unpaid.
   const cardUnpaid = order.paymentMethod === "CARD" && order.paymentStatus === "UNPAID";
 
@@ -144,9 +153,37 @@ export default async function OrderPage({ params }: Props) {
           <p className="mt-2 whitespace-pre-line text-[16px] leading-relaxed text-ink">
             {order.paymentInstructions}
           </p>
-          <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">
+
+          {depositPending && (
+            <>
+              <p className="mt-4 border-t border-gold/30 pt-4 text-[15px] leading-relaxed text-ink">
+                A 50% deposit is required to confirm your order. Please transfer the deposit via{" "}
+                {methodName} — the remaining 50% is paid when you receive your order.
+              </p>
+              <dl className="mt-4 grid gap-2">
+                <DepositRow label="Order total" value={order.total} />
+                <DepositRow label="Deposit due now" value={order.depositAmount!} strong />
+                <DepositRow label="Remaining on receipt" value={remaining!} />
+              </dl>
+            </>
+          )}
+
+          <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
             Send us the reference once you have paid and we will confirm it.
           </p>
+        </div>
+      )}
+
+      {/* Once the deposit is confirmed, the split stays visible — just without
+          the call to transfer, since that part is already done. */}
+      {order.depositAmount !== null && !depositPending && (
+        <div className="mt-6 rounded-sm border border-line bg-cream-warm px-6 py-5">
+          <p className="text-[11px] uppercase tracking-widest text-ink-faint">Deposit</p>
+          <dl className="mt-3 grid gap-2">
+            <DepositRow label="Order total" value={order.total} />
+            <DepositRow label="Deposit received" value={order.depositAmount} strong />
+            <DepositRow label="Remaining on receipt" value={remaining!} />
+          </dl>
         </div>
       )}
 
@@ -312,6 +349,15 @@ export default async function OrderPage({ params }: Props) {
                   : "Your card payment did not go through, so this order is still unpaid. We will sort the payment out with you when we call."
               }
             />
+          ) : order.depositAmount !== null ? (
+            <Next
+              n={2}
+              body={
+                depositPending
+                  ? `Once your deposit arrives by ${methodName.toLowerCase()} we check it and confirm your order. The remaining ${formatEGP(remaining!)} is paid when you receive it.`
+                  : `Your deposit is confirmed. Pay the remaining ${formatEGP(remaining!)} when you receive your order.`
+              }
+            />
           ) : paidUpFront ? (
             <Next
               n={2}
@@ -351,6 +397,17 @@ export default async function OrderPage({ params }: Props) {
         <Link href="/menu" className="btn-primary">Back to the menu</Link>
         <Link href="/cart" className="btn-outline">Your cart</Link>
       </div>
+    </div>
+  );
+}
+
+function DepositRow({ label, value, strong = false }: { label: string; value: number; strong?: boolean }) {
+  return (
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+      <dt className={`text-[14.5px] ${strong ? "font-semibold text-ink" : "text-ink-soft"}`}>{label}</dt>
+      <dd className={`tabular-nums ${strong ? "text-[17px] font-semibold text-ink" : "text-[14.5px] text-ink-soft"}`}>
+        {formatEGP(value)}
+      </dd>
     </div>
   );
 }

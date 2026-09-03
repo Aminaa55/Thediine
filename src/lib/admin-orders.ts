@@ -1,4 +1,4 @@
-import type { OrderStatus, OrderType, FulfilmentType } from "@prisma/client";
+import type { OrderStatus, OrderType, FulfilmentType, PaymentStatus } from "@prisma/client";
 
 /**
  * How an order is allowed to move.
@@ -25,9 +25,24 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
 export const PAYMENT_LABELS = {
   UNPAID: "Unpaid",
   AWAITING_VERIFICATION: "Awaiting verification",
+  PARTIALLY_PAID: "Deposit received",
   PAID: "Paid",
   REFUNDED: "Refunded",
 } as const;
+
+/**
+ * A Normal order that requires a deposit stays put until someone has checked
+ * the deposit arrived — it cannot be confirmed, let alone cooked, on the
+ * strength of an unverified transfer. Cancelling is untouched by this: that
+ * is its own action, not a move through this list.
+ */
+export function depositUnconfirmed(order: {
+  type: OrderType;
+  depositAmount: number | null;
+  paymentStatus: PaymentStatus;
+}): boolean {
+  return order.type === "NORMAL" && order.depositAmount !== null && order.paymentStatus === "AWAITING_VERIFICATION";
+}
 
 /** What this order can become next, given how it is being fulfilled. */
 export function nextStatuses(
