@@ -186,6 +186,46 @@ export async function cancelOrder(orderId: string, reason: string) {
   revalidatePath("/admin/orders");
 }
 
+/**
+ * Destroying a cancelled order, for good.
+ *
+ * The one place in this system that really deletes an order, and it is
+ * deliberately narrow: ONLY an order that has already been cancelled, because
+ * cancelling is a decision with its own record and this is merely tidying up
+ * after it. A live order cannot be deleted at all — it has to be cancelled
+ * first, which states a reason and works out the terms.
+ *
+ * What goes with it: its dishes and their options, and its history. What does
+ * NOT: the customer, who may have other orders, and the payment provider's own
+ * event log, which is kept as evidence of what a provider told us and simply
+ * stops pointing at an order. A day this event had blocked is released rather
+ * than left closed for a reason nobody can look up.
+ *
+ * There is no undo. It is meant for a test order placed before opening, or a
+ * duplicate — not for tidying real history away.
+ */
+export async function deleteOrder(orderId: string) {
+  await requireAdmin();
+  const order = await db.order.findUnique({
+    where: { id: orderId },
+    select: { id: true, status: true, orderNumber: true },
+  });
+  if (!order) throw new Error("That order no longer exists.");
+  if (order.status !== "CANCELLED") {
+    throw new Error("Only a cancelled order can be deleted. Cancel it first, which records why.");
+  }
+
+  await db.$transaction(async (tx) => {
+    // Belt and braces: cancelling already releases a day this order held, but
+    // a closure left behind with nothing to explain it would be worse than none.
+    await tx.dateAvailability.deleteMany({ where: { blockedByOrderId: orderId } });
+    await tx.order.delete({ where: { id: orderId } });
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
+}
+
 // ----------------------------------------------------------- payment status
 
 /**

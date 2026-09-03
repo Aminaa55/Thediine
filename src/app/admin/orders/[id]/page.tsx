@@ -8,7 +8,7 @@ import { EVENT_TYPE_LABELS } from "@/lib/ordering";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { formatEGP } from "@/lib/money";
 import { Card, Money, PaymentPill, StatusPill, TypePill, longDate } from "@/components/admin/bits";
-import { StatusActions, ConfirmEvent, PaymentActions, CancelOrder, CopyAddress } from "@/components/admin/order-actions";
+import { StatusActions, ConfirmEvent, PaymentActions, CancelOrder, DeleteOrder, CopyAddress } from "@/components/admin/order-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -352,6 +352,15 @@ export default async function OrderPage({ params }: Props) {
                 charge={terms.charge}
                 percent={terms.percent}
               />
+            </div>
+          )}
+
+          {/* Only once it is cancelled: tidying up after a decision already
+              taken and already recorded. A live order has to be cancelled
+              first, which states a reason. */}
+          {order.status === "CANCELLED" && (
+            <div>
+              <DeleteOrder orderId={order.id} orderNumber={order.orderNumber} />
             </div>
           )}
         </div>

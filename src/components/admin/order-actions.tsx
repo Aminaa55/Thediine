@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { setOrderStatus, confirmEvent, cancelOrder, setPaymentStatus } from "@/app/admin/admin-actions";
+import { setOrderStatus, confirmEvent, cancelOrder, setPaymentStatus, deleteOrder } from "@/app/admin/admin-actions";
 import { STATUS_ACTIONS, PAYMENT_LABELS } from "@/lib/admin-orders";
 import { formatEGP } from "@/lib/money";
 import type { OrderStatus, PaymentStatus } from "@prisma/client";
@@ -356,6 +356,65 @@ export function CancelOrder({
           className="rounded-full border border-[#A6391C] bg-[#A6391C] px-5 py-2.5 text-[14.5px] text-cream disabled:opacity-50"
         >
           {pending ? "Cancelling…" : "Yes, cancel it"}
+        </button>
+        <button type="button" onClick={() => setOpen(false)} className="text-[14px] text-ink-soft underline underline-offset-4">
+          Keep it
+        </button>
+      </div>
+      <Err message={error} />
+    </div>
+  );
+}
+
+/**
+ * Deleting a cancelled order, for good.
+ *
+ * Only ever rendered on an order that is already cancelled. Quiet until asked
+ * for, states plainly that there is no undo, and asks a second time — this is
+ * the one control here that destroys something rather than recording it.
+ */
+export function DeleteOrder({ orderId, orderNumber }: { orderId: string; orderNumber: string }) {
+  const router = useRouter();
+  const [pending, start] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="text-[14px] text-ink-faint underline underline-offset-4 hover:text-[#A6391C]"
+      >
+        Delete this order
+      </button>
+    );
+  }
+
+  return (
+    <div className="rounded-sm border border-[#A6391C]/35 bg-[#A6391C]/[0.05] px-5 py-4">
+      <p className="text-[15px] leading-relaxed text-ink">
+        Delete <strong className="font-semibold">{orderNumber}</strong> and everything on it — its
+        dishes and its history. <strong className="font-semibold">This cannot be undone.</strong>{" "}
+        The customer&rsquo;s contact details are kept, in case they have other orders.
+      </p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => start(async () => {
+            setError(null);
+            try {
+              await deleteOrder(orderId);
+              router.push("/admin/orders");
+            } catch (e) {
+              setError(e instanceof Error ? e.message : "That did not work.");
+            }
+          })}
+          className="rounded-full border border-[#A6391C] bg-[#A6391C] px-5 py-2.5 text-[14.5px] text-cream disabled:opacity-50"
+        >
+          {pending ? "Deleting…" : "Yes, delete it for good"}
         </button>
         <button type="button" onClick={() => setOpen(false)} className="text-[14px] text-ink-soft underline underline-offset-4">
           Keep it
