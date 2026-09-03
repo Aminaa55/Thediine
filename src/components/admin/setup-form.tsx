@@ -21,8 +21,11 @@ export function SetupForm() {
       </div>
 
       <div>
-        <label htmlFor="name" className="eyebrow mb-3 block">Your name</label>
-        <input id="name" name="name" required autoComplete="name" className={field} />
+        <label htmlFor="name" className="eyebrow mb-3 block">Account name</label>
+        <input id="name" name="name" required autoComplete="organization" className={field} />
+        <p className="mt-2 text-[13px] text-ink-faint">
+          Shown in the corner while you are signed in. The business name is fine.
+        </p>
       </div>
 
       <div>
