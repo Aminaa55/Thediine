@@ -398,10 +398,21 @@ export async function placeNormalOrder(
     return { ok: false, errors: { servingSetup: "That serving option is not available at the moment." } };
   }
 
+  // Only an area that is switched on right now counts — `ctx.areas` holds
+  // nothing else — so an area retired between page load and Place is refused,
+  // not silently billed at its old fee.
   const area = input.areaId ? ctx.areas.find((a) => a.id === input.areaId) ?? null : null;
-  // Unknown until the business supplies its areas and fees: recorded as unknown,
-  // never as zero, and left out of the total rather than guessed at.
-  const deliveryFee = input.fulfilment === "DELIVERY" ? (area ? area.fee : null) : 0;
+  if (input.fulfilment === "DELIVERY" && !area) {
+    return {
+      ok: false,
+      errors: ctx.areas.length === 0
+        ? { fulfilment: "Delivery is not available online at the moment. Please choose pickup, or message us on WhatsApp." }
+        : { areaId: "That area is no longer available. Please choose another." },
+    };
+  }
+  // A delivery order always carries the fee it was quoted. Null stays possible
+  // in the schema only for orders placed before areas existed.
+  const deliveryFee: number = input.fulfilment === "DELIVERY" ? area!.fee : 0;
   const subtotal = food;
   // The customer picks a time inside the business's hours; it is recorded as
   // they gave it. Orders placed under the old named slots keep their own label.
@@ -459,7 +470,7 @@ export async function placeNormalOrder(
           servingSetupLabel: serving.name,
           subtotal,
           deliveryFee,
-          total: subtotal + (deliveryFee ?? 0),
+          total: subtotal + deliveryFee,
           paymentMethod: method,
           paymentMethodLabel: payment.name,
           paymentInstructions: payment.instructions || null,

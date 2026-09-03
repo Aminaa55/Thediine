@@ -32,7 +32,15 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
   const router = useRouter();
   const { normalLines, hasEvent, ready, clearNormal, removeLine } = useCart();
 
-  const [form, setForm] = useState<NormalCheckout>(() => firstServing(EMPTY_NORMAL, ctx));
+  // Delivery is priced by area, so it is only on offer once the business has
+  // supplied its areas. Until then the form opens on pickup instead.
+  const deliveryOffered = ctx.areas.length > 0;
+  const [form, setForm] = useState<NormalCheckout>(() =>
+    firstServing(
+      { ...EMPTY_NORMAL, fulfilment: deliveryOffered || !ctx.pickupEnabled ? "DELIVERY" : "PICKUP" },
+      ctx,
+    ),
+  );
   const [cart, setCart] = useState<ResolvedCart | null>(null);
   const [touched, setTouched] = useState(false);
   /**
@@ -77,7 +85,7 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
     () => ctx.areas.find((a) => a.id === form.areaId) ?? null,
     [ctx.areas, form.areaId],
   );
-  // Unknown until the areas and fees are supplied — shown as unknown, not as zero.
+  // Null only while no area has been chosen yet; the order cannot be placed then.
   const deliveryFee = form.fulfilment === "DELIVERY" ? (area ? area.fee : null) : 0;
   const subtotal = cart?.subtotal ?? 0;
 
@@ -123,11 +131,15 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
         <section>
           <SectionHeading step="Step one" title="How would you like it?" />
           <div className={`grid gap-3 ${ctx.pickupEnabled ? "sm:grid-cols-2" : ""}`}>
+            {/* Delivery is only offered once there are areas to price it by.
+                The option stays visible so a customer knows it exists, but it
+                cannot be chosen — an order with an unknown fee is never taken. */}
             <Choice
               on={form.fulfilment === "DELIVERY"}
+              disabled={!deliveryOffered}
               onClick={() => set({ fulfilment: "DELIVERY" })}
               title="Delivery"
-              body="We bring it to you."
+              body={deliveryOffered ? "We bring it to you." : "Not available online yet."}
             />
             {/* Only offered while the business is offering it. */}
             {ctx.pickupEnabled && (
@@ -140,29 +152,43 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
             )}
           </div>
 
-          {form.fulfilment === "DELIVERY" && (
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              {/* The area sets the fee, so it is asked first — but only once the
-                  business has actually supplied its areas. */}
-              {ctx.areas.length > 0 && (
-                <Field label="Area" htmlFor="area" full error={errors.areaId}>
-                  <select
-                    id="area"
-                    value={form.areaId ?? ""}
-                    onChange={(e) => set({ areaId: e.target.value || null })}
-                    className={input(!!errors.areaId)}
-                  >
-                    <option value="">Choose your area</option>
-                    {ctx.areas.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name} — {formatEGP(a.fee)}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-              )}
+          {/* Neither way is open: said plainly, with a way to reach the business. */}
+          {!deliveryOffered && !ctx.pickupEnabled && (
+            <p className="mt-6 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.06] px-5 py-4 text-[14.5px] leading-relaxed text-[#A6391C]">
+              We are not taking orders online at the moment. Please message us on WhatsApp and we will
+              arrange it with you.
+            </p>
+          )}
+          {errors.fulfilment && (
+            <p className="mt-3 text-[13.5px] text-[#A6391C]">{errors.fulfilment}</p>
+          )}
 
-              <Field label="Address" htmlFor="address" full error={errors.addressLine}>
+          {form.fulfilment === "DELIVERY" && deliveryOffered && (
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              {/* The area sets the fee, so it is asked first. */}
+              <Field
+                label="Area" htmlFor="area" full error={errors.areaId}
+                hint={area ? `Delivery to ${area.name} is ${formatEGP(area.fee)}, added to your total.` : "Choose your area to see the delivery fee."}
+              >
+                <select
+                  id="area"
+                  value={form.areaId ?? ""}
+                  onChange={(e) => { set({ areaId: e.target.value || null }); answer("areaId"); }}
+                  className={input(!!errors.areaId)}
+                >
+                  <option value="">Choose your area</option>
+                  {ctx.areas.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name} — {formatEGP(a.fee)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+
+              <Field
+                label="Address" htmlFor="address" full error={errors.addressLine}
+                hint="Street, building, floor and flat — the area above sets the fee, this tells the driver where to go."
+              >
                 <input
                   id="address" value={form.addressLine} autoComplete="street-address"
                   placeholder="Street, building, floor, flat"
@@ -178,14 +204,6 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
                   className={input()}
                 />
               </Field>
-
-              {/* No areas supplied yet, so the fee is not known — and not guessed. */}
-              {ctx.areas.length === 0 && (
-                <p className="sm:col-span-2 rounded-sm border border-line bg-cream px-5 py-4 text-[14.5px] leading-relaxed text-ink-soft">
-                  <strong className="font-semibold text-ink">Delivery fee</strong> — confirmed with
-                  you when we call about this order, and added then. It is not in the total below.
-                </p>
-              )}
             </div>
           )}
         </section>
@@ -340,12 +358,12 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
           <dl className="mt-5 border-t border-line pt-4">
             <ReviewRow label="Subtotal" value={<Money amount={subtotal} />} />
             <ReviewRow
-              label={form.fulfilment === "PICKUP" ? "Pickup" : "Delivery"}
+              label={form.fulfilment === "PICKUP" ? "Pickup" : area ? `Delivery · ${area.name}` : "Delivery"}
               value={
                 form.fulfilment === "PICKUP"
                   ? "No charge"
                   : deliveryFee === null
-                    ? <span className="text-ink-soft">Confirmed with you</span>
+                    ? <span className="text-ink-soft">Choose your area</span>
                     : <Money amount={deliveryFee} />
               }
             />
@@ -358,7 +376,9 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
             </span>
           </div>
           {deliveryFee === null && (
-            <p className="mt-1.5 text-[13.5px] text-ink-faint">Before the delivery fee.</p>
+            <p className="mt-1.5 text-[13.5px] text-ink-faint">
+              The delivery fee is added once you choose your area.
+            </p>
           )}
           {ctx.limits.minimumOrder > 0 && (
             <p className="mt-1.5 text-[13.5px] text-ink-faint">
@@ -402,15 +422,20 @@ function Rule() {
 }
 
 function Choice({
-  on, onClick, title, body,
-}: { on: boolean; onClick: () => void; title: string; body: string }) {
+  on, disabled = false, onClick, title, body,
+}: { on: boolean; disabled?: boolean; onClick: () => void; title: string; body: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-pressed={on}
+      disabled={disabled}
+      aria-pressed={disabled ? undefined : on}
       className={`rounded-sm border px-5 py-5 text-start transition-colors ${
-        on ? "border-gold bg-gold-pale/40" : "border-line bg-cream-warm hover:border-gold"
+        disabled
+          ? "cursor-not-allowed border-line-soft bg-cream opacity-60"
+          : on
+            ? "border-gold bg-gold-pale/40"
+            : "border-line bg-cream-warm hover:border-gold"
       }`}
     >
       <span className="block font-display text-[18px] font-semibold text-ink">{title}</span>

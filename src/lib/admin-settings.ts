@@ -126,7 +126,7 @@ export async function undecided(): Promise<Undecided[]> {
       key: "areas",
       title: "Delivery areas and fees",
       detail:
-        "No areas set up, so an order records its delivery fee as unknown rather than as zero.",
+        "No areas set up, so delivery cannot be chosen at checkout — customers can only pick up.",
       where: "/admin/settings/delivery",
     });
   }

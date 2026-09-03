@@ -218,9 +218,14 @@ export function validateNormal(
   }
 
   if (input.fulfilment === "DELIVERY") {
+    // Delivery is priced by area, so without areas there is no delivery to
+    // offer. The order is refused rather than written with an unknown fee.
+    if (!options.hasAreas) {
+      errors.fulfilment = "Delivery is not available online at the moment. Please choose pickup, or message us on WhatsApp.";
+    } else if (!input.areaId) {
+      errors.areaId = "Please choose your area so we can show the delivery fee.";
+    }
     if (!input.addressLine.trim()) errors.addressLine = "Please give the delivery address.";
-    // The area only becomes required once areas have actually been set up.
-    if (options.hasAreas && !input.areaId) errors.areaId = "Please choose your area.";
   }
 
   return { ok: Object.keys(errors).length === 0, errors };

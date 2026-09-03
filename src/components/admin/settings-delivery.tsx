@@ -85,8 +85,8 @@ function AreasCard({ areas }: { areas: Area[] }) {
     >
       {areas.length === 0 ? (
         <ToDecide>
-          No areas yet, so an order&rsquo;s delivery fee is recorded as unknown rather than as zero
-          and the customer is not shown a fee.
+          No areas yet, so delivery cannot be chosen at checkout — customers can only pick up.
+          Add the first area and delivery opens the moment you save it.
         </ToDecide>
       ) : (
         <ul className="divide-y divide-line-soft">
