@@ -108,11 +108,12 @@ h1{font-size:30px}
   padding:3px 12px; font-size:12.5px}
 .st-REQUESTED{border-color:rgba(168,126,46,.5); background:rgba(239,226,190,.5); color:var(--ink)}
 .st-NEW{border-color:rgba(59,35,16,.25); background:var(--cream-deep); color:var(--ink)}
-.st-CONFIRMED{border-color:var(--ink); background:var(--ink); color:var(--cream)}
+.st-CONFIRMED{border-color:var(--paid); background:var(--paid); color:var(--cream)}
 .st-PREPARING,.st-READY,.st-OUT_FOR_DELIVERY{border-color:var(--gold);
   background:rgba(168,126,46,.22); color:var(--ink)}
 .st-DELIVERED{border-color:var(--line); background:var(--cream); color:var(--ink-faint)}
-.st-CANCELLED{border-color:rgba(166,57,28,.35); background:rgba(166,57,28,.08); color:var(--alert)}
+.st-CANCELLED{border-color:var(--alert); background:rgba(166,57,28,.12); color:var(--alert);
+  font-weight:600}
 .pay-UNPAID{border-color:var(--line); background:var(--cream); color:var(--ink-soft)}
 .pay-AWAITING_VERIFICATION{border-color:rgba(166,57,28,.35); background:rgba(166,57,28,.07);
   color:var(--alert)}
@@ -263,6 +264,13 @@ dl.pairs dd{margin:4px 0 0; font-size:15.5px}
 .btn-primary{background:var(--ink); color:var(--cream)}
 .btn-primary:hover{background:rgba(59,35,16,.9)}
 .btn-danger{background:var(--alert); color:var(--cream)}
+/* Confirming creates a green state, so the action that does it is green too. */
+.btn-go{background:var(--paid); color:var(--cream)}
+.btn-go:hover{background:#26583a}
+/* Cancelling is the one destructive step here, and it says so. */
+.link-cancel{background:none; border:0; padding:0; font-size:14px; color:var(--alert);
+  text-decoration:underline; text-underline-offset:4px; cursor:pointer}
+.link-cancel:hover{color:#8d2f17}
 /* One obvious next step per panel. */
 .btn-main{width:100%; padding:15px 26px; font-size:16px}
 .btn-paid{width:100%; border:1px solid var(--paid); background:var(--paid); color:var(--cream);
@@ -670,6 +678,9 @@ var PAY_LABELS = {
 };
 var OPEN = ["REQUESTED", "NEW", "CONFIRMED", "PREPARING", "READY", "OUT_FOR_DELIVERY"];
 var COOKING = ["CONFIRMED", "PREPARING", "READY", "OUT_FOR_DELIVERY"];
+/* What the kitchen sheet counts for a day. A day already gone keeps the orders
+   it cooked, so looking back at yesterday shows the work rather than a blank. */
+var KITCHEN = COOKING.concat(["DELIVERED"]);
 
 /* Free window: 24 hours for a normal order, 48 for an event. Outside it a
    20% charge is CALCULATED AND RECORDED -- never collected. */
@@ -721,79 +732,16 @@ function freshData() {
     menu: freshMenu(),
     settings: freshSettings(),
     orders: [
+      /* ---- yesterday: delivered and out, so the kitchen has a past day ---- */
       {
-        number: "TD-260830-01", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
-        method: "CASH", fulfilment: "DELIVERY", date: iso(0), time: "18:00",
-        setup: "RETURNABLE", name: "Nour Hassan", mobile: "01012345678",
-        address: "12 Road 9, Maadi", details: "Blue door, second floor", area: "Maadi",
-        notes: "Please ring the bell twice.", placed: "2 days ago",
-        items: [
-          { name: "Lasagna", qty: 2, unit: 100000, instr: "Extra crispy on top, please." },
-          { name: "Fattoush", qty: 1, unit: 55000 }
-        ],
-        history: [
-          { t: "2 days ago", to: "NEW", note: "Placed on the website." },
-          { t: "Yesterday", from: "NEW", to: "CONFIRMED", by: "TheDiine",
-            note: "Confirmed on WhatsApp." }
-        ]
-      },
-      {
-        number: "TD-260830-02", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
-        method: "CASH", fulfilment: "PICKUP", date: iso(0), time: "12:00",
-        setup: "DISPOSABLE", name: "Hana Mostafa", mobile: "01277889900",
-        notes: "", placed: "3 days ago",
-        items: [
-          { name: "Lasagna", qty: 4, unit: 100000 },
-          { name: "Noodles", qty: 2, unit: 65000, variant: "With vegetables" }
-        ],
-        history: [
-          { t: "3 days ago", to: "NEW", note: "Placed on the website." },
-          { t: "2 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine" }
-        ]
-      },
-      {
-        number: "EV-260830-02", type: "EVENT", status: "CONFIRMED", payment: "UNPAID",
-        method: "CASH", fulfilment: "DELIVERY", date: iso(0), time: "19:00",
-        setup: "RETURNABLE", name: "Tarek Sami", mobile: "01066554433",
-        address: "9 Nile Street, Giza", occasion: "Birthday", guests: 25, multiplier: "2\u00d7",
-        extras: ["Serving staff"], extrasNotes: "", notes: "", placed: "a fortnight ago",
-        capacityMode: "KEEP_DAY_OPEN",
-        items: [{ name: "Lasagna", qty: 2, unit: 200000, instr: "No mushrooms." }],
-        history: [
-          { t: "a fortnight ago", to: "REQUESTED", note: "Requested from the website." },
-          { t: "12 days ago", from: "REQUESTED", to: "CONFIRMED", by: "TheDiine",
-            note: "Confirmed; the day stays open." }
-        ]
-      },
-      {
-        number: "TD-260830-03", type: "NORMAL", status: "NEW", payment: "AWAITING_VERIFICATION",
-        method: "INSTAPAY", reference: "IPN-55231", fulfilment: "PICKUP", date: iso(5),
-        time: "13:30", setup: "DISPOSABLE", name: "Omar Fathy", mobile: "01198765432",
-        notes: "", placed: "Today",
-        items: [{ name: "Kunafa with Cream", qty: 3, unit: 110000 }],
-        history: [{ t: "Today", to: "NEW", note: "Placed on the website." }]
-      },
-      {
-        number: "EV-260830-01", type: "EVENT", status: "REQUESTED", payment: "UNPAID",
-        method: "CASH", fulfilment: "DELIVERY", date: iso(9), time: "20:00",
-        setup: "RETURNABLE", name: "Mariam Adel", mobile: "01234567890",
-        email: "mariam@example.com", address: "Villa 22, Sheikh Zayed",
-        occasion: "Engagement", guests: 40, multiplier: "2.5\u00d7",
-        extras: ["Table d\u00e9cor", "Event setup"],
-        extrasNotes: "White and gold, please.", notes: "Anniversary dinner.",
-        placed: "Today",
-        items: [
-          { name: "Lasagna", qty: 3, unit: 250000 },
-          { name: "Kunafa with Cream", qty: 2, unit: 275000 }
-        ],
-        history: [{ t: "Today", to: "REQUESTED", note: "Requested from the website." }]
-      },
-      {
-        number: "TD-260829-01", type: "NORMAL", status: "DELIVERED", payment: "PAID",
+        number: "TD-260904-01", type: "NORMAL", status: "DELIVERED", payment: "PAID",
         method: "INSTAPAY", reference: "IPN-44120", fulfilment: "DELIVERY", date: iso(-1),
         time: "19:30", setup: "DISPOSABLE", name: "Salma Ibrahim", mobile: "01055443322",
-        address: "3 El Nasr Street, Zamalek", notes: "", placed: "4 days ago",
-        items: [{ name: "Stuffed Pigeons", qty: 4, unit: 125000 }],
+        address: "3 El Nasr Street, Zamalek", area: "Heliopolis", notes: "", placed: "4 days ago",
+        items: [
+          { name: "Stuffed Pigeons", qty: 2, unit: 200000 },
+          { name: "Basmati Rice", qty: 2, unit: 50000 }
+        ],
         history: [
           { t: "4 days ago", to: "NEW", note: "Placed on the website." },
           { t: "3 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine" },
@@ -804,16 +752,237 @@ function freshData() {
         ]
       },
       {
-        number: "TD-260828-01", type: "NORMAL", status: "CANCELLED", payment: "UNPAID",
+        number: "TD-260904-02", type: "NORMAL", status: "DELIVERED", payment: "PAID",
+        method: "CASH", fulfilment: "PICKUP", date: iso(-1), time: "13:00",
+        setup: "DISPOSABLE", name: "Hana Mostafa", mobile: "01277889900", notes: "",
+        placed: "5 days ago",
+        items: [
+          { name: "Lasagna", qty: 2, unit: 100000, variant: "Medium \u2014 serves 4\u20135" },
+          { name: "Caesar Salad", qty: 1, unit: 100000 }
+        ],
+        history: [
+          { t: "5 days ago", to: "NEW", note: "Placed on the website." },
+          { t: "4 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine" },
+          { t: "Yesterday", from: "CONFIRMED", to: "PREPARING", by: "TheDiine" },
+          { t: "Yesterday", from: "PREPARING", to: "READY", by: "TheDiine" },
+          { t: "Yesterday", from: "READY", to: "DELIVERED", by: "TheDiine" }
+        ]
+      },
+
+      /* ---------------- today: several going out, at every stage ---------- */
+      {
+        number: "TD-260905-01", type: "NORMAL", status: "OUT_FOR_DELIVERY", payment: "PARTIALLY_PAID",
+        method: "INSTAPAY", reference: "IPN-88214", fulfilment: "DELIVERY", date: iso(0),
+        time: "14:00", setup: "RETURNABLE", name: "Nour Hassan", mobile: "01001234567",
+        address: "12 Road 9, Maadi", details: "Blue door, second floor", area: "Maadi",
+        notes: "Please ring the bell twice.", placed: "3 days ago",
+        items: [
+          { name: "Lasagna", qty: 2, unit: 100000, variant: "Medium \u2014 serves 4\u20135",
+            instr: "Extra crispy on top, please." },
+          { name: "Fattoush", qty: 1, unit: 100000 }
+        ],
+        history: [
+          { t: "3 days ago", to: "NEW", note: "Placed on the website." },
+          { t: "2 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine",
+            note: "Deposit checked; confirmed on WhatsApp." },
+          { t: "Today", from: "CONFIRMED", to: "PREPARING", by: "TheDiine" },
+          { t: "Today", from: "PREPARING", to: "READY", by: "TheDiine" },
+          { t: "Today", from: "READY", to: "OUT_FOR_DELIVERY", by: "TheDiine" }
+        ]
+      },
+      {
+        number: "TD-260905-02", type: "NORMAL", status: "READY", payment: "UNPAID",
+        method: "CASH", fulfilment: "PICKUP", date: iso(0), time: "17:00",
+        setup: "DISPOSABLE", name: "Yasmin Kamal", mobile: "01223334455",
+        notes: "Collecting at five.", placed: "3 days ago",
+        items: [
+          { name: "Om Ali", qty: 2, unit: 80000 },
+          { name: "Tiramisu \u2014 Big Bowl", qty: 1, unit: 120000 }
+        ],
+        history: [
+          { t: "3 days ago", to: "NEW", note: "Placed on the website." },
+          { t: "2 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine" },
+          { t: "Today", from: "CONFIRMED", to: "PREPARING", by: "TheDiine" },
+          { t: "Today", from: "PREPARING", to: "READY", by: "TheDiine" }
+        ]
+      },
+      {
+        number: "TD-260905-03", type: "NORMAL", status: "PREPARING", payment: "PAID",
+        method: "INSTAPAY", reference: "IPN-90310", fulfilment: "DELIVERY", date: iso(0),
+        time: "19:00", setup: "RETURNABLE", name: "Dina Rashad", mobile: "01099887711",
+        address: "Villa 8, Sheikh Zayed", area: "Sheikh Zayed", notes: "", placed: "4 days ago",
+        items: [
+          { name: "Roast Turkey", qty: 1, unit: 650000, instr: "Mixed rice, almonds & raisins." },
+          { name: "Basmati Rice", qty: 2, unit: 50000 },
+          { name: "Baba Ganoush", qty: 2, unit: 40000 }
+        ],
+        history: [
+          { t: "4 days ago", to: "NEW", note: "Placed on the website." },
+          { t: "3 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine" },
+          { t: "Today", from: "CONFIRMED", to: "PREPARING", by: "TheDiine" }
+        ]
+      },
+      {
+        number: "EV-260905-01", type: "EVENT", status: "CONFIRMED", payment: "PAID",
+        method: "INSTAPAY", reference: "IPN-77004", fulfilment: "DELIVERY", date: iso(0),
+        time: "20:00", setup: "RETURNABLE", name: "Tarek Sami", mobile: "01066554433",
+        address: "9 Nile Street, Giza", area: "New Cairo",
+        occasion: "Birthday", guests: 25, multiplier: "2\u00d7",
+        extras: ["Serving staff"], extrasNotes: "", notes: "", placed: "a fortnight ago",
+        capacityMode: "KEEP_DAY_OPEN",
+        items: [
+          { name: "Grilled Kofta with Mini Chicken Shish", qty: 2, unit: 1000000 },
+          { name: "Fattoush", qty: 3, unit: 200000 }
+        ],
+        history: [
+          { t: "a fortnight ago", to: "REQUESTED", note: "Requested from the website." },
+          { t: "12 days ago", from: "REQUESTED", to: "CONFIRMED", by: "TheDiine",
+            note: "Confirmed; the day stays open." }
+        ]
+      },
+
+      /* ------------- tomorrow: confirmed work, so the day ahead is real ---- */
+      {
+        number: "TD-260906-01", type: "NORMAL", status: "CONFIRMED", payment: "PARTIALLY_PAID",
+        method: "INSTAPAY", reference: "IPN-91002", fulfilment: "DELIVERY", date: iso(1),
+        time: "13:30", setup: "RETURNABLE", name: "Farida Adel", mobile: "01144556677",
+        address: "22 Street 254, Maadi", area: "Maadi", notes: "", placed: "2 days ago",
+        items: [
+          { name: "Egyptian Fattah with Moza", qty: 2, unit: 220000 },
+          { name: "Coleslaw", qty: 2, unit: 40000 }
+        ],
+        history: [
+          { t: "2 days ago", to: "NEW", note: "Placed on the website." },
+          { t: "Yesterday", from: "NEW", to: "CONFIRMED", by: "TheDiine",
+            note: "Deposit received." }
+        ]
+      },
+      {
+        number: "TD-260906-02", type: "NORMAL", status: "CONFIRMED", payment: "UNPAID",
+        method: "CASH", fulfilment: "PICKUP", date: iso(1), time: "16:00",
+        setup: "DISPOSABLE", name: "Mostafa Nabil", mobile: "01288990011", notes: "",
+        placed: "Yesterday",
+        items: [
+          { name: "Hawawshi", qty: 2, unit: 120000 },
+          { name: "Spring Rolls", qty: 1, unit: 75000, variant: "With chicken" }
+        ],
+        history: [
+          { t: "Yesterday", to: "NEW", note: "Placed on the website." },
+          { t: "Today", from: "NEW", to: "CONFIRMED", by: "TheDiine" }
+        ]
+      },
+
+      /* ------------------- new, waiting on someone to answer -------------- */
+      {
+        number: "TD-260905-04", type: "NORMAL", status: "NEW", payment: "AWAITING_VERIFICATION",
+        method: "INSTAPAY", reference: "IPN-55231", fulfilment: "DELIVERY", date: iso(4),
+        time: "18:30", setup: "RETURNABLE", name: "Omar Fathy", mobile: "01198765432",
+        address: "5 Abbas El Akkad, Nasr City", area: "Heliopolis",
+        notes: "", placed: "Today",
+        items: [
+          { name: "Roast Fakhda", qty: 1, unit: 650000 },
+          { name: "Mushroom Saut\u00e9 with Caramelized Onions & Parsley", qty: 2, unit: 80000 }
+        ],
+        history: [{ t: "Today", to: "NEW", note: "Placed on the website." }]
+      },
+      {
+        number: "TD-260905-05", type: "NORMAL", status: "NEW", payment: "UNPAID",
+        method: "CASH", fulfilment: "PICKUP", date: iso(3), time: "12:00",
+        setup: "DISPOSABLE", name: "Laila Sherif", mobile: "01033445566", notes: "",
+        placed: "Today",
+        items: [{ name: "Kunafa with Cream", qty: 3, unit: 70000 }],
+        history: [{ t: "Today", to: "NEW", note: "Placed on the website." }]
+      },
+      {
+        number: "TD-260905-06", type: "NORMAL", status: "NEW", payment: "AWAITING_VERIFICATION",
+        method: "INSTAPAY", reference: "", fulfilment: "DELIVERY", date: iso(6),
+        time: "20:00", setup: "RETURNABLE", name: "Karim Halim", mobile: "01555667788",
+        address: "Compound Katameya Heights, Villa 41", area: "New Cairo",
+        notes: "Anniversary dinner, nothing too spicy.", placed: "Today",
+        items: [
+          { name: "Sweet & Sour Shrimps", qty: 2, unit: 300000 },
+          { name: "Noodles", qty: 2, unit: 65000, variant: "With vegetables" },
+          { name: "Cr\u00e8me Br\u00fbl\u00e9e", qty: 2, unit: 80000 }
+        ],
+        history: [{ t: "Today", to: "NEW", note: "Placed on the website." }]
+      },
+
+      /* ------------------------- events, both states ---------------------- */
+      {
+        number: "EV-260905-02", type: "EVENT", status: "REQUESTED", payment: "UNPAID",
+        method: "CASH", fulfilment: "DELIVERY", date: iso(12), time: "20:00",
+        setup: "RETURNABLE", name: "Mariam Adel", mobile: "01234567890",
+        email: "mariam@example.com", address: "Villa 22, Sheikh Zayed", area: "Sheikh Zayed",
+        occasion: "Engagement", guests: 40, multiplier: "2.5\u00d7",
+        extras: ["Table d\u00e9cor", "Event setup"],
+        extrasNotes: "White and gold, please.", notes: "", placed: "Today",
+        items: [
+          { name: "Grilled Kofta with Mini Chicken Shish", qty: 3, unit: 1250000 },
+          { name: "Lasagna", qty: 3, unit: 250000, variant: "Large \u2014 serves 6\u20138" },
+          { name: "Mini Baklava with Kunafa Drizzled with Caramel", qty: 2, unit: 225000 }
+        ],
+        history: [{ t: "Today", to: "REQUESTED", note: "Requested from the website." }]
+      },
+      {
+        number: "EV-260905-03", type: "EVENT", status: "REQUESTED", payment: "UNPAID",
+        method: "INSTAPAY", fulfilment: "DELIVERY", date: iso(26), time: "18:00",
+        setup: "RETURNABLE", name: "Rana El Sayed", mobile: "01277001122",
+        address: "Marassi, North Coast", area: "New Cairo",
+        occasion: "Wedding", guests: 90, multiplier: "5\u00d7",
+        extras: ["Table d\u00e9cor", "Event setup", "Serving staff"],
+        extrasNotes: "Long table for ninety, ivory linen.", notes: "", placed: "Yesterday",
+        items: [
+          { name: "Roast Fakhda", qty: 4, unit: 3250000 },
+          { name: "Mushroom Rocca Salad", qty: 6, unit: 500000 }
+        ],
+        history: [{ t: "Yesterday", to: "REQUESTED", note: "Requested from the website." }]
+      },
+      {
+        number: "EV-260905-04", type: "EVENT", status: "CONFIRMED", payment: "PARTIALLY_PAID",
+        method: "INSTAPAY", reference: "IPN-66120", fulfilment: "DELIVERY", date: iso(9),
+        time: "19:00", setup: "RETURNABLE", name: "Hoda Mansour", mobile: "01011223344",
+        address: "14 Gezira Street, Zamalek", area: "Heliopolis",
+        occasion: "Birthday", guests: 30, multiplier: "2\u00d7",
+        extras: ["Serving staff"], extrasNotes: "", notes: "", placed: "a week ago",
+        capacityMode: "BLOCK_DAY",
+        items: [
+          { name: "Stuffed Pigeons", qty: 4, unit: 400000 },
+          { name: "Eggplant Salad with Pomegranate & Almonds", qty: 3, unit: 200000 }
+        ],
+        history: [
+          { t: "a week ago", to: "REQUESTED", note: "Requested from the website." },
+          { t: "5 days ago", from: "REQUESTED", to: "CONFIRMED", by: "TheDiine",
+            note: "Confirmed; the day is blocked." }
+        ]
+      },
+
+      /* --------------------- cancelled, and a refund ---------------------- */
+      {
+        number: "TD-260903-01", type: "NORMAL", status: "CANCELLED", payment: "UNPAID",
         method: "CASH", fulfilment: "PICKUP", date: iso(-2), time: "12:00",
         setup: "DISPOSABLE", name: "Youssef Kamal", mobile: "01111223344", notes: "",
         placed: "5 days ago", cancelReason: "Customer changed their plans.",
         cancelWithin: true, cancelCharge: 0,
-        items: [{ name: "Koshari", qty: 2, unit: 45000 }],
+        items: [{ name: "Mini Hawawshi", qty: 2, unit: 50000 }],
         history: [
           { t: "5 days ago", to: "NEW", note: "Placed on the website." },
           { t: "3 days ago", from: "NEW", to: "CANCELLED", by: "TheDiine",
             note: "Cancelled inside the free window." }
+        ]
+      },
+      {
+        number: "TD-260902-01", type: "NORMAL", status: "CANCELLED", payment: "REFUNDED",
+        method: "INSTAPAY", reference: "IPN-31877", fulfilment: "DELIVERY", date: iso(-4),
+        time: "18:00", setup: "RETURNABLE", name: "Amira Zaki", mobile: "01566778899",
+        address: "7 Road 200, Degla", area: "Maadi", notes: "",
+        placed: "a week ago", cancelReason: "We were fully booked that day.",
+        cancelWithin: false, cancelCharge: 0,
+        items: [{ name: "Cheesecake Oreo", qty: 2, unit: 130000 }],
+        history: [
+          { t: "a week ago", to: "NEW", note: "Placed on the website." },
+          { t: "6 days ago", from: "NEW", to: "CONFIRMED", by: "TheDiine" },
+          { t: "5 days ago", from: "CONFIRMED", to: "CANCELLED", by: "TheDiine",
+            note: "Cancelled by us; the transfer was refunded." }
         ]
       }
     ]
@@ -1200,7 +1369,7 @@ function viewOrder(number) {
             + '<button type="button" class="opt-btn" data-mode="KEEP_DAY_OPEN">'
             + '<span class="t">Keep the day open</span>'
             + '<span class="b">Regular orders can still be taken alongside it.</span></button></div>'
-            + '<button type="button" class="btn btn-primary btn-main" style="margin-top:20px" '
+            + '<button type="button" class="btn btn-go btn-main" style="margin-top:20px" '
             + 'id="confirm-event">Confirm this event</button>')
         : card("Order status",
             '<p style="font-size:14.5px;color:var(--ink-soft)">Now: <strong>'
@@ -1212,8 +1381,11 @@ function viewOrder(number) {
                   + "before this order can move on.</p>"
                 : '<div style="margin-top:16px">'
                   + nextStatuses(o.status, o.fulfilment).map(function (s, i) {
-                      return '<button type="button" data-to="' + s + '" class="'
-                        + (i === 0 ? "btn btn-primary btn-main" : "btn-second") + '">'
+                      /* Confirming is the green step, because Confirmed is green. */
+                      var cls = i === 0
+                        ? "btn btn-main " + (s === "CONFIRMED" ? "btn-go" : "btn-primary")
+                        : "btn-second";
+                      return '<button type="button" data-to="' + s + '" class="' + cls + '">'
                         + STATUS_ACTIONS[s] + "</button>";
                     }).join("") + "</div>")))
 
@@ -1276,7 +1448,7 @@ function viewOrder(number) {
 
     + (finished ? "" :
         '<div id="cancel-slot">'
-        + '<button type="button" class="link-danger" id="open-cancel">Cancel this order</button></div>')
+        + '<button type="button" class="link-cancel" id="open-cancel">Cancel this order</button></div>')
     + "</div></div></main>";
 }
 function card(title, body) {
@@ -1308,7 +1480,7 @@ function cancelBox(o) {
 function prepFor(date) {
   var dishes = {};
   S.orders.forEach(function (o) {
-    if (o.date !== date || COOKING.indexOf(o.status) < 0) return;
+    if (o.date !== date || KITCHEN.indexOf(o.status) < 0) return;
     o.items.forEach(function (i) {
       var d = dishes[i.name] || (dishes[i.name] = {
         name: i.name, total: 0, normal: 0, event: 0, variations: [], lines: []
@@ -1338,7 +1510,7 @@ function viewKitchen() {
   var orders = S.orders.filter(function (o) {
     return o.date === date && o.status !== "CANCELLED";
   });
-  var cooking = orders.filter(function (o) { return COOKING.indexOf(o.status) >= 0; });
+  var cooking = orders.filter(function (o) { return KITCHEN.indexOf(o.status) >= 0; });
   var mixed = cooking.some(function (o) { return o.type === "EVENT"; })
            && cooking.some(function (o) { return o.type === "NORMAL"; });
   var count = dishes.reduce(function (n, d) { return n + d.total; }, 0);
@@ -3148,7 +3320,7 @@ document.addEventListener("click", function (e) {
   if (t.id === "open-cancel" && order) { $("#cancel-slot").innerHTML = cancelBox(order); return; }
   if (t.id === "keep") {
     $("#cancel-slot").innerHTML =
-      '<button type="button" class="link-danger" id="open-cancel">Cancel this order</button>';
+      '<button type="button" class="link-cancel" id="open-cancel">Cancel this order</button>';
     return;
   }
   if (t.id === "do-cancel" && order) {

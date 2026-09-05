@@ -39,11 +39,12 @@ button{cursor:pointer}
 /* header */
 header.site{position:sticky; top:0; z-index:40; background:rgba(251,241,228,.95);
   backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
-header.site .wrap{display:flex; align-items:center; gap:16px; height:64px}
+header.site .wrap{display:flex; align-items:center; gap:16px; height:76px}
+@media(min-width:640px){header.site .wrap{height:96px}}
 @media(min-width:640px){header.site .wrap{height:80px}}
 .brandlink{display:flex; align-items:center}
-#logo-header{height:44px; width:auto; display:block}
-@media(min-width:640px){#logo-header{height:52px}}
+#logo-header{height:56px; width:auto; display:block}
+@media(min-width:640px){#logo-header{height:72px}}
 #logo-footer{height:76px; width:auto; display:block}
 /* In the flow, near the top of the page, rather than following the scroll. */
 .backbar{background:var(--cream); border-bottom:1px solid var(--line-soft)}
@@ -610,6 +611,72 @@ footer.site .base{border-top:1px solid var(--line); padding:28px 0 64px; font-si
 #co-area{width:100%;border-radius:2px;border:1px solid var(--line);background:var(--cream-warm);
   padding:12px 16px;font-size:16px;color:var(--ink);font-family:inherit}
 #co-area.bad{border-color:rgba(166,57,28,.6)}
+
+/* --- the four courses, drifting ------------------------------------------ */
+.cc{margin-top:56px; overflow:hidden; position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.cc-track{display:flex; align-items:flex-end; gap:20px; width:max-content;
+  animation:ccdrift 44s linear infinite}
+.cc:hover .cc-track{animation-play-state:paused}
+@keyframes ccdrift{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.cc-track{animation:none}
+  .cc{-webkit-mask-image:none; mask-image:none; overflow-x:auto}}
+.cc-card{flex:0 0 auto; display:flex; flex-direction:column; justify-content:space-between;
+  border:1px solid var(--line); background:var(--cream); border-radius:2px;
+  padding:28px 24px; text-decoration:none; color:inherit;
+  transition:transform .3s, border-color .3s, box-shadow .3s}
+.cc-card:hover{transform:translateY(-6px); border-color:var(--gold);
+  box-shadow:0 18px 36px -26px rgba(59,35,16,.6)}
+/* Deliberately unequal, so the row reads as a composition rather than a grid. */
+.cc-card.tall{width:252px; height:252px}
+.cc-card.short{width:238px; height:200px}
+.cc-card.wide{width:328px; height:228px}
+.cc-card.mid{width:272px; height:214px}
+.cc-card .n{font-family:Fraunces,Georgia,serif; font-style:italic; font-size:15px; color:var(--gold)}
+.cc-card .cc-body{display:block}
+.cc-card .t{display:block; font-family:Fraunces,Georgia,serif; font-size:23px; font-weight:600;
+  line-height:1.25}
+.cc-card .c{display:block; margin-top:8px; font-size:13.5px; color:var(--ink-faint)}
+.cc-card .taste{display:block; margin-top:12px; font-family:Fraunces,Georgia,serif;
+  font-style:italic; font-size:13.5px; line-height:1.45; color:var(--gold)}
+.cc-card .u{display:block; margin-top:20px; height:1px; width:32px;
+  background:rgba(168,126,46,.4); transition:width .3s}
+.cc-card:hover .u{width:64px}
+
+/* --- where most tables begin: one composition, one bottom edge ----------- */
+@media(min-width:1024px){
+  .spotlight{align-items:stretch}
+  .spot{display:flex; flex-direction:column; justify-content:center}
+  .spot .btn{align-self:flex-start}
+  .mini{grid-auto-rows:1fr}
+  .mini .card{height:100%}
+}
+
+/* --- occasions, as invitations ------------------------------------------- */
+.occ2 li.invite{display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:14px; padding:40px 26px;
+  border:1px solid rgba(168,126,46,.45);
+  background:linear-gradient(180deg,#FFFDF8 0%,var(--cream-warm) 100%);
+  box-shadow:0 1px 0 rgba(168,126,46,.25) inset, 0 18px 40px -34px rgba(59,35,16,.6)}
+.occ2 li.invite .inv-rule{display:block; width:44px; height:1px; background:rgba(168,126,46,.55)}
+.occ2 li.invite .inv-occ{margin:0; font-family:Fraunces,Georgia,serif; font-size:24px;
+  font-weight:600; letter-spacing:.01em; line-height:1.2; background:none}
+.occ2 li.invite .inv-sub{margin:0; font-family:Fraunces,Georgia,serif; font-style:italic;
+  font-size:14.5px; color:var(--gold); background:none}
+
+/* --- the occasion picker, as invitations --------------------------------- */
+.type-btn{display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:14px; padding:38px 22px;
+  border:1px solid rgba(168,126,46,.45);
+  background:linear-gradient(180deg,#FFFDF8 0%,var(--cream-warm) 100%);
+  box-shadow:0 1px 0 rgba(168,126,46,.25) inset}
+.type-btn .card-rule{display:block; width:40px; height:1px; background:rgba(168,126,46,.55)}
+.type-btn .kicker{display:block; font-family:Fraunces,Georgia,serif; font-style:italic;
+  font-size:14px; color:var(--gold)}
+.type-btn .lbl{display:block; margin-top:0; font-family:Fraunces,Georgia,serif; font-size:24px}
+.type-btn.on{border-color:var(--gold); background:linear-gradient(180deg,#FFFBF0 0%,rgba(239,226,190,.55) 100%);
+  box-shadow:0 0 0 1px rgba(168,126,46,.35) inset}
 </style>
 
 <header class="site">
@@ -623,7 +690,6 @@ footer.site .base{border-top:1px solid var(--line); padding:28px 0 64px; font-si
     <span class="chip-preview">Preview</span>
     <nav class="main">
       <a href="#/menu">Menu</a>
-      <a href="#/our-work">Our Work</a>
       <a href="#/events">Events</a>
     </nav>
     <a class="cart-btn" href="#/cart">
@@ -635,7 +701,7 @@ footer.site .base{border-top:1px solid var(--line); padding:28px 0 64px; font-si
     </a>
   </div>
   <nav class="mobile-nav" id="mobile-nav">
-    <a href="#/menu">Menu</a><a href="#/our-work">Our Work</a><a href="#/events">Events</a><a href="#/cart">Cart</a>
+    <a href="#/menu">Menu</a><a href="#/events">Events</a><a href="#/cart">Cart</a>
   </nav>
 </header>
 
@@ -652,7 +718,6 @@ footer.site .base{border-top:1px solid var(--line); padding:28px 0 64px; font-si
       </div>
       <div><h3 class="eyebrow light">Menu</h3><ul id="footer-cats"></ul></div>
       <div><h3 class="eyebrow light">The Diine</h3><ul>
-        <li><a href="#/our-work">Our Work</a></li>
         <li><a href="#/events">Plan an event</a></li>
         <li><a href="https://www.instagram.com/thediine/" target="_blank" rel="noreferrer">Instagram</a></li>
       </ul></div>
@@ -733,6 +798,9 @@ function hashPath() {
   return (location.hash.replace(/^#/, "").split("?")[0]) || "/";
 }
 const EVENT_LABELS = { BIRTHDAY: "Birthday", ENGAGEMENT: "Engagement", WEDDING: "Wedding", OTHER: "Other" };
+/* The line an invitation would open with, above the occasion itself. */
+const INVITE_KICKER = { BIRTHDAY: "many happy returns", ENGAGEMENT: "to the two of you",
+                        WEDDING: "the longest table", OTHER: "whatever the day is" };
 
 /* ------------------------------------------------- event food pricing
    Event portions are cooked for the whole guest list, so an event price is
@@ -891,7 +959,13 @@ const GOLD_ARC = '<svg viewBox="0 0 60 24" width="64" height="26" fill="none" ar
 const DOTS = '<svg viewBox="0 0 34 6" width="34" height="6" fill="currentColor" aria-hidden="true" style="color:var(--gold)">'
   + '<circle cx="3" cy="3" r="2.2"/><circle cx="17" cy="3" r="2.2" opacity=".55"/><circle cx="31" cy="3" r="2.2" opacity=".3"/></svg>';
 
-function galleryHTML(heading, title, intro, showLink) {
+function galleryHTML(heading, title, intro, showLink, opts) {
+  /* On the home page this sits directly under the hero, which draws the wave
+     into it, so it does not draw its own; and it hands on to the warm band
+     rather than the toast one. */
+  opts = opts || {};
+  const lead = opts.lead !== false;
+  const tail = opts.tail || "toast";
   /* Real photographs. Editorial collage rather than a uniform grid: one lead
      image runs tall, the rest sit at varied proportions with a slight stagger. */
   const g = ASSETS.gallery;
@@ -901,8 +975,8 @@ function galleryHTML(heading, title, intro, showLink) {
     + '<img src="' + item.src + '" alt="' + esc(item.alt) + '" loading="lazy">'
     + '</figure>';
 
-  return '<section class="band-deep" style="position:relative">' + curve("deep", true)
-    + '<div class="wrap" style="padding-top:40px;padding-bottom:112px">'
+  return '<section class="band-deep" style="position:relative">' + (lead ? curve("deep", true) : "")
+    + '<div class="wrap" style="padding-top:' + (lead ? 40 : 72) + 'px;padding-bottom:112px">'
     + '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">'
     + '<div style="max-width:36rem"><p class="label-rule">' + esc(heading) + '</p>'
     + '<h2 class="sec">' + esc(title) + '</h2>'
@@ -910,7 +984,37 @@ function galleryHTML(heading, title, intro, showLink) {
     + '</div>' + (showLink ? '<a class="link-sweep" href="#/our-work">See more of our work \u2192</a>' : DOTS) + '</div>'
     + '<div class="gal">' + fig(g[0], "r45")
     + '<div class="sub">' + g.slice(1, 5).map((it) => fig(it, "")).join("")
-    + '</div></div></div>' + curve("toast") + '</section>';
+    + '</div></div></div>' + curve(tail) + '</section>';
+}
+
+/**
+ * The four courses, drifting.
+ *
+ * One track, the set written twice so the loop has somewhere to go, and the
+ * cards deliberately unequal: a tall one, a short one, a wide one. It pauses
+ * when the pointer is on it, and does not move at all for anyone who has asked
+ * their system for less motion.
+ */
+function courseCarousel() {
+  const sizes = ["tall", "short", "wide", "mid"];
+  const card = (c, i) => {
+    /* Three names from the course itself, so the card says something. */
+    const seen = [];
+    c.products.forEach((p) => {
+      const short = p.name.split(" with ")[0].split(" stuffed ")[0].split(" \u2014 ")[0];
+      if (seen.indexOf(short) < 0 && seen.length < 3) seen.push(short);
+    });
+    const taste = seen.join(" \u00b7 ");
+    return '<a class="cc-card ' + sizes[i % sizes.length] + '" href="#/menu/' + c.slug + '">'
+      + '<span class="n tnum">' + String(i + 1).padStart(2, "0") + '</span>'
+      + '<span class="cc-body"><span class="t">' + esc(c.name) + '</span>'
+      + '<span class="c">' + c.products.length + ' dishes</span>'
+      + '<span class="taste">' + esc(taste) + '</span>'
+      + '<span class="u"></span></span></a>';
+  };
+  const one = DATA.categories.map(card).join("");
+  return '<div class="cc" aria-label="The four courses">'
+    + '<div class="cc-track">' + one + one + '</div></div>';
 }
 
 function viewHome() {
@@ -931,19 +1035,19 @@ function viewHome() {
   +   'for the gatherings you would rather spend with your guests.</p>'
   +   '<div class="ctas"><a class="btn btn-primary" href="#/menu">Order from The Diine</a>'
   +   '<a class="btn btn-outline" href="#/events">Plan an Event</a></div>'
-  +   '</div>' + curve("warm")
+  +   '</div>' + curve("deep")
   + '</section>'
+
+  /* The work comes first: what the food actually looks like on a table. */
+  + galleryHTML("Our work", "Tables we have set",
+      "Photographs from real gatherings we have cooked for.", true, { lead: false, tail: "warm" })
 
   + '<section class="band-warm" style="padding-top:32px;padding-bottom:112px"><div class="wrap">'
   +   '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px">'
   +   '<div style="max-width:28rem"><p class="label-rule">The menu</p>'
   +   '<h2 class="sec">Four courses,<span class="ital"> cooked to order</span></h2></div>' + DOTS + '</div>'
-  +   '<div class="cat-grid2">' + DATA.categories.map((c, i) =>
-        '<a class="cat-card' + (i % 2 === 1 ? " drop" : "") + '" href="#/menu/' + c.slug + '">'
-        + '<span class="n tnum">' + String(i + 1).padStart(2, "0") + '</span>'
-        + '<div><h3>' + esc(c.name) + '</h3><p class="c">' + c.products.length + ' dishes</p>'
-        + '<span class="u"></span></div></a>').join("")
-  +   '</div></div></section>'
+  +   courseCarousel()
+  +   '</div></section>'
 
   + '<section class="band-warm" style="padding:0">' + curve("cream", true) + '</section>'
   + '<section style="padding-top:16px;padding-bottom:112px"><div class="wrap">'
@@ -957,7 +1061,7 @@ function viewHome() {
   +   '</article><div class="mini">' + rest.map(cardHTML).join("") + '</div></div>'
   + '</div></section>'
 
-  + galleryHTML("Our work", "Tables we have set", "Photographs from real gatherings we have cooked for.", true)
+  + '<section style="padding:0">' + curve("toast") + '</section>'
 
   + '<section class="band-toast" style="padding-top:40px;padding-bottom:112px"><div class="wrap"><div class="two-col">'
   +   '<div><p class="label-rule">Hosting &amp; events</p>'
@@ -966,8 +1070,11 @@ function viewHome() {
   +   'choose your dishes, and let us know if you would like the table dressed, the setup handled, or staff on the day.</p>'
   +   '<a class="btn btn-primary" style="margin-top:36px" href="#/events">Plan an Event</a></div>'
   +   '<ul class="occ2" style="margin:0;padding:0">'
-  +   ["Birthdays","Engagements","Weddings","Every other occasion"].map((o, i) =>
-        '<li class="' + (i === 1 ? "d1" : i === 2 ? "d2" : "") + '"><span class="hair"></span><p>' + o + '</p></li>').join("")
+  +   [["Birthdays", "many happy returns"], ["Engagements", "to the two of you"],
+       ["Weddings", "the longest table"], ["Everything else", "whatever the day is"]]
+       .map((o, i) => '<li class="invite ' + (i === 1 ? "d1" : i === 2 ? "d2" : "") + '">'
+         + '<span class="inv-rule"></span><p class="inv-occ">' + esc(o[0]) + '</p>'
+         + '<p class="inv-sub">' + esc(o[1]) + '</p><span class="inv-rule"></span></li>').join("")
   +   '</ul></div></div>' + curve("cream") + '</section>'
 
   + '<section style="padding-top:64px;padding-bottom:112px"><div class="wrap">'
@@ -1369,7 +1476,10 @@ function renderOccasion() {
     + '<div class="step-grid">'
     + Object.keys(EVENT_LABELS).map((t) => '<button type="button" class="type-btn'
         + (e.eventType === t ? " on" : "") + '" data-etype="' + t + '" aria-pressed="' + (e.eventType === t)
-        + '"><span class="hair"></span><span class="lbl">' + EVENT_LABELS[t] + '</span></button>').join("")
+        + '"><span class="card-rule"></span>'
+        + '<span class="kicker">' + esc(INVITE_KICKER[t]) + '</span>'
+        + '<span class="lbl">' + EVENT_LABELS[t] + '</span>'
+        + '<span class="card-rule"></span></button>').join("")
     + '</div>'
     + (e.eventType === "OTHER"
         ? '<div style="margin-top:32px"><label for="other" style="display:block;margin-bottom:12px;font-size:11px;'
