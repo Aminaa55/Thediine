@@ -39,12 +39,13 @@ button{cursor:pointer}
 /* header */
 header.site{position:sticky; top:0; z-index:40; background:rgba(251,241,228,.95);
   backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft)}
-header.site .wrap{display:flex; align-items:center; gap:16px; height:76px}
-@media(min-width:640px){header.site .wrap{height:96px}}
-@media(min-width:640px){header.site .wrap{height:80px}}
+header.site .wrap{display:flex; align-items:center; gap:16px; height:96px}
+@media(min-width:640px){header.site .wrap{height:128px}}
 .brandlink{display:flex; align-items:center}
-#logo-header{height:56px; width:auto; display:block}
-@media(min-width:640px){#logo-header{height:72px}}
+/* The bar is sized around the logo, not the other way round: only the height
+   is set, so the width and the proportions follow the file itself. */
+#logo-header{height:72px; width:auto; display:block}
+@media(min-width:640px){#logo-header{height:96px}}
 #logo-footer{height:76px; width:auto; display:block}
 /* In the flow, near the top of the page, rather than following the scroll. */
 .backbar{background:var(--cream); border-bottom:1px solid var(--line-soft)}
