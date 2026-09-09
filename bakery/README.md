@@ -1,4 +1,4 @@
-# Sourdough bakehouse — customer site
+# The Cozy Loaf — customer site
 
 A single self-contained page. One HTML file, no build step, no server, no
 database. Open `index.html` in a browser and it works.
@@ -25,7 +25,7 @@ needs touching.
 
 | What to change | Where |
 |---|---|
-| Bakery name, currency | `name`, `currency` |
+| Bakery name, tagline, currency | `name`, `tagline`, `eyebrow`, `currency` |
 | Address, phone, email, Instagram, map link | `ownerEmail`, `phone`, `phoneDisplay`, `address`, `mapUrl`, `instagram` |
 | The two loaves — names, prices, descriptions, specs | `loaves` |
 | Take a loaf off sale for a bake | set that loaf's `soldOut: true` |
@@ -57,6 +57,13 @@ A [Formspree](https://formspree.io) endpoint works too: put the
 empty. If the send ever fails, the page falls back to the email app and shows
 the customer their order text so nothing is lost.
 
+## The two images
+
+The logo and the hero photograph live in `assets/` — see
+[`assets/README.md`](assets/README.md) for the two filenames the page expects.
+Both are optional: if a file is not there, the page hides that slot cleanly
+instead of showing a broken image.
+
 ## Putting it online
 
 It is one static file, so anywhere will host it free:
@@ -72,5 +79,7 @@ Then point the domain at it.
 - The page follows the visitor's light or dark setting.
 - Fonts come from Google Fonts; if they fail to load the page falls back to
   system faces and still reads correctly.
-- Addresses, phone numbers, prices and the bakery name in the file are
+- The palette is taken from the logo — ivory ground, terracotta, sage and a
+  blush accent — and holds together in dark mode too.
+- Addresses, phone numbers, loaf names and prices in the file are still
   placeholders. Replace them before going live.
