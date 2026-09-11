@@ -549,34 +549,11 @@ section{position:relative}
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   SETTINGS — the only block you edit.
-   ═══════════════════════════════════════════════════════════════ */
-const SETTINGS = {
-  /* Where a placed order is sent. Until one of these is filled in, an
-     order is only kept in the customer's own browser and never reaches
-     you — the receipt says so plainly.
-
-     Simplest: put your bakery email in ownerEmail. Placing an order then
-     opens the customer's email app with the whole order written out.
-
-     Better: sign up free at web3forms.com, paste the key they send into
-     accessKey and "https://api.web3forms.com/submit" into orderEndpoint.
-     Orders then arrive in your inbox by themselves. A Formspree URL works
-     too — put it in orderEndpoint and leave accessKey empty. */
-  ownerEmail: "",
-  orderEndpoint: "",
-  accessKey: "",
-
-  minNoticeHours: 48,
-  city: "Cairo"
-};
-
-const PRODUCTS = {
-  plain: { name: "Plain Sourdough", price: 230 },
-  olive: { name: "Black Olive Sourdough", price: 250 }
-};
+/* Everything configurable lives in config.js. */
+const SETTINGS = window.COZY_CONFIG;
+const PRODUCTS = SETTINGS.products;
 
 /* ═══════════════════════════════════════════════════════════════ */
 (function () {
@@ -672,7 +649,7 @@ const PRODUCTS = {
       $("#q-" + k).textContent = qty[k];
       const box = $('.step[data-step="' + k + '"]');
       box.querySelector('[data-d="-1"]').disabled = qty[k] === 0;
-      box.querySelector('[data-d="1"]').disabled = qty[k] >= 20;
+      box.querySelector('[data-d="1"]').disabled = qty[k] >= SETTINGS.maxPerLoaf;
     });
     const ks = chosen();
     $("#lines").innerHTML = ks.length
@@ -685,7 +662,7 @@ const PRODUCTS = {
     if (!ks.length && $("#checkout").dataset.open === "true") $("#checkout").dataset.open = "false";
   }
 
-  const bump = (k, d) => { qty[k] = Math.max(0, Math.min(20, qty[k] + d)); render(); };
+  const bump = (k, d) => { qty[k] = Math.max(0, Math.min(SETTINGS.maxPerLoaf, qty[k] + d)); render(); };
   $$(".step").forEach(box => box.addEventListener("click", e => {
     const b = e.target.closest("button");
     if (b) bump(box.dataset.step, Number(b.dataset.d));
@@ -751,6 +728,8 @@ const PRODUCTS = {
     return {
       reference: makeRef(),
       placedAt: new Date().toISOString(),
+      status: "received",
+      statusLabel: "Awaiting confirmation",
       items: chosen().map(k => ({ id: k, name: PRODUCTS[k].name, unitPrice: PRODUCTS[k].price, quantity: qty[k], lineTotal: PRODUCTS[k].price * qty[k] })),
       currency: "EGP",
       subtotal: subtotal(),

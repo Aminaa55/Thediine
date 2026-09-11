@@ -140,7 +140,18 @@ section{position:relative}
   font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.4rem;
   background:var(--blue);border:3px solid var(--espresso);border-radius:99px;
   box-shadow:4px 4px 0 var(--espresso);transform:rotate(-1.5deg)}
-.conf__msg{margin:1.5rem auto 0;max-width:34rem;font-size:1.08rem;line-height:1.65;color:var(--espresso-2)}
+.conf__msg{margin:1.5rem auto 0;max-width:36rem;font-size:1.08rem;line-height:1.65;color:var(--espresso-2)}
+.conf__status{display:inline-flex;align-items:center;gap:.5rem;margin-top:.9rem;padding:.35rem 1rem;
+  font-family:var(--ui);font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  background:var(--gold);color:var(--espresso);border:2.5px solid var(--espresso);border-radius:99px;
+  box-shadow:3px 3px 0 var(--espresso)}
+.conf__status i{width:.6rem;height:.6rem;border-radius:50%;background:var(--terracotta);flex:none}
+
+.wa{max-width:44rem;margin:clamp(2rem,4vw,2.75rem) auto 0;text-align:center}
+.btn--wa{font-size:1.05rem;padding:1.15rem 2.1rem;border-width:3.5px;box-shadow:6px 6px 0 var(--espresso)}
+.btn--wa:hover{box-shadow:9px 9px 0 var(--espresso)}
+.btn--wa svg{width:1.35rem;height:1.35rem;flex:none}
+.wa__hint{margin:.9rem 0 0;font-family:var(--hand);font-size:1.25rem;color:var(--espresso-2)}
 
 .card{max-width:44rem;margin:clamp(2.5rem,5vw,3.5rem) auto 0;background:var(--milk);
   border:4px solid var(--espresso);border-radius:1.8rem;box-shadow:8px 9px 0 var(--espresso);overflow:hidden}
@@ -199,7 +210,17 @@ section{position:relative}
         <img class="conf__mark" src="assets/logo.png" alt="" data-logo>
         <h1>Order <span class="ital">received</span></h1>
         <p><span class="conf__ref" id="ref"></span></p>
-        <p class="conf__msg">We will contact you to confirm your delivery fee and final delivery time.</p>
+        <p><span class="conf__status"><i></i>Received &middot; awaiting confirmation</span></p>
+        <p class="conf__msg">We&rsquo;ve received your order. Send us a quick WhatsApp message below so we
+          can confirm your delivery fee and final delivery time.</p>
+      </div>
+
+      <div class="wa">
+        <a class="btn btn--wa" id="wa" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.25 8.24a8.23 8.23 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.17 8.17 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.26-8.24Zm-2.5 4.06c-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.26 0 1.33.97 2.62 1.1 2.8.14.18 1.88 2.87 4.56 4.02.64.27 1.13.44 1.52.56.64.2 1.22.17 1.68.11.51-.08 1.58-.65 1.8-1.27.22-.63.22-1.16.16-1.27-.07-.11-.25-.18-.52-.31-.27-.14-1.58-.78-1.83-.87-.24-.09-.42-.13-.6.14-.17.27-.68.86-.83 1.04-.16.18-.31.2-.58.07-.27-.14-1.13-.42-2.16-1.33-.8-.71-1.34-1.59-1.49-1.86-.16-.27-.02-.42.12-.55.12-.12.27-.32.4-.48.14-.16.18-.27.28-.45.09-.18.04-.34-.02-.48-.07-.13-.6-1.45-.83-1.98-.22-.52-.43-.45-.6-.46h-.5Z"/></svg>
+          Confirm on WhatsApp
+        </a>
+        <p class="wa__hint" id="wa-hint">your message is written for you &mdash; just press send</p>
       </div>
 
       <div class="card">
@@ -241,6 +262,7 @@ section{position:relative}
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script>
 window.renderConfirmation = function () {
   "use strict";
@@ -284,9 +306,38 @@ window.renderConfirmation = function () {
     ["Requested delivery date", order.delivery.dateLabel]
   ].map(r => '<div><dt>' + esc(r[0]) + '</dt><dd class="wrap-any">' + esc(r[1]) + "</dd></div>").join("");
 
+  /* Pre-filled WhatsApp message, built from this order. */
+  const cfg = window.COZY_CONFIG || {};
+  const waBtn = $("#wa"), waHint = $("#wa-hint");
+  const number = String(cfg.whatsappNumber || "").replace(/\D/g, "");
+
+  if (number) {
+    const lines = [
+      "Hi! I just placed an order with " + (cfg.brand || "The Cozy Loaf") + " \uD83C\uDF5E",
+      "Order: " + order.reference,
+      "Name: " + order.customer.fullName,
+      ""
+    ]
+      .concat(order.items.map(i => i.quantity + " \u00d7 " + i.name))
+      .concat([
+        "",
+        "Requested delivery: " + order.delivery.dateLabel,
+        "Area: " + order.customer.area,
+        "",
+        "Please confirm my order and delivery fee."
+      ]);
+    waBtn.href = "https://wa.me/" + number + "?text=" + encodeURIComponent(lines.join("\n"));
+  } else {
+    waBtn.setAttribute("aria-disabled", "true");
+    waBtn.style.opacity = ".45";
+    waBtn.style.pointerEvents = "none";
+    waBtn.removeAttribute("target");
+    waHint.innerHTML = '<span class="ph-tag">add the bakery WhatsApp number in config.js</span>';
+  }
+
   /* Honest about whether the bakery has actually been told yet. */
   if (order.notified !== "endpoint" && order.notified !== "email") {
-    $("#conf-note").innerHTML = '<span class="ph-tag">no notification sent \u2014 email service not connected yet</span>';
+    $("#conf-note").innerHTML = '<span class="ph-tag">order saved, but no notification reached the bakery \u2014 see config.js</span>';
   }
 
   /* "Order again" must start clean, never resume this one. */

@@ -12,6 +12,7 @@ import pathlib, re, sys
 here = pathlib.Path(__file__).parent
 shop = (here / "index.html").read_text()
 conf = (here / "confirm.html").read_text()
+cfg  = (here / "config.js").read_text()
 
 # The confirmation page's own styles, minus everything it shares with the shop.
 conf_css = conf[conf.index("/* ── Confirmation"):conf.index("/* ── Reveal")]
@@ -56,7 +57,9 @@ shim = """
 })();
 """
 
-out = shop.replace("</style>", conf_css + "\n</style>", 1)
+# config.js is an external file on the real site; a single-file preview inlines it.
+out = shop.replace('<script src="config.js"></script>', "<script>" + cfg + "</script>", 1)
+out = out.replace("</style>", conf_css + "\n</style>", 1)
 out = out.replace("</body>",
                   '<div id="confirm-screen" hidden>' + conf_body + "</div>\n"
                   "<script>" + conf_js + shim + "</script>\n</body>", 1)
