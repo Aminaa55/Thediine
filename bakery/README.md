@@ -1,85 +1,72 @@
-# The Cozy Loaf — customer site
+# The Cozy Loaf — customer homepage
 
-A single self-contained page. One HTML file, no build step, no server, no
+A single self-contained page: one HTML file, no build step, no server, no
 database. Open `index.html` in a browser and it works.
 
-## What it does
+This is a **design direction for review** — the homepage only. No admin, no
+backend, no real order submission yet.
 
-- Shows the two loaves with their real baking figures (hydration, flour blend,
-  ferment times) and prices.
-- Works out the next open bake days from the schedule, and counts down to the
-  order cut-off.
-- Takes an order: loaves and quantities, bake day, collection time, name, phone,
-  email and notes.
-- **Emails the completed order to the owner** and shows the customer a
-  reference and a summary of what happens next.
+## The brand, as built
 
-No payment is taken and there is no admin side — the owner's inbox is the
-order book.
+| | |
+|---|---|
+| Butter yellow `#FFD447` | Hero and social grounds — the main cheerful colour |
+| Soft blush `#FFD3CC` | Secondary grounds and frames |
+| Cherry red `#E5324B` | Buttons, badges, ticker, accents |
+| Warm off-white `#FFFAF3` | Breathing space between loud sections |
+| Deep berry `#4A0D2C` | All text and every outline |
+
+No brown, no beige, no gold, no black panels. Every section changes ground
+colour so the page never settles into one wash.
+
+Type is three voices: **Fraunces** (with its *wonk* and *soft* axes turned up)
+for oversized editorial statements, **Figtree** for anything practical, and
+**Caveat** for handwritten annotations. There is deliberately no monospace.
+
+## What moves
+
+| | |
+|---|---|
+| Ticker + marquee band | Two continuous loops, opposite weights |
+| Hero | Headline words stagger in; logo ring rotates around the photo; medallion drifts on scroll |
+| Rotating word | Cycles through four endings in the hero paragraph |
+| Loaves | Slide in from opposite sides; olives bob in the placeholder |
+| Why sourdough | Drag-to-scroll carousel, tilted cards, arrow buttons, snap points |
+| Gallery | Two marquee rows running opposite ways, pausing on hover |
+| Care tips | Rotate flat and lift on hover |
+| Buttons | Hard shadow, tilt on hover, press down on click |
+| Basket | Counts up live; the confirmation pops in |
+
+Everything is visible at rest — nothing waits on a scroll trigger to appear.
+`prefers-reduced-motion` turns all of it off and leaves the page fully readable.
 
 ## Editing it
 
-Everything you would want to change lives in the `BAKERY` object at the top of
-the `<script>` block near the bottom of `index.html`. Nothing below that object
-needs touching.
+Both prices live in the `PRODUCTS` object at the top of the script:
 
-| What to change | Where |
-|---|---|
-| Bakery name, tagline, currency | `name`, `tagline`, `eyebrow`, `currency` |
-| Address, phone, email, Instagram, map link | `ownerEmail`, `phone`, `phoneDisplay`, `address`, `mapUrl`, `instagram` |
-| The two loaves — names, prices, descriptions, specs | `loaves` |
-| Take a loaf off sale for a bake | set that loaf's `soldOut: true` |
-| Bake days and cut-off | `bakeDays`, `cutoffDays`, `cutoffHour` |
-| Collection times | `pickupSlots` |
-| Batch-size note, collection hours, the four steps | `capacityNote`, `hours`, `steps` |
+```js
+const PRODUCTS = {
+  plain: { name: "Plain Sourdough", price: 230 },
+  olive: { name: "Black Olive Sourdough", price: 250 }
+};
+```
 
-`bakeDays` uses `0` for Sunday through `6` for Saturday, so `[3, 6]` is Wednesday
-and Saturday. Add a third number and a third bake day appears everywhere —
-the countdown, the date list and the order form all follow.
+Images go in `assets/` — see [`assets/README.md`](assets/README.md).
 
-## Getting the order emails
+## Placeholder copy
 
-Out of the box (`orderEndpoint: ""`), pressing **Place order** opens the
-customer's own email app with the whole order already written out and addressed
-to `ownerEmail`. They press send. This needs no sign-up and works today, but it
-depends on the customer having email set up on their device.
+Anything not yet confirmed is marked two ways, so nothing fake reaches a
+customer by accident:
 
-For orders to land in the inbox by themselves:
+- a **pink highlighter** behind the text (`class="ph"`)
+- a **handwritten ✎ tag** next to the block (`class="ph-tag"`)
 
-1. Sign up at [web3forms.com](https://web3forms.com) — free, and it just relays
-   form submissions to an email address.
-2. Give it the owner's address; they email back an access key.
-3. In `index.html`, set `accessKey` to that key and
-   `orderEndpoint` to `"https://api.web3forms.com/submit"`.
+Currently marked as placeholder: both loaf descriptions and their little tags,
+the three storage tips, the "bestseller" claim, and the Instagram handle. The
+gallery frames, contact details, address and hours are empty by design.
 
-A [Formspree](https://formspree.io) endpoint works too: put the
-`https://formspree.io/f/xxxxxxx` URL in `orderEndpoint` and leave `accessKey`
-empty. If the send ever fails, the page falls back to the email app and shows
-the customer their order text so nothing is lost.
+## Still needed before this can go live
 
-## The two images
-
-The logo and the hero photograph live in `assets/` — see
-[`assets/README.md`](assets/README.md) for the two filenames the page expects.
-Both are optional: if a file is not there, the page hides that slot cleanly
-instead of showing a broken image.
-
-## Putting it online
-
-It is one static file, so anywhere will host it free:
-
-- **Netlify / Vercel** — drag the `bakery` folder onto the dashboard.
-- **GitHub Pages** — enable Pages on this repo and point it at `/bakery`.
-- **Any web host** — upload `index.html`.
-
-Then point the domain at it.
-
-## Notes
-
-- The page follows the visitor's light or dark setting.
-- Fonts come from Google Fonts; if they fail to load the page falls back to
-  system faces and still reads correctly.
-- The palette is taken from the logo — ivory ground, terracotta, sage and a
-  blush accent — and holds together in dark mode too.
-- Addresses, phone numbers, loaf names and prices in the file are still
-  placeholders. Replace them before going live.
+Loaf descriptions · storage instructions · Instagram handle · contact details ·
+address and collection hours · baking schedule and order cut-off · pickup or
+delivery · how payment works · the two image files.

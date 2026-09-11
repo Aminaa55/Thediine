@@ -4,1066 +4,916 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Cozy Loaf</title>
-<meta name="description" content="Slow rise, warm heart. Two naturally leavened sourdough loaves, baked twice a week. Order by the cut-off and collect warm.">
+<meta name="description" content="Two sourdough loaves. That's the whole menu. Slow rise, warm heart.">
 <link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Figtree:ital,wght@0,300..900;1,400..600&family=Caveat:wght@400..700&display=swap">
 <style>
-/* ─────────────────────────────────────────────────────────────
-   Palette lifted from the logo: ivory ground, terracotta script,
-   sage foliage, blush blossom, a warm crust brown for the bread.
-   Light is the base; dark redefines tokens only.
-   ───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   THE COZY LOAF — bright, playful, single-theme by intent.
+   Butter yellow leads, blush supports, cherry shouts, berry reads.
+   ═══════════════════════════════════════════════════════════════ */
 :root{
-  --paper:#FBF5EA;
-  --surface:#F5EBD9;
-  --surface-2:#EFE1C9;
-  --ink:#3A2A1D;
-  --ink-2:#6E5842;
-  --ink-3:#9C866A;
-  --rule:#E3D4BA;
-  --rule-strong:#C9B48F;
-  --accent:#A85A28;
-  --accent-bright:#C0703F;
-  --accent-ink:#FFF8EE;
-  --accent-soft:#F1DFCB;
-  --sage:#63735A;
-  --sage-soft:#DEE4D2;
-  --blush:#D98D79;
-  --crust:#B07A3E;
-  --alert:#A03227;
-  --ok:#4B7550;
-  --shadow:0 1px 0 rgba(58,42,29,.05), 0 18px 40px -30px rgba(58,42,29,.55);
+  --butter:#FFD447;
+  --butter-soft:#FFE79B;
+  --butter-pale:#FFF6DC;
+  --blush:#FFD3CC;
+  --blush-soft:#FFE6E1;
+  --blush-pale:#FFF3F0;
+  --cherry:#E5324B;
+  --cherry-deep:#C61F3C;
+  --cream:#FFFAF3;
+  --berry:#4A0D2C;
+  --berry-soft:#7B2A50;
+  --berry-mute:#A0648044;
 
-  --display:"Marcellus","Palatino Linotype",Palatino,Georgia,serif;
-  --body:"Karla","Helvetica Neue",Helvetica,Arial,sans-serif;
-  --mono:"DM Mono","IBM Plex Mono",Menlo,Consolas,monospace;
+  --display:"Fraunces","Hoefler Text",Georgia,serif;
+  --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --hand:"Caveat","Bradley Hand",cursive;
 
-  --s--1:.8125rem;
-  --s-0:1.0625rem;
-  --s-1:1.1875rem;
-  --s-2:1.5rem;
-  --s-3:1.9rem;
-  --s-4:clamp(2.1rem,4.6vw,3.4rem);
-  --s-5:clamp(2.9rem,7vw,5.1rem);
-
-  --gut:clamp(1.25rem,4vw,2.75rem);
-  --maxw:75rem;
-  --r:4px;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#191208;
-    --surface:#221A0E;
-    --surface-2:#2D2214;
-    --ink:#F3E7D3;
-    --ink-2:#C0A889;
-    --ink-3:#9A866A;
-    --rule:#3D3120;
-    --rule-strong:#5C4830;
-    --accent:#E09155;
-    --accent-bright:#EBA269;
-    --accent-ink:#241703;
-    --accent-soft:#33240F;
-    --sage:#A5B78E;
-    --sage-soft:#2A3320;
-    --blush:#E5A794;
-    --crust:#D9A05E;
-    --alert:#E8877B;
-    --ok:#8DBE93;
-    --shadow:0 1px 0 rgba(0,0,0,.4), 0 20px 44px -30px rgba(0,0,0,.95);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#191208;
-  --surface:#221A0E;
-  --surface-2:#2D2214;
-  --ink:#F3E7D3;
-  --ink-2:#C0A889;
-  --ink-3:#9A866A;
-  --rule:#3D3120;
-  --rule-strong:#5C4830;
-  --accent:#E09155;
-  --accent-bright:#EBA269;
-  --accent-ink:#241703;
-  --accent-soft:#33240F;
-  --sage:#A5B78E;
-  --sage-soft:#2A3320;
-  --blush:#E5A794;
-  --crust:#D9A05E;
-  --alert:#E8877B;
-  --ok:#8DBE93;
-  --shadow:0 1px 0 rgba(0,0,0,.4), 0 20px 44px -30px rgba(0,0,0,.95);
+  --wonky:"SOFT" 40,"WONK" 1;
+  --gut:clamp(1.25rem,5vw,4rem);
+  --maxw:82rem;
+  --pop:cubic-bezier(.22,1.2,.36,1);
 }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
-  margin:0;background:var(--paper);color:var(--ink);
-  font-family:var(--body);font-size:var(--s-0);line-height:1.65;
+  margin:0;background:var(--cream);color:var(--berry);
+  font-family:var(--ui);font-size:1.0625rem;line-height:1.6;font-weight:400;
+  overflow-x:hidden;
 }
-::selection{background:var(--accent);color:var(--accent-ink)}
+::selection{background:var(--cherry);color:#fff}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px;border-radius:2px}
-img{max-width:100%}
+img{max-width:100%;display:block}
+:focus-visible{outline:3px solid var(--cherry);outline-offset:3px;border-radius:6px}
 .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
-
-/* Spaced small-caps serif, echoing the logo's "SLOW RISE, WARM HEART" */
-.eyebrow{
-  font-family:var(--display);font-size:.75rem;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--sage);margin:0;
-}
-.display{font-family:var(--display);font-weight:400;line-height:1.08;letter-spacing:.005em;text-wrap:balance;margin:0}
-.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:-9999px}
-.skip:focus{left:var(--gut);top:.5rem;z-index:60;background:var(--accent);color:var(--accent-ink);padding:.6rem .9rem;font-family:var(--body);font-size:.8125rem}
+.skip:focus{left:1rem;top:1rem;z-index:200;background:var(--cherry);color:#fff;padding:.7rem 1rem;border-radius:99px;font-weight:700}
 
-/* ── Header ───────────────────────────────────────────────── */
-.masthead{border-bottom:1px solid var(--rule);background:var(--paper);position:sticky;top:0;z-index:40}
-.masthead__inner{display:flex;align-items:center;gap:1.25rem;min-height:4.5rem}
-.mark{display:flex;align-items:center;gap:.7rem;text-decoration:none;margin-right:auto}
-.mark__img{width:2.6rem;height:2.6rem;border-radius:50%;object-fit:cover;flex:none;background:var(--surface)}
-.mark__img[hidden]{display:none}
-.mark__name{font-family:var(--display);font-size:1.3rem;line-height:1;letter-spacing:.02em}
-.mark__tag{display:block;font-family:var(--display);font-size:.5625rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-top:.3rem}
-.nav{display:none;gap:1.75rem}
-@media (min-width:58rem){.nav{display:flex}}
-.nav a{
-  font-family:var(--display);font-size:.8125rem;letter-spacing:.13em;text-transform:uppercase;
-  text-decoration:none;color:var(--ink-2);padding-block:.3rem;border-bottom:1px solid transparent;
-  transition:color .15s,border-color .15s;
+h1,h2,h3{
+  font-family:var(--display);font-variation-settings:var(--wonky);
+  font-weight:600;line-height:.95;letter-spacing:-.02em;margin:0;text-wrap:balance;
 }
-.nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.ital{font-style:italic;font-variation-settings:"SOFT" 80,"WONK" 1}
+.hand{font-family:var(--hand);font-weight:600;line-height:1.15}
 
+/* ── Placeholder marking ─────────────────────────────────────── */
+.ph{
+  background:linear-gradient(transparent 62%, rgba(229,50,75,.22) 62%);
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;
+}
+.ph-tag{
+  display:inline-flex;align-items:center;gap:.3rem;font-family:var(--hand);font-size:1.05rem;
+  color:var(--cherry);transform:rotate(-3deg);white-space:nowrap;
+}
+.ph-tag::before{content:"✎"}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
-  font-family:var(--body);font-size:.8125rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-  padding:.75rem 1.2rem;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);
-  text-decoration:none;cursor:pointer;border-radius:var(--r);
-  transition:transform .12s ease, background .15s ease;
+  --bg:var(--cherry);--fg:#fff;
+  position:relative;display:inline-flex;align-items:center;gap:.6rem;
+  font-family:var(--ui);font-weight:800;font-size:.95rem;letter-spacing:.01em;
+  padding:.95rem 1.6rem;border:3px solid var(--berry);border-radius:99px;
+  background:var(--bg);color:var(--fg);text-decoration:none;cursor:pointer;
+  box-shadow:4px 4px 0 var(--berry);
+  transition:transform .16s var(--pop), box-shadow .16s var(--pop), background .2s;
 }
-.btn:hover{background:var(--accent-bright);border-color:var(--accent-bright)}
-.btn:active{transform:translateY(1px)}
-.btn--ghost{background:transparent;color:var(--ink);border-color:var(--rule-strong)}
-.btn--ghost:hover{background:var(--surface-2);border-color:var(--rule-strong)}
-.btn--lg{padding:.95rem 1.7rem}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn:hover{transform:translate(-2px,-2px) rotate(-1.5deg);box-shadow:7px 7px 0 var(--berry)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--berry)}
+.btn .arr{transition:transform .25s var(--pop)}
+.btn:hover .arr{transform:translateX(5px) rotate(12deg)}
+.btn--butter{--bg:var(--butter);--fg:var(--berry)}
+.btn--cream{--bg:var(--cream);--fg:var(--berry)}
+.btn--sm{padding:.6rem 1.1rem;font-size:.85rem;border-width:2px;box-shadow:3px 3px 0 var(--berry)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--berry)}
 
-/* ── Hero ─────────────────────────────────────────────────── */
-.hero{padding-block:clamp(2.75rem,7vw,5rem) clamp(2rem,5vw,3.5rem)}
-.hero__grid{display:grid;gap:clamp(2rem,5vw,4rem);align-items:center}
-@media (min-width:60rem){.hero__grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}}
-.hero h1{font-size:var(--s-5)}
-.hero h1 em{font-style:italic;color:var(--accent)}
-.hero__lede{font-size:clamp(1.0625rem,1.6vw,1.1875rem);line-height:1.7;max-width:38ch;color:var(--ink-2);margin:1.5rem 0 2rem}
-.hero__cta{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
-.sprig{display:block;width:11rem;height:auto;color:var(--sage);opacity:.75;margin-bottom:1.5rem}
+/* ── Ticker ──────────────────────────────────────────────────── */
+.ticker{background:var(--cherry);color:#fff;overflow:hidden;border-bottom:3px solid var(--berry);padding-block:.5rem}
+.ticker__track{display:flex;width:max-content;animation:slide 26s linear infinite}
+.ticker span{font-family:var(--ui);font-weight:800;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;padding-inline:1.1rem;white-space:nowrap}
+@keyframes slide{to{transform:translateX(-50%)}}
 
-/* Photo slot — degrades to a tinted panel when no image is present */
-.photo{
-  position:relative;border-radius:calc(var(--r) * 2);overflow:hidden;
-  background:var(--surface);border:1px solid var(--rule);
-  aspect-ratio:4/5;box-shadow:var(--shadow);
-}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo__fallback{
-  position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
-  background:radial-gradient(120% 90% at 50% 22%, var(--accent-soft) 0%, var(--surface) 55%, var(--surface-2) 100%);
-}
-.photo[data-empty="true"] img{display:none}
-.photo[data-empty="true"] .photo__fallback{display:grid}
-.photo__fallback p{font-family:var(--display);font-size:var(--s-2);color:var(--accent);margin:0;line-height:1.35;letter-spacing:.02em}
-.photo__fallback small{display:block;margin-top:1rem;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-family:var(--display)}
-.photo__cap{
-  position:absolute;left:0;right:0;bottom:0;padding:2.5rem 1.25rem 1rem;
-  font-family:var(--display);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:#FFF8EE;
-  background:linear-gradient(to top, rgba(35,22,10,.72), rgba(35,22,10,0));
-}
-.photo[data-empty="true"] .photo__cap{display:none}
+/* ── Nav ─────────────────────────────────────────────────────── */
+.nav{position:sticky;top:0;z-index:100;background:var(--butter);border-bottom:3px solid var(--berry)}
+.nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
+.brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
+.brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--berry);object-fit:cover;background:var(--cream)}
+.brand img[hidden]{display:none}
+.brand b{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem;letter-spacing:-.02em}
+.nav__links{display:none;gap:1.6rem}
+@media (min-width:56rem){.nav__links{display:flex}}
+.nav__links a{font-weight:700;font-size:.95rem;text-decoration:none;position:relative;padding-block:.2rem}
+.nav__links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:3px;background:var(--cherry);border-radius:3px;transition:right .25s var(--pop)}
+.nav__links a:hover::after{right:0}
 
-/* ── Bake strip ───────────────────────────────────────────── */
-.strip{background:var(--surface);border-block:1px solid var(--rule)}
-.strip__inner{display:grid;gap:1.25rem;padding-block:1.5rem}
-@media (min-width:48rem){.strip__inner{grid-template-columns:repeat(4,1fr);gap:2rem;align-items:start}}
-.strip__cell dt{font-family:var(--display);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);margin:0 0 .35rem}
-.strip__cell dd{margin:0;font-family:var(--mono);font-size:var(--s-1);font-variant-numeric:tabular-nums;line-height:1.3}
-.strip__cell dd.big{font-family:var(--display);font-size:var(--s-2);letter-spacing:.01em}
-.strip__note{margin:.75rem 0 0;font-size:.8125rem;color:var(--ink-2);line-height:1.5}
-@media (min-width:48rem){.strip__note{grid-column:1/-1;margin:.25rem 0 0}}
-.stamp{
-  display:inline-block;font-family:var(--display);font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:.2rem .7rem;margin-left:.6rem;vertical-align:.15em;
-}
-.stamp[data-state="closed"]{color:var(--alert);border-color:var(--alert)}
+/* ── Sections ────────────────────────────────────────────────── */
+section{position:relative}
+.pad{padding-block:clamp(4rem,9vw,7.5rem)}
+.g-butter{background:var(--butter)}
+.g-butter-pale{background:var(--butter-pale)}
+.g-blush{background:var(--blush)}
+.g-blush-soft{background:var(--blush-soft)}
+.g-cream{background:var(--cream)}
+.g-cherry{background:var(--cherry);color:#fff}
 
-/* ── Bands ────────────────────────────────────────────────── */
-.band{padding-block:clamp(3rem,7vw,5.5rem)}
-.band + .band{border-top:1px solid var(--rule)}
-.band--tint{background:var(--surface)}
-.band__head{margin-bottom:clamp(1.75rem,4vw,2.75rem)}
-.band__head h2{font-size:var(--s-4);margin:.6rem 0 0}
-.band__head p{max-width:54ch;color:var(--ink-2);margin:1rem 0 0}
-
-/* ── Loaf cards ───────────────────────────────────────────── */
-.loaves{display:grid;gap:1.75rem}
-@media (min-width:52rem){.loaves{grid-template-columns:1fr 1fr}}
-.loaf{
-  display:flex;flex-direction:column;background:var(--paper);
-  border:1px solid var(--rule-strong);border-radius:calc(var(--r) * 2);overflow:hidden;
+.wave{display:block;width:100%;height:auto}
+.kicker{
+  display:inline-flex;align-items:center;gap:.5rem;font-weight:800;font-size:.78rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--cherry);
+  background:var(--cream);border:2.5px solid var(--berry);border-radius:99px;padding:.4rem 1rem;
+  transform:rotate(-2deg);box-shadow:3px 3px 0 var(--berry);
 }
-.loaf__crust{height:5px;background:linear-gradient(to right, var(--crust), var(--accent-bright))}
-.loaf__body{padding:1.6rem clamp(1.3rem,3vw,1.85rem) 0;display:flex;flex-direction:column;gap:1.1rem;flex:1}
-.loaf__top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
-.loaf__name{font-family:var(--display);font-size:var(--s-3);line-height:1.15;margin:.4rem 0 0}
-.loaf__price{font-family:var(--mono);font-size:var(--s-1);white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
-.loaf__price span{display:block;font-family:var(--display);font-size:.625rem;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-top:.3rem}
-.loaf__desc{margin:0;color:var(--ink-2);line-height:1.7}
-.spec{
-  display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;margin:0;
-  padding-top:1.1rem;border-top:1px solid var(--rule);
-  font-family:var(--mono);font-size:var(--s--1);
-}
-.spec dt{font-family:var(--display);color:var(--sage);letter-spacing:.14em;text-transform:uppercase;font-size:.6875rem;align-self:center}
-.spec dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
-.loaf__foot{
-  margin-top:auto;padding:1.15rem clamp(1.3rem,3vw,1.85rem);border-top:1px solid var(--rule);
-  background:var(--surface);
-  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-}
-.band--tint .loaf__foot{background:var(--surface-2)}
-.stepper{display:flex;align-items:center;border:1px solid var(--rule-strong);border-radius:var(--r);background:var(--paper);overflow:hidden}
-.stepper button{width:2.7rem;height:2.7rem;border:0;background:transparent;color:var(--ink);font-family:var(--mono);font-size:1.125rem;line-height:1;cursor:pointer}
-.stepper button:hover:not([disabled]){background:var(--accent-soft);color:var(--accent)}
-.stepper button[disabled]{color:var(--ink-3);cursor:not-allowed}
-.stepper output{
-  min-width:2.9rem;align-self:stretch;display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:var(--s-0);font-variant-numeric:tabular-nums;
-  border-inline:1px solid var(--rule-strong);
-}
-.loaf__state{font-family:var(--mono);font-size:var(--s--1);color:var(--ink-2)}
-.loaf--out{opacity:.7}
-.chip-out{font-family:var(--display);font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--alert);border:1px solid var(--alert);border-radius:999px;padding:.2rem .7rem}
 
-/* ── Steps ────────────────────────────────────────────────── */
-.steps{display:grid;gap:0;margin:0;padding:0;list-style:none}
-@media (min-width:60rem){.steps{grid-template-columns:repeat(4,1fr);column-gap:2rem}}
-.step{padding:1.5rem 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:2.5rem 1fr;gap:1rem;align-items:start}
-@media (min-width:60rem){.step{display:block;padding:1.5rem 0 0;border-bottom:0;border-top:1px solid var(--rule-strong)}}
-.step__no{font-family:var(--display);font-size:var(--s-1);color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
-@media (min-width:60rem){.step__no{display:block;margin-bottom:1rem}}
-.step h3{font-family:var(--display);font-size:var(--s-1);margin:0 0 .45rem;font-weight:400;line-height:1.25}
-.step p{margin:0;color:var(--ink-2);font-size:var(--s--1);line-height:1.65}
-.step__when{display:block;margin-top:.6rem;font-family:var(--mono);font-size:.6875rem;letter-spacing:.04em;color:var(--sage)}
+/* ── Hero ────────────────────────────────────────────────────── */
+.hero{background:var(--butter);overflow:hidden;padding-block:clamp(2.5rem,6vw,4.5rem) clamp(3rem,7vw,5rem)}
+.hero__in{display:grid;gap:clamp(2.5rem,5vw,3rem);align-items:center}
+@media (min-width:62rem){.hero__in{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}}
+.hero h1{font-size:clamp(3.1rem,11.5vw,8.2rem);letter-spacing:-.035em}
+.hero h1 .l{display:block}
+.hero h1 .l2{margin-left:clamp(0rem,5vw,4.5rem)}
+.hero h1 .l3{margin-left:clamp(0rem,2vw,1.5rem)}
+.hero h1 em{color:var(--cherry);font-style:italic;font-variation-settings:"SOFT" 90,"WONK" 1}
+.hero__lede{font-size:clamp(1.05rem,1.7vw,1.25rem);max-width:32ch;margin:1.6rem 0 0;color:var(--berry);font-weight:500}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2rem;align-items:center}
 
-/* ── Order ────────────────────────────────────────────────── */
-.order__grid{display:grid;gap:clamp(1.75rem,4vw,2.75rem);align-items:start}
-@media (min-width:62rem){.order__grid{grid-template-columns:minmax(0,1.2fr) minmax(20rem,.8fr)}}
-fieldset{border:0;padding:0;margin:0 0 2.25rem}
-legend{
-  font-family:var(--display);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);
-  padding:0 0 .85rem;border-bottom:1px solid var(--rule);width:100%;margin-bottom:1.35rem;
+/* rotating word */
+.roll{display:inline-grid;vertical-align:baseline;height:1em;overflow:hidden;text-align:left}
+.roll__in{display:grid;animation:roll 9s infinite}
+.roll__in span{grid-column:1;grid-row:auto;height:1em;line-height:1;color:var(--cherry);font-style:italic}
+@keyframes roll{
+  0%,20%{transform:translateY(0)}
+  25%,45%{transform:translateY(-1em)}
+  50%,70%{transform:translateY(-2em)}
+  75%,95%{transform:translateY(-3em)}
+  100%{transform:translateY(-4em)}
 }
-.fields{display:grid;gap:1.2rem}
-@media (min-width:34rem){.fields--2{grid-template-columns:1fr 1fr}}
-.field{display:flex;flex-direction:column;gap:.45rem}
-.field label{font-family:var(--display);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
-.field .opt{color:var(--ink-3);text-transform:none;letter-spacing:.02em;font-family:var(--body);font-size:.75rem}
-.field input,.field select,.field textarea{
-  font-family:var(--body);font-size:var(--s-0);color:var(--ink);background:var(--paper);
-  border:1px solid var(--rule-strong);border-radius:var(--r);padding:.75rem .85rem;width:100%;
+
+/* photo medallion */
+.medallion{position:relative;width:min(100%,30rem);margin-inline:auto;aspect-ratio:1}
+.medallion__ring{position:absolute;inset:-21%;animation:spin 38s linear infinite}
+.medallion__ring text{font-family:var(--ui);font-weight:800;font-size:6.6px;letter-spacing:.3em;fill:var(--berry);text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+.medallion__disc{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  border:4px solid var(--berry);background:var(--blush-soft);
+  box-shadow:12px 14px 0 rgba(74,13,44,.18);
 }
-.field textarea{resize:vertical;min-height:5.5rem;line-height:1.6}
-.field select{appearance:none;cursor:pointer}
-.field input::placeholder,.field textarea::placeholder{color:var(--ink-3)}
-.field .err{font-family:var(--body);font-size:.75rem;color:var(--alert);min-height:1rem;margin:0}
-.field--bad input,.field--bad select{border-color:var(--alert)}
-.slots{display:flex;flex-wrap:wrap;gap:.5rem}
-.slot{
-  font-family:var(--mono);font-size:var(--s--1);padding:.65rem .9rem;border-radius:var(--r);
-  border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink);cursor:pointer;
+.medallion__disc img{width:100%;height:100%;object-fit:cover;object-position:center 62%;transform:scale(1.22)}
+.medallion__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
+  background:radial-gradient(85% 70% at 50% 35%, var(--butter-soft), var(--blush))}
+.medallion[data-empty="true"] img{display:none}
+.medallion[data-empty="true"] .medallion__fb{display:grid}
+.medallion__fb p{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.5rem;margin:0;line-height:1.1}
+.medallion__fb small{display:block;font-family:var(--hand);font-size:1.15rem;color:var(--cherry);margin-top:.6rem}
+
+/* stickers */
+.sticker{position:absolute;z-index:3;display:grid;place-content:center;text-align:center;
+  border:3px solid var(--berry);border-radius:50%;box-shadow:4px 5px 0 var(--berry)}
+.sticker--price{
+  width:7.4rem;height:7.4rem;background:var(--cherry);color:#fff;
+  right:-9%;bottom:-2%;transform:rotate(-13deg);z-index:5;
 }
-.slot:hover{background:var(--accent-soft);border-color:var(--accent)}
-.slot[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-
-.docket{
-  border:1px solid var(--rule-strong);border-radius:calc(var(--r) * 2);background:var(--paper);
-  box-shadow:var(--shadow);position:sticky;top:6rem;overflow:hidden;
+.sticker--price b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.85rem;line-height:1}
+.sticker--price span{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.sticker--new{
+  width:5.4rem;height:5.4rem;background:var(--butter-soft);color:var(--berry);
+  left:-11%;top:6%;transform:rotate(14deg);font-family:var(--hand);font-size:1.25rem;line-height:1.05;z-index:5;
 }
-.docket__head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.2rem 1.35rem;border-bottom:1px solid var(--rule)}
-.docket__title{font-family:var(--display);font-size:var(--s-1);margin:0;font-weight:400}
-.docket__ref{font-family:var(--mono);font-size:.6875rem;color:var(--ink-3)}
-.docket__lines{margin:0;padding:1.2rem 1.35rem;display:grid;gap:.85rem;min-height:4rem}
-.line{display:grid;grid-template-columns:1.9rem 1fr auto;gap:.75rem;font-size:var(--s--1);align-items:baseline}
-.line__q{font-family:var(--mono);color:var(--accent);font-variant-numeric:tabular-nums}
-.line__n{line-height:1.4}
-.line__n small{display:block;font-family:var(--mono);font-size:.6875rem;color:var(--ink-3);margin-top:.15rem}
-.line__p{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.docket__empty{margin:0;color:var(--ink-3);font-size:var(--s--1);font-style:italic}
-.docket__meta{padding:0 1.35rem 1.1rem;font-family:var(--mono);font-size:.6875rem;color:var(--sage);display:grid;gap:.4rem}
-.docket__total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.1rem 1.35rem;border-top:1px solid var(--rule-strong);background:var(--surface)}
-.docket__total dt{font-family:var(--display);font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0}
-.docket__total dd{margin:0;font-family:var(--mono);font-size:var(--s-2);font-variant-numeric:tabular-nums}
-.docket__foot{padding:1.2rem 1.35rem 1.4rem;display:grid;gap:.85rem}
-.docket__foot .btn{width:100%}
-.docket__fine{margin:0;font-size:.75rem;color:var(--ink-2);line-height:1.55}
-.formnote{margin:0;font-size:.8125rem;line-height:1.5}
-.formnote--bad{color:var(--alert)}
-.formnote--ok{color:var(--ok)}
+@media (max-width:40rem){
+  .sticker--price{width:5.9rem;height:5.9rem;right:-4%}
+  .sticker--price b{font-size:1.4rem}
+  .sticker--new{width:4.4rem;height:4.4rem;font-size:1rem;left:-5%}
+}
+.doodle{position:absolute;pointer-events:none;z-index:1}
 
-.confirm{border:1px solid var(--rule-strong);border-radius:calc(var(--r) * 2);background:var(--paper);padding:clamp(1.5rem,4vw,2.5rem);display:none}
-.confirm[data-open="true"]{display:block}
-.confirm h2{font-family:var(--display);font-size:var(--s-3);margin:.7rem 0 .85rem;font-weight:400}
-.confirm p{color:var(--ink-2);max-width:52ch}
-.confirm__ref{font-family:var(--mono);font-size:var(--s-1);color:var(--accent);letter-spacing:.04em}
-.confirm__what{margin:1.6rem 0 0;padding:1.2rem 1.35rem;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);display:grid;gap:.6rem;font-size:var(--s--1)}
-.confirm__what div{display:flex;justify-content:space-between;gap:1rem}
-.confirm__what span:first-child{font-family:var(--display);letter-spacing:.12em;text-transform:uppercase;font-size:.6875rem;color:var(--sage)}
-.confirm__what span:last-child{text-align:right;font-family:var(--mono);font-size:var(--s--1)}
-.copybox{width:100%;margin-top:1rem;font-family:var(--mono);font-size:.75rem;line-height:1.55;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:var(--r);padding:.85rem;min-height:9rem}
+/* ── Loaves ──────────────────────────────────────────────────── */
+.loaf{position:relative;display:grid;gap:clamp(2rem,4vw,3.5rem);align-items:center}
+@media (min-width:60rem){
+  .loaf{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .loaf--flip .loaf__art{order:2}
+}
+.loaf + .loaf{margin-top:clamp(4.5rem,9vw,8rem)}
+.loaf__idx{
+  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
+  font-size:clamp(4rem,11vw,9rem);line-height:.8;letter-spacing:-.05em;
+  -webkit-text-stroke:2.5px var(--berry);color:transparent;opacity:.55;margin-bottom:-.15em;
+}
+.loaf__name{font-size:clamp(2.4rem,6vw,4.4rem);margin-top:.35rem}
+.loaf__price{
+  display:inline-flex;align-items:baseline;gap:.4rem;margin-top:1.1rem;
+  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:2.1rem;
+  background:var(--butter);border:3px solid var(--berry);border-radius:99px;padding:.35rem 1.2rem;
+  box-shadow:4px 4px 0 var(--berry);transform:rotate(-2deg);
+}
+.loaf__price small{font-family:var(--ui);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.loaf__desc{font-size:1.08rem;max-width:38ch;margin:1.4rem 0 0;color:var(--berry-soft);font-weight:500}
+.loaf__notes{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem}
+.note{
+  font-family:var(--hand);font-size:1.15rem;color:var(--berry);
+  background:var(--cream);border:2.5px dashed var(--berry);border-radius:99px;padding:.2rem .9rem;
+  transition:transform .2s var(--pop);
+}
+.note:nth-child(odd){transform:rotate(-2deg)}
+.note:nth-child(even){transform:rotate(2deg)}
+.note:hover{transform:rotate(0) scale(1.06)}
+.loaf__buy{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-top:1.9rem}
 
-/* ── Find us ──────────────────────────────────────────────── */
-.find{display:grid;gap:2.25rem}
-@media (min-width:52rem){.find{grid-template-columns:repeat(3,1fr)}}
-.find h3{font-family:var(--display);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin:0 0 1rem;font-weight:400}
-.find p{margin:0;line-height:1.7}
-.find a{color:var(--ink);text-decoration-color:var(--rule-strong);text-underline-offset:3px}
-.find a:hover{color:var(--accent);text-decoration-color:var(--accent)}
-.hours{display:grid;gap:.5rem;margin:0;font-family:var(--mono);font-size:var(--s--1)}
-.hours div{display:flex;justify-content:space-between;gap:1rem}
-.hours span:last-child{color:var(--ink-2);font-variant-numeric:tabular-nums}
+.frame{
+  position:relative;border:4px solid var(--berry);border-radius:2rem;overflow:hidden;
+  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(74,13,44,.16);background:var(--blush-soft);
+  transition:transform .4s var(--pop);
+}
+.frame img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
+.frame:hover{transform:rotate(-1.5deg) scale(1.015)}
+.frame__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
+  background:radial-gradient(62% 46% at 32% 28%, var(--butter-soft) 0%, transparent 62%),
+             radial-gradient(66% 52% at 74% 76%, var(--blush) 0%, transparent 64%), var(--blush-pale)}
+.frame__fb img{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--berry);object-fit:cover;background:var(--cream)}
+.frame__fb img[hidden]{display:none}
+.frame[data-empty="true"] img{display:none}
+.frame[data-empty="true"] .frame__fb{display:grid}
 
-/* ── Footer ───────────────────────────────────────────────── */
-.foot{border-top:1px solid var(--rule);background:var(--surface);padding-block:2.5rem 7rem;font-size:.8125rem;color:var(--ink-2)}
-@media (min-width:52rem){.foot{padding-bottom:2.5rem}}
-.foot__inner{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;align-items:center}
-.foot__mark{display:flex;align-items:center;gap:.7rem}
-.foot__mark img{width:2.2rem;height:2.2rem;border-radius:50%;object-fit:cover}
-.foot__mark img[hidden]{display:none}
-.foot__name{font-family:var(--display);font-size:var(--s-0)}
-.foot__tag{font-family:var(--display);letter-spacing:.18em;text-transform:uppercase;font-size:.6875rem;color:var(--sage)}
+/* olive placeholder — intentional, branded, not a fake photo */
+.olive-card{
+  position:relative;aspect-ratio:4/5;border-radius:2rem;overflow:hidden;
+  border:4px dashed var(--berry);background:
+    radial-gradient(60% 45% at 30% 25%, var(--butter-soft) 0%, transparent 60%),
+    radial-gradient(65% 50% at 75% 75%, var(--blush) 0%, transparent 62%),
+    var(--blush-pale);
+  display:grid;place-content:center;text-align:center;padding:2.5rem 2rem;gap:.4rem;
+  box-shadow:10px 12px 0 rgba(74,13,44,.12);
+}
+.olive-card__mark{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--berry);object-fit:cover;background:var(--cream)}
+.olive-card__mark[hidden]{display:none}
+.olive-card h3{font-size:1.9rem}
+.olive-card p{font-family:var(--hand);font-size:1.35rem;color:var(--cherry);margin:.5rem 0 0;line-height:1.25}
+.olive-card__olives{position:absolute;inset:0;pointer-events:none}
+.olive-card__olives span{position:absolute;width:2.5rem;height:3.2rem;border-radius:50% 50% 48% 48%/58% 58% 42% 42%;
+  background:radial-gradient(70% 60% at 34% 30%, #6B2350 0%, #3B0F2C 70%);border:3px solid var(--berry);
+  box-shadow:3px 3px 0 rgba(74,13,44,.25)}
+.olive-card__olives span::after{content:"";position:absolute;left:50%;top:30%;width:34%;height:26%;
+  transform:translateX(-50%);border-radius:50%;background:var(--cherry);border:2px solid var(--berry)}
+.olive-card__olives span:nth-child(1){left:9%;top:11%;animation:bob 5.5s ease-in-out infinite}
+.olive-card__olives span:nth-child(2){right:10%;top:22%;animation:bob 6.8s ease-in-out infinite .6s}
+.olive-card__olives span:nth-child(3){left:13%;bottom:13%;animation:bob 6.1s ease-in-out infinite 1.2s}
+.olive-card__olives span:nth-child(4){right:11%;bottom:19%;animation:bob 7.4s ease-in-out infinite .3s}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(8deg)}}
 
-/* ── Sticky tray ──────────────────────────────────────────── */
-.tray{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink);color:var(--paper);transform:translateY(115%);transition:transform .25s ease}
-.tray[data-open="true"]{transform:translateY(0)}
-.tray__inner{display:flex;align-items:center;gap:1rem;padding-block:.85rem}
-.tray__sum{font-family:var(--mono);font-size:var(--s--1);margin-right:auto;line-height:1.35}
-.tray__sum strong{font-weight:500;font-variant-numeric:tabular-nums}
-.tray__sum small{display:block;color:var(--ink-3);font-size:.6875rem}
-.tray .btn{background:var(--accent-bright);border-color:var(--accent-bright);color:#2A1806}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+/* ── Why sourdough — drag rail ───────────────────────────────── */
+.arc{display:block;width:min(100%,52rem);margin:0 auto;overflow:visible}
+.arc text{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:38px;fill:var(--berry);letter-spacing:-.01em}
+.rail{
+  display:flex;gap:1.25rem;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:2.5rem var(--gut) 3rem;margin-inline:calc(var(--gut) * -1);
+  scrollbar-width:none;cursor:grab;
+}
+.rail::-webkit-scrollbar{display:none}
+.rail[data-drag="true"]{cursor:grabbing;scroll-snap-type:none}
+.reason{
+  flex:0 0 min(19rem,76vw);scroll-snap-align:center;
+  border:3.5px solid var(--berry);border-radius:1.6rem;padding:1.8rem 1.6rem 2rem;
+  box-shadow:6px 7px 0 var(--berry);user-select:none;
+  transition:transform .3s var(--pop);
+}
+.reason:nth-child(4n+1){background:var(--butter);transform:rotate(-2.2deg)}
+.reason:nth-child(4n+2){background:var(--blush-soft);transform:rotate(1.6deg)}
+.reason:nth-child(4n+3){background:var(--cream);transform:rotate(-1.2deg)}
+.reason:nth-child(4n+4){background:var(--butter-soft);transform:rotate(2.4deg)}
+.reason:hover{transform:rotate(0) translateY(-8px)}
+.reason__ico{font-size:2.4rem;line-height:1}
+.reason h3{font-size:1.85rem;margin:.9rem 0 .5rem}
+.reason p{margin:0;font-size:.98rem;color:var(--berry-soft);font-weight:500}
+.rail-ctrl{display:flex;gap:.6rem;justify-content:center;margin-top:-1rem}
+.rail-ctrl button{
+  width:3.1rem;height:3.1rem;border-radius:50%;border:3px solid var(--berry);background:var(--cream);
+  color:var(--berry);font-size:1.2rem;cursor:pointer;box-shadow:3px 3px 0 var(--berry);
+  transition:transform .16s var(--pop);display:grid;place-content:center;
+}
+.rail-ctrl button:hover{transform:translate(-1px,-1px) rotate(-6deg);background:var(--butter)}
+
+/* ── Keep it happy (storage) ─────────────────────────────────── */
+.tips{display:grid;gap:1.5rem;margin-top:3rem}
+@media (min-width:52rem){.tips{grid-template-columns:repeat(3,1fr)}}
+.tip{
+  position:relative;background:var(--cream);border:3.5px solid var(--berry);border-radius:1.5rem;
+  padding:2.6rem 1.6rem 1.8rem;box-shadow:6px 7px 0 var(--berry);
+  transition:transform .28s var(--pop);
+}
+.tip:nth-child(1){transform:rotate(-1.6deg)}
+.tip:nth-child(2){transform:rotate(1.2deg);background:var(--butter-pale)}
+.tip:nth-child(3){transform:rotate(-.8deg)}
+.tip:hover{transform:rotate(0) translateY(-9px)}
+.tip__n{
+  position:absolute;top:-1.5rem;left:1.4rem;width:3.2rem;height:3.2rem;border-radius:50%;
+  background:var(--cherry);color:#fff;border:3px solid var(--berry);display:grid;place-content:center;
+  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.5rem;
+}
+.tip h3{font-size:1.5rem;margin-bottom:.5rem}
+.tip p{margin:0;color:var(--berry-soft);font-weight:500;font-size:.98rem}
+
+/* ── Gallery marquee ─────────────────────────────────────────── */
+.gal{overflow:hidden;padding-block:1rem}
+.gal__track{display:flex;gap:1.2rem;width:max-content;animation:slide 48s linear infinite}
+.gal--rev .gal__track{animation-direction:reverse;animation-duration:58s}
+.gal:hover .gal__track{animation-play-state:paused}
+.gal__cell{
+  width:clamp(11rem,20vw,16rem);aspect-ratio:4/5;border:3.5px solid var(--berry);border-radius:1.3rem;
+  display:grid;place-content:center;text-align:center;padding:1rem;flex:none;
+  font-family:var(--hand);font-size:1.15rem;color:var(--berry-soft);
+}
+.gal__cell:nth-child(3n+1){background:var(--blush-soft);transform:rotate(-1.8deg)}
+.gal__cell:nth-child(3n+2){background:var(--butter-soft);transform:rotate(1.4deg)}
+.gal__cell:nth-child(3n+3){background:var(--cream);transform:rotate(-.6deg)}
+.gal__cell b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.6rem;color:var(--berry);margin-bottom:.3rem}
+
+/* ── Order ───────────────────────────────────────────────────── */
+.order{display:grid;gap:clamp(2rem,4vw,3rem);align-items:start;margin-top:2.5rem}
+@media (min-width:60rem){.order{grid-template-columns:minmax(0,1.15fr) minmax(19rem,.85fr)}}
+.pick{
+  display:grid;grid-template-columns:1fr auto;gap:1rem 1.25rem;align-items:center;
+  background:var(--cream);border:3.5px solid var(--berry);border-radius:1.5rem;padding:1.4rem 1.5rem;
+  box-shadow:5px 6px 0 var(--berry);transition:transform .25s var(--pop);
+}
+.pick + .pick{margin-top:1.1rem}
+.pick:hover{transform:translateY(-4px) rotate(-.6deg)}
+.pick h3{font-size:1.6rem}
+.pick__meta{font-family:var(--hand);font-size:1.2rem;color:var(--cherry);margin:.15rem 0 0}
+.pick__price{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem;margin-top:.35rem}
+.step{display:flex;align-items:center;border:3px solid var(--berry);border-radius:99px;background:var(--butter-pale);overflow:hidden}
+.step button{width:2.9rem;height:2.9rem;border:0;background:transparent;color:var(--berry);font-size:1.4rem;font-weight:800;cursor:pointer;line-height:1;transition:background .18s}
+.step button:hover:not([disabled]){background:var(--butter)}
+.step button[disabled]{opacity:.35;cursor:not-allowed}
+.step output{min-width:2.6rem;text-align:center;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem}
+
+.basket{
+  position:sticky;top:6rem;background:var(--butter);border:4px solid var(--berry);border-radius:1.8rem;
+  padding:1.7rem 1.6rem 1.8rem;box-shadow:8px 9px 0 var(--berry);
+}
+.basket h3{font-size:1.9rem;margin-bottom:1rem}
+.basket__lines{display:grid;gap:.6rem;min-height:3.2rem;margin-bottom:1rem}
+.basket__line{display:flex;justify-content:space-between;gap:1rem;font-weight:600;font-size:.98rem}
+.basket__empty{font-family:var(--hand);font-size:1.3rem;color:var(--berry-soft);margin:0}
+.basket__total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border-top:3px dashed var(--berry);padding-top:1rem;margin-bottom:1.2rem}
+.basket__total dt{font-weight:800;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;margin:0}
+.basket__total dd{margin:0;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:2.3rem;line-height:1}
+.basket .btn{width:100%;justify-content:center}
+.basket__fine{margin:.9rem 0 0;font-family:var(--hand);font-size:1.15rem;color:var(--berry-soft);text-align:center;line-height:1.3}
+
+.yay{
+  display:none;background:var(--blush-soft);border:4px solid var(--berry);border-radius:1.8rem;
+  padding:clamp(1.6rem,4vw,2.6rem);box-shadow:8px 9px 0 var(--berry);text-align:center;
+}
+.yay[data-open="true"]{display:block;animation:pop .5s var(--pop) both}
+@keyframes pop{from{transform:scale(.9) rotate(-2deg);opacity:0}to{transform:none;opacity:1}}
+.yay h3{font-size:clamp(2rem,5vw,2.9rem)}
+.yay__sum{display:grid;gap:.5rem;max-width:26rem;margin:1.4rem auto;font-weight:600}
+.yay__sum div{display:flex;justify-content:space-between;gap:1rem;border-bottom:2px dotted var(--berry-mute);padding-bottom:.4rem}
+
+/* ── Social ──────────────────────────────────────────────────── */
+.social{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2.5rem}
+.social__tile{
+  width:clamp(8rem,22vw,11rem);aspect-ratio:1;border:3.5px solid var(--berry);border-radius:1.2rem;
+  display:grid;place-content:center;font-family:var(--hand);font-size:1.1rem;color:var(--berry-soft);
+  text-align:center;padding:.8rem;transition:transform .3s var(--pop);
+}
+.social__tile:nth-child(odd){background:var(--butter-soft);transform:rotate(-3deg)}
+.social__tile:nth-child(even){background:var(--blush);transform:rotate(2.5deg)}
+.social__tile:hover{transform:rotate(0) scale(1.07)}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.foot{background:var(--berry);color:var(--blush-pale);padding-block:3rem 4rem;text-align:center}
+.foot img{width:4.6rem;height:4.6rem;border-radius:50%;margin:0 auto 1rem;border:3px solid var(--butter);object-fit:cover;background:var(--cream)}
+.foot img[hidden]{display:none}
+.foot h2{font-size:clamp(2rem,6vw,3.4rem);color:var(--butter)}
+.foot p{margin:.9rem 0 0;color:var(--blush)}
+.foot a{color:var(--butter)}
+
+/* ── Reveal system — visible by default, JS opts in ──────────── */
+[data-reveal="pending"]{opacity:0}
+[data-reveal="pending"][data-from="up"]{transform:translateY(46px)}
+[data-reveal="pending"][data-from="left"]{transform:translateX(-64px) rotate(-3deg)}
+[data-reveal="pending"][data-from="right"]{transform:translateX(64px) rotate(3deg)}
+[data-reveal="pending"][data-from="pop"]{transform:scale(.86) rotate(-4deg)}
+[data-reveal="in"]{opacity:1;transform:none;transition:opacity .75s var(--pop), transform .85s var(--pop)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  [data-reveal]{opacity:1 !important;transform:none !important}
+  .medallion__ring,.ticker__track,.gal__track{animation:none !important}
+}
 </style>
 </head>
 <body>
-<a class="skip" href="#order">Skip to the order form</a>
+<a class="skip" href="#order">Skip to ordering</a>
 
-<header class="masthead">
-  <div class="wrap masthead__inner">
-    <a class="mark" href="#top">
-      <img class="mark__img" src="assets/logo.png" alt="" data-logo>
-      <span>
-        <span class="mark__name" data-bind="name">The Cozy Loaf</span>
-        <span class="mark__tag" data-bind="tagline">Slow rise, warm heart</span>
-      </span>
+<!-- ── Ticker ──────────────────────────────────────────────── -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track" id="ticker"></div>
+</div>
+
+<!-- ── Nav ─────────────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="#top">
+      <img src="assets/logo.png" alt="" data-logo>
+      <b>The Cozy Loaf</b>
     </a>
-    <nav class="nav" aria-label="Sections">
+    <div class="nav__links">
       <a href="#loaves">The loaves</a>
-      <a href="#how">How it works</a>
-      <a href="#find">Find us</a>
-    </nav>
-    <a class="btn" href="#order">Order a loaf</a>
+      <a href="#why">Why sourdough</a>
+      <a href="#gallery">Gallery</a>
+    </div>
+    <a class="btn btn--sm" href="#order">Order <span class="arr">→</span></a>
   </div>
-</header>
+</nav>
 
 <main id="top">
 
-  <!-- ── Hero ──────────────────────────────────────────── -->
-  <section class="hero">
-    <div class="wrap hero__grid">
-      <div>
-        <svg class="sprig" viewBox="0 0 176 22" fill="none" aria-hidden="true">
-          <path d="M4 11h164" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 6"/>
-          <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
-            <path d="M28 11c6-6 13-7 19-4M28 11c6 6 13 7 19 4M52 11c6-6 13-7 19-4M52 11c6 6 13 7 19 4"/>
-            <path d="M148 11c-6-6-13-7-19-4M148 11c-6 6-13 7-19 4M124 11c-6-6-13-7-19-4M124 11c-6 6-13 7-19 4"/>
-          </g>
-          <path d="M88 6c2.6-3 6.6-1.4 6.6 1.6 0 3-4 5.2-6.6 7.4-2.6-2.2-6.6-4.4-6.6-7.4C81.4 4.6 85.4 3 88 6z" fill="currentColor" opacity=".55"/>
+<!-- ══ HERO ═══════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="wrap hero__in">
+    <div>
+      <p class="kicker" data-reveal data-from="pop">Two loaves · that's the whole menu</p>
+      <h1 style="margin-top:1.2rem">
+        <span class="l" data-word>Baked</span>
+        <span class="l l2" data-word>small,</span>
+        <span class="l l3" data-word><em class="ital">loved</em> big.</span>
+      </h1>
+      <p class="hero__lede">
+        We make exactly two sourdough loaves and put everything we have into both.
+        No filler, no fifty-item menu &mdash; just bread worth
+        <span class="roll" aria-hidden="true"><span class="roll__in">
+          <span>queueing for.</span><span>texting about.</span><span>tearing warm.</span><span>hoarding.</span><span>queueing for.</span>
+        </span></span><span class="sr">queueing for.</span>
+      </p>
+      <div class="hero__cta">
+        <a class="btn" href="#order">Grab a loaf <span class="arr">→</span></a>
+        <a class="btn btn--cream" href="#loaves">Meet them first</a>
+      </div>
+    </div>
+
+    <div style="position:relative" data-float="0.06">
+      <div class="medallion" data-medallion data-empty="false">
+        <svg class="medallion__ring" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><path id="ring" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs>
+          <text><textPath href="#ring">slow rise ✦ warm heart ✦ slow rise ✦ warm heart ✦</textPath></text>
         </svg>
-        <p class="eyebrow" data-bind="eyebrow">Naturally leavened &middot; Cairo</p>
-        <h1 class="display" style="margin-top:.75rem">Two loaves,<br><em>baked slowly.</em></h1>
-        <p class="hero__lede">
-          One starter, fed twice a day, and a dough that takes three days to become bread.
-          We bake twice a week and stop when the batch is gone &mdash; so the loaf you collect
-          was mixed with your name on it.
+        <div class="medallion__disc">
+          <img src="assets/plain-sourdough.jpg" alt="A round loaf of plain sourdough with a deeply scored, blistered crust." data-hero-photo>
+          <div class="medallion__fb">
+            <div>
+              <p>Plain Sourdough</p>
+              <small>your photo goes here</small>
+            </div>
+          </div>
+        </div>
+        <div class="sticker sticker--price" data-reveal data-from="pop">
+          <div><b>230</b><span>EGP</span></div>
+        </div>
+        <div class="sticker sticker--new" data-reveal data-from="pop">fresh<br>today!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" style="height:42px">
+  <path d="M0,30 C180,66 360,-6 540,24 C720,54 900,6 1080,24 C1260,42 1380,36 1440,24 L1440,60 L0,60 Z" fill="#E5324B"/>
+</svg>
+
+<!-- ══ MARQUEE BAND ═══════════════════════════════════════════ -->
+<section class="g-cherry" style="overflow:hidden;padding-block:1.4rem" aria-hidden="true">
+  <div class="ticker__track" id="band" style="animation-duration:34s"></div>
+</section>
+
+<!-- ══ THE TWO LOAVES ═════════════════════════════════════════ -->
+<section class="pad g-cream" id="loaves">
+  <div class="wrap">
+    <div style="max-width:44rem">
+      <p class="kicker" data-reveal data-from="pop">Meet the loaves</p>
+      <h2 style="font-size:clamp(2.6rem,7vw,5rem);margin-top:1.1rem" data-reveal data-from="up">
+        There are two.<br><span class="ital" style="color:var(--cherry)">Pick a side.</span>
+      </h2>
+    </div>
+
+    <!-- 01 — Plain Sourdough -->
+    <article class="loaf" style="margin-top:clamp(3rem,6vw,5rem)">
+      <div class="loaf__art" data-reveal data-from="left">
+        <div class="frame" data-frame data-empty="false">
+          <img src="assets/plain-sourdough.jpg" alt="Plain sourdough loaf, crust deeply scored and blistered." data-plain-photo>
+          <div class="frame__fb">
+            <div>
+              <img src="assets/logo.png" alt="" data-logo>
+              <h3 style="font-size:1.9rem">Plain<br>Sourdough</h3>
+              <p class="hand" style="font-size:1.35rem;color:var(--cherry);margin:.5rem 0 0">your photo drops<br>straight in here</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-reveal data-from="right">
+        <div class="loaf__idx">01</div>
+        <h3 class="loaf__name">Plain<br>Sourdough</h3>
+        <p class="loaf__price">EGP 230 <small>per loaf</small></p>
+        <p class="loaf__desc">
+          <span class="ph">Tangy, open crumb, crust that crackles when you squeeze it. The one you
+          buy every week and finish before you mean to.</span>
         </p>
-        <div class="hero__cta">
-          <a class="btn btn--lg" href="#loaves">See the loaves</a>
-          <a class="btn btn--ghost btn--lg" href="#how">How ordering works</a>
+        <p style="margin:.7rem 0 0"><span class="ph-tag">swap for your own words</span></p>
+        <div class="loaf__notes">
+          <span class="note ph">crackly crust</span>
+          <span class="note ph">soft inside</span>
+          <span class="note ph">great toasted</span>
+        </div>
+        <div class="loaf__buy">
+          <button class="btn" type="button" data-add="plain">Add to basket <span class="arr">→</span></button>
+          <span class="hand" style="font-size:1.2rem;color:var(--cherry)">↖ our bestseller <span class="ph-tag">confirm?</span></span>
         </div>
       </div>
+    </article>
 
-      <div class="photo" data-photo data-empty="false">
-        <img src="assets/loaf.jpg" alt="A round sourdough loaf, deeply scored and blistered, cooling beside a bowl of flour." data-hero-photo>
-        <div class="photo__fallback">
+    <!-- 02 — Black Olive Sourdough -->
+    <article class="loaf loaf--flip">
+      <div class="loaf__art" data-reveal data-from="right">
+        <div class="olive-card">
+          <div class="olive-card__olives" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <img class="olive-card__mark" src="assets/logo.png" alt="" data-logo>
+          <h3>Photo<br>in the oven</h3>
+          <p>we haven't shot this<br>beauty yet &mdash; coming soon!</p>
+        </div>
+      </div>
+      <div data-reveal data-from="left">
+        <div class="loaf__idx">02</div>
+        <h3 class="loaf__name">Black Olive<br>Sourdough</h3>
+        <p class="loaf__price">EGP 250 <small>per loaf</small></p>
+        <p class="loaf__desc">
+          <span class="ph">Salty pockets of black olive folded all the way through. Loud, savoury,
+          and completely unnecessary to put anything on.</span>
+        </p>
+        <p style="margin:.7rem 0 0"><span class="ph-tag">swap for your own words</span></p>
+        <div class="loaf__notes">
+          <span class="note ph">salty</span>
+          <span class="note ph">savoury</span>
+          <span class="note ph">no butter needed</span>
+        </div>
+        <div class="loaf__buy">
+          <button class="btn btn--butter" type="button" data-add="olive">Add to basket <span class="arr">→</span></button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ══ WHY SOURDOUGH ══════════════════════════════════════════ -->
+<section class="pad g-blush" id="why" style="padding-bottom:clamp(2rem,5vw,3.5rem)">
+  <div class="wrap" style="text-align:center">
+    <p class="kicker" data-reveal data-from="pop">The case for</p>
+    <svg class="arc" viewBox="0 0 600 170" aria-hidden="true" style="margin-top:1rem" data-reveal data-from="up">
+      <defs><path id="curve" d="M30,150 Q300,10 570,150" fill="none"/></defs>
+      <text><textPath href="#curve" startOffset="50%" text-anchor="middle">Why sourdough?</textPath></text>
+    </svg>
+    <h2 class="sr">Why sourdough?</h2>
+    <p class="hand" style="font-size:1.5rem;color:var(--cherry);margin:-1.5rem 0 0">drag me →</p>
+  </div>
+
+  <div class="rail" id="rail" role="region" aria-label="Reasons to love sourdough, scrollable">
+    <div class="reason"><div class="reason__ico">🎧</div><h3>The crackle</h3><p>That noise when the crust gives. Genuinely the best part of the week.</p></div>
+    <div class="reason"><div class="reason__ico">🍋</div><h3>The tang</h3><p>Wild starter, slow ferment, that sour little kick at the back of every bite.</p></div>
+    <div class="reason"><div class="reason__ico">🫧</div><h3>The crumb</h3><p>Big irregular holes. Butter falls straight through and we think that's romantic.</p></div>
+    <div class="reason"><div class="reason__ico">💪</div><h3>The chew</h3><p>Real structure. It fights back a little, in a way that soft bread never does.</p></div>
+    <div class="reason"><div class="reason__ico">🏠</div><h3>The smell</h3><p>Carry one home and the whole place smells like a bakery for an hour.</p></div>
+    <div class="reason"><div class="reason__ico">⏳</div><h3>The wait</h3><p>Nothing about sourdough is fast, which is exactly why it tastes like this.</p></div>
+  </div>
+  <div class="rail-ctrl">
+    <button type="button" id="rail-prev" aria-label="Scroll reasons left">←</button>
+    <button type="button" id="rail-next" aria-label="Scroll reasons right">→</button>
+  </div>
+</section>
+
+<!-- ══ KEEP IT HAPPY ══════════════════════════════════════════ -->
+<section class="pad g-butter-pale" id="care">
+  <div class="wrap">
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end;justify-content:space-between">
+      <div style="max-width:34rem">
+        <p class="kicker" data-reveal data-from="pop">Once it's home</p>
+        <h2 style="font-size:clamp(2.4rem,6vw,4.2rem);margin-top:1.1rem" data-reveal data-from="up">
+          Keep it<br><span class="ital" style="color:var(--cherry)">happy.</span>
+        </h2>
+      </div>
+      <p class="hand" style="font-size:1.45rem;color:var(--cherry);max-width:20rem;transform:rotate(-2deg)">
+        These are drafts &mdash; tell me how you actually want people to store it ✎
+      </p>
+    </div>
+
+    <div class="tips">
+      <div class="tip" data-reveal data-from="up"><div class="tip__n">1</div>
+        <h3>Cut side down</h3>
+        <p class="ph">Stand it on the board with the cut face flat. No bag, no box, no cling film for the first day.</p>
+      </div>
+      <div class="tip" data-reveal data-from="up"><div class="tip__n">2</div>
+        <h3>Paper, not plastic</h3>
+        <p class="ph">After day one, a paper bag or a clean tea towel. Plastic softens the crust you paid for.</p>
+      </div>
+      <div class="tip" data-reveal data-from="up"><div class="tip__n">3</div>
+        <h3>Freeze in slices</h3>
+        <p class="ph">Slice first, freeze flat, toast straight from frozen. Tastes like day one for weeks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GALLERY ════════════════════════════════════════════════ -->
+<section class="pad g-cream" id="gallery" style="padding-bottom:clamp(2.5rem,6vw,4rem)">
+  <div class="wrap" style="text-align:center;margin-bottom:2.5rem">
+    <p class="kicker" data-reveal data-from="pop">The feed</p>
+    <h2 style="font-size:clamp(2.4rem,6vw,4.2rem);margin-top:1.1rem" data-reveal data-from="up">
+      Bread, <span class="ital" style="color:var(--cherry)">but make it</span> a mood
+    </h2>
+    <p class="hand" style="font-size:1.4rem;color:var(--berry-soft);margin-top:.8rem">
+      empty frames, ready for your real photos
+    </p>
+  </div>
+  <div class="gal"><div class="gal__track" id="gal1"></div></div>
+  <div class="gal gal--rev" style="margin-top:1.2rem"><div class="gal__track" id="gal2"></div></div>
+</section>
+
+<!-- ══ ORDER ══════════════════════════════════════════════════ -->
+<section class="pad g-blush-soft" id="order">
+  <div class="wrap">
+    <div style="max-width:40rem">
+      <p class="kicker" data-reveal data-from="pop">Ordering</p>
+      <h2 style="font-size:clamp(2.6rem,7vw,4.6rem);margin-top:1.1rem" data-reveal data-from="up">
+        Two buttons and<br><span class="ital" style="color:var(--cherry)">you're done.</span>
+      </h2>
+    </div>
+
+    <div class="order">
+      <div data-reveal data-from="left">
+        <div class="pick">
           <div>
-            <p data-bind="tagline-2">Slow rise, warm heart</p>
-            <small>Photograph coming</small>
+            <h3>Plain Sourdough</h3>
+            <p class="pick__meta">the classic</p>
+            <p class="pick__price">EGP 230</p>
+          </div>
+          <div class="step" data-step="plain">
+            <button type="button" data-d="-1" aria-label="One fewer Plain Sourdough" disabled>&minus;</button>
+            <output id="q-plain">0</output>
+            <button type="button" data-d="1" aria-label="One more Plain Sourdough">+</button>
           </div>
         </div>
-        <p class="photo__cap">Fresh from the morning bake</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Bake strip ────────────────────────────────────── -->
-  <section class="strip" aria-labelledby="strip-h">
-    <h2 class="sr" id="strip-h">Next bake</h2>
-    <dl class="wrap strip__inner">
-      <div class="strip__cell">
-        <dt>Next bake</dt>
-        <dd class="big"><span data-bind="next-bake">&mdash;</span><span class="stamp" data-bind="clock-stamp">Open</span></dd>
-      </div>
-      <div class="strip__cell"><dt>Orders close</dt><dd data-bind="cutoff">&mdash;</dd></div>
-      <div class="strip__cell"><dt>Time left to order</dt><dd data-bind="countdown">&mdash;</dd></div>
-      <div class="strip__cell"><dt>Bake days</dt><dd data-bind="bakedays">&mdash;</dd></div>
-      <p class="strip__note" data-bind="capacity"></p>
-    </dl>
-  </section>
-
-  <!-- ── Loaves ────────────────────────────────────────── -->
-  <section class="band" id="loaves" aria-labelledby="loaves-h">
-    <div class="wrap">
-      <div class="band__head">
-        <p class="eyebrow">The range, in full</p>
-        <h2 class="display" id="loaves-h">Two loaves, made properly</h2>
-        <p>Both are built on the same rye starter. The figures below are the ones we
-           actually bake to &mdash; hydration, flour blend, and the hours each dough spends
-           fermenting before it ever sees the oven.</p>
-      </div>
-      <div class="loaves" id="loaf-list"></div>
-    </div>
-  </section>
-
-  <!-- ── How it works ──────────────────────────────────── -->
-  <section class="band band--tint" id="how" aria-labelledby="how-h">
-    <div class="wrap">
-      <div class="band__head">
-        <p class="eyebrow">Order to collection</p>
-        <h2 class="display" id="how-h">Four days, in order</h2>
-        <p>Sourdough cannot be hurried, and it cannot be made to order on the day.
-           This is the sequence every loaf goes through &mdash; which is why the cut-off matters.</p>
-      </div>
-      <ol class="steps" id="steps"></ol>
-    </div>
-  </section>
-
-  <!-- ── Order ─────────────────────────────────────────── -->
-  <section class="band" id="order" aria-labelledby="order-h">
-    <div class="wrap">
-      <div class="band__head">
-        <p class="eyebrow">Reserve your loaf</p>
-        <h2 class="display" id="order-h">Place an order</h2>
-        <p>Choose your loaves above, then tell us when you will collect. We confirm every
-           order by phone or email. Nothing is charged online &mdash; you pay when you collect.</p>
-      </div>
-
-      <div class="confirm" id="confirm" tabindex="-1" aria-live="polite">
-        <p class="eyebrow">Order received</p>
-        <h2 class="display" id="confirm-h">Thank you &mdash; we have your loaves</h2>
-        <p>We will confirm by phone or email before the cut-off. Your reference is
-           <span class="confirm__ref" id="confirm-ref"></span>.</p>
-        <div class="confirm__what" id="confirm-what"></div>
-        <p id="confirm-extra" style="margin-top:1.35rem"></p>
-        <p style="margin-top:1.5rem"><button class="btn btn--ghost" type="button" id="again">Place another order</button></p>
-      </div>
-
-      <form class="order__grid" id="order-form" novalidate>
-        <div>
-          <fieldset>
-            <legend>Collection</legend>
-            <div class="fields fields--2">
-              <div class="field" id="f-date">
-                <label for="pickup-date">Bake day</label>
-                <select id="pickup-date" name="pickupDate" required></select>
-                <p class="err" data-err="date"></p>
-              </div>
-              <div class="field">
-                <label id="slot-label">Collection time</label>
-                <div class="slots" role="group" aria-labelledby="slot-label" id="slots"></div>
-                <p class="err" data-err="slot"></p>
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Your details</legend>
-            <div class="fields fields--2">
-              <div class="field" id="f-name">
-                <label for="cust-name">Name</label>
-                <input id="cust-name" name="name" type="text" autocomplete="name" placeholder="Who is collecting" required>
-                <p class="err" data-err="name"></p>
-              </div>
-              <div class="field" id="f-phone">
-                <label for="cust-phone">Phone</label>
-                <input id="cust-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="010 0000 0000" required>
-                <p class="err" data-err="phone"></p>
-              </div>
-            </div>
-            <div class="fields" style="margin-top:1.2rem">
-              <div class="field" id="f-email">
-                <label for="cust-email">Email <span class="opt">&mdash; optional, for the confirmation</span></label>
-                <input id="cust-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
-                <p class="err" data-err="email"></p>
-              </div>
-              <div class="field">
-                <label for="cust-notes">Anything we should know <span class="opt">&mdash; optional</span></label>
-                <textarea id="cust-notes" name="notes" placeholder="Sliced, gift wrapped, allergies in the household, a later collection&hellip;"></textarea>
-              </div>
-            </div>
-          </fieldset>
+        <div class="pick">
+          <div>
+            <h3>Black Olive Sourdough</h3>
+            <p class="pick__meta">the loud one</p>
+            <p class="pick__price">EGP 250</p>
+          </div>
+          <div class="step" data-step="olive">
+            <button type="button" data-d="-1" aria-label="One fewer Black Olive Sourdough" disabled>&minus;</button>
+            <output id="q-olive">0</output>
+            <button type="button" data-d="1" aria-label="One more Black Olive Sourdough">+</button>
+          </div>
         </div>
 
-        <aside class="docket" aria-labelledby="docket-h">
-          <div class="docket__head">
-            <h3 class="docket__title" id="docket-h">Your order</h3>
-            <span class="docket__ref" id="docket-ref"></span>
+        <p class="hand" style="font-size:1.4rem;color:var(--cherry);margin-top:1.6rem;max-width:30rem">
+          Pickup or delivery? Cut-off times? Payment? &mdash; send me these and I'll build the real
+          ordering step ✎
+        </p>
+      </div>
+
+      <aside data-reveal data-from="right">
+        <div class="basket" id="basket">
+          <h3>Your basket</h3>
+          <div class="basket__lines" id="lines" aria-live="polite">
+            <p class="basket__empty">nothing in here yet…</p>
           </div>
-          <div class="docket__lines" id="docket-lines" aria-live="polite">
-            <p class="docket__empty">No loaves chosen yet &mdash; add one above.</p>
-          </div>
-          <div class="docket__meta" id="docket-meta"></div>
-          <dl class="docket__total">
-            <dt>Total on collection</dt>
-            <dd id="docket-total">&mdash;</dd>
+          <dl class="basket__total">
+            <dt>Total</dt>
+            <dd id="total">EGP 0</dd>
           </dl>
-          <div class="docket__foot">
-            <button class="btn btn--lg" type="submit" id="submit-btn">Place order</button>
-            <p class="formnote" id="form-note" role="status"></p>
-            <p class="docket__fine">No payment is taken here. We hold your loaves and you pay
-              cash or by transfer when you collect.</p>
-          </div>
-        </aside>
-      </form>
+          <button class="btn" type="button" id="place" disabled>Place my order <span class="arr">→</span></button>
+          <p class="basket__fine">no payment here &mdash; we'll confirm with you first</p>
+        </div>
 
-      <noscript>
-        <p style="margin-top:2rem">The order form needs JavaScript. Send us a message instead &mdash;
-          <a data-bind="noscript-phone" href="#">call or WhatsApp</a>.</p>
-      </noscript>
+        <div class="yay" id="yay" tabindex="-1">
+          <div style="font-size:3rem;line-height:1">🥖</div>
+          <h3>Yay! Order noted.</h3>
+          <div class="yay__sum" id="yay-sum"></div>
+          <p class="hand" style="font-size:1.3rem;color:var(--cherry)">
+            This is the design preview &mdash; the real send step is waiting on your ordering rules.
+          </p>
+          <p style="margin-top:1.4rem"><button class="btn btn--cream btn--sm" type="button" id="yay-back">Start over</button></p>
+        </div>
+      </aside>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ── Find us ───────────────────────────────────────── -->
-  <section class="band band--tint" id="find" aria-labelledby="find-h">
-    <div class="wrap">
-      <div class="band__head">
-        <p class="eyebrow">Collection point</p>
-        <h2 class="display" id="find-h">Find us</h2>
-      </div>
-      <div class="find">
-        <div>
-          <h3>The kitchen</h3>
-          <p data-bind="address"></p>
-          <p style="margin-top:.85rem"><a data-bind="map" href="#" target="_blank" rel="noopener">Open in maps</a></p>
-        </div>
-        <div>
-          <h3>Collection hours</h3>
-          <div class="hours" id="hours"></div>
-        </div>
-        <div>
-          <h3>Talk to us</h3>
-          <p><a data-bind="tel" href="#"></a></p>
-          <p><a data-bind="mail" href="#"></a></p>
-          <p style="margin-top:.85rem"><a data-bind="insta" href="#" target="_blank" rel="noopener"></a></p>
-        </div>
-      </div>
+<!-- ══ SOCIAL ═════════════════════════════════════════════════ -->
+<section class="pad g-butter" id="social" style="text-align:center">
+  <div class="wrap">
+    <p class="kicker" data-reveal data-from="pop">Say hi</p>
+    <h2 style="font-size:clamp(2.4rem,6vw,4.2rem);margin-top:1.1rem" data-reveal data-from="up">
+      Find us on <span class="ital" style="color:var(--cherry)">the internet</span>
+    </h2>
+    <p class="hand" style="font-size:1.5rem;margin-top:1rem">
+      <span class="ph">@yourhandle</span> <span class="ph-tag">what's the real handle?</span>
+    </p>
+    <div class="social">
+      <div class="social__tile">post 01</div>
+      <div class="social__tile">post 02</div>
+      <div class="social__tile">post 03</div>
+      <div class="social__tile">post 04</div>
     </div>
-  </section>
+  </div>
+</section>
+
 </main>
 
 <footer class="foot">
-  <div class="wrap foot__inner">
-    <span class="foot__mark">
-      <img src="assets/logo.png" alt="" data-logo>
-      <span class="foot__name" data-bind="name">The Cozy Loaf</span>
-    </span>
-    <span class="foot__tag" data-bind="tagline">Slow rise, warm heart</span>
+  <div class="wrap">
+    <img src="assets/logo.png" alt="" data-logo>
+    <h2>Slow rise,<br><span class="ital">warm heart.</span></h2>
+    <p>Two loaves. That's it. That's the bakery.</p>
+    <p style="margin-top:1.4rem;font-family:var(--hand);font-size:1.25rem;color:var(--blush)">
+      contact, address &amp; hours &mdash; still to come
+    </p>
   </div>
 </footer>
 
-<div class="tray" id="tray" data-open="false">
-  <div class="wrap tray__inner">
-    <p class="tray__sum" id="tray-sum"></p>
-    <a class="btn" href="#order">Go to order</a>
-  </div>
-</div>
-
 <script>
-/* ═══════════════════════════════════════════════════════════
-   EVERYTHING YOU EDIT LIVES IN THIS ONE OBJECT.
-   Change a name, a price, a bake day or a phone number here and
-   the whole page follows. Nothing below this block needs touching.
-   ═══════════════════════════════════════════════════════════ */
-const BAKERY = {
-  name: "The Cozy Loaf",
-  tagline: "Slow rise, warm heart",
-  eyebrow: "Naturally leavened · Cairo",
-  currency: "EGP",
-
-  /* Where orders go ------------------------------------------------
-     Leave orderEndpoint empty ("") and the form opens the customer's
-     email app with the full order already written, addressed to you.
-     That works today, with no sign-up.
-
-     To have orders arrive in your inbox automatically instead:
-       1. Sign up at web3forms.com (free) with the address below.
-       2. Paste the access key they email you into accessKey.
-       3. Set orderEndpoint to "https://api.web3forms.com/submit".
-     A Formspree endpoint ("https://formspree.io/f/xxxxxxx") also
-     works — paste it into orderEndpoint and leave accessKey empty. */
-  orderEndpoint: "",
-  accessKey: "",
-
-  /* ↓↓↓ PLACEHOLDERS — replace with the real details ↓↓↓ */
-  ownerEmail: "hello@thecozyloaf.example",
-  phone: "+20 100 000 0000",
-  phoneDisplay: "010 0000 0000",
-  instagram: "thecozyloaf",
-  address: "14 Road 231, Degla\nMaadi, Cairo",
-  mapUrl: "https://maps.google.com/?q=Degla+Maadi+Cairo",
-
-  /* Bake schedule --------------------------------------------------
-     bakeDays: 0 = Sunday … 6 = Saturday. Two entries = two bakes a week.
-     Orders close cutoffDays before the bake, at cutoffHour (24h clock). */
-  bakeDays: [3, 6],
-  cutoffDays: 2,
-  cutoffHour: 18,
-  pickupSlots: ["10:00 – 11:00", "11:00 – 12:00", "12:00 – 13:00"],
-  maxPerLoaf: 6,
-  capacityNote: "Each bake is a fixed batch. When a date fills, it drops off the list and the next one opens.",
-
-  loaves: [
-    {
-      id: "country",
-      name: "The Cozy Country Loaf",
-      form: "Boule · 900 g",
-      price: 180,
-      soldOut: false,
-      desc: "The everyday loaf. A mild, milky tang, a thin crackling crust and a crumb open enough to lose butter in. Good for four days, and better toasted on the fifth.",
-      spec: [
-        ["Flour", "85% white / 10% wholemeal / 5% rye"],
-        ["Hydration", "78%"],
-        ["Bulk ferment", "5 h at 24 °C"],
-        ["Cold proof", "18 h at 4 °C"],
-        ["Bake", "40 min · 250 → 220 °C"],
-        ["Ingredients", "Flour, water, sea salt, starter"]
-      ]
-    },
-    {
-      id: "seeded",
-      name: "Rye &amp; Toasted Seed",
-      form: "Bâtard · 750 g",
-      price: 210,
-      soldOut: false,
-      desc: "Darker and denser, with sunflower, pumpkin and sesame toasted before they go in. Deeply sour, cuts thin, and keeps for the better part of a week.",
-      spec: [
-        ["Flour", "60% white / 30% dark rye / 10% spelt"],
-        ["Hydration", "82%"],
-        ["Bulk ferment", "4 h at 24 °C"],
-        ["Cold proof", "24 h at 4 °C"],
-        ["Bake", "45 min · 250 → 210 °C"],
-        ["Ingredients", "Flour, water, sea salt, starter, seeds"]
-      ]
-    }
-  ],
-
-  steps: [
-    { h: "You order", when: "By 18:00, two days before", p: "Pick your loaves and a collection time. We confirm by phone or email the same evening." },
-    { h: "We build the levain", when: "Evening before, 20:00", p: "The starter is fed and left overnight, so it is at its peak when the dough is mixed." },
-    { h: "Mix, fold, rest", when: "Overnight, 4 °C", p: "Mixed, folded by hand four times, shaped, then slowed right down in the cold to build flavour." },
-    { h: "Bake and collect", when: "Bake day, from 10:00", p: "Into the oven at 05:30. Loaves are cool and ready by ten — collect at the time you chose." }
-  ],
-
-  hours: [
-    ["Wednesday", "10:00 – 13:00"],
-    ["Saturday", "10:00 – 13:00"],
-    ["All other days", "Closed — we are proofing"]
-  ]
-};
-
-/* ═══════════════════════════════════════════════════════════
-   Below here is the machinery. No edits needed.
-   ═══════════════════════════════════════════════════════════ */
 (function () {
   "use strict";
-
-  const $  = (s, r) => (r || document).querySelector(s);
+  const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
-  const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const money = n => n.toLocaleString("en-US") + " " + BAKERY.currency;
-  const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  const longDate = d => DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS[d.getMonth()];
-  const decode = s => { const t = document.createElement("textarea"); t.innerHTML = s; return t.value; };
-  const escapeHTML = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  /* ── The only two products there are ─────────────────────── */
+  const PRODUCTS = {
+    plain: { name: "Plain Sourdough", price: 230 },
+    olive: { name: "Black Olive Sourdough", price: 250 }
+  };
+  const egp = n => "EGP " + n.toLocaleString("en-US");
+  const qty = { plain: 0, olive: 0 };
 
-  const state = { qty: {}, date: "", slot: "", ref: makeRef() };
-  BAKERY.loaves.forEach(l => { state.qty[l.id] = 0; });
-
-  function makeRef() {
-    const d = new Date();
-    const stamp = String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
-    let tail = "";
-    for (let i = 0; i < 4; i++) tail += "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)];
-    const initials = BAKERY.name.replace(/^The\s+/i, "").split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
-    return initials + "-" + stamp + "-" + tail;
+  /* ── Marquees ────────────────────────────────────────────── */
+  function fillTrack(el, words, cls) {
+    const once = words.map(w => '<span class="' + (cls || "") + '">' + w + "</span>").join("");
+    el.innerHTML = once + once;
   }
+  fillTrack($("#ticker"), ["slow rise ✦ warm heart", "two loaves, that's the menu", "baked in small batches",
+                           "slow rise ✦ warm heart", "two loaves, that's the menu", "baked in small batches"]);
+  fillTrack($("#band"), ["Plain Sourdough ✦", "Black Olive Sourdough ✦", "Plain Sourdough ✦", "Black Olive Sourdough ✦",
+                         "Plain Sourdough ✦", "Black Olive Sourdough ✦"]);
 
-  /* ── Images: hide cleanly when the file is not there yet ── */
-  function guardImages() {
-    $$("[data-logo]").forEach(img => {
-      const fail = () => { img.hidden = true; };
-      img.addEventListener("error", fail);
-      if (img.complete && img.naturalWidth === 0) fail();
-    });
-    const photo = $("[data-photo]"), img = $("[data-hero-photo]");
-    if (!photo || !img) return;
-    const fail = () => { photo.dataset.empty = "true"; };
+  const cells = n => Array.from({ length: n }, (_, i) =>
+    '<div class="gal__cell"><div><b>' + String(i + 1).padStart(2, "0") + "</b>your photo here</div></div>").join("");
+  $("#gal1").innerHTML = cells(7) + cells(7);
+  $("#gal2").innerHTML = cells(6) + cells(6);
+
+  /* ── Images: hide the slot cleanly until the file exists ──── */
+  $$("[data-logo]").forEach(img => {
+    const fail = () => { img.hidden = true; };
     img.addEventListener("error", fail);
     if (img.complete && img.naturalWidth === 0) fail();
-  }
+  });
+  [["[data-medallion]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(pair => {
+    const box = $(pair[0]), img = $(pair[1]);
+    if (!box || !img) return;
+    const fail = () => { box.dataset.empty = "true"; };
+    img.addEventListener("error", fail);
+    if (img.complete && img.naturalWidth === 0) fail();
+  });
 
-  /* ── Bake dates ─────────────────────────────────────────── */
-  const cutoffFor = bake => new Date(bake.getFullYear(), bake.getMonth(), bake.getDate() - BAKERY.cutoffDays, BAKERY.cutoffHour, 0, 0);
-  function openBakeDates(count) {
-    const out = [], now = new Date();
-    for (let i = 0; i < 90 && out.length < count; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
-      if (BAKERY.bakeDays.indexOf(d.getDay()) === -1) continue;
-      if (now >= cutoffFor(d)) continue;
-      out.push(d);
-    }
-    return out;
-  }
-  const dates = openBakeDates(6);
+  /* ── Reveals: page renders at rest, JS opts elements in ───── */
+  if (!reduced && "IntersectionObserver" in window) {
+    const items = $$("[data-reveal]");
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.dataset.reveal = "in";
+        obs.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: .08 });
 
-  /* ── Static copy ────────────────────────────────────────── */
-  function fillStatic() {
-    const tel = "tel:" + BAKERY.phone.replace(/[^+\d]/g, "");
-    document.title = BAKERY.name;
-    $$("[data-bind=name]").forEach(el => { el.textContent = BAKERY.name; });
-    $$("[data-bind=tagline],[data-bind=tagline-2]").forEach(el => { el.textContent = BAKERY.tagline; });
-    $("[data-bind=eyebrow]").textContent = BAKERY.eyebrow;
-    $("[data-bind=address]").innerHTML = BAKERY.address.split("\n").map(escapeHTML).join("<br>");
-    $("[data-bind=map]").href = BAKERY.mapUrl;
-    const t = $("[data-bind=tel]"); t.href = tel; t.textContent = BAKERY.phoneDisplay;
-    const m = $("[data-bind=mail]"); m.href = "mailto:" + BAKERY.ownerEmail; m.textContent = BAKERY.ownerEmail;
-    const ig = $("[data-bind=insta]"); ig.href = "https://instagram.com/" + BAKERY.instagram; ig.textContent = "@" + BAKERY.instagram;
-    const ns = $("[data-bind=noscript-phone]"); if (ns) { ns.href = tel; ns.textContent = BAKERY.phoneDisplay; }
-    $("[data-bind=capacity]").textContent = BAKERY.capacityNote;
-    $("[data-bind=bakedays]").textContent = BAKERY.bakeDays.map(d => DAYS[d]).join(" · ");
-    $("#hours").innerHTML = BAKERY.hours.map(h =>
-      "<div><span>" + escapeHTML(h[0]) + "</span><span>" + escapeHTML(h[1]) + "</span></div>").join("");
-    $("#steps").innerHTML = BAKERY.steps.map((s, i) =>
-      '<li class="step"><span class="step__no">' + String(i + 1).padStart(2, "0") + '</span>' +
-      '<div><h3>' + s.h + '</h3><p>' + s.p + '<span class="step__when">' + s.when + '</span></p></div></li>').join("");
-    $("#docket-ref").textContent = state.ref;
-  }
-
-  /* ── Bake strip ─────────────────────────────────────────── */
-  function fillClock() {
-    const stampEl = $("[data-bind=clock-stamp]");
-    if (!dates.length) {
-      $("[data-bind=next-bake]").textContent = "Fully booked";
-      stampEl.textContent = "Closed"; stampEl.dataset.state = "closed";
-      $("[data-bind=cutoff]").textContent = "—";
-      $("[data-bind=countdown]").textContent = "—";
-      return;
-    }
-    const bake = dates[0], cut = cutoffFor(bake);
-    $("[data-bind=next-bake]").textContent = longDate(bake);
-    $("[data-bind=cutoff]").textContent = DAYS[cut.getDay()].slice(0, 3) + " " + cut.getDate() + " " + MONTHS[cut.getMonth()] + ", " + String(BAKERY.cutoffHour).padStart(2, "0") + ":00";
-    tick();
-    setInterval(tick, 60000);
-  }
-  function tick() {
-    if (!dates.length) return;
-    const ms = cutoffFor(dates[0]) - new Date();
-    if (ms <= 0) { $("[data-bind=countdown]").textContent = "Closed"; return; }
-    const h = Math.floor(ms / 3600000), d = Math.floor(h / 24);
-    $("[data-bind=countdown]").textContent = d >= 1
-      ? d + (d === 1 ? " day " : " days ") + (h % 24) + " h"
-      : h + " h " + Math.floor((ms % 3600000) / 60000) + " min";
-  }
-
-  /* ── Loaf cards ─────────────────────────────────────────── */
-  function renderLoaves() {
-    $("#loaf-list").innerHTML = BAKERY.loaves.map(l =>
-      '<article class="loaf' + (l.soldOut ? " loaf--out" : "") + '">' +
-        '<div class="loaf__crust"></div>' +
-        '<div class="loaf__body">' +
-          '<div class="loaf__top"><div>' +
-            '<p class="eyebrow">' + l.form + '</p>' +
-            '<h3 class="loaf__name">' + l.name + '</h3>' +
-          '</div><p class="loaf__price">' + money(l.price) + '<span>per loaf</span></p></div>' +
-          '<p class="loaf__desc">' + l.desc + '</p>' +
-          '<dl class="spec">' + l.spec.map(r => '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>').join("") + '</dl>' +
-        '</div>' +
-        '<div class="loaf__foot">' +
-          (l.soldOut
-            ? '<span class="chip-out">Sold out this bake</span><span class="loaf__state">Back on the next date</span>'
-            : '<div class="stepper" data-loaf="' + l.id + '">' +
-                '<button type="button" data-step="-1" aria-label="One fewer ' + escapeHTML(decode(l.name)) + '" disabled>&minus;</button>' +
-                '<output id="q-' + l.id + '">0</output>' +
-                '<button type="button" data-step="1" aria-label="One more ' + escapeHTML(decode(l.name)) + '">+</button>' +
-              '</div><span class="loaf__state" id="s-' + l.id + '">Not in your order</span>') +
-        '</div>' +
-      '</article>').join("");
-
-    $$(".stepper button").forEach(b => b.addEventListener("click", () => {
-      const id = b.closest(".stepper").dataset.loaf;
-      state.qty[id] = Math.max(0, Math.min(BAKERY.maxPerLoaf, state.qty[id] + Number(b.dataset.step)));
-      renderOrder();
-    }));
-  }
-
-  /* ── Order state ────────────────────────────────────────── */
-  const lines = () => BAKERY.loaves.filter(l => state.qty[l.id] > 0).map(l =>
-    ({ id: l.id, name: decode(l.name), form: l.form, qty: state.qty[l.id], each: l.price, sum: l.price * state.qty[l.id] }));
-  const total = () => lines().reduce((a, l) => a + l.sum, 0);
-  const count = () => lines().reduce((a, l) => a + l.qty, 0);
-
-  function renderOrder() {
-    BAKERY.loaves.forEach(l => {
-      const out = $("#q-" + l.id); if (!out) return;
-      const q = state.qty[l.id];
-      out.textContent = q;
-      $("#s-" + l.id).textContent = q === 0 ? "Not in your order" : money(l.price * q);
-      const btns = $$(".stepper[data-loaf='" + l.id + "'] button");
-      btns[0].disabled = q === 0;
-      btns[1].disabled = q >= BAKERY.maxPerLoaf;
+    items.forEach((el, i) => {
+      const below = el.getBoundingClientRect().top > window.innerHeight * .85;
+      if (!below) { el.dataset.reveal = "in"; return; }
+      el.dataset.reveal = "pending";
+      if (!el.dataset.from) el.dataset.from = "up";
+      el.style.transitionDelay = (i % 3) * 80 + "ms";
+      io.observe(el);
     });
 
-    const ls = lines();
-    $("#docket-lines").innerHTML = ls.length
-      ? ls.map(l =>
-          '<div class="line"><span class="line__q">' + l.qty + '&times;</span>' +
-          '<span class="line__n">' + escapeHTML(l.name) + '<small>' + l.form + ' · ' + money(l.each) + ' each</small></span>' +
-          '<span class="line__p">' + money(l.sum) + '</span></div>').join("")
-      : '<p class="docket__empty">No loaves chosen yet — add one above.</p>';
-
-    const meta = [];
-    if (state.date) {
-      const d = dates.find(x => iso(x) === state.date);
-      if (d) meta.push("Collect " + longDate(d) + (state.slot ? ", " + state.slot : ""));
-    }
-    meta.push("Pay on collection · cash or transfer");
-    $("#docket-meta").innerHTML = meta.map(m => "<div>" + escapeHTML(m) + "</div>").join("");
-    $("#docket-total").textContent = ls.length ? money(total()) : "—";
-
-    $("#tray").dataset.open = ls.length ? "true" : "false";
-    $("#tray-sum").innerHTML = ls.length
-      ? "<strong>" + money(total()) + "</strong><small>" + count() + (count() === 1 ? " loaf" : " loaves") + " ready to reserve</small>"
-      : "";
+    /* hero words stagger in on load */
+    $$("[data-word]").forEach((w, i) => {
+      w.style.opacity = "0";
+      w.style.transform = "translateY(28px) rotate(-2deg)";
+      w.style.transition = "opacity .7s var(--pop) " + (i * 110 + 120) + "ms, transform .8s var(--pop) " + (i * 110 + 120) + "ms";
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        w.style.opacity = "1"; w.style.transform = "none";
+      }));
+    });
   }
 
-  /* ── Date & slot controls ───────────────────────────────── */
-  function renderControls() {
-    const sel = $("#pickup-date");
-    if (!dates.length) {
-      sel.innerHTML = '<option value="">No dates open — please call us</option>';
-      sel.disabled = true;
-      $("#submit-btn").disabled = true;
-      return;
-    }
-    sel.innerHTML = '<option value="">Choose a bake day</option>' +
-      dates.map(d => '<option value="' + iso(d) + '">' + longDate(d) + '</option>').join("");
-    sel.addEventListener("change", () => { state.date = sel.value; clearErr("date", "#f-date"); renderOrder(); });
-
-    $("#slots").innerHTML = BAKERY.pickupSlots.map(s =>
-      '<button class="slot" type="button" aria-pressed="false" data-slot="' + s + '">' + s + '</button>').join("");
-    $$("#slots .slot").forEach(b => b.addEventListener("click", () => {
-      state.slot = b.dataset.slot;
-      $$("#slots .slot").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-      clearErr("slot");
-      renderOrder();
-    }));
-  }
-
-  /* ── Validation ─────────────────────────────────────────── */
-  function setErr(key, msg, fieldId) {
-    $("[data-err='" + key + "']").textContent = msg;
-    if (fieldId) $(fieldId).classList.add("field--bad");
-  }
-  function clearErr(key, fieldId) {
-    const el = $("[data-err='" + key + "']"); if (el) el.textContent = "";
-    if (fieldId) $(fieldId).classList.remove("field--bad");
-  }
-  function validate() {
-    ["date","slot","name","phone","email"].forEach(k => clearErr(k));
-    ["#f-date","#f-name","#f-phone","#f-email"].forEach(id => $(id).classList.remove("field--bad"));
-    const problems = [];
-
-    if (!lines().length) problems.push({ focus: "#loaves" });
-    if (!state.date) { setErr("date", "Pick the day you will collect.", "#f-date"); problems.push({ focus: "#pickup-date" }); }
-    if (!state.slot) { setErr("slot", "Pick a collection time."); problems.push({ focus: "#slots .slot" }); }
-    if ($("#cust-name").value.trim().length < 2) { setErr("name", "We need a name for the bag.", "#f-name"); problems.push({ focus: "#cust-name" }); }
-    if ($("#cust-phone").value.replace(/\D/g, "").length < 8) { setErr("phone", "A number we can reach you on.", "#f-phone"); problems.push({ focus: "#cust-phone" }); }
-    const email = $("#cust-email").value.trim();
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { setErr("email", "That address looks incomplete.", "#f-email"); problems.push({ focus: "#cust-email" }); }
-
-    return problems;
-  }
-
-  /* ── Building the order ─────────────────────────────────── */
-  function buildOrder() {
-    const d = dates.find(x => iso(x) === state.date);
-    return {
-      reference: state.ref,
-      placed: new Date().toLocaleString("en-GB"),
-      name: $("#cust-name").value.trim(),
-      phone: $("#cust-phone").value.trim(),
-      email: $("#cust-email").value.trim(),
-      notes: $("#cust-notes").value.trim(),
-      bakeDay: d ? longDate(d) : state.date,
-      slot: state.slot,
-      lines: lines(),
-      total: total()
+  /* ── Parallax drift ──────────────────────────────────────── */
+  const floats = $$("[data-float]");
+  if (!reduced && floats.length && window.innerWidth > 700) {
+    let ticking = false;
+    const move = () => {
+      const y = window.scrollY;
+      floats.forEach(el => { el.style.transform = "translateY(" + (y * parseFloat(el.dataset.float) * -1) + "px)"; });
+      ticking = false;
     };
-  }
-  function orderText(o) {
-    const rule = "----------------------------------------";
-    return [
-      "NEW ORDER — " + BAKERY.name, rule,
-      "Reference   " + o.reference,
-      "Placed      " + o.placed, "",
-      "COLLECTION",
-      "Bake day    " + o.bakeDay,
-      "Time        " + o.slot, "",
-      "CUSTOMER",
-      "Name        " + o.name,
-      "Phone       " + o.phone,
-      "Email       " + (o.email || "—"),
-      "Notes       " + (o.notes || "—"), "",
-      "LOAVES",
-      o.lines.map(l => "  " + l.qty + " × " + l.name + " (" + l.form + ")  " + money(l.sum)).join("\n"),
-      rule,
-      "TOTAL       " + money(o.total) + "  — payable on collection", ""
-    ].join("\n");
-  }
-  const mailtoLink = o => "mailto:" + BAKERY.ownerEmail +
-    "?subject=" + encodeURIComponent("Loaf order " + o.reference + " — " + o.bakeDay) +
-    "&body=" + encodeURIComponent(orderText(o));
-
-  /* ── Submit ─────────────────────────────────────────────── */
-  function note(msg, kind) {
-    const el = $("#form-note");
-    el.textContent = msg || "";
-    el.className = "formnote" + (kind ? " formnote--" + kind : "");
+    addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(move); } }, { passive: true });
   }
 
-  async function submit(e) {
-    e.preventDefault();
-    const problems = validate();
-    if (problems.length) {
-      note(problems.length === 1 ? "One thing to fix before we can take this." : problems.length + " things to fix before we can take this.", "bad");
-      const target = $(problems[0].focus);
-      if (target) { target.scrollIntoView({ block: "center", behavior: "smooth" }); if (target.focus) target.focus({ preventScroll: true }); }
-      return;
-    }
+  /* ── Drag rail ───────────────────────────────────────────── */
+  const rail = $("#rail");
+  let down = false, startX = 0, startScroll = 0, moved = false;
+  rail.addEventListener("pointerdown", e => {
+    down = true; moved = false; startX = e.clientX; startScroll = rail.scrollLeft;
+    rail.setPointerCapture(e.pointerId);
+  });
+  rail.addEventListener("pointermove", e => {
+    if (!down) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 4) { moved = true; rail.dataset.drag = "true"; }
+    rail.scrollLeft = startScroll - dx;
+  });
+  const release = e => {
+    if (!down) return;
+    down = false; delete rail.dataset.drag;
+    if (e.pointerId != null && rail.hasPointerCapture(e.pointerId)) rail.releasePointerCapture(e.pointerId);
+  };
+  rail.addEventListener("pointerup", release);
+  rail.addEventListener("pointercancel", release);
+  rail.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
 
-    const o = buildOrder(), btn = $("#submit-btn");
-    btn.disabled = true; btn.textContent = "Sending…"; note("");
+  const nudge = dir => {
+    const card = rail.querySelector(".reason");
+    const w = card ? card.offsetWidth + 20 : 300;
+    rail.scrollBy({ left: dir * w, behavior: reduced ? "auto" : "smooth" });
+  };
+  $("#rail-prev").addEventListener("click", () => nudge(-1));
+  $("#rail-next").addEventListener("click", () => nudge(1));
 
-    if (BAKERY.orderEndpoint) {
-      const payload = {
-        subject: "Loaf order " + o.reference + " — " + o.bakeDay,
-        from_name: o.name,
-        reference: o.reference, placed: o.placed,
-        name: o.name, phone: o.phone, email: o.email, notes: o.notes,
-        bake_day: o.bakeDay, collection_time: o.slot,
-        loaves: o.lines.map(l => l.qty + " × " + l.name).join(", "),
-        total: money(o.total),
-        message: orderText(o)
-      };
-      if (BAKERY.accessKey) payload.access_key = BAKERY.accessKey;
-      try {
-        const res = await fetch(BAKERY.orderEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        showConfirm(o, false);
-      } catch (err) {
-        btn.disabled = false; btn.textContent = "Place order";
-        showConfirm(o, true);
-      }
-      return;
-    }
+  /* ── Basket ──────────────────────────────────────────────── */
+  function render() {
+    Object.keys(PRODUCTS).forEach(k => {
+      $("#q-" + k).textContent = qty[k];
+      const box = $('.step[data-step="' + k + '"]');
+      box.querySelector('[data-d="-1"]').disabled = qty[k] === 0;
+      box.querySelector('[data-d="1"]').disabled = qty[k] >= 10;
+    });
 
-    window.location.href = mailtoLink(o);
-    showConfirm(o, false, true);
+    const chosen = Object.keys(PRODUCTS).filter(k => qty[k] > 0);
+    const total = chosen.reduce((a, k) => a + PRODUCTS[k].price * qty[k], 0);
+
+    $("#lines").innerHTML = chosen.length
+      ? chosen.map(k =>
+          '<div class="basket__line"><span>' + qty[k] + " × " + PRODUCTS[k].name +
+          "</span><span>" + egp(PRODUCTS[k].price * qty[k]) + "</span></div>").join("")
+      : '<p class="basket__empty">nothing in here yet…</p>';
+    $("#total").textContent = egp(total);
+    $("#place").disabled = !chosen.length;
   }
 
-  function showConfirm(o, failed, viaEmailApp) {
-    $("#order-form").style.display = "none";
-    const box = $("#confirm");
-    box.dataset.open = "true";
-    $("#confirm-ref").textContent = o.reference;
-    $("#confirm-what").innerHTML = [
-      ["Collect", o.bakeDay + ", " + o.slot],
-      ["Loaves", o.lines.map(l => l.qty + " × " + l.name).join(" · ")],
-      ["To pay on collection", money(o.total)],
-      ["We will contact", o.phone + (o.email ? " · " + o.email : "")]
-    ].map(r => "<div><span>" + escapeHTML(r[0]) + "</span><span>" + escapeHTML(r[1]) + "</span></div>").join("");
-
-    const extra = $("#confirm-extra");
-    if (failed) {
-      $("#confirm-h").textContent = "Almost — send this to us";
-      extra.innerHTML = "The order could not be sent automatically. Send it in one tap instead: " +
-        '<a class="btn" style="margin-top:.85rem" href="' + escapeHTML(mailtoLink(o)) + '">Email the order</a>' +
-        '<label class="sr" for="copy">Your order in full</label><textarea class="copybox" id="copy" readonly></textarea>';
-      $("#copy").value = orderText(o);
-    } else if (viaEmailApp) {
-      extra.innerHTML = "Your email app should have opened with the order written out — press send and it is with us. " +
-        'If nothing opened, <a href="' + escapeHTML(mailtoLink(o)) + '">open it here</a> or call ' +
-        '<a href="tel:' + BAKERY.phone.replace(/[^+\d]/g, "") + '">' + escapeHTML(BAKERY.phoneDisplay) + "</a>.";
-    } else {
-      extra.textContent = "There is nothing else to do. If your plans change, call us before the cut-off and we will move or cancel the order.";
-    }
-
-    box.scrollIntoView({ block: "start", behavior: "smooth" });
-    box.focus({ preventScroll: true });
+  function bump(k, d) {
+    qty[k] = Math.max(0, Math.min(10, qty[k] + d));
+    render();
   }
+  $$(".step").forEach(box => box.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (b) bump(box.dataset.step, Number(b.dataset.d));
+  }));
+  $$("[data-add]").forEach(b => b.addEventListener("click", () => {
+    bump(b.dataset.add, 1);
+    if (!reduced) { b.animate([{ transform: "scale(1)" }, { transform: "scale(.9) rotate(-3deg)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.22,1.2,.36,1)" }); }
+    $("#order").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  }));
 
-  function reset() {
-    BAKERY.loaves.forEach(l => { state.qty[l.id] = 0; });
-    state.date = ""; state.slot = ""; state.ref = makeRef();
-    $("#order-form").reset();
-    $$("#slots .slot").forEach(x => x.setAttribute("aria-pressed", "false"));
-    $("#confirm").dataset.open = "false";
-    $("#order-form").style.display = "";
-    $("#submit-btn").disabled = false;
-    $("#submit-btn").textContent = "Place order";
-    $("#docket-ref").textContent = state.ref;
-    note("");
-    renderOrder();
-    $("#order").scrollIntoView({ block: "start", behavior: "smooth" });
-  }
+  $("#place").addEventListener("click", () => {
+    const chosen = Object.keys(PRODUCTS).filter(k => qty[k] > 0);
+    const total = chosen.reduce((a, k) => a + PRODUCTS[k].price * qty[k], 0);
+    $("#yay-sum").innerHTML = chosen.map(k =>
+      "<div><span>" + qty[k] + " × " + PRODUCTS[k].name + "</span><span>" + egp(PRODUCTS[k].price * qty[k]) + "</span></div>"
+    ).join("") + '<div style="border:0;font-weight:800"><span>Total</span><span>' + egp(total) + "</span></div>";
+    $("#basket").style.display = "none";
+    $("#yay").dataset.open = "true";
+    $("#yay").focus({ preventScroll: true });
+  });
 
-  /* ── Go ─────────────────────────────────────────────────── */
-  guardImages();
-  fillStatic();
-  fillClock();
-  renderLoaves();
-  renderControls();
-  renderOrder();
-  $("#order-form").addEventListener("submit", submit);
-  $("#again").addEventListener("click", reset);
-  ["#cust-name","#cust-phone","#cust-email"].forEach(id =>
-    $(id).addEventListener("input", () => { const k = id.replace("#cust-", ""); clearErr(k, "#f-" + k); }));
+  $("#yay-back").addEventListener("click", () => {
+    qty.plain = 0; qty.olive = 0;
+    $("#yay").dataset.open = "false";
+    $("#basket").style.display = "";
+    render();
+  });
+
+  render();
 })();
 </script>
 </body>

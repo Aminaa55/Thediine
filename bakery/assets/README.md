@@ -1,20 +1,33 @@
-# Drop your two image files here
+# Two image files go here
 
-The page looks for exactly two files in this folder. Neither is required for the
-site to work — if a file is missing the page hides that slot cleanly rather than
-showing a broken image — but both are worth adding.
-
-| File | What it is | Suggested size |
+| File | What it is | Notes |
 |---|---|---|
-| `logo.png` | The Cozy Loaf circular logo. Appears in the header, the footer and the browser tab. | Square, 512 × 512, transparent or cream background |
-| `loaf.jpg` | The hero photograph — the scored boule with the bowl of flour. | Portrait, roughly 4:5, around 1400 px on the long edge |
+| `logo.png` | The Cozy Loaf circular logo | Square, 512 × 512. Used in the nav, the olive placeholder, the footer and the browser tab. |
+| `plain-sourdough.jpg` | The Plain Sourdough photo | Portrait, ~1400px tall, under ~400 KB. Used in the hero medallion and the Loaf 01 frame. |
 
-Save them with exactly those names and the page picks them up on the next
-refresh. Nothing in `index.html` needs changing.
+Save them with exactly those names and the page picks them up on refresh.
+Nothing in `index.html` needs changing.
 
-Keep `loaf.jpg` under about 400 KB so the page stays quick on a phone — most
-photo apps will export at that size without any visible loss.
+If a file is missing the page does not break — it shows a branded placeholder
+in that slot instead.
 
-Until `loaf.jpg` is added, the hero shows a tinted panel carrying the
-"Slow rise, warm heart" line, and until `logo.png` is added the header shows
-the name on its own.
+## One art-direction note on the photo
+
+The shot you sent is on a black background. This brand has no black in it, so
+the page crops the photo into a circle and a rounded frame, zoomed onto the
+loaf, which hides almost all of it.
+
+It will look considerably better with either:
+
+- a cut-out PNG of the loaf on a transparent background, or
+- a re-shoot on a butter-yellow, blush-pink or off-white surface.
+
+A cut-out would also let the loaf overlap the type and float free of its frame,
+which is the effect this layout is really built for.
+
+## Black Olive Sourdough
+
+There is deliberately **no** image slot for this loaf. Until you send a real
+photo it shows a branded card — dashed frame, bobbing olives, the logo, and a
+note that the photo is coming. When you have the shot, send it and it gets its
+own composition rather than borrowing the plain loaf's.
