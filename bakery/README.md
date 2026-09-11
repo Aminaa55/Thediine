@@ -18,6 +18,16 @@ One self-contained HTML file. No build step, no server, no database.
 **Fraunces** (wonk axis open) for display, **Figtree** for everything practical,
 **Caveat** only for the ✎ editor notes.
 
+## Pages
+
+| | |
+|---|---|
+| `index.html` | The shop — hero, loaves, ordering, checkout |
+| `confirm.html` | Order confirmation. A separate page, reached only by placing an order |
+| `emails/customer-confirmation.html` | Customer email template |
+| `emails/owner-notification.html` | Owner email template |
+| `build-preview.py` | Folds both pages into one file, for review surfaces that host a single page. Does not affect the live site. |
+
 ## Ordering and checkout
 
 The three delivery rules sit directly above the basket, where a customer reads
@@ -29,16 +39,22 @@ them before choosing:
 
 There is no pickup option and no address or phone number anywhere on the page.
 
-Basket → **Continue to delivery details** → checkout form → receipt.
+Basket → **Continue to delivery details** → checkout form → `confirm.html`.
 
-Checkout collects full name, mobile, delivery address, area, preferred delivery
-date and optional notes. The date input's `min` is set from
+Checkout collects full name, mobile, **email**, delivery address, area,
+preferred delivery date and optional notes. The date input's `min` is set from
 `SETTINGS.minNoticeHours`, so dates inside the 48-hour window cannot be picked,
 and the same rule is re-checked on submit.
 
-The receipt shows items and quantities, subtotal, **Delivery fee: To be
-confirmed**, total before delivery, the customer's details and the delivery
-date. No delivery fee is ever invented.
+On submit the basket empties and the customer lands on `confirm.html`, which
+shows the order number, loaves and quantities, subtotal, **Delivery fee: To be
+confirmed**, name, address, area and requested delivery date — and carries no
+quantity controls, add-to-basket buttons or editable fields at all. "Order
+again" always starts a fresh basket. No delivery fee is ever invented.
+
+The order travels between the two pages in `sessionStorage`, keyed by its
+reference, which the URL names. Opening `confirm.html` directly shows a plain
+"we could not find that order" state.
 
 ### Where orders go
 
@@ -55,6 +71,18 @@ Every placed order is built as a complete record and written to
 **`localStorage` is not an order book.** It is per-browser, per-device, and the
 bakery never sees it. Until `ownerEmail` or `orderEndpoint` is filled in, no
 order actually reaches you. One line changes that.
+
+## Email templates
+
+Both live in `emails/` as table-layout HTML with inline styles and the brand
+colours. Fraunces and Figtree do not render in most mail clients, so Georgia
+takes the display role and Arial the text role.
+
+Merge fields are `{{double_braced}}` so any sending service can fill them.
+The customer template says the delivery fee is still to be confirmed and never
+implies a final total.
+
+**Nothing sends them yet** — see the notes above on `SETTINGS`.
 
 ## Still needed
 

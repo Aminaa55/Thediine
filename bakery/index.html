@@ -276,22 +276,6 @@ section{position:relative}
 .checkout__foot{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-top:2rem}
 .formnote{margin:0;font-weight:700;font-size:.92rem;color:var(--terracotta)}
 
-/* ── Receipt ─────────────────────────────────────────────────── */
-.receipt{display:none;background:var(--gold-pale);border:4px solid var(--espresso);border-radius:1.8rem;
-  padding:clamp(1.5rem,4vw,2.5rem);box-shadow:8px 9px 0 var(--espresso);margin-top:2.5rem}
-.receipt[data-open="true"]{display:block;animation:pop .5s var(--pop) both}
-.receipt h3{font-size:clamp(1.9rem,4.5vw,2.6rem)}
-.receipt__ref{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
-  font-size:1.4rem;background:var(--blue);border:3px solid var(--espresso);border-radius:99px;
-  padding:.25rem 1rem;display:inline-block;margin-top:.8rem;transform:rotate(-1.5deg)}
-.rc{margin-top:1.9rem;border-top:3px dashed var(--espresso);padding-top:1.3rem}
-.rc h4{font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:0 0 .8rem;font-family:var(--ui);color:var(--terracotta)}
-.rc dl{display:grid;gap:.55rem;margin:0}
-.rc dl div{display:flex;justify-content:space-between;gap:1.5rem;align-items:baseline;font-size:.98rem}
-.rc dt{margin:0;font-weight:600;color:var(--espresso-2)}
-.rc dd{margin:0;font-weight:700;text-align:right}
-.rc .tot dt,.rc .tot dd{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem}
-
 /* ── Social / footer ─────────────────────────────────────────── */
 .social{text-align:center}
 .social img{width:5rem;height:5rem;border-radius:50%;margin:0 auto 1.2rem;border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
@@ -500,6 +484,15 @@ section{position:relative}
       </div>
 
       <div class="fields">
+        <div class="field" id="f-email">
+          <label for="c-email">Email</label>
+          <input id="c-email" name="email" type="email" autocomplete="email" required>
+          <small>Your order confirmation is sent here.</small>
+          <p class="err" data-err="email"></p>
+        </div>
+      </div>
+
+      <div class="fields">
         <div class="field" id="f-address">
           <label for="c-address">Delivery address</label>
           <textarea id="c-address" name="address" autocomplete="street-address" required></textarea>
@@ -536,28 +529,6 @@ section{position:relative}
       </div>
     </form>
 
-    <!-- Receipt -->
-    <div class="receipt" id="receipt" tabindex="-1">
-      <h3>Order received</h3>
-      <p style="margin:.6rem 0 0;font-weight:600">We will contact you to confirm your delivery fee and time.</p>
-      <p><span class="receipt__ref" id="rc-ref"></span></p>
-
-      <div class="rc">
-        <h4>Your order</h4>
-        <dl id="rc-items"></dl>
-      </div>
-      <div class="rc">
-        <h4>Totals</h4>
-        <dl id="rc-totals"></dl>
-      </div>
-      <div class="rc">
-        <h4>Delivery</h4>
-        <dl id="rc-delivery"></dl>
-      </div>
-
-      <p id="rc-warn" style="margin-top:1.6rem"></p>
-      <p style="margin-top:1.6rem"><button class="btn btn--blue btn--sm" type="button" id="new-order">Start a new order</button></p>
-    </div>
   </div>
 </section>
 
@@ -741,12 +712,13 @@ const PRODUCTS = {
   const clearErr = (k, f) => { const e = $("[data-err='" + k + "']"); if (e) e.textContent = ""; if (f) $(f).classList.remove("field--bad"); };
 
   function validate() {
-    ["name","mobile","address","area","date"].forEach(k => clearErr(k));
-    ["#f-name","#f-mobile","#f-address","#f-area","#f-date"].forEach(f => $(f).classList.remove("field--bad"));
+    ["name","mobile","email","address","area","date"].forEach(k => clearErr(k));
+    ["#f-name","#f-mobile","#f-email","#f-address","#f-area","#f-date"].forEach(f => $(f).classList.remove("field--bad"));
     const bad = [];
 
     if ($("#c-name").value.trim().length < 2) { setErr("name", "Please enter your full name.", "#f-name"); bad.push("#c-name"); }
     if ($("#c-mobile").value.replace(/\D/g, "").length < 10) { setErr("mobile", "Please enter a valid mobile number.", "#f-mobile"); bad.push("#c-mobile"); }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($("#c-email").value.trim())) { setErr("email", "Please enter a valid email address.", "#f-email"); bad.push("#c-email"); }
     if ($("#c-address").value.trim().length < 6) { setErr("address", "Please enter your delivery address.", "#f-address"); bad.push("#c-address"); }
     if ($("#c-area").value.trim().length < 2) { setErr("area", "Please enter your area.", "#f-area"); bad.push("#c-area"); }
 
@@ -759,7 +731,7 @@ const PRODUCTS = {
     }
     return bad;
   }
-  ["#c-name","#c-mobile","#c-address","#c-area","#c-date"].forEach(sel =>
+  ["#c-name","#c-mobile","#c-email","#c-address","#c-area","#c-date"].forEach(sel =>
     $(sel).addEventListener("input", () => {
       const k = sel.replace("#c-", "");
       clearErr(k === "date" ? "date" : k, "#f-" + k);
@@ -787,6 +759,7 @@ const PRODUCTS = {
       customer: {
         fullName: $("#c-name").value.trim(),
         mobile: $("#c-mobile").value.trim(),
+        email: $("#c-email").value.trim(),
         address: $("#c-address").value.trim(),
         area: $("#c-area").value.trim()
       },
@@ -809,6 +782,7 @@ const PRODUCTS = {
       "CUSTOMER",
       "Name        " + o.customer.fullName,
       "Mobile      " + o.customer.mobile,
+      "Email       " + o.customer.email,
       "Address     " + o.customer.address,
       "Area        " + o.customer.area, "",
       "DELIVERY",
@@ -871,60 +845,31 @@ const PRODUCTS = {
     btn.disabled = true; btn.textContent = "Sending…"; note("");
 
     const o = buildOrder();
-    const stored = saveLocally(o);
     let how = "none";
     try { how = await sendOrder(o); }
     catch (err) { how = "failed"; }
+    o.notified = how;
 
-    showReceipt(o, how, stored);
-  });
+    saveLocally(o);
+    try { sessionStorage.setItem("cozyloaf.lastOrder", JSON.stringify(o)); } catch (e) {}
 
-  function showReceipt(o, how, stored) {
-    $("#checkout").dataset.open = "false";
-    $(".basket").style.display = "none";
-    $("#rc-ref").textContent = o.reference;
-
-    $("#rc-items").innerHTML = o.items.map(i =>
-      "<div><dt>" + i.quantity + " × " + esc(i.name) + "</dt><dd>" + egp(i.lineTotal) + "</dd></div>").join("");
-
-    $("#rc-totals").innerHTML =
-      "<div><dt>Subtotal</dt><dd>" + egp(o.subtotal) + "</dd></div>" +
-      "<div><dt>Delivery fee</dt><dd>To be confirmed</dd></div>" +
-      '<div class="tot"><dt>Total before delivery</dt><dd>' + egp(o.totalBeforeDelivery) + "</dd></div>";
-
-    $("#rc-delivery").innerHTML = [
-      ["Name", o.customer.fullName],
-      ["Mobile", o.customer.mobile],
-      ["Address", o.customer.address],
-      ["Area", o.customer.area],
-      ["Delivery date", o.delivery.dateLabel],
-      ["Delivers to", o.delivery.city + " only"]
-    ].concat(o.notes ? [["Notes", o.notes]] : [])
-     .map(r => "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>").join("");
-
-    const warn = $("#rc-warn");
-    if (how === "endpoint") warn.textContent = "";
-    else if (how === "email") warn.innerHTML = '<span class="hand" style="font-size:1.2rem">Your email app should have opened with the order — press send.</span>';
-    else warn.innerHTML = '<span class="ph-tag">not sent anywhere yet — add an email or endpoint in SETTINGS' +
-        (stored ? " (the full order is saved in this browser)" : "") + "</span>";
-
-    const r = $("#receipt");
-    r.dataset.open = "true";
-    r.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
-    r.focus({ preventScroll: true });
-  }
-
-  $("#new-order").addEventListener("click", () => {
-    qty.plain = 0; qty.olive = 0;
+    /* The order is placed — the basket is no longer the customer's to edit. */
+    Object.keys(PRODUCTS).forEach(k => { qty[k] = 0; });
     $("#checkout").reset();
-    $("#receipt").dataset.open = "false";
-    $(".basket").style.display = "";
-    $("#place").disabled = false;
-    $("#place").innerHTML = 'Place order <span class="arr">→</span>';
-    note("");
+    $("#checkout").dataset.open = "false";
+    btn.disabled = false;
+    btn.innerHTML = 'Place order <span class="arr">\u2192</span>';
     render();
-    $("#order").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+
+    goToConfirmation(o);
   });
+
+  /* Hand the customer to the dedicated confirmation page. The order
+     travels in sessionStorage; the reference in the URL identifies it. */
+  function goToConfirmation(o) {
+    if (typeof window.__inlineConfirm === "function") return window.__inlineConfirm(o);
+    window.location.href = "confirm.html?ref=" + encodeURIComponent(o.reference);
+  }
 
   render();
 })();
