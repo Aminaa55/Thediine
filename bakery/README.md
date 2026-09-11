@@ -26,7 +26,7 @@ One self-contained HTML file. No build step, no server, no database.
 | `confirm.html` | Order confirmation. A separate page, reached only by placing an order |
 | `emails/customer-confirmation.html` | Customer email template |
 | `emails/owner-notification.html` | Owner email template |
-| `config.js` | Every setting the site has — WhatsApp number, products, prices, rules. Shared by both pages. |
+| `config.js` | Every setting the site has — products, prices, delivery areas and rules. Shared by both pages. |
 | `build-preview.py` | Folds both pages into one file, for review surfaces that host a single page. Does not affect the live site. |
 
 ## Ordering and checkout
@@ -112,6 +112,15 @@ The customer template says the delivery fee is still to be confirmed and never
 implies a final total.
 
 **Nothing sends them yet** — see the notes above on `SETTINGS`.
+
+## Images
+
+Files live in `assets/`, named by base name only — `logo` and
+`plain-sourdough`. The extension is worked out at load time from a list in
+`config.js`, so a phone export lands correctly whether it saved as `.jpg`,
+`.png` or `.webp`. A slot with no file behind it shows a branded placeholder,
+never a broken image. See [`assets/README.md`](assets/README.md) for how to
+upload them straight from GitHub.
 
 ## Still needed
 

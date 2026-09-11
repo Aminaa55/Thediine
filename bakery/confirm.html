@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Order received — The Cozy Loaf</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Figtree:ital,wght@0,300..900;1,400..600&family=Caveat:wght@400..700&display=swap">
@@ -191,7 +190,7 @@ section{position:relative}
 <nav class="nav">
   <div class="wrap nav__in">
     <a class="brand" href="index.html">
-      <img src="assets/logo.png" alt="" data-logo>
+      <img alt="" data-logo>
       <b>The Cozy Loaf</b>
     </a>
   </div>
@@ -202,7 +201,7 @@ section{position:relative}
 
     <div id="found" hidden>
       <div class="conf__head">
-        <img class="conf__mark" src="assets/logo.png" alt="" data-logo>
+        <img class="conf__mark" alt="" data-logo>
         <h1>Order <span class="ital">received</span></h1>
         <p><span class="conf__ref" id="ref"></span></p>
         <p><span class="conf__promise" id="promise"></span></p>
@@ -253,11 +252,7 @@ window.renderConfirmation = function () {
   const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const egp = n => "EGP " + Number(n).toLocaleString("en-US");
 
-  $$("[data-logo]").forEach(img => {
-    const fail = () => { img.hidden = true; };
-    img.addEventListener("error", fail);
-    if (img.complete && img.naturalWidth === 0) fail();
-  });
+  $$("[data-logo]").forEach(img => window.cozyImage(img, "assets/logo", () => { img.hidden = true; }));
 
   const once = "<span>The Cozy Loaf \u2726 Slow rise, warm heart \u2726</span>";
   $("#conf-ticker").innerHTML = once.repeat(8);

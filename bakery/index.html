@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Cozy Loaf</title>
 <meta name="description" content="The Cozy Loaf — sourdough, delivered in Cairo.">
-<link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Figtree:ital,wght@0,300..900;1,400..600&family=Caveat:wght@400..700&display=swap">
@@ -321,7 +320,7 @@ section{position:relative}
 <nav class="nav">
   <div class="wrap nav__in">
     <a class="brand" href="#top">
-      <img src="assets/logo.png" alt="" data-logo>
+      <img alt="" data-logo>
       <b>The Cozy Loaf</b>
     </a>
     <div class="nav__links">
@@ -338,7 +337,7 @@ section{position:relative}
 <section class="hero">
   <div class="wrap hero__in">
     <div>
-      <img class="hero__logo" src="assets/logo.png" alt="The Cozy Loaf" data-logo data-reveal data-from="pop">
+      <img class="hero__logo" alt="The Cozy Loaf" data-logo data-reveal data-from="pop">
       <h1 class="wordmark">The <span class="ital">Cozy</span><br>Loaf</h1>
       <div class="hero__cta">
         <a class="btn" href="#order" data-reveal data-from="up">Order now <span class="arr">→</span></a>
@@ -353,7 +352,7 @@ section{position:relative}
           <text><textPath href="#ring">slow rise ✦ warm heart ✦ slow rise ✦ warm heart ✦</textPath></text>
         </svg>
         <div class="medallion__disc">
-          <img src="assets/plain-sourdough.jpg" alt="Plain Sourdough, golden crackly crust." data-hero-photo>
+          <img alt="Plain Sourdough, golden crackly crust." data-hero-photo>
           <div class="medallion__fb">
             <div><p>Plain Sourdough</p><small>photo goes here</small></div>
           </div>
@@ -377,10 +376,10 @@ section{position:relative}
     <article class="loaf" style="margin-top:clamp(2.5rem,5vw,4rem)">
       <div class="loaf__art" data-reveal data-from="left">
         <div class="frame" data-frame data-empty="false">
-          <img src="assets/plain-sourdough.jpg" alt="Plain Sourdough, golden crackly crust." data-plain-photo>
+          <img alt="Plain Sourdough, golden crackly crust." data-plain-photo>
           <div class="frame__fb">
             <div>
-              <img src="assets/logo.png" alt="" data-logo>
+              <img alt="" data-logo>
               <h3 style="font-size:1.8rem">Plain<br>Sourdough</h3>
               <p class="hand" style="font-size:1.25rem;color:var(--terracotta);margin:.5rem 0 0">photo goes here</p>
             </div>
@@ -400,7 +399,7 @@ section{position:relative}
       <div class="loaf__art" data-reveal data-from="right">
         <div class="olive-card">
           <div class="olive-card__olives" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-          <img class="olive-card__mark" src="assets/logo.png" alt="" data-logo>
+          <img class="olive-card__mark" alt="" data-logo>
           <h3>Black Olive<br>Sourdough</h3>
           <p>photo coming soon</p>
         </div>
@@ -536,7 +535,7 @@ section{position:relative}
 <!-- ══ SOCIAL ═════════════════════════════════════════════════ -->
 <section class="pad g-blue-pale social">
   <div class="wrap">
-    <img src="assets/logo.png" alt="" data-logo data-reveal data-from="pop">
+    <img alt="" data-logo data-reveal data-from="pop">
     <p><a class="handle" href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
   </div>
 </section>
@@ -576,18 +575,16 @@ const PRODUCTS = SETTINGS.products;
   fill($("#band"), ["Plain Sourdough ✦", "Black Olive Sourdough ✦", "Plain Sourdough ✦",
                     "Black Olive Sourdough ✦", "Plain Sourdough ✦", "Black Olive Sourdough ✦"]);
 
-  /* ── Image slots hide cleanly until the files exist ───────── */
-  $$("[data-logo]").forEach(img => {
-    const fail = () => { img.hidden = true; };
-    img.addEventListener("error", fail);
-    if (img.complete && img.naturalWidth === 0) fail();
-  });
+  /* ── Image slots ──────────────────────────────────────────────
+     Each <img> is pointed at assets/<name> and the loader finds the
+     real extension. A slot with no file behind it hides itself or
+     shows its branded placeholder — never a broken image. */
+  $$("[data-logo]").forEach(img => window.cozyImage(img, "assets/logo", () => { img.hidden = true; }));
+
   [["[data-medallion]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(([boxSel, imgSel]) => {
     const box = $(boxSel), img = $(imgSel);
     if (!box || !img) return;
-    const fail = () => { box.dataset.empty = "true"; };
-    img.addEventListener("error", fail);
-    if (img.complete && img.naturalWidth === 0) fail();
+    window.cozyImage(img, "assets/plain-sourdough", () => { box.dataset.empty = "true"; });
   });
 
   /* ── Reveals ─────────────────────────────────────────────── */
