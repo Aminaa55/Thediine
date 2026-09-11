@@ -4,35 +4,37 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Cozy Loaf</title>
-<meta name="description" content="Two sourdough loaves. That's the whole menu. Slow rise, warm heart.">
+<meta name="description" content="The Cozy Loaf — sourdough, delivered in Cairo.">
 <link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Figtree:ital,wght@0,300..900;1,400..600&family=Caveat:wght@400..700&display=swap">
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   THE COZY LOAF — bright, playful, single-theme by intent.
-   Butter yellow leads, blush supports, cherry shouts, berry reads.
+   THE COZY LOAF
+   Palette as supplied: espresso, olive, terracotta, porcelain blue,
+   milky off-white, golden yellow. Blue / gold / terracotta lead;
+   espresso is ink and outline; olive is detail only, never a ground.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --butter:#FFD447;
-  --butter-soft:#FFE79B;
-  --butter-pale:#FFF6DC;
-  --blush:#FFD3CC;
-  --blush-soft:#FFE6E1;
-  --blush-pale:#FFF3F0;
-  --cherry:#E5324B;
-  --cherry-deep:#C61F3C;
-  --cream:#FFFAF3;
-  --berry:#4A0D2C;
-  --berry-soft:#7B2A50;
-  --berry-mute:#A0648044;
+  --espresso:#542916;
+  --espresso-2:#7A4426;
+  --olive:#B79858;
+  --olive-pale:#EFE3C9;
+  --terracotta:#A13A1E;
+  --terracotta-pale:#F0D2C6;
+  --blue:#88B8CE;
+  --blue-pale:#D9EAF2;
+  --blue-deep:#356F8B;
+  --milk:#FEFAF0;
+  --gold:#F1C166;
+  --gold-pale:#FBEBC8;
 
   --display:"Fraunces","Hoefler Text",Georgia,serif;
   --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
   --hand:"Caveat","Bradley Hand",cursive;
-
   --wonky:"SOFT" 40,"WONK" 1;
+
   --gut:clamp(1.25rem,5vw,4rem);
   --maxw:82rem;
   --pop:cubic-bezier(.22,1.2,.36,1);
@@ -41,358 +43,270 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
-  margin:0;background:var(--cream);color:var(--berry);
-  font-family:var(--ui);font-size:1.0625rem;line-height:1.6;font-weight:400;
-  overflow-x:hidden;
+  margin:0;background:var(--milk);color:var(--espresso);
+  font-family:var(--ui);font-size:1.0625rem;line-height:1.6;overflow-x:hidden;
 }
-::selection{background:var(--cherry);color:#fff}
+::selection{background:var(--terracotta);color:var(--milk)}
 a{color:inherit}
 img{max-width:100%;display:block}
-:focus-visible{outline:3px solid var(--cherry);outline-offset:3px;border-radius:6px}
+:focus-visible{outline:3px solid var(--terracotta);outline-offset:3px;border-radius:6px}
 .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:-9999px}
-.skip:focus{left:1rem;top:1rem;z-index:200;background:var(--cherry);color:#fff;padding:.7rem 1rem;border-radius:99px;font-weight:700}
+.skip:focus{left:1rem;top:1rem;z-index:200;background:var(--terracotta);color:var(--milk);padding:.7rem 1rem;border-radius:99px;font-weight:700}
 
 h1,h2,h3{
   font-family:var(--display);font-variation-settings:var(--wonky);
   font-weight:600;line-height:.95;letter-spacing:-.02em;margin:0;text-wrap:balance;
 }
 .ital{font-style:italic;font-variation-settings:"SOFT" 80,"WONK" 1}
-.hand{font-family:var(--hand);font-weight:600;line-height:1.15}
+.hand{font-family:var(--hand);font-weight:600;line-height:1.2}
 
-/* ── Placeholder marking ─────────────────────────────────────── */
-.ph{
-  background:linear-gradient(transparent 62%, rgba(229,50,75,.22) 62%);
-  box-decoration-break:clone;-webkit-box-decoration-break:clone;
-}
+/* editor-only marker for copy still to be supplied */
 .ph-tag{
-  display:inline-flex;align-items:center;gap:.3rem;font-family:var(--hand);font-size:1.05rem;
-  color:var(--cherry);transform:rotate(-3deg);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:.3rem;font-family:var(--hand);font-size:1.1rem;
+  color:var(--terracotta);transform:rotate(-3deg);white-space:nowrap;
 }
 .ph-tag::before{content:"✎"}
 
 /* ── Buttons ─────────────────────────────────────────────────── */
 .btn{
-  --bg:var(--cherry);--fg:#fff;
-  position:relative;display:inline-flex;align-items:center;gap:.6rem;
-  font-family:var(--ui);font-weight:800;font-size:.95rem;letter-spacing:.01em;
-  padding:.95rem 1.6rem;border:3px solid var(--berry);border-radius:99px;
+  --bg:var(--terracotta);--fg:var(--milk);
+  display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
+  font-family:var(--ui);font-weight:800;font-size:.95rem;
+  padding:.95rem 1.6rem;border:3px solid var(--espresso);border-radius:99px;
   background:var(--bg);color:var(--fg);text-decoration:none;cursor:pointer;
-  box-shadow:4px 4px 0 var(--berry);
+  box-shadow:4px 4px 0 var(--espresso);
   transition:transform .16s var(--pop), box-shadow .16s var(--pop), background .2s;
 }
-.btn:hover{transform:translate(-2px,-2px) rotate(-1.5deg);box-shadow:7px 7px 0 var(--berry)}
-.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--berry)}
+.btn:hover{transform:translate(-2px,-2px) rotate(-1.5deg);box-shadow:7px 7px 0 var(--espresso)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--espresso)}
 .btn .arr{transition:transform .25s var(--pop)}
 .btn:hover .arr{transform:translateX(5px) rotate(12deg)}
-.btn--butter{--bg:var(--butter);--fg:var(--berry)}
-.btn--cream{--bg:var(--cream);--fg:var(--berry)}
-.btn--sm{padding:.6rem 1.1rem;font-size:.85rem;border-width:2px;box-shadow:3px 3px 0 var(--berry)}
-.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--berry)}
+.btn--gold{--bg:var(--gold);--fg:var(--espresso)}
+.btn--milk{--bg:var(--milk);--fg:var(--espresso)}
+.btn--blue{--bg:var(--blue);--fg:var(--espresso)}
+.btn--sm{padding:.6rem 1.1rem;font-size:.85rem;border-width:2px;box-shadow:3px 3px 0 var(--espresso)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--espresso)}
 
-/* ── Ticker ──────────────────────────────────────────────────── */
-.ticker{background:var(--cherry);color:#fff;overflow:hidden;border-bottom:3px solid var(--berry);padding-block:.5rem}
-.ticker__track{display:flex;width:max-content;animation:slide 26s linear infinite}
-.ticker span{font-family:var(--ui);font-weight:800;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;padding-inline:1.1rem;white-space:nowrap}
+/* ── Ticker & marquee ────────────────────────────────────────── */
+.ticker{background:var(--terracotta);color:var(--milk);overflow:hidden;border-bottom:3px solid var(--espresso);padding-block:.5rem}
+.ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
+.ticker span{font-family:var(--ui);font-weight:800;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding-inline:1.2rem;white-space:nowrap}
 @keyframes slide{to{transform:translateX(-50%)}}
+.band{background:var(--espresso);color:var(--gold);overflow:hidden;padding-block:1.3rem}
+.band .ticker__track{animation-duration:38s}
+.band span{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;text-transform:none;padding-inline:1.4rem}
 
 /* ── Nav ─────────────────────────────────────────────────────── */
-.nav{position:sticky;top:0;z-index:100;background:var(--butter);border-bottom:3px solid var(--berry)}
+.nav{position:sticky;top:0;z-index:100;background:var(--gold);border-bottom:3px solid var(--espresso)}
 .nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
 .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
-.brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--berry);object-fit:cover;background:var(--cream)}
+.brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--espresso);object-fit:cover;background:var(--milk)}
 .brand img[hidden]{display:none}
 .brand b{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem;letter-spacing:-.02em}
 .nav__links{display:none;gap:1.6rem}
-@media (min-width:56rem){.nav__links{display:flex}}
+@media (min-width:52rem){.nav__links{display:flex}}
 .nav__links a{font-weight:700;font-size:.95rem;text-decoration:none;position:relative;padding-block:.2rem}
-.nav__links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:3px;background:var(--cherry);border-radius:3px;transition:right .25s var(--pop)}
+.nav__links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:3px;background:var(--terracotta);border-radius:3px;transition:right .25s var(--pop)}
 .nav__links a:hover::after{right:0}
 
-/* ── Sections ────────────────────────────────────────────────── */
+/* ── Section grounds ─────────────────────────────────────────── */
 section{position:relative}
-.pad{padding-block:clamp(4rem,9vw,7.5rem)}
-.g-butter{background:var(--butter)}
-.g-butter-pale{background:var(--butter-pale)}
-.g-blush{background:var(--blush)}
-.g-blush-soft{background:var(--blush-soft)}
-.g-cream{background:var(--cream)}
-.g-cherry{background:var(--cherry);color:#fff}
-
-.wave{display:block;width:100%;height:auto}
+.pad{padding-block:clamp(3.5rem,8vw,6.5rem)}
+.g-blue{background:var(--blue)}
+.g-milk{background:var(--milk)}
+.g-gold{background:var(--gold)}
+.g-blue-pale{background:var(--blue-pale)}
+.wave{display:block;width:100%;height:42px}
 .kicker{
-  display:inline-flex;align-items:center;gap:.5rem;font-weight:800;font-size:.78rem;
-  letter-spacing:.2em;text-transform:uppercase;color:var(--cherry);
-  background:var(--cream);border:2.5px solid var(--berry);border-radius:99px;padding:.4rem 1rem;
-  transform:rotate(-2deg);box-shadow:3px 3px 0 var(--berry);
+  display:inline-flex;align-items:center;font-weight:800;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--terracotta);
+  background:var(--milk);border:2.5px solid var(--espresso);border-radius:99px;padding:.4rem 1rem;
+  transform:rotate(-2deg);box-shadow:3px 3px 0 var(--espresso);
 }
 
 /* ── Hero ────────────────────────────────────────────────────── */
-.hero{background:var(--butter);overflow:hidden;padding-block:clamp(2.5rem,6vw,4.5rem) clamp(3rem,7vw,5rem)}
-.hero__in{display:grid;gap:clamp(2.5rem,5vw,3rem);align-items:center}
-@media (min-width:62rem){.hero__in{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}}
-.hero h1{font-size:clamp(3.1rem,11.5vw,8.2rem);letter-spacing:-.035em}
-.hero h1 .l{display:block}
-.hero h1 .l2{margin-left:clamp(0rem,5vw,4.5rem)}
-.hero h1 .l3{margin-left:clamp(0rem,2vw,1.5rem)}
-.hero h1 em{color:var(--cherry);font-style:italic;font-variation-settings:"SOFT" 90,"WONK" 1}
-.hero__lede{font-size:clamp(1.05rem,1.7vw,1.25rem);max-width:32ch;margin:1.6rem 0 0;color:var(--berry);font-weight:500}
-.hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2rem;align-items:center}
-
-/* rotating word */
-.roll{display:inline-grid;vertical-align:baseline;height:1em;overflow:hidden;text-align:left}
-.roll__in{display:grid;animation:roll 9s infinite}
-.roll__in span{grid-column:1;grid-row:auto;height:1em;line-height:1;color:var(--cherry);font-style:italic}
-@keyframes roll{
-  0%,20%{transform:translateY(0)}
-  25%,45%{transform:translateY(-1em)}
-  50%,70%{transform:translateY(-2em)}
-  75%,95%{transform:translateY(-3em)}
-  100%{transform:translateY(-4em)}
-}
+.hero{background:var(--blue);overflow:hidden;padding-block:clamp(2.5rem,6vw,4.5rem) clamp(3rem,7vw,5rem)}
+.hero__in{display:grid;gap:clamp(2.5rem,5vw,3.5rem);align-items:center}
+@media (min-width:62rem){.hero__in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.hero__logo{width:clamp(7rem,14vw,11rem);height:clamp(7rem,14vw,11rem);border-radius:50%;
+  border:4px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:7px 8px 0 var(--espresso);margin-bottom:1.6rem}
+.hero__logo[hidden]{display:none}
+.wordmark{font-size:clamp(3rem,9.5vw,6.6rem);letter-spacing:-.04em;line-height:.88}
+.wordmark .ital{color:var(--terracotta)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2.2rem}
 
 /* photo medallion */
-.medallion{position:relative;width:min(100%,30rem);margin-inline:auto;aspect-ratio:1}
+.medallion{position:relative;width:min(100%,29rem);margin-inline:auto;aspect-ratio:1}
 .medallion__ring{position:absolute;inset:-21%;animation:spin 38s linear infinite}
-.medallion__ring text{font-family:var(--ui);font-weight:800;font-size:6.6px;letter-spacing:.3em;fill:var(--berry);text-transform:uppercase}
+.medallion__ring text{font-family:var(--ui);font-weight:800;font-size:6.6px;letter-spacing:.3em;fill:var(--espresso);text-transform:uppercase}
 @keyframes spin{to{transform:rotate(360deg)}}
-.medallion__disc{
-  position:absolute;inset:0;border-radius:50%;overflow:hidden;
-  border:4px solid var(--berry);background:var(--blush-soft);
-  box-shadow:12px 14px 0 rgba(74,13,44,.18);
-}
+.medallion__disc{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  border:4px solid var(--espresso);background:var(--gold-pale);box-shadow:12px 14px 0 rgba(84,41,22,.22)}
 .medallion__disc img{width:100%;height:100%;object-fit:cover;object-position:center 62%;transform:scale(1.22)}
 .medallion__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
-  background:radial-gradient(85% 70% at 50% 35%, var(--butter-soft), var(--blush))}
+  background:radial-gradient(85% 70% at 50% 32%, var(--gold-pale), var(--blue-pale))}
 .medallion[data-empty="true"] img{display:none}
 .medallion[data-empty="true"] .medallion__fb{display:grid}
 .medallion__fb p{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.5rem;margin:0;line-height:1.1}
-.medallion__fb small{display:block;font-family:var(--hand);font-size:1.15rem;color:var(--cherry);margin-top:.6rem}
+.medallion__fb small{display:block;font-family:var(--hand);font-size:1.15rem;color:var(--terracotta);margin-top:.6rem}
 
-/* stickers */
-.sticker{position:absolute;z-index:3;display:grid;place-content:center;text-align:center;
-  border:3px solid var(--berry);border-radius:50%;box-shadow:4px 5px 0 var(--berry)}
-.sticker--price{
-  width:7.4rem;height:7.4rem;background:var(--cherry);color:#fff;
-  right:-9%;bottom:-2%;transform:rotate(-13deg);z-index:5;
-}
+.sticker{position:absolute;z-index:5;display:grid;place-content:center;text-align:center;
+  border:3px solid var(--espresso);border-radius:50%;box-shadow:4px 5px 0 var(--espresso)}
+.sticker--price{width:7.4rem;height:7.4rem;background:var(--terracotta);color:var(--milk);right:-9%;bottom:-2%;transform:rotate(-13deg)}
 .sticker--price b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.85rem;line-height:1}
 .sticker--price span{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-.sticker--new{
-  width:5.4rem;height:5.4rem;background:var(--butter-soft);color:var(--berry);
-  left:-11%;top:6%;transform:rotate(14deg);font-family:var(--hand);font-size:1.25rem;line-height:1.05;z-index:5;
-}
 @media (max-width:40rem){
   .sticker--price{width:5.9rem;height:5.9rem;right:-4%}
   .sticker--price b{font-size:1.4rem}
-  .sticker--new{width:4.4rem;height:4.4rem;font-size:1rem;left:-5%}
 }
-.doodle{position:absolute;pointer-events:none;z-index:1}
 
 /* ── Loaves ──────────────────────────────────────────────────── */
-.loaf{position:relative;display:grid;gap:clamp(2rem,4vw,3.5rem);align-items:center}
+.loaf{display:grid;gap:clamp(2rem,4vw,3.5rem);align-items:center}
 @media (min-width:60rem){
   .loaf{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .loaf--flip .loaf__art{order:2}
 }
-.loaf + .loaf{margin-top:clamp(4.5rem,9vw,8rem)}
-.loaf__idx{
-  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
+.loaf + .loaf{margin-top:clamp(4rem,8vw,7rem)}
+.loaf__idx{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
   font-size:clamp(4rem,11vw,9rem);line-height:.8;letter-spacing:-.05em;
-  -webkit-text-stroke:2.5px var(--berry);color:transparent;opacity:.55;margin-bottom:-.15em;
-}
-.loaf__name{font-size:clamp(2.4rem,6vw,4.4rem);margin-top:.35rem}
-.loaf__price{
-  display:inline-flex;align-items:baseline;gap:.4rem;margin-top:1.1rem;
-  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:2.1rem;
-  background:var(--butter);border:3px solid var(--berry);border-radius:99px;padding:.35rem 1.2rem;
-  box-shadow:4px 4px 0 var(--berry);transform:rotate(-2deg);
-}
-.loaf__price small{font-family:var(--ui);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-.loaf__desc{font-size:1.08rem;max-width:38ch;margin:1.4rem 0 0;color:var(--berry-soft);font-weight:500}
-.loaf__notes{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem}
-.note{
-  font-family:var(--hand);font-size:1.15rem;color:var(--berry);
-  background:var(--cream);border:2.5px dashed var(--berry);border-radius:99px;padding:.2rem .9rem;
-  transition:transform .2s var(--pop);
-}
-.note:nth-child(odd){transform:rotate(-2deg)}
-.note:nth-child(even){transform:rotate(2deg)}
-.note:hover{transform:rotate(0) scale(1.06)}
-.loaf__buy{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-top:1.9rem}
+  -webkit-text-stroke:2.5px var(--olive);color:transparent;margin-bottom:-.12em}
+.loaf__name{font-size:clamp(2.3rem,5.6vw,4.2rem);margin-top:.35rem}
+.loaf__price{display:inline-flex;align-items:baseline;gap:.45rem;margin-top:1.1rem;
+  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:2rem;
+  background:var(--gold);border:3px solid var(--espresso);border-radius:99px;padding:.35rem 1.2rem;
+  box-shadow:4px 4px 0 var(--espresso);transform:rotate(-2deg)}
+.loaf__price small{font-family:var(--ui);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.loaf__desc{font-size:1.12rem;line-height:1.65;max-width:34ch;margin:1.4rem 0 0;color:var(--espresso-2)}
+.loaf__buy{margin-top:1.9rem}
 
-.frame{
-  position:relative;border:4px solid var(--berry);border-radius:2rem;overflow:hidden;
-  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(74,13,44,.16);background:var(--blush-soft);
-  transition:transform .4s var(--pop);
-}
+.frame{position:relative;border:4px solid var(--espresso);border-radius:2rem;overflow:hidden;
+  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(84,41,22,.18);background:var(--gold-pale);
+  transition:transform .4s var(--pop)}
 .frame img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
 .frame:hover{transform:rotate(-1.5deg) scale(1.015)}
 .frame__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
-  background:radial-gradient(62% 46% at 32% 28%, var(--butter-soft) 0%, transparent 62%),
-             radial-gradient(66% 52% at 74% 76%, var(--blush) 0%, transparent 64%), var(--blush-pale)}
-.frame__fb img{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--berry);object-fit:cover;background:var(--cream)}
+  background:radial-gradient(62% 46% at 32% 28%, var(--gold-pale) 0%, transparent 62%),
+             radial-gradient(66% 52% at 74% 76%, var(--blue-pale) 0%, transparent 64%), var(--milk)}
+.frame__fb img{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--espresso);object-fit:cover;background:var(--milk)}
 .frame__fb img[hidden]{display:none}
-.frame[data-empty="true"] img{display:none}
+.frame[data-empty="true"] > img{display:none}
 .frame[data-empty="true"] .frame__fb{display:grid}
 
-/* olive placeholder — intentional, branded, not a fake photo */
-.olive-card{
-  position:relative;aspect-ratio:4/5;border-radius:2rem;overflow:hidden;
-  border:4px dashed var(--berry);background:
-    radial-gradient(60% 45% at 30% 25%, var(--butter-soft) 0%, transparent 60%),
-    radial-gradient(65% 50% at 75% 75%, var(--blush) 0%, transparent 62%),
-    var(--blush-pale);
-  display:grid;place-content:center;text-align:center;padding:2.5rem 2rem;gap:.4rem;
-  box-shadow:10px 12px 0 rgba(74,13,44,.12);
-}
-.olive-card__mark{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--berry);object-fit:cover;background:var(--cream)}
+/* Black Olive — branded placeholder, never a borrowed photo */
+.olive-card{position:relative;aspect-ratio:4/5;border-radius:2rem;overflow:hidden;
+  border:4px dashed var(--espresso);
+  background:radial-gradient(60% 45% at 30% 25%, var(--gold-pale) 0%, transparent 60%),
+             radial-gradient(65% 50% at 75% 75%, var(--blue-pale) 0%, transparent 62%), var(--milk);
+  display:grid;place-content:center;text-align:center;padding:2.5rem 2rem;
+  box-shadow:10px 12px 0 rgba(84,41,22,.14)}
+.olive-card__mark{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--espresso);object-fit:cover;background:var(--milk)}
 .olive-card__mark[hidden]{display:none}
-.olive-card h3{font-size:1.9rem}
-.olive-card p{font-family:var(--hand);font-size:1.35rem;color:var(--cherry);margin:.5rem 0 0;line-height:1.25}
+.olive-card h3{font-size:1.7rem}
+.olive-card p{font-family:var(--hand);font-size:1.3rem;color:var(--terracotta);margin:.5rem 0 0}
 .olive-card__olives{position:absolute;inset:0;pointer-events:none}
-.olive-card__olives span{position:absolute;width:2.5rem;height:3.2rem;border-radius:50% 50% 48% 48%/58% 58% 42% 42%;
-  background:radial-gradient(70% 60% at 34% 30%, #6B2350 0%, #3B0F2C 70%);border:3px solid var(--berry);
-  box-shadow:3px 3px 0 rgba(74,13,44,.25)}
+.olive-card__olives span{position:absolute;width:2.5rem;height:3.2rem;
+  border-radius:50% 50% 48% 48%/58% 58% 42% 42%;
+  background:radial-gradient(70% 60% at 34% 30%, #7A4426 0%, #3C1C0E 72%);
+  border:3px solid var(--espresso);box-shadow:3px 3px 0 rgba(84,41,22,.25)}
 .olive-card__olives span::after{content:"";position:absolute;left:50%;top:30%;width:34%;height:26%;
-  transform:translateX(-50%);border-radius:50%;background:var(--cherry);border:2px solid var(--berry)}
+  transform:translateX(-50%);border-radius:50%;background:var(--terracotta);border:2px solid var(--espresso)}
 .olive-card__olives span:nth-child(1){left:9%;top:11%;animation:bob 5.5s ease-in-out infinite}
 .olive-card__olives span:nth-child(2){right:10%;top:22%;animation:bob 6.8s ease-in-out infinite .6s}
 .olive-card__olives span:nth-child(3){left:13%;bottom:13%;animation:bob 6.1s ease-in-out infinite 1.2s}
 .olive-card__olives span:nth-child(4){right:11%;bottom:19%;animation:bob 7.4s ease-in-out infinite .3s}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(8deg)}}
 
-/* ── Why sourdough — drag rail ───────────────────────────────── */
-.arc{display:block;width:min(100%,52rem);margin:0 auto;overflow:visible}
-.arc text{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:38px;fill:var(--berry);letter-spacing:-.01em}
-.rail{
-  display:flex;gap:1.25rem;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:2.5rem var(--gut) 3rem;margin-inline:calc(var(--gut) * -1);
-  scrollbar-width:none;cursor:grab;
-}
-.rail::-webkit-scrollbar{display:none}
-.rail[data-drag="true"]{cursor:grabbing;scroll-snap-type:none}
-.reason{
-  flex:0 0 min(19rem,76vw);scroll-snap-align:center;
-  border:3.5px solid var(--berry);border-radius:1.6rem;padding:1.8rem 1.6rem 2rem;
-  box-shadow:6px 7px 0 var(--berry);user-select:none;
-  transition:transform .3s var(--pop);
-}
-.reason:nth-child(4n+1){background:var(--butter);transform:rotate(-2.2deg)}
-.reason:nth-child(4n+2){background:var(--blush-soft);transform:rotate(1.6deg)}
-.reason:nth-child(4n+3){background:var(--cream);transform:rotate(-1.2deg)}
-.reason:nth-child(4n+4){background:var(--butter-soft);transform:rotate(2.4deg)}
-.reason:hover{transform:rotate(0) translateY(-8px)}
-.reason__ico{font-size:2.4rem;line-height:1}
-.reason h3{font-size:1.85rem;margin:.9rem 0 .5rem}
-.reason p{margin:0;font-size:.98rem;color:var(--berry-soft);font-weight:500}
-.rail-ctrl{display:flex;gap:.6rem;justify-content:center;margin-top:-1rem}
-.rail-ctrl button{
-  width:3.1rem;height:3.1rem;border-radius:50%;border:3px solid var(--berry);background:var(--cream);
-  color:var(--berry);font-size:1.2rem;cursor:pointer;box-shadow:3px 3px 0 var(--berry);
-  transition:transform .16s var(--pop);display:grid;place-content:center;
-}
-.rail-ctrl button:hover{transform:translate(-1px,-1px) rotate(-6deg);background:var(--butter)}
+/* ── Ordering ────────────────────────────────────────────────── */
+.order{display:grid;gap:clamp(1.75rem,4vw,3rem);align-items:start;margin-top:2.5rem}
+@media (min-width:62rem){.order{grid-template-columns:minmax(0,1.25fr) minmax(20rem,.75fr)}}
 
-/* ── Keep it happy (storage) ─────────────────────────────────── */
-.tips{display:grid;gap:1.5rem;margin-top:3rem}
-@media (min-width:52rem){.tips{grid-template-columns:repeat(3,1fr)}}
-.tip{
-  position:relative;background:var(--cream);border:3.5px solid var(--berry);border-radius:1.5rem;
-  padding:2.6rem 1.6rem 1.8rem;box-shadow:6px 7px 0 var(--berry);
-  transition:transform .28s var(--pop);
-}
-.tip:nth-child(1){transform:rotate(-1.6deg)}
-.tip:nth-child(2){transform:rotate(1.2deg);background:var(--butter-pale)}
-.tip:nth-child(3){transform:rotate(-.8deg)}
-.tip:hover{transform:rotate(0) translateY(-9px)}
-.tip__n{
-  position:absolute;top:-1.5rem;left:1.4rem;width:3.2rem;height:3.2rem;border-radius:50%;
-  background:var(--cherry);color:#fff;border:3px solid var(--berry);display:grid;place-content:center;
-  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.5rem;
-}
-.tip h3{font-size:1.5rem;margin-bottom:.5rem}
-.tip p{margin:0;color:var(--berry-soft);font-weight:500;font-size:.98rem}
+.rules{display:grid;gap:.6rem;margin:1.6rem 0 0;padding:0;list-style:none}
+.rules li{display:flex;gap:.7rem;align-items:flex-start;font-weight:600;font-size:.98rem}
+.rules li b{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--blue);
+  border:2.5px solid var(--espresso);display:grid;place-content:center;font-size:.85rem}
 
-/* ── Gallery marquee ─────────────────────────────────────────── */
-.gal{overflow:hidden;padding-block:1rem}
-.gal__track{display:flex;gap:1.2rem;width:max-content;animation:slide 48s linear infinite}
-.gal--rev .gal__track{animation-direction:reverse;animation-duration:58s}
-.gal:hover .gal__track{animation-play-state:paused}
-.gal__cell{
-  width:clamp(11rem,20vw,16rem);aspect-ratio:4/5;border:3.5px solid var(--berry);border-radius:1.3rem;
-  display:grid;place-content:center;text-align:center;padding:1rem;flex:none;
-  font-family:var(--hand);font-size:1.15rem;color:var(--berry-soft);
-}
-.gal__cell:nth-child(3n+1){background:var(--blush-soft);transform:rotate(-1.8deg)}
-.gal__cell:nth-child(3n+2){background:var(--butter-soft);transform:rotate(1.4deg)}
-.gal__cell:nth-child(3n+3){background:var(--cream);transform:rotate(-.6deg)}
-.gal__cell b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.6rem;color:var(--berry);margin-bottom:.3rem}
-
-/* ── Order ───────────────────────────────────────────────────── */
-.order{display:grid;gap:clamp(2rem,4vw,3rem);align-items:start;margin-top:2.5rem}
-@media (min-width:60rem){.order{grid-template-columns:minmax(0,1.15fr) minmax(19rem,.85fr)}}
-.pick{
-  display:grid;grid-template-columns:1fr auto;gap:1rem 1.25rem;align-items:center;
-  background:var(--cream);border:3.5px solid var(--berry);border-radius:1.5rem;padding:1.4rem 1.5rem;
-  box-shadow:5px 6px 0 var(--berry);transition:transform .25s var(--pop);
-}
+.pick{display:grid;grid-template-columns:1fr auto;gap:1rem 1.25rem;align-items:center;
+  background:var(--milk);border:3.5px solid var(--espresso);border-radius:1.5rem;padding:1.3rem 1.4rem;
+  box-shadow:5px 6px 0 var(--espresso);transition:transform .25s var(--pop)}
 .pick + .pick{margin-top:1.1rem}
 .pick:hover{transform:translateY(-4px) rotate(-.6deg)}
-.pick h3{font-size:1.6rem}
-.pick__meta{font-family:var(--hand);font-size:1.2rem;color:var(--cherry);margin:.15rem 0 0}
-.pick__price{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem;margin-top:.35rem}
-.step{display:flex;align-items:center;border:3px solid var(--berry);border-radius:99px;background:var(--butter-pale);overflow:hidden}
-.step button{width:2.9rem;height:2.9rem;border:0;background:transparent;color:var(--berry);font-size:1.4rem;font-weight:800;cursor:pointer;line-height:1;transition:background .18s}
-.step button:hover:not([disabled]){background:var(--butter)}
+.pick h3{font-size:1.5rem}
+.pick__price{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem;margin-top:.3rem}
+.step{display:flex;align-items:center;border:3px solid var(--espresso);border-radius:99px;background:var(--gold-pale);overflow:hidden}
+.step button{width:2.9rem;height:2.9rem;border:0;background:transparent;color:var(--espresso);font-size:1.4rem;font-weight:800;cursor:pointer;line-height:1;transition:background .18s}
+.step button:hover:not([disabled]){background:var(--gold)}
 .step button[disabled]{opacity:.35;cursor:not-allowed}
 .step output{min-width:2.6rem;text-align:center;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem}
 
-.basket{
-  position:sticky;top:6rem;background:var(--butter);border:4px solid var(--berry);border-radius:1.8rem;
-  padding:1.7rem 1.6rem 1.8rem;box-shadow:8px 9px 0 var(--berry);
-}
-.basket h3{font-size:1.9rem;margin-bottom:1rem}
-.basket__lines{display:grid;gap:.6rem;min-height:3.2rem;margin-bottom:1rem}
+.basket{position:sticky;top:6rem;background:var(--blue);border:4px solid var(--espresso);border-radius:1.8rem;
+  padding:1.6rem 1.5rem 1.7rem;box-shadow:8px 9px 0 var(--espresso)}
+.basket h3{font-size:1.8rem;margin-bottom:1rem}
+.basket__lines{display:grid;gap:.6rem;min-height:3rem;margin-bottom:1rem}
 .basket__line{display:flex;justify-content:space-between;gap:1rem;font-weight:600;font-size:.98rem}
-.basket__empty{font-family:var(--hand);font-size:1.3rem;color:var(--berry-soft);margin:0}
-.basket__total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border-top:3px dashed var(--berry);padding-top:1rem;margin-bottom:1.2rem}
-.basket__total dt{font-weight:800;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;margin:0}
-.basket__total dd{margin:0;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:2.3rem;line-height:1}
-.basket .btn{width:100%;justify-content:center}
-.basket__fine{margin:.9rem 0 0;font-family:var(--hand);font-size:1.15rem;color:var(--berry-soft);text-align:center;line-height:1.3}
+.basket__empty{font-family:var(--hand);font-size:1.25rem;margin:0}
+.sums{display:grid;gap:.5rem;border-top:3px dashed var(--espresso);padding-top:1rem;margin:0 0 1.2rem}
+.sums div{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;font-weight:600;font-size:.95rem}
+.sums .big dt,.sums .big dd{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.5rem}
+.sums dt,.sums dd{margin:0}
+.sums .muted{color:var(--espresso-2);font-weight:600}
+.basket .btn{width:100%}
+.basket__fine{margin:.9rem 0 0;font-size:.85rem;text-align:center;line-height:1.45}
 
-.yay{
-  display:none;background:var(--blush-soft);border:4px solid var(--berry);border-radius:1.8rem;
-  padding:clamp(1.6rem,4vw,2.6rem);box-shadow:8px 9px 0 var(--berry);text-align:center;
-}
-.yay[data-open="true"]{display:block;animation:pop .5s var(--pop) both}
-@keyframes pop{from{transform:scale(.9) rotate(-2deg);opacity:0}to{transform:none;opacity:1}}
-.yay h3{font-size:clamp(2rem,5vw,2.9rem)}
-.yay__sum{display:grid;gap:.5rem;max-width:26rem;margin:1.4rem auto;font-weight:600}
-.yay__sum div{display:flex;justify-content:space-between;gap:1rem;border-bottom:2px dotted var(--berry-mute);padding-bottom:.4rem}
+/* ── Checkout ────────────────────────────────────────────────── */
+.checkout{margin-top:2.5rem;background:var(--milk);border:4px solid var(--espresso);border-radius:1.8rem;
+  padding:clamp(1.5rem,4vw,2.5rem);box-shadow:8px 9px 0 var(--espresso);display:none}
+.checkout[data-open="true"]{display:block;animation:pop .45s var(--pop) both}
+@keyframes pop{from{transform:scale(.96) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.checkout h3{font-size:clamp(1.9rem,4.5vw,2.6rem);margin-bottom:.4rem}
+.fields{display:grid;gap:1.15rem;margin-top:1.75rem}
+@media (min-width:46rem){.fields--2{grid-template-columns:1fr 1fr}}
+.field{display:flex;flex-direction:column;gap:.4rem}
+.field label{font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.field label .opt{font-weight:600;letter-spacing:0;text-transform:none;color:var(--espresso-2)}
+.field input,.field textarea{
+  font-family:var(--ui);font-size:1.0625rem;color:var(--espresso);background:var(--milk);
+  border:3px solid var(--espresso);border-radius:1rem;padding:.8rem .9rem;width:100%}
+.field textarea{resize:vertical;min-height:5rem;line-height:1.55}
+.field input::placeholder,.field textarea::placeholder{color:#A88A6E}
+.field small{font-size:.82rem;color:var(--espresso-2);line-height:1.45}
+.field .err{font-size:.85rem;font-weight:700;color:var(--terracotta);min-height:1.1rem;margin:0}
+.field--bad input,.field--bad textarea{border-color:var(--terracotta);background:var(--terracotta-pale)}
+.checkout__foot{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-top:2rem}
+.formnote{margin:0;font-weight:700;font-size:.92rem;color:var(--terracotta)}
 
-/* ── Social ──────────────────────────────────────────────────── */
-.social{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2.5rem}
-.social__tile{
-  width:clamp(8rem,22vw,11rem);aspect-ratio:1;border:3.5px solid var(--berry);border-radius:1.2rem;
-  display:grid;place-content:center;font-family:var(--hand);font-size:1.1rem;color:var(--berry-soft);
-  text-align:center;padding:.8rem;transition:transform .3s var(--pop);
-}
-.social__tile:nth-child(odd){background:var(--butter-soft);transform:rotate(-3deg)}
-.social__tile:nth-child(even){background:var(--blush);transform:rotate(2.5deg)}
-.social__tile:hover{transform:rotate(0) scale(1.07)}
+/* ── Receipt ─────────────────────────────────────────────────── */
+.receipt{display:none;background:var(--gold-pale);border:4px solid var(--espresso);border-radius:1.8rem;
+  padding:clamp(1.5rem,4vw,2.5rem);box-shadow:8px 9px 0 var(--espresso);margin-top:2.5rem}
+.receipt[data-open="true"]{display:block;animation:pop .5s var(--pop) both}
+.receipt h3{font-size:clamp(1.9rem,4.5vw,2.6rem)}
+.receipt__ref{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
+  font-size:1.4rem;background:var(--blue);border:3px solid var(--espresso);border-radius:99px;
+  padding:.25rem 1rem;display:inline-block;margin-top:.8rem;transform:rotate(-1.5deg)}
+.rc{margin-top:1.9rem;border-top:3px dashed var(--espresso);padding-top:1.3rem}
+.rc h4{font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:0 0 .8rem;font-family:var(--ui);color:var(--terracotta)}
+.rc dl{display:grid;gap:.55rem;margin:0}
+.rc dl div{display:flex;justify-content:space-between;gap:1.5rem;align-items:baseline;font-size:.98rem}
+.rc dt{margin:0;font-weight:600;color:var(--espresso-2)}
+.rc dd{margin:0;font-weight:700;text-align:right}
+.rc .tot dt,.rc .tot dd{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem}
 
-/* ── Footer ──────────────────────────────────────────────────── */
-.foot{background:var(--berry);color:var(--blush-pale);padding-block:3rem 4rem;text-align:center}
-.foot img{width:4.6rem;height:4.6rem;border-radius:50%;margin:0 auto 1rem;border:3px solid var(--butter);object-fit:cover;background:var(--cream)}
-.foot img[hidden]{display:none}
-.foot h2{font-size:clamp(2rem,6vw,3.4rem);color:var(--butter)}
-.foot p{margin:.9rem 0 0;color:var(--blush)}
-.foot a{color:var(--butter)}
+/* ── Social / footer ─────────────────────────────────────────── */
+.social{text-align:center}
+.social img{width:5rem;height:5rem;border-radius:50%;margin:0 auto 1.2rem;border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
+.social img[hidden]{display:none}
+.social a.handle{
+  display:inline-block;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
+  font-size:clamp(1.8rem,5vw,3rem);text-decoration:none;
+  transition:transform .25s var(--pop)}
+.social a.handle:hover{transform:rotate(-2deg) scale(1.04);color:var(--terracotta)}
+.foot{background:var(--espresso);color:var(--gold-pale);padding-block:2.6rem 3.2rem;text-align:center}
+.foot h2{font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--gold)}
+.foot p{margin:.8rem 0 0;font-size:.95rem;color:var(--blue-pale)}
+.foot a{color:var(--gold)}
 
-/* ── Reveal system — visible by default, JS opts in ──────────── */
+/* ── Reveal — page renders at rest, JS opts elements in ──────── */
 [data-reveal="pending"]{opacity:0}
 [data-reveal="pending"][data-from="up"]{transform:translateY(46px)}
 [data-reveal="pending"][data-from="left"]{transform:translateX(-64px) rotate(-3deg)}
@@ -404,19 +318,15 @@ section{position:relative}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
   [data-reveal]{opacity:1 !important;transform:none !important}
-  .medallion__ring,.ticker__track,.gal__track{animation:none !important}
+  .medallion__ring,.ticker__track{animation:none !important}
 }
 </style>
 </head>
 <body>
 <a class="skip" href="#order">Skip to ordering</a>
 
-<!-- ── Ticker ──────────────────────────────────────────────── -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker__track" id="ticker"></div>
-</div>
+<div class="ticker" aria-hidden="true"><div class="ticker__track" id="ticker"></div></div>
 
-<!-- ── Nav ─────────────────────────────────────────────────── -->
 <nav class="nav">
   <div class="wrap nav__in">
     <a class="brand" href="#top">
@@ -424,9 +334,8 @@ section{position:relative}
       <b>The Cozy Loaf</b>
     </a>
     <div class="nav__links">
-      <a href="#loaves">The loaves</a>
-      <a href="#why">Why sourdough</a>
-      <a href="#gallery">Gallery</a>
+      <a href="#loaves">Loaves</a>
+      <a href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">Instagram</a>
     </div>
     <a class="btn btn--sm" href="#order">Order <span class="arr">→</span></a>
   </div>
@@ -438,22 +347,11 @@ section{position:relative}
 <section class="hero">
   <div class="wrap hero__in">
     <div>
-      <p class="kicker" data-reveal data-from="pop">Two loaves · that's the whole menu</p>
-      <h1 style="margin-top:1.2rem">
-        <span class="l" data-word>Baked</span>
-        <span class="l l2" data-word>small,</span>
-        <span class="l l3" data-word><em class="ital">loved</em> big.</span>
-      </h1>
-      <p class="hero__lede">
-        We make exactly two sourdough loaves and put everything we have into both.
-        No filler, no fifty-item menu &mdash; just bread worth
-        <span class="roll" aria-hidden="true"><span class="roll__in">
-          <span>queueing for.</span><span>texting about.</span><span>tearing warm.</span><span>hoarding.</span><span>queueing for.</span>
-        </span></span><span class="sr">queueing for.</span>
-      </p>
+      <img class="hero__logo" src="assets/logo.png" alt="The Cozy Loaf" data-logo data-reveal data-from="pop">
+      <h1 class="wordmark">The <span class="ital">Cozy</span><br>Loaf</h1>
       <div class="hero__cta">
-        <a class="btn" href="#order">Grab a loaf <span class="arr">→</span></a>
-        <a class="btn btn--cream" href="#loaves">Meet them first</a>
+        <a class="btn" href="#order" data-reveal data-from="up">Order now <span class="arr">→</span></a>
+        <a class="btn btn--milk" href="#loaves" data-reveal data-from="up">See the loaves</a>
       </div>
     </div>
 
@@ -464,269 +362,210 @@ section{position:relative}
           <text><textPath href="#ring">slow rise ✦ warm heart ✦ slow rise ✦ warm heart ✦</textPath></text>
         </svg>
         <div class="medallion__disc">
-          <img src="assets/plain-sourdough.jpg" alt="A round loaf of plain sourdough with a deeply scored, blistered crust." data-hero-photo>
+          <img src="assets/plain-sourdough.jpg" alt="Plain Sourdough, golden crackly crust." data-hero-photo>
           <div class="medallion__fb">
-            <div>
-              <p>Plain Sourdough</p>
-              <small>your photo goes here</small>
-            </div>
+            <div><p>Plain Sourdough</p><small>photo goes here</small></div>
           </div>
         </div>
-        <div class="sticker sticker--price" data-reveal data-from="pop">
-          <div><b>230</b><span>EGP</span></div>
-        </div>
-        <div class="sticker sticker--new" data-reveal data-from="pop">fresh<br>today!</div>
+        <div class="sticker sticker--price" data-reveal data-from="pop"><div><b>230</b><span>EGP</span></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" style="height:42px">
-  <path d="M0,30 C180,66 360,-6 540,24 C720,54 900,6 1080,24 C1260,42 1380,36 1440,24 L1440,60 L0,60 Z" fill="#E5324B"/>
+<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C180,66 360,-6 540,24 C720,54 900,6 1080,24 C1260,42 1380,36 1440,24 L1440,60 L0,60 Z" fill="#542916"/>
 </svg>
+<section class="band" aria-hidden="true"><div class="ticker__track" id="band"></div></section>
 
-<!-- ══ MARQUEE BAND ═══════════════════════════════════════════ -->
-<section class="g-cherry" style="overflow:hidden;padding-block:1.4rem" aria-hidden="true">
-  <div class="ticker__track" id="band" style="animation-duration:34s"></div>
-</section>
-
-<!-- ══ THE TWO LOAVES ═════════════════════════════════════════ -->
-<section class="pad g-cream" id="loaves">
+<!-- ══ LOAVES ═════════════════════════════════════════════════ -->
+<section class="pad g-milk" id="loaves">
   <div class="wrap">
-    <div style="max-width:44rem">
-      <p class="kicker" data-reveal data-from="pop">Meet the loaves</p>
-      <h2 style="font-size:clamp(2.6rem,7vw,5rem);margin-top:1.1rem" data-reveal data-from="up">
-        There are two.<br><span class="ital" style="color:var(--cherry)">Pick a side.</span>
-      </h2>
-    </div>
+    <p class="kicker" data-reveal data-from="pop">Our loaves</p>
 
-    <!-- 01 — Plain Sourdough -->
-    <article class="loaf" style="margin-top:clamp(3rem,6vw,5rem)">
+    <article class="loaf" style="margin-top:clamp(2.5rem,5vw,4rem)">
       <div class="loaf__art" data-reveal data-from="left">
         <div class="frame" data-frame data-empty="false">
-          <img src="assets/plain-sourdough.jpg" alt="Plain sourdough loaf, crust deeply scored and blistered." data-plain-photo>
+          <img src="assets/plain-sourdough.jpg" alt="Plain Sourdough, golden crackly crust." data-plain-photo>
           <div class="frame__fb">
             <div>
               <img src="assets/logo.png" alt="" data-logo>
-              <h3 style="font-size:1.9rem">Plain<br>Sourdough</h3>
-              <p class="hand" style="font-size:1.35rem;color:var(--cherry);margin:.5rem 0 0">your photo drops<br>straight in here</p>
+              <h3 style="font-size:1.8rem">Plain<br>Sourdough</h3>
+              <p class="hand" style="font-size:1.25rem;color:var(--terracotta);margin:.5rem 0 0">photo goes here</p>
             </div>
           </div>
         </div>
       </div>
       <div data-reveal data-from="right">
         <div class="loaf__idx">01</div>
-        <h3 class="loaf__name">Plain<br>Sourdough</h3>
+        <h2 class="loaf__name">Plain<br>Sourdough</h2>
         <p class="loaf__price">EGP 230 <small>per loaf</small></p>
-        <p class="loaf__desc">
-          <span class="ph">Tangy, open crumb, crust that crackles when you squeeze it. The one you
-          buy every week and finish before you mean to.</span>
-        </p>
-        <p style="margin:.7rem 0 0"><span class="ph-tag">swap for your own words</span></p>
-        <div class="loaf__notes">
-          <span class="note ph">crackly crust</span>
-          <span class="note ph">soft inside</span>
-          <span class="note ph">great toasted</span>
-        </div>
-        <div class="loaf__buy">
-          <button class="btn" type="button" data-add="plain">Add to basket <span class="arr">→</span></button>
-          <span class="hand" style="font-size:1.2rem;color:var(--cherry)">↖ our bestseller <span class="ph-tag">confirm?</span></span>
-        </div>
+        <p class="loaf__desc">Warm from the oven, pure comfort in every slice, with a crackly golden crust and a soft airy heart.</p>
+        <div class="loaf__buy"><button class="btn" type="button" data-add="plain">Add to basket <span class="arr">→</span></button></div>
       </div>
     </article>
 
-    <!-- 02 — Black Olive Sourdough -->
     <article class="loaf loaf--flip">
       <div class="loaf__art" data-reveal data-from="right">
         <div class="olive-card">
           <div class="olive-card__olives" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
           <img class="olive-card__mark" src="assets/logo.png" alt="" data-logo>
-          <h3>Photo<br>in the oven</h3>
-          <p>we haven't shot this<br>beauty yet &mdash; coming soon!</p>
+          <h3>Black Olive<br>Sourdough</h3>
+          <p>photo coming soon</p>
         </div>
       </div>
       <div data-reveal data-from="left">
         <div class="loaf__idx">02</div>
-        <h3 class="loaf__name">Black Olive<br>Sourdough</h3>
+        <h2 class="loaf__name">Black Olive<br>Sourdough</h2>
         <p class="loaf__price">EGP 250 <small>per loaf</small></p>
-        <p class="loaf__desc">
-          <span class="ph">Salty pockets of black olive folded all the way through. Loud, savoury,
-          and completely unnecessary to put anything on.</span>
-        </p>
-        <p style="margin:.7rem 0 0"><span class="ph-tag">swap for your own words</span></p>
-        <div class="loaf__notes">
-          <span class="note ph">salty</span>
-          <span class="note ph">savoury</span>
-          <span class="note ph">no butter needed</span>
-        </div>
-        <div class="loaf__buy">
-          <button class="btn btn--butter" type="button" data-add="olive">Add to basket <span class="arr">→</span></button>
-        </div>
+        <p style="margin:1.4rem 0 0"><span class="ph-tag">send me your description for this one</span></p>
+        <div class="loaf__buy"><button class="btn btn--gold" type="button" data-add="olive">Add to basket <span class="arr">→</span></button></div>
       </div>
     </article>
   </div>
 </section>
 
-<!-- ══ WHY SOURDOUGH ══════════════════════════════════════════ -->
-<section class="pad g-blush" id="why" style="padding-bottom:clamp(2rem,5vw,3.5rem)">
-  <div class="wrap" style="text-align:center">
-    <p class="kicker" data-reveal data-from="pop">The case for</p>
-    <svg class="arc" viewBox="0 0 600 170" aria-hidden="true" style="margin-top:1rem" data-reveal data-from="up">
-      <defs><path id="curve" d="M30,150 Q300,10 570,150" fill="none"/></defs>
-      <text><textPath href="#curve" startOffset="50%" text-anchor="middle">Why sourdough?</textPath></text>
-    </svg>
-    <h2 class="sr">Why sourdough?</h2>
-    <p class="hand" style="font-size:1.5rem;color:var(--cherry);margin:-1.5rem 0 0">drag me →</p>
-  </div>
-
-  <div class="rail" id="rail" role="region" aria-label="Reasons to love sourdough, scrollable">
-    <div class="reason"><div class="reason__ico">🎧</div><h3>The crackle</h3><p>That noise when the crust gives. Genuinely the best part of the week.</p></div>
-    <div class="reason"><div class="reason__ico">🍋</div><h3>The tang</h3><p>Wild starter, slow ferment, that sour little kick at the back of every bite.</p></div>
-    <div class="reason"><div class="reason__ico">🫧</div><h3>The crumb</h3><p>Big irregular holes. Butter falls straight through and we think that's romantic.</p></div>
-    <div class="reason"><div class="reason__ico">💪</div><h3>The chew</h3><p>Real structure. It fights back a little, in a way that soft bread never does.</p></div>
-    <div class="reason"><div class="reason__ico">🏠</div><h3>The smell</h3><p>Carry one home and the whole place smells like a bakery for an hour.</p></div>
-    <div class="reason"><div class="reason__ico">⏳</div><h3>The wait</h3><p>Nothing about sourdough is fast, which is exactly why it tastes like this.</p></div>
-  </div>
-  <div class="rail-ctrl">
-    <button type="button" id="rail-prev" aria-label="Scroll reasons left">←</button>
-    <button type="button" id="rail-next" aria-label="Scroll reasons right">→</button>
-  </div>
-</section>
-
-<!-- ══ KEEP IT HAPPY ══════════════════════════════════════════ -->
-<section class="pad g-butter-pale" id="care">
-  <div class="wrap">
-    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end;justify-content:space-between">
-      <div style="max-width:34rem">
-        <p class="kicker" data-reveal data-from="pop">Once it's home</p>
-        <h2 style="font-size:clamp(2.4rem,6vw,4.2rem);margin-top:1.1rem" data-reveal data-from="up">
-          Keep it<br><span class="ital" style="color:var(--cherry)">happy.</span>
-        </h2>
-      </div>
-      <p class="hand" style="font-size:1.45rem;color:var(--cherry);max-width:20rem;transform:rotate(-2deg)">
-        These are drafts &mdash; tell me how you actually want people to store it ✎
-      </p>
-    </div>
-
-    <div class="tips">
-      <div class="tip" data-reveal data-from="up"><div class="tip__n">1</div>
-        <h3>Cut side down</h3>
-        <p class="ph">Stand it on the board with the cut face flat. No bag, no box, no cling film for the first day.</p>
-      </div>
-      <div class="tip" data-reveal data-from="up"><div class="tip__n">2</div>
-        <h3>Paper, not plastic</h3>
-        <p class="ph">After day one, a paper bag or a clean tea towel. Plastic softens the crust you paid for.</p>
-      </div>
-      <div class="tip" data-reveal data-from="up"><div class="tip__n">3</div>
-        <h3>Freeze in slices</h3>
-        <p class="ph">Slice first, freeze flat, toast straight from frozen. Tastes like day one for weeks.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ GALLERY ════════════════════════════════════════════════ -->
-<section class="pad g-cream" id="gallery" style="padding-bottom:clamp(2.5rem,6vw,4rem)">
-  <div class="wrap" style="text-align:center;margin-bottom:2.5rem">
-    <p class="kicker" data-reveal data-from="pop">The feed</p>
-    <h2 style="font-size:clamp(2.4rem,6vw,4.2rem);margin-top:1.1rem" data-reveal data-from="up">
-      Bread, <span class="ital" style="color:var(--cherry)">but make it</span> a mood
-    </h2>
-    <p class="hand" style="font-size:1.4rem;color:var(--berry-soft);margin-top:.8rem">
-      empty frames, ready for your real photos
-    </p>
-  </div>
-  <div class="gal"><div class="gal__track" id="gal1"></div></div>
-  <div class="gal gal--rev" style="margin-top:1.2rem"><div class="gal__track" id="gal2"></div></div>
-</section>
-
 <!-- ══ ORDER ══════════════════════════════════════════════════ -->
-<section class="pad g-blush-soft" id="order">
+<section class="pad g-gold" id="order">
   <div class="wrap">
-    <div style="max-width:40rem">
-      <p class="kicker" data-reveal data-from="pop">Ordering</p>
-      <h2 style="font-size:clamp(2.6rem,7vw,4.6rem);margin-top:1.1rem" data-reveal data-from="up">
-        Two buttons and<br><span class="ital" style="color:var(--cherry)">you're done.</span>
-      </h2>
-    </div>
+    <p class="kicker" data-reveal data-from="pop">Order</p>
 
     <div class="order">
       <div data-reveal data-from="left">
-        <div class="pick">
-          <div>
-            <h3>Plain Sourdough</h3>
-            <p class="pick__meta">the classic</p>
-            <p class="pick__price">EGP 230</p>
-          </div>
-          <div class="step" data-step="plain">
-            <button type="button" data-d="-1" aria-label="One fewer Plain Sourdough" disabled>&minus;</button>
-            <output id="q-plain">0</output>
-            <button type="button" data-d="1" aria-label="One more Plain Sourdough">+</button>
-          </div>
-        </div>
-        <div class="pick">
-          <div>
-            <h3>Black Olive Sourdough</h3>
-            <p class="pick__meta">the loud one</p>
-            <p class="pick__price">EGP 250</p>
-          </div>
-          <div class="step" data-step="olive">
-            <button type="button" data-d="-1" aria-label="One fewer Black Olive Sourdough" disabled>&minus;</button>
-            <output id="q-olive">0</output>
-            <button type="button" data-d="1" aria-label="One more Black Olive Sourdough">+</button>
-          </div>
-        </div>
+        <ul class="rules">
+          <li><b>48</b><span>Minimum 48 hours notice is required for all orders.</span></li>
+          <li><b>◎</b><span>Delivery is available within Cairo only.</span></li>
+          <li><b>✦</b><span>Delivery fee varies depending on location.</span></li>
+        </ul>
 
-        <p class="hand" style="font-size:1.4rem;color:var(--cherry);margin-top:1.6rem;max-width:30rem">
-          Pickup or delivery? Cut-off times? Payment? &mdash; send me these and I'll build the real
-          ordering step ✎
-        </p>
+        <div style="margin-top:2rem">
+          <div class="pick">
+            <div>
+              <h3>Plain Sourdough</h3>
+              <p class="pick__price">EGP 230</p>
+            </div>
+            <div class="step" data-step="plain">
+              <button type="button" data-d="-1" aria-label="One fewer Plain Sourdough" disabled>&minus;</button>
+              <output id="q-plain">0</output>
+              <button type="button" data-d="1" aria-label="One more Plain Sourdough">+</button>
+            </div>
+          </div>
+          <div class="pick">
+            <div>
+              <h3>Black Olive Sourdough</h3>
+              <p class="pick__price">EGP 250</p>
+            </div>
+            <div class="step" data-step="olive">
+              <button type="button" data-d="-1" aria-label="One fewer Black Olive Sourdough" disabled>&minus;</button>
+              <output id="q-olive">0</output>
+              <button type="button" data-d="1" aria-label="One more Black Olive Sourdough">+</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <aside data-reveal data-from="right">
-        <div class="basket" id="basket">
+        <div class="basket">
           <h3>Your basket</h3>
           <div class="basket__lines" id="lines" aria-live="polite">
-            <p class="basket__empty">nothing in here yet…</p>
+            <p class="basket__empty">Your basket is empty.</p>
           </div>
-          <dl class="basket__total">
-            <dt>Total</dt>
-            <dd id="total">EGP 0</dd>
+          <dl class="sums">
+            <div><dt>Subtotal</dt><dd id="subtotal">EGP 0</dd></div>
+            <div><dt>Delivery fee</dt><dd class="muted">To be confirmed</dd></div>
+            <div class="big"><dt>Total before delivery</dt><dd id="total">EGP 0</dd></div>
           </dl>
-          <button class="btn" type="button" id="place" disabled>Place my order <span class="arr">→</span></button>
-          <p class="basket__fine">no payment here &mdash; we'll confirm with you first</p>
-        </div>
-
-        <div class="yay" id="yay" tabindex="-1">
-          <div style="font-size:3rem;line-height:1">🥖</div>
-          <h3>Yay! Order noted.</h3>
-          <div class="yay__sum" id="yay-sum"></div>
-          <p class="hand" style="font-size:1.3rem;color:var(--cherry)">
-            This is the design preview &mdash; the real send step is waiting on your ordering rules.
-          </p>
-          <p style="margin-top:1.4rem"><button class="btn btn--cream btn--sm" type="button" id="yay-back">Start over</button></p>
+          <button class="btn" type="button" id="to-details" disabled>Continue to delivery details <span class="arr">→</span></button>
+          <p class="basket__fine">Delivery fee will be confirmed based on your location.</p>
         </div>
       </aside>
+    </div>
+
+    <!-- Checkout -->
+    <form class="checkout" id="checkout" novalidate>
+      <h3>Delivery details</h3>
+      <p style="margin:.5rem 0 0;font-weight:600">Delivery within Cairo. Minimum 48 hours notice.</p>
+
+      <div class="fields fields--2">
+        <div class="field" id="f-name">
+          <label for="c-name">Full name</label>
+          <input id="c-name" name="fullName" type="text" autocomplete="name" required>
+          <p class="err" data-err="name"></p>
+        </div>
+        <div class="field" id="f-mobile">
+          <label for="c-mobile">Mobile number</label>
+          <input id="c-mobile" name="mobile" type="tel" inputmode="tel" autocomplete="tel" required>
+          <p class="err" data-err="mobile"></p>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="field" id="f-address">
+          <label for="c-address">Delivery address</label>
+          <textarea id="c-address" name="address" autocomplete="street-address" required></textarea>
+          <p class="err" data-err="address"></p>
+        </div>
+      </div>
+
+      <div class="fields fields--2">
+        <div class="field" id="f-area">
+          <label for="c-area">Area</label>
+          <input id="c-area" name="area" type="text" required>
+          <small>Delivery fee will be confirmed based on your location.</small>
+          <p class="err" data-err="area"></p>
+        </div>
+        <div class="field" id="f-date">
+          <label for="c-date">Preferred delivery date</label>
+          <input id="c-date" name="deliveryDate" type="date" required>
+          <small id="date-hint"></small>
+          <p class="err" data-err="date"></p>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <label for="c-notes">Order notes <span class="opt">— optional</span></label>
+          <textarea id="c-notes" name="notes"></textarea>
+        </div>
+      </div>
+
+      <div class="checkout__foot">
+        <button class="btn" type="submit" id="place">Place order <span class="arr">→</span></button>
+        <button class="btn btn--milk btn--sm" type="button" id="back-basket">Back to basket</button>
+        <p class="formnote" id="form-note" role="status"></p>
+      </div>
+    </form>
+
+    <!-- Receipt -->
+    <div class="receipt" id="receipt" tabindex="-1">
+      <h3>Order received</h3>
+      <p style="margin:.6rem 0 0;font-weight:600">We will contact you to confirm your delivery fee and time.</p>
+      <p><span class="receipt__ref" id="rc-ref"></span></p>
+
+      <div class="rc">
+        <h4>Your order</h4>
+        <dl id="rc-items"></dl>
+      </div>
+      <div class="rc">
+        <h4>Totals</h4>
+        <dl id="rc-totals"></dl>
+      </div>
+      <div class="rc">
+        <h4>Delivery</h4>
+        <dl id="rc-delivery"></dl>
+      </div>
+
+      <p id="rc-warn" style="margin-top:1.6rem"></p>
+      <p style="margin-top:1.6rem"><button class="btn btn--blue btn--sm" type="button" id="new-order">Start a new order</button></p>
     </div>
   </div>
 </section>
 
 <!-- ══ SOCIAL ═════════════════════════════════════════════════ -->
-<section class="pad g-butter" id="social" style="text-align:center">
+<section class="pad g-blue-pale social">
   <div class="wrap">
-    <p class="kicker" data-reveal data-from="pop">Say hi</p>
-    <h2 style="font-size:clamp(2.4rem,6vw,4.2rem);margin-top:1.1rem" data-reveal data-from="up">
-      Find us on <span class="ital" style="color:var(--cherry)">the internet</span>
-    </h2>
-    <p class="hand" style="font-size:1.5rem;margin-top:1rem">
-      <span class="ph">@yourhandle</span> <span class="ph-tag">what's the real handle?</span>
-    </p>
-    <div class="social">
-      <div class="social__tile">post 01</div>
-      <div class="social__tile">post 02</div>
-      <div class="social__tile">post 03</div>
-      <div class="social__tile">post 04</div>
-    </div>
+    <img src="assets/logo.png" alt="" data-logo data-reveal data-from="pop">
+    <p><a class="handle" href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
   </div>
 </section>
 
@@ -734,62 +573,76 @@ section{position:relative}
 
 <footer class="foot">
   <div class="wrap">
-    <img src="assets/logo.png" alt="" data-logo>
-    <h2>Slow rise,<br><span class="ital">warm heart.</span></h2>
-    <p>Two loaves. That's it. That's the bakery.</p>
-    <p style="margin-top:1.4rem;font-family:var(--hand);font-size:1.25rem;color:var(--blush)">
-      contact, address &amp; hours &mdash; still to come
-    </p>
+    <h2>Slow rise, <span class="ital">warm heart.</span></h2>
+    <p>Delivery within Cairo · <a href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
   </div>
 </footer>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   SETTINGS — the only block you edit.
+   ═══════════════════════════════════════════════════════════════ */
+const SETTINGS = {
+  /* Where a placed order is sent. Until one of these is filled in, an
+     order is only kept in the customer's own browser and never reaches
+     you — the receipt says so plainly.
+
+     Simplest: put your bakery email in ownerEmail. Placing an order then
+     opens the customer's email app with the whole order written out.
+
+     Better: sign up free at web3forms.com, paste the key they send into
+     accessKey and "https://api.web3forms.com/submit" into orderEndpoint.
+     Orders then arrive in your inbox by themselves. A Formspree URL works
+     too — put it in orderEndpoint and leave accessKey empty. */
+  ownerEmail: "",
+  orderEndpoint: "",
+  accessKey: "",
+
+  minNoticeHours: 48,
+  city: "Cairo"
+};
+
+const PRODUCTS = {
+  plain: { name: "Plain Sourdough", price: 230 },
+  olive: { name: "Black Olive Sourdough", price: 250 }
+};
+
+/* ═══════════════════════════════════════════════════════════════ */
 (function () {
   "use strict";
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ── The only two products there are ─────────────────────── */
-  const PRODUCTS = {
-    plain: { name: "Plain Sourdough", price: 230 },
-    olive: { name: "Black Olive Sourdough", price: 250 }
-  };
   const egp = n => "EGP " + n.toLocaleString("en-US");
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const qty = { plain: 0, olive: 0 };
 
   /* ── Marquees ────────────────────────────────────────────── */
-  function fillTrack(el, words, cls) {
-    const once = words.map(w => '<span class="' + (cls || "") + '">' + w + "</span>").join("");
+  const fill = (el, words) => {
+    const once = words.map(w => "<span>" + w + "</span>").join("");
     el.innerHTML = once + once;
-  }
-  fillTrack($("#ticker"), ["slow rise ✦ warm heart", "two loaves, that's the menu", "baked in small batches",
-                           "slow rise ✦ warm heart", "two loaves, that's the menu", "baked in small batches"]);
-  fillTrack($("#band"), ["Plain Sourdough ✦", "Black Olive Sourdough ✦", "Plain Sourdough ✦", "Black Olive Sourdough ✦",
-                         "Plain Sourdough ✦", "Black Olive Sourdough ✦"]);
+  };
+  fill($("#ticker"), ["The Cozy Loaf ✦ Slow rise, warm heart ✦", "The Cozy Loaf ✦ Slow rise, warm heart ✦",
+                      "The Cozy Loaf ✦ Slow rise, warm heart ✦", "The Cozy Loaf ✦ Slow rise, warm heart ✦"]);
+  fill($("#band"), ["Plain Sourdough ✦", "Black Olive Sourdough ✦", "Plain Sourdough ✦",
+                    "Black Olive Sourdough ✦", "Plain Sourdough ✦", "Black Olive Sourdough ✦"]);
 
-  const cells = n => Array.from({ length: n }, (_, i) =>
-    '<div class="gal__cell"><div><b>' + String(i + 1).padStart(2, "0") + "</b>your photo here</div></div>").join("");
-  $("#gal1").innerHTML = cells(7) + cells(7);
-  $("#gal2").innerHTML = cells(6) + cells(6);
-
-  /* ── Images: hide the slot cleanly until the file exists ──── */
+  /* ── Image slots hide cleanly until the files exist ───────── */
   $$("[data-logo]").forEach(img => {
     const fail = () => { img.hidden = true; };
     img.addEventListener("error", fail);
     if (img.complete && img.naturalWidth === 0) fail();
   });
-  [["[data-medallion]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(pair => {
-    const box = $(pair[0]), img = $(pair[1]);
+  [["[data-medallion]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(([boxSel, imgSel]) => {
+    const box = $(boxSel), img = $(imgSel);
     if (!box || !img) return;
     const fail = () => { box.dataset.empty = "true"; };
     img.addEventListener("error", fail);
     if (img.complete && img.naturalWidth === 0) fail();
   });
 
-  /* ── Reveals: page renders at rest, JS opts elements in ───── */
+  /* ── Reveals ─────────────────────────────────────────────── */
   if (!reduced && "IntersectionObserver" in window) {
-    const items = $$("[data-reveal]");
     const io = new IntersectionObserver((entries, obs) => {
       entries.forEach(e => {
         if (!e.isIntersecting) return;
@@ -798,27 +651,24 @@ section{position:relative}
       });
     }, { rootMargin: "0px 0px -12% 0px", threshold: .08 });
 
-    items.forEach((el, i) => {
-      const below = el.getBoundingClientRect().top > window.innerHeight * .85;
-      if (!below) { el.dataset.reveal = "in"; return; }
+    $$("[data-reveal]").forEach((el, i) => {
+      if (el.getBoundingClientRect().top <= window.innerHeight * .85) { el.dataset.reveal = "in"; return; }
       el.dataset.reveal = "pending";
       if (!el.dataset.from) el.dataset.from = "up";
       el.style.transitionDelay = (i % 3) * 80 + "ms";
       io.observe(el);
     });
 
-    /* hero words stagger in on load */
-    $$("[data-word]").forEach((w, i) => {
-      w.style.opacity = "0";
-      w.style.transform = "translateY(28px) rotate(-2deg)";
-      w.style.transition = "opacity .7s var(--pop) " + (i * 110 + 120) + "ms, transform .8s var(--pop) " + (i * 110 + 120) + "ms";
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        w.style.opacity = "1"; w.style.transform = "none";
-      }));
-    });
+    const mark = $(".wordmark");
+    if (mark) {
+      mark.style.opacity = "0";
+      mark.style.transform = "translateY(30px) rotate(-1.5deg)";
+      mark.style.transition = "opacity .8s var(--pop) 140ms, transform .9s var(--pop) 140ms";
+      requestAnimationFrame(() => requestAnimationFrame(() => { mark.style.opacity = "1"; mark.style.transform = "none"; }));
+    }
   }
 
-  /* ── Parallax drift ──────────────────────────────────────── */
+  /* ── Parallax ────────────────────────────────────────────── */
   const floats = $$("[data-float]");
   if (!reduced && floats.length && window.innerWidth > 700) {
     let ticking = false;
@@ -830,87 +680,250 @@ section{position:relative}
     addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(move); } }, { passive: true });
   }
 
-  /* ── Drag rail ───────────────────────────────────────────── */
-  const rail = $("#rail");
-  let down = false, startX = 0, startScroll = 0, moved = false;
-  rail.addEventListener("pointerdown", e => {
-    down = true; moved = false; startX = e.clientX; startScroll = rail.scrollLeft;
-    rail.setPointerCapture(e.pointerId);
-  });
-  rail.addEventListener("pointermove", e => {
-    if (!down) return;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > 4) { moved = true; rail.dataset.drag = "true"; }
-    rail.scrollLeft = startScroll - dx;
-  });
-  const release = e => {
-    if (!down) return;
-    down = false; delete rail.dataset.drag;
-    if (e.pointerId != null && rail.hasPointerCapture(e.pointerId)) rail.releasePointerCapture(e.pointerId);
-  };
-  rail.addEventListener("pointerup", release);
-  rail.addEventListener("pointercancel", release);
-  rail.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
-
-  const nudge = dir => {
-    const card = rail.querySelector(".reason");
-    const w = card ? card.offsetWidth + 20 : 300;
-    rail.scrollBy({ left: dir * w, behavior: reduced ? "auto" : "smooth" });
-  };
-  $("#rail-prev").addEventListener("click", () => nudge(-1));
-  $("#rail-next").addEventListener("click", () => nudge(1));
+  /* ── 48-hour notice window ───────────────────────────────── */
+  const dateInput = $("#c-date");
+  function earliestDate() {
+    const d = new Date(Date.now() + SETTINGS.minNoticeHours * 3600000);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  const ymd = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  const pretty = d => d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const min = earliestDate();
+  dateInput.min = ymd(min);
+  $("#date-hint").textContent = "Earliest available: " + pretty(min) + ".";
 
   /* ── Basket ──────────────────────────────────────────────── */
+  const chosen = () => Object.keys(PRODUCTS).filter(k => qty[k] > 0);
+  const subtotal = () => chosen().reduce((a, k) => a + PRODUCTS[k].price * qty[k], 0);
+
   function render() {
     Object.keys(PRODUCTS).forEach(k => {
       $("#q-" + k).textContent = qty[k];
       const box = $('.step[data-step="' + k + '"]');
       box.querySelector('[data-d="-1"]').disabled = qty[k] === 0;
-      box.querySelector('[data-d="1"]').disabled = qty[k] >= 10;
+      box.querySelector('[data-d="1"]').disabled = qty[k] >= 20;
     });
-
-    const chosen = Object.keys(PRODUCTS).filter(k => qty[k] > 0);
-    const total = chosen.reduce((a, k) => a + PRODUCTS[k].price * qty[k], 0);
-
-    $("#lines").innerHTML = chosen.length
-      ? chosen.map(k =>
-          '<div class="basket__line"><span>' + qty[k] + " × " + PRODUCTS[k].name +
+    const ks = chosen();
+    $("#lines").innerHTML = ks.length
+      ? ks.map(k => '<div class="basket__line"><span>' + qty[k] + " × " + PRODUCTS[k].name +
           "</span><span>" + egp(PRODUCTS[k].price * qty[k]) + "</span></div>").join("")
-      : '<p class="basket__empty">nothing in here yet…</p>';
-    $("#total").textContent = egp(total);
-    $("#place").disabled = !chosen.length;
+      : '<p class="basket__empty">Your basket is empty.</p>';
+    $("#subtotal").textContent = egp(subtotal());
+    $("#total").textContent = egp(subtotal());
+    $("#to-details").disabled = !ks.length;
+    if (!ks.length && $("#checkout").dataset.open === "true") $("#checkout").dataset.open = "false";
   }
 
-  function bump(k, d) {
-    qty[k] = Math.max(0, Math.min(10, qty[k] + d));
-    render();
-  }
+  const bump = (k, d) => { qty[k] = Math.max(0, Math.min(20, qty[k] + d)); render(); };
   $$(".step").forEach(box => box.addEventListener("click", e => {
     const b = e.target.closest("button");
     if (b) bump(box.dataset.step, Number(b.dataset.d));
   }));
   $$("[data-add]").forEach(b => b.addEventListener("click", () => {
     bump(b.dataset.add, 1);
-    if (!reduced) { b.animate([{ transform: "scale(1)" }, { transform: "scale(.9) rotate(-3deg)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.22,1.2,.36,1)" }); }
+    if (!reduced) b.animate([{ transform: "scale(1)" }, { transform: "scale(.9) rotate(-3deg)" }, { transform: "scale(1)" }],
+                            { duration: 320, easing: "cubic-bezier(.22,1.2,.36,1)" });
     $("#order").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   }));
 
-  $("#place").addEventListener("click", () => {
-    const chosen = Object.keys(PRODUCTS).filter(k => qty[k] > 0);
-    const total = chosen.reduce((a, k) => a + PRODUCTS[k].price * qty[k], 0);
-    $("#yay-sum").innerHTML = chosen.map(k =>
-      "<div><span>" + qty[k] + " × " + PRODUCTS[k].name + "</span><span>" + egp(PRODUCTS[k].price * qty[k]) + "</span></div>"
-    ).join("") + '<div style="border:0;font-weight:800"><span>Total</span><span>' + egp(total) + "</span></div>";
-    $("#basket").style.display = "none";
-    $("#yay").dataset.open = "true";
-    $("#yay").focus({ preventScroll: true });
+  $("#to-details").addEventListener("click", () => {
+    $("#checkout").dataset.open = "true";
+    $("#checkout").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    $("#c-name").focus({ preventScroll: true });
+  });
+  $("#back-basket").addEventListener("click", () => {
+    $("#checkout").dataset.open = "false";
+    $("#order").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   });
 
-  $("#yay-back").addEventListener("click", () => {
+  /* ── Validation ──────────────────────────────────────────── */
+  const setErr = (k, msg, f) => { $("[data-err='" + k + "']").textContent = msg; if (f) $(f).classList.add("field--bad"); };
+  const clearErr = (k, f) => { const e = $("[data-err='" + k + "']"); if (e) e.textContent = ""; if (f) $(f).classList.remove("field--bad"); };
+
+  function validate() {
+    ["name","mobile","address","area","date"].forEach(k => clearErr(k));
+    ["#f-name","#f-mobile","#f-address","#f-area","#f-date"].forEach(f => $(f).classList.remove("field--bad"));
+    const bad = [];
+
+    if ($("#c-name").value.trim().length < 2) { setErr("name", "Please enter your full name.", "#f-name"); bad.push("#c-name"); }
+    if ($("#c-mobile").value.replace(/\D/g, "").length < 10) { setErr("mobile", "Please enter a valid mobile number.", "#f-mobile"); bad.push("#c-mobile"); }
+    if ($("#c-address").value.trim().length < 6) { setErr("address", "Please enter your delivery address.", "#f-address"); bad.push("#c-address"); }
+    if ($("#c-area").value.trim().length < 2) { setErr("area", "Please enter your area.", "#f-area"); bad.push("#c-area"); }
+
+    const v = dateInput.value;
+    if (!v) { setErr("date", "Please choose a delivery date.", "#f-date"); bad.push("#c-date"); }
+    else {
+      const parts = v.split("-").map(Number);
+      const picked = new Date(parts[0], parts[1] - 1, parts[2]);
+      if (picked < min) { setErr("date", "We need " + SETTINGS.minNoticeHours + " hours notice — earliest is " + pretty(min) + ".", "#f-date"); bad.push("#c-date"); }
+    }
+    return bad;
+  }
+  ["#c-name","#c-mobile","#c-address","#c-area","#c-date"].forEach(sel =>
+    $(sel).addEventListener("input", () => {
+      const k = sel.replace("#c-", "");
+      clearErr(k === "date" ? "date" : k, "#f-" + k);
+    }));
+
+  /* ── The order record ────────────────────────────────────── */
+  function makeRef() {
+    const d = new Date();
+    const s = String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+    let t = "";
+    for (let i = 0; i < 4; i++) t += "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)];
+    return "CL-" + s + "-" + t;
+  }
+
+  function buildOrder() {
+    const parts = dateInput.value.split("-").map(Number);
+    return {
+      reference: makeRef(),
+      placedAt: new Date().toISOString(),
+      items: chosen().map(k => ({ id: k, name: PRODUCTS[k].name, unitPrice: PRODUCTS[k].price, quantity: qty[k], lineTotal: PRODUCTS[k].price * qty[k] })),
+      currency: "EGP",
+      subtotal: subtotal(),
+      deliveryFee: "To be confirmed",
+      totalBeforeDelivery: subtotal(),
+      customer: {
+        fullName: $("#c-name").value.trim(),
+        mobile: $("#c-mobile").value.trim(),
+        address: $("#c-address").value.trim(),
+        area: $("#c-area").value.trim()
+      },
+      delivery: { method: "Delivery", city: SETTINGS.city, date: dateInput.value, dateLabel: pretty(new Date(parts[0], parts[1] - 1, parts[2])) },
+      notes: $("#c-notes").value.trim()
+    };
+  }
+
+  function orderText(o) {
+    const r = "----------------------------------------";
+    return [
+      "NEW ORDER — The Cozy Loaf", r,
+      "Reference   " + o.reference,
+      "Placed      " + new Date(o.placedAt).toLocaleString("en-GB"), "",
+      "ITEMS",
+      o.items.map(i => "  " + i.quantity + " × " + i.name + "   " + egp(i.lineTotal)).join("\n"), "",
+      "Subtotal                 " + egp(o.subtotal),
+      "Delivery fee             " + o.deliveryFee,
+      "Total before delivery    " + egp(o.totalBeforeDelivery), "",
+      "CUSTOMER",
+      "Name        " + o.customer.fullName,
+      "Mobile      " + o.customer.mobile,
+      "Address     " + o.customer.address,
+      "Area        " + o.customer.area, "",
+      "DELIVERY",
+      "Method      Delivery (" + o.delivery.city + " only)",
+      "Date        " + o.delivery.dateLabel, "",
+      "NOTES       " + (o.notes || "—"), r, ""
+    ].join("\n");
+  }
+
+  function saveLocally(o) {
+    try {
+      const all = JSON.parse(localStorage.getItem("cozyloaf.orders") || "[]");
+      all.push(o);
+      localStorage.setItem("cozyloaf.orders", JSON.stringify(all));
+      return true;
+    } catch (e) { return false; }
+  }
+
+  async function sendOrder(o) {
+    if (SETTINGS.orderEndpoint) {
+      const payload = {
+        subject: "New order " + o.reference + " — " + o.delivery.dateLabel,
+        from_name: o.customer.fullName,
+        order_json: JSON.stringify(o),
+        message: orderText(o)
+      };
+      if (SETTINGS.accessKey) payload.access_key = SETTINGS.accessKey;
+      const res = await fetch(SETTINGS.orderEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return "endpoint";
+    }
+    if (SETTINGS.ownerEmail) {
+      window.location.href = "mailto:" + SETTINGS.ownerEmail +
+        "?subject=" + encodeURIComponent("New order " + o.reference) +
+        "&body=" + encodeURIComponent(orderText(o));
+      return "email";
+    }
+    return "none";
+  }
+
+  /* ── Submit ──────────────────────────────────────────────── */
+  const note = msg => { $("#form-note").textContent = msg || ""; };
+
+  $("#checkout").addEventListener("submit", async e => {
+    e.preventDefault();
+    const bad = validate();
+    if (bad.length) {
+      note(bad.length === 1 ? "Please check the highlighted field." : "Please check the highlighted fields.");
+      const t = $(bad[0]);
+      t.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+      t.focus({ preventScroll: true });
+      return;
+    }
+
+    const btn = $("#place");
+    btn.disabled = true; btn.textContent = "Sending…"; note("");
+
+    const o = buildOrder();
+    const stored = saveLocally(o);
+    let how = "none";
+    try { how = await sendOrder(o); }
+    catch (err) { how = "failed"; }
+
+    showReceipt(o, how, stored);
+  });
+
+  function showReceipt(o, how, stored) {
+    $("#checkout").dataset.open = "false";
+    $(".basket").style.display = "none";
+    $("#rc-ref").textContent = o.reference;
+
+    $("#rc-items").innerHTML = o.items.map(i =>
+      "<div><dt>" + i.quantity + " × " + esc(i.name) + "</dt><dd>" + egp(i.lineTotal) + "</dd></div>").join("");
+
+    $("#rc-totals").innerHTML =
+      "<div><dt>Subtotal</dt><dd>" + egp(o.subtotal) + "</dd></div>" +
+      "<div><dt>Delivery fee</dt><dd>To be confirmed</dd></div>" +
+      '<div class="tot"><dt>Total before delivery</dt><dd>' + egp(o.totalBeforeDelivery) + "</dd></div>";
+
+    $("#rc-delivery").innerHTML = [
+      ["Name", o.customer.fullName],
+      ["Mobile", o.customer.mobile],
+      ["Address", o.customer.address],
+      ["Area", o.customer.area],
+      ["Delivery date", o.delivery.dateLabel],
+      ["Delivers to", o.delivery.city + " only"]
+    ].concat(o.notes ? [["Notes", o.notes]] : [])
+     .map(r => "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>").join("");
+
+    const warn = $("#rc-warn");
+    if (how === "endpoint") warn.textContent = "";
+    else if (how === "email") warn.innerHTML = '<span class="hand" style="font-size:1.2rem">Your email app should have opened with the order — press send.</span>';
+    else warn.innerHTML = '<span class="ph-tag">not sent anywhere yet — add an email or endpoint in SETTINGS' +
+        (stored ? " (the full order is saved in this browser)" : "") + "</span>";
+
+    const r = $("#receipt");
+    r.dataset.open = "true";
+    r.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    r.focus({ preventScroll: true });
+  }
+
+  $("#new-order").addEventListener("click", () => {
     qty.plain = 0; qty.olive = 0;
-    $("#yay").dataset.open = "false";
-    $("#basket").style.display = "";
+    $("#checkout").reset();
+    $("#receipt").dataset.open = "false";
+    $(".basket").style.display = "";
+    $("#place").disabled = false;
+    $("#place").innerHTML = 'Place order <span class="arr">→</span>';
+    note("");
     render();
+    $("#order").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   });
 
   render();

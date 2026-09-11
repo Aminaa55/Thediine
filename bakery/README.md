@@ -1,72 +1,62 @@
 # The Cozy Loaf — customer homepage
 
-A single self-contained page: one HTML file, no build step, no server, no
-database. Open `index.html` in a browser and it works.
+One self-contained HTML file. No build step, no server, no database.
 
-This is a **design direction for review** — the homepage only. No admin, no
-backend, no real order submission yet.
-
-## The brand, as built
+## Palette
 
 | | |
 |---|---|
-| Butter yellow `#FFD447` | Hero and social grounds — the main cheerful colour |
-| Soft blush `#FFD3CC` | Secondary grounds and frames |
-| Cherry red `#E5324B` | Buttons, badges, ticker, accents |
-| Warm off-white `#FFFAF3` | Breathing space between loud sections |
-| Deep berry `#4A0D2C` | All text and every outline |
+| Espresso `#542916` | All text, every outline and shadow; the marquee band; the footer |
+| Porcelain blue `#88B8CE` | Hero ground, the basket, social section |
+| Golden yellow `#F1C166` | Nav, ordering section, price badges |
+| Terracotta `#A13A1E` | Ticker, buttons, price sticker, errors |
+| Milky off-white `#FEFAF0` | Page ground and the breathing space between loud sections |
+| Olive `#B79858` | Detail only — the outlined numerals. Never a ground. |
 
-No brown, no beige, no gold, no black panels. Every section changes ground
-colour so the page never settles into one wash.
+## Typography
 
-Type is three voices: **Fraunces** (with its *wonk* and *soft* axes turned up)
-for oversized editorial statements, **Figtree** for anything practical, and
-**Caveat** for handwritten annotations. There is deliberately no monospace.
+**Fraunces** (wonk axis open) for display, **Figtree** for everything practical,
+**Caveat** only for the ✎ editor notes.
 
-## What moves
+## Ordering and checkout
 
-| | |
+The three delivery rules sit directly above the basket, where a customer reads
+them before choosing:
+
+- Minimum 48 hours notice is required for all orders.
+- Delivery is available within Cairo only.
+- Delivery fee varies depending on location.
+
+There is no pickup option and no address or phone number anywhere on the page.
+
+Basket → **Continue to delivery details** → checkout form → receipt.
+
+Checkout collects full name, mobile, delivery address, area, preferred delivery
+date and optional notes. The date input's `min` is set from
+`SETTINGS.minNoticeHours`, so dates inside the 48-hour window cannot be picked,
+and the same rule is re-checked on submit.
+
+The receipt shows items and quantities, subtotal, **Delivery fee: To be
+confirmed**, total before delivery, the customer's details and the delivery
+date. No delivery fee is ever invented.
+
+### Where orders go
+
+Every placed order is built as a complete record and written to
+`localStorage` under `cozyloaf.orders`, then sent onward according to
+`SETTINGS` at the top of the script:
+
+| Setting | Effect |
 |---|---|
-| Ticker + marquee band | Two continuous loops, opposite weights |
-| Hero | Headline words stagger in; logo ring rotates around the photo; medallion drifts on scroll |
-| Rotating word | Cycles through four endings in the hero paragraph |
-| Loaves | Slide in from opposite sides; olives bob in the placeholder |
-| Why sourdough | Drag-to-scroll carousel, tilted cards, arrow buttons, snap points |
-| Gallery | Two marquee rows running opposite ways, pausing on hover |
-| Care tips | Rotate flat and lift on hover |
-| Buttons | Hard shadow, tilt on hover, press down on click |
-| Basket | Counts up live; the confirmation pops in |
+| `ownerEmail` | Opens the customer's email app with the whole order written out |
+| `orderEndpoint` + `accessKey` | POSTs the order as JSON — orders arrive in the inbox by themselves (web3forms.com, free) |
+| neither set | The order is saved in that browser only and the receipt says so |
 
-Everything is visible at rest — nothing waits on a scroll trigger to appear.
-`prefers-reduced-motion` turns all of it off and leaves the page fully readable.
+**`localStorage` is not an order book.** It is per-browser, per-device, and the
+bakery never sees it. Until `ownerEmail` or `orderEndpoint` is filled in, no
+order actually reaches you. One line changes that.
 
-## Editing it
+## Still needed
 
-Both prices live in the `PRODUCTS` object at the top of the script:
-
-```js
-const PRODUCTS = {
-  plain: { name: "Plain Sourdough", price: 230 },
-  olive: { name: "Black Olive Sourdough", price: 250 }
-};
-```
-
-Images go in `assets/` — see [`assets/README.md`](assets/README.md).
-
-## Placeholder copy
-
-Anything not yet confirmed is marked two ways, so nothing fake reaches a
-customer by accident:
-
-- a **pink highlighter** behind the text (`class="ph"`)
-- a **handwritten ✎ tag** next to the block (`class="ph-tag"`)
-
-Currently marked as placeholder: both loaf descriptions and their little tags,
-the three storage tips, the "bestseller" claim, and the Instagram handle. The
-gallery frames, contact details, address and hours are empty by design.
-
-## Still needed before this can go live
-
-Loaf descriptions · storage instructions · Instagram handle · contact details ·
-address and collection hours · baking schedule and order cut-off · pickup or
-delivery · how payment works · the two image files.
+Black Olive Sourdough description · the two image files · an email address or
+form endpoint for orders · storage/care wording if that section should return.

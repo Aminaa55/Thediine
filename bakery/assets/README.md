@@ -1,33 +1,26 @@
 # Two image files go here
 
-| File | What it is | Notes |
-|---|---|---|
-| `logo.png` | The Cozy Loaf circular logo | Square, 512 × 512. Used in the nav, the olive placeholder, the footer and the browser tab. |
-| `plain-sourdough.jpg` | The Plain Sourdough photo | Portrait, ~1400px tall, under ~400 KB. Used in the hero medallion and the Loaf 01 frame. |
+| File | What it is |
+|---|---|
+| `logo.png` | The Cozy Loaf circular logo — nav, hero, olive card, social section, browser tab |
+| `plain-sourdough.jpg` | The Plain Sourdough photo — hero medallion and the Loaf 01 frame |
 
 Save them with exactly those names and the page picks them up on refresh.
-Nothing in `index.html` needs changing.
+Nothing in `index.html` needs changing. If a file is missing the page shows a
+branded placeholder in that slot rather than breaking.
 
-If a file is missing the page does not break — it shows a branded placeholder
-in that slot instead.
+## A note on the photo
 
-## One art-direction note on the photo
+The shot supplied is on a black background. There is no black in this palette,
+so the page crops it into a circle and a rounded frame, zoomed onto the loaf,
+which hides almost all of it.
 
-The shot you sent is on a black background. This brand has no black in it, so
-the page crops the photo into a circle and a rounded frame, zoomed onto the
-loaf, which hides almost all of it.
-
-It will look considerably better with either:
-
-- a cut-out PNG of the loaf on a transparent background, or
-- a re-shoot on a butter-yellow, blush-pink or off-white surface.
-
-A cut-out would also let the loaf overlap the type and float free of its frame,
-which is the effect this layout is really built for.
+It will look considerably better as either a cut-out PNG on transparency, or a
+re-shoot on one of the brand grounds — porcelain blue, golden yellow or the
+milky off-white. A cut-out would also let the loaf overlap the type and float
+free of its frame.
 
 ## Black Olive Sourdough
 
-There is deliberately **no** image slot for this loaf. Until you send a real
-photo it shows a branded card — dashed frame, bobbing olives, the logo, and a
-note that the photo is coming. When you have the shot, send it and it gets its
-own composition rather than borrowing the plain loaf's.
+Deliberately has **no** image slot. Until a real photo exists it shows a branded
+card with bobbing olives. It never borrows the Plain Sourdough photo.
