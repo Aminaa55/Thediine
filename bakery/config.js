@@ -65,17 +65,38 @@ window.COZY_CONFIG = {
     olive: { name: "Black Olive Sourdough", price: 250 }
   },
 
-  /* ── Notifications ───────────────────────────────────────────
-     Not wired to a service yet — the sending setup is still being
-     chosen. Point orderEndpoint at whatever endpoint ends up
-     handling an order and both emails go out from there.
+  /* ── Email notifications, via EmailJS ────────────────────────
+     Placing an order sends two emails: one to the customer and one
+     to the bakery. Both go through EmailJS, which sends them from
+     the connected Gmail account. No domain, no server, no key that
+     needs hiding — see the four values below.
 
-     Whatever happens here, it never shows on screen: a customer
-     who has successfully placed an order sees a confirmation, and
-     a delivery failure is logged to the console for the developer,
-     never surfaced as an error. */
-  orderEndpoint: "",
-  accessKey: ""
+     Fill these in from the EmailJS dashboard:
+
+       publicKey          Account → General → Public Key
+       serviceId          Email Services → the Gmail service
+       customerTemplateId Email Templates → customer confirmation
+       ownerTemplateId    Email Templates → order notification
+
+     Until publicKey and serviceId are both set, no email is sent.
+     Either way the customer sees a normal confirmation — sending is
+     the bakery's problem, never theirs. Failures are logged to the
+     console for a developer and never shown on screen.
+
+     REMEMBER: add the live site's address under Account → Security →
+     allowed origins in EmailJS, or sends from the deployed site are
+     rejected. */
+  emailjs: {
+    publicKey: "",
+    serviceId: "",
+    customerTemplateId: "",
+    ownerTemplateId: "",
+
+    /* How long to wait for both emails before letting the customer
+       through to their confirmation. The order is already saved, so
+       this is a courtesy cap, not a deadline. */
+    timeoutMs: 8000
+  }
 };
 
 

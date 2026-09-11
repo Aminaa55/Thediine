@@ -80,6 +80,37 @@ bakery, that is logged to the console for a developer and the customer, who has
 successfully placed an order and can do nothing about it, sees a normal
 confirmation.
 
+### Emails
+
+Placing an order sends two messages through **EmailJS**, which relays them from
+a connected Gmail account — no domain, no server, no secret key.
+
+| | |
+|---|---|
+| To the bakery | Order number, name, mobile, email, area, full address, loaves and quantities, subtotal, notes |
+| To the customer | Confirmation, order number, loaves, subtotal, delivery within 48 hours, fee confirmed separately |
+
+Both are sent independently: one failing never stops the other, and neither
+failing is the customer's problem. The order is saved before either is
+attempted, and a send that has not finished within `emailjs.timeoutMs` stops
+holding the customer up — they go through to their confirmation regardless.
+
+Failures are logged to the browser console for a developer. Nothing about
+sending ever appears on screen.
+
+Templates live in `emails/`. Paste each into the EmailJS template editor in
+**Code view**. Merge fields are `{{double_braced}}`, which is EmailJS's own
+syntax. The loaf list arrives as `{{items_text}}` — plain text, one line per
+loaf — because EmailJS escapes markup inside variables, so a table built in a
+variable would print its own tags.
+
+Set the four IDs in `config.js` under `emailjs`. Until `publicKey` and
+`serviceId` are both filled in, nothing is sent and the customer still sees a
+normal confirmation.
+
+**After deploying, add the live URL to EmailJS under Account → Security →
+allowed origins**, or sends from the deployed site are rejected.
+
 ### Where orders go
 
 Every placed order is built as a complete record and written to
@@ -97,9 +128,28 @@ on that one device. The bakery cannot see it, cannot query it, and a customer on
 a different phone has a different store entirely. It exists so an order is never
 lost between the two pages — it is not storage the business can rely on.
 
-**No notification is wired up yet.** Until `orderEndpoint` points somewhere, an
-order is captured and the customer is confirmed, but nobody is told. Both email
-templates are ready in `emails/`; what remains is choosing a sending service.
+Orders also go out by email the moment they are placed — see above. That is the
+copy the bakery actually works from; `localStorage` is a safety net, not a
+system of record.
+
+## Deploying
+
+The site is plain static files. On Vercel, add a **new project** from this
+repository and set:
+
+| Setting | Value |
+|---|---|
+| Root Directory | `bakery` |
+| Framework Preset | Other |
+| Build Command | leave empty |
+| Output Directory | leave empty |
+
+`vercel.json` handles the rest — clean URLs (so `/confirm` works as well as
+`/confirm.html`) and cache headers that keep `config.js` fresh while letting the
+photographs cache.
+
+Vercel deploys the repository's production branch, so set that to whichever
+branch carries this work under **Settings → Git**.
 
 ## Email templates
 

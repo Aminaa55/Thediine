@@ -11,10 +11,16 @@
   Built to be read on a phone in two seconds: order number and delivery date
   first, then everything needed to call the customer back.
 
+  Paste this whole file into the EmailJS template editor, in Code view.
+
   Merge fields:
     {{order_number}} {{placed_at}} {{customer_name}} {{customer_mobile}}
     {{customer_email}} {{customer_address}} {{customer_area}}
-    {{items_html}} {{subtotal}} {{notes}}
+    {{items_text}} {{subtotal}} {{notes}}
+
+  {{items_text}} is plain text, one loaf per line — EmailJS escapes
+  markup inside variables, so the block below keeps its line breaks
+  with white-space:pre-line rather than building a table in code.
 -->
 <body style="margin:0;padding:0;background:#FEFAF0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FEFAF0;">
@@ -66,9 +72,10 @@
       <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#A13A1E;padding-bottom:10px;">
         Order
       </div>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:2;color:#542916;
+                  white-space:pre-line;">{{items_text}}</div>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
-             style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#542916;">
-        {{items_html}}
+             style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#542916;margin-top:10px;">
         <tr><td style="padding:12px 0 5px;border-top:2px dashed #B79858;">Subtotal</td>
             <td align="right" style="padding:12px 0 5px;border-top:2px dashed #B79858;font-weight:bold;">EGP {{subtotal}}</td></tr>
       </table>

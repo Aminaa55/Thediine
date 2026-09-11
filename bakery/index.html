@@ -550,6 +550,7 @@ section{position:relative}
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 <script src="config.js"></script>
 <script>
 /* Everything configurable lives in config.js. */
@@ -736,30 +737,6 @@ const PRODUCTS = SETTINGS.products;
     };
   }
 
-  function orderText(o) {
-    const r = "----------------------------------------";
-    return [
-      "NEW ORDER — The Cozy Loaf", r,
-      "Reference   " + o.reference,
-      "Placed      " + new Date(o.placedAt).toLocaleString("en-GB"), "",
-      "ITEMS",
-      o.items.map(i => "  " + i.quantity + " × " + i.name + "   " + egp(i.lineTotal)).join("\n"), "",
-      "Subtotal                 " + egp(o.subtotal),
-      "Delivery fee             " + o.deliveryFee,
-      "Total before delivery    " + egp(o.totalBeforeDelivery), "",
-      "CUSTOMER",
-      "Name        " + o.customer.fullName,
-      "Mobile      " + o.customer.mobile,
-      "Email       " + o.customer.email,
-      "Address     " + o.customer.address,
-      "Area        " + o.customer.area, "",
-      "DELIVERY",
-      "Area        " + o.customer.area,
-      "When        " + o.delivery.promise, "",
-      "NOTES       " + (o.notes || "—"), r, ""
-    ].join("\n");
-  }
-
   function saveLocally(o) {
     try {
       const all = JSON.parse(localStorage.getItem("cozyloaf.orders") || "[]");
@@ -769,30 +746,57 @@ const PRODUCTS = SETTINGS.products;
     } catch (e) { return false; }
   }
 
-  async function sendOrder(o) {
-    if (SETTINGS.orderEndpoint) {
-      const payload = {
-        subject: "New order " + o.reference + " — " + o.customer.area,
-        from_name: o.customer.fullName,
-        order_json: JSON.stringify(o),
-        message: orderText(o)
-      };
-      if (SETTINGS.accessKey) payload.access_key = SETTINGS.accessKey;
-      const res = await fetch(SETTINGS.orderEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return "endpoint";
-    }
-    if (SETTINGS.ownerEmail) {
-      window.location.href = "mailto:" + SETTINGS.ownerEmail +
-        "?subject=" + encodeURIComponent("New order " + o.reference) +
-        "&body=" + encodeURIComponent(orderText(o));
-      return "email";
-    }
-    return "none";
+  /* ── Email, via EmailJS ──────────────────────────────────────
+     Two messages go out per order: the bakery's, then the customer's.
+     They are sent independently — one failing must not stop the other,
+     and neither failing is ever the customer's problem. */
+  function emailParams(o) {
+    return {
+      order_number: o.reference,
+      placed_at: new Date(o.placedAt).toLocaleString("en-GB"),
+      first_name: o.customer.fullName.split(/\s+/)[0],
+      customer_name: o.customer.fullName,
+      customer_mobile: o.customer.mobile,
+      customer_email: o.customer.email,
+      customer_address: o.customer.address,
+      customer_area: o.customer.area,
+      items_text: o.items.map(i => i.quantity + " \u00d7 " + i.name + "  \u2014  " + egp(i.lineTotal)).join("\n"),
+      subtotal: o.subtotal.toLocaleString("en-US"),
+      notes: o.notes || "\u2014"
+    };
+  }
+
+  function sendOrder(o) {
+    const cfg = SETTINGS.emailjs || {};
+    if (!cfg.publicKey || !cfg.serviceId) return Promise.resolve("none");
+    if (typeof emailjs === "undefined") return Promise.resolve("unavailable");
+
+    const params = emailParams(o);
+    const jobs = [];
+    if (cfg.ownerTemplateId) jobs.push(["owner", cfg.ownerTemplateId]);
+    if (cfg.customerTemplateId) jobs.push(["customer", cfg.customerTemplateId]);
+    if (!jobs.length) return Promise.resolve("none");
+
+    const sends = jobs.map(([who, template]) =>
+      emailjs.send(cfg.serviceId, template, params, { publicKey: cfg.publicKey })
+        .then(() => ({ who, ok: true }))
+        .catch(err => {
+          console.warn("[cozyloaf] " + who + " email failed for " + o.reference + ":", err);
+          return { who, ok: false };
+        }));
+
+    /* The order is already saved. Do not hold the customer on a spinner
+       longer than this, whatever the network is doing. */
+    const capped = Promise.race([
+      Promise.all(sends),
+      new Promise(resolve => setTimeout(() => resolve(null), cfg.timeoutMs || 8000))
+    ]);
+
+    return capped.then(results => {
+      if (!results) { console.warn("[cozyloaf] email send timed out for " + o.reference); return "timeout"; }
+      const good = results.filter(r => r.ok).length;
+      return good === results.length ? "sent" : good ? "partial" : "failed";
+    });
   }
 
   /* ── Submit ──────────────────────────────────────────────── */
@@ -824,7 +828,8 @@ const PRODUCTS = SETTINGS.products;
       how = "failed";
       console.warn("[cozyloaf] order " + o.reference + " saved, notification failed:", err);
     }
-    if (how === "none") console.warn("[cozyloaf] order " + o.reference + " saved; no notification endpoint configured");
+    if (how === "none") console.warn("[cozyloaf] order " + o.reference + " saved; EmailJS not configured");
+    if (how === "unavailable") console.warn("[cozyloaf] order " + o.reference + " saved; the EmailJS library did not load");
     o.notified = how;
 
     saveLocally(o);

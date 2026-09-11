@@ -12,11 +12,17 @@
   Figtree do not render in most email clients, so the display role falls to
   Georgia and the text role to Arial, which sit closest to them.
 
-  Merge fields, for whichever service sends this:
-    {{first_name}} {{order_number}} {{items_html}} {{subtotal}}
-  {{items_html}} expects one row per line, e.g.
-    <tr><td style="padding:6px 0;">2 &times; Plain Sourdough</td>
-        <td align="right" style="padding:6px 0;">EGP 460</td></tr>
+  Paste this whole file into the EmailJS template editor, in Code view.
+
+  Merge fields:
+    {{first_name}} {{order_number}} {{items_text}} {{subtotal}}
+
+  {{items_text}} arrives as plain text, one loaf per line:
+    2 × Plain Sourdough  —  EGP 460
+    1 × Black Olive Sourdough  —  EGP 250
+  It is deliberately not HTML: EmailJS escapes markup inside variables,
+  so a table built in code would print its own tags. The block below
+  keeps the line breaks with white-space:pre-line instead.
 -->
 <body style="margin:0;padding:0;background:#FEFAF0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FEFAF0;">
@@ -54,10 +60,8 @@
 
     <!-- items -->
     <tr><td style="background:#FEFAF0;padding:0 28px;border-left:3px solid #542916;border-right:3px solid #542916;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
-             style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#542916;border-top:2px dashed #B79858;padding-top:8px;">
-        {{items_html}}
-      </table>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:2;color:#542916;
+                  border-top:2px dashed #B79858;padding-top:12px;white-space:pre-line;">{{items_text}}</div>
     </td></tr>
 
     <!-- totals -->
@@ -95,7 +99,7 @@
         The Cozy Loaf
       </div>
       <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#D9EAF2;padding-top:14px;">
-        Delivery within Cairo &middot;
+        Delivery across the areas listed at checkout &middot;
         <a href="https://instagram.com/thecozyloaf_eg" style="color:#F1C166;text-decoration:none;">@thecozyloaf_eg</a>
       </div>
     </td></tr>
