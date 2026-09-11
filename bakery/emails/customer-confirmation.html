@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Your order is in</title>
+<title>Your order is confirmed</title>
 </head>
 <!--
   THE COZY LOAF — customer confirmation email
@@ -13,7 +13,7 @@
   Georgia and the text role to Arial, which sit closest to them.
 
   Merge fields, for whichever service sends this:
-    {{first_name}} {{order_number}} {{items_html}} {{subtotal}} {{delivery_date}}
+    {{first_name}} {{order_number}} {{items_html}} {{subtotal}}
   {{items_html}} expects one row per line, e.g.
     <tr><td style="padding:6px 0;">2 &times; Plain Sourdough</td>
         <td align="right" style="padding:6px 0;">EGP 460</td></tr>
@@ -30,7 +30,7 @@
     <!-- header -->
     <tr><td align="center" style="background:#88B8CE;padding:34px 28px 30px;border-left:3px solid #542916;border-right:3px solid #542916;">
       <div style="font-family:Georgia,'Times New Roman',serif;font-size:32px;line-height:1.15;color:#542916;font-weight:bold;">
-        Your order is in &#127838;
+        Your order is confirmed &#127838;
       </div>
     </td></tr>
 
@@ -70,11 +70,11 @@
         </tr>
         <tr>
           <td style="padding:4px 0;color:#7A4426;">Delivery</td>
-          <td align="right" style="padding:4px 0;color:#7A4426;">To be confirmed based on your location</td>
+          <td align="right" style="padding:4px 0;font-weight:bold;">Within 48 hours</td>
         </tr>
         <tr>
-          <td style="padding:4px 0;color:#7A4426;">Requested delivery date</td>
-          <td align="right" style="padding:4px 0;font-weight:bold;">{{delivery_date}}</td>
+          <td style="padding:4px 0;color:#7A4426;">Delivery fee</td>
+          <td align="right" style="padding:4px 0;color:#7A4426;">Confirmed separately</td>
         </tr>
       </table>
     </td></tr>
@@ -82,7 +82,7 @@
     <!-- closing -->
     <tr><td style="background:#FBEBC8;padding:24px 28px;border-left:3px solid #542916;border-right:3px solid #542916;">
       <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#542916;">
-        We&rsquo;ll be in touch to confirm your delivery fee and final delivery time.
+        We&rsquo;ll contact you if we need anything else regarding your order.
       </p>
     </td></tr>
 

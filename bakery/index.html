@@ -265,7 +265,14 @@ section{position:relative}
 .field{display:flex;flex-direction:column;gap:.4rem}
 .field label{font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
 .field label .opt{font-weight:600;letter-spacing:0;text-transform:none;color:var(--espresso-2)}
-.field input,.field textarea{
+.field select{appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--espresso) 50%),linear-gradient(135deg,var(--espresso) 50%,transparent 50%);
+  background-position:calc(100% - 20px) calc(50% + 1px),calc(100% - 14px) calc(50% + 1px);
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:2.75rem}
+.field select optgroup{font-family:var(--ui);font-weight:800;color:var(--terracotta)}
+.field select option{font-weight:400;color:var(--espresso)}
+.field--bad select{border-color:var(--terracotta);background-color:var(--terracotta-pale)}
+.field input,.field select,.field textarea{
   font-family:var(--ui);font-size:1.0625rem;color:var(--espresso);background:var(--milk);
   border:3px solid var(--espresso);border-radius:1rem;padding:.8rem .9rem;width:100%}
 .field textarea{resize:vertical;min-height:5rem;line-height:1.55}
@@ -417,9 +424,8 @@ section{position:relative}
     <div class="order">
       <div data-reveal data-from="left">
         <ul class="rules">
-          <li><b>48</b><span>Minimum 48 hours notice is required for all orders.</span></li>
-          <li><b>◎</b><span>Delivery is available within Cairo only.</span></li>
-          <li><b>✦</b><span>Delivery fee varies depending on location.</span></li>
+          <li><b>48</b><span id="rule-promise"></span></li>
+          <li><b>✦</b><span id="rule-fee"></span></li>
         </ul>
 
         <div style="margin-top:2rem">
@@ -460,7 +466,7 @@ section{position:relative}
             <div class="big"><dt>Total before delivery</dt><dd id="total">EGP 0</dd></div>
           </dl>
           <button class="btn" type="button" id="to-details" disabled>Continue to delivery details <span class="arr">→</span></button>
-          <p class="basket__fine">Delivery fee will be confirmed based on your location.</p>
+          <p class="basket__fine" id="basket-fine"></p>
         </div>
       </aside>
     </div>
@@ -468,7 +474,7 @@ section{position:relative}
     <!-- Checkout -->
     <form class="checkout" id="checkout" novalidate>
       <h3>Delivery details</h3>
-      <p style="margin:.5rem 0 0;font-weight:600">Delivery within Cairo. Minimum 48 hours notice.</p>
+      <p style="margin:.5rem 0 0;font-weight:600" id="checkout-promise"></p>
 
       <div class="fields fields--2">
         <div class="field" id="f-name">
@@ -500,18 +506,13 @@ section{position:relative}
         </div>
       </div>
 
-      <div class="fields fields--2">
+      <div class="fields">
         <div class="field" id="f-area">
           <label for="c-area">Area</label>
-          <input id="c-area" name="area" type="text" required>
-          <small>Delivery fee will be confirmed based on your location.</small>
+          <select id="c-area" name="area" required>
+            <option value="">Choose your area</option>
+          </select>
           <p class="err" data-err="area"></p>
-        </div>
-        <div class="field" id="f-date">
-          <label for="c-date">Preferred delivery date</label>
-          <input id="c-date" name="deliveryDate" type="date" required>
-          <small id="date-hint"></small>
-          <p class="err" data-err="date"></p>
         </div>
       </div>
 
@@ -628,17 +629,16 @@ const PRODUCTS = SETTINGS.products;
     addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(move); } }, { passive: true });
   }
 
-  /* ── 48-hour notice window ───────────────────────────────── */
-  const dateInput = $("#c-date");
-  function earliestDate() {
-    const d = new Date(Date.now() + SETTINGS.minNoticeHours * 3600000);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-  const ymd = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  const pretty = d => d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  const min = earliestDate();
-  dateInput.min = ymd(min);
-  $("#date-hint").textContent = "Earliest available: " + pretty(min) + ".";
+  /* ── Delivery copy and areas, all from config ────────────── */
+  $("#rule-promise").textContent = SETTINGS.deliveryPromise;
+  $("#rule-fee").textContent = SETTINGS.deliveryFeeNote;
+  $("#checkout-promise").textContent = SETTINGS.deliveryPromise;
+  $("#basket-fine").textContent = SETTINGS.deliveryFeeNote;
+
+  $("#c-area").insertAdjacentHTML("beforeend", SETTINGS.deliveryAreas.map(g =>
+    '<optgroup label="' + g[0] + '">' +
+    g[1].map(a => "<option>" + a + "</option>").join("") +
+    "</optgroup>").join(""));
 
   /* ── Basket ──────────────────────────────────────────────── */
   const chosen = () => Object.keys(PRODUCTS).filter(k => qty[k] > 0);
@@ -689,29 +689,21 @@ const PRODUCTS = SETTINGS.products;
   const clearErr = (k, f) => { const e = $("[data-err='" + k + "']"); if (e) e.textContent = ""; if (f) $(f).classList.remove("field--bad"); };
 
   function validate() {
-    ["name","mobile","email","address","area","date"].forEach(k => clearErr(k));
-    ["#f-name","#f-mobile","#f-email","#f-address","#f-area","#f-date"].forEach(f => $(f).classList.remove("field--bad"));
+    ["name","mobile","email","address","area"].forEach(k => clearErr(k));
+    ["#f-name","#f-mobile","#f-email","#f-address","#f-area"].forEach(f => $(f).classList.remove("field--bad"));
     const bad = [];
 
     if ($("#c-name").value.trim().length < 2) { setErr("name", "Please enter your full name.", "#f-name"); bad.push("#c-name"); }
     if ($("#c-mobile").value.replace(/\D/g, "").length < 10) { setErr("mobile", "Please enter a valid mobile number.", "#f-mobile"); bad.push("#c-mobile"); }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($("#c-email").value.trim())) { setErr("email", "Please enter a valid email address.", "#f-email"); bad.push("#c-email"); }
     if ($("#c-address").value.trim().length < 6) { setErr("address", "Please enter your delivery address.", "#f-address"); bad.push("#c-address"); }
-    if ($("#c-area").value.trim().length < 2) { setErr("area", "Please enter your area.", "#f-area"); bad.push("#c-area"); }
-
-    const v = dateInput.value;
-    if (!v) { setErr("date", "Please choose a delivery date.", "#f-date"); bad.push("#c-date"); }
-    else {
-      const parts = v.split("-").map(Number);
-      const picked = new Date(parts[0], parts[1] - 1, parts[2]);
-      if (picked < min) { setErr("date", "We need " + SETTINGS.minNoticeHours + " hours notice — earliest is " + pretty(min) + ".", "#f-date"); bad.push("#c-date"); }
-    }
+    if (!$("#c-area").value) { setErr("area", "Please choose your area.", "#f-area"); bad.push("#c-area"); }
     return bad;
   }
-  ["#c-name","#c-mobile","#c-email","#c-address","#c-area","#c-date"].forEach(sel =>
+  ["#c-name","#c-mobile","#c-email","#c-address","#c-area"].forEach(sel =>
     $(sel).addEventListener("input", () => {
       const k = sel.replace("#c-", "");
-      clearErr(k === "date" ? "date" : k, "#f-" + k);
+      clearErr(k, "#f-" + k);
     }));
 
   /* ── The order record ────────────────────────────────────── */
@@ -724,7 +716,6 @@ const PRODUCTS = SETTINGS.products;
   }
 
   function buildOrder() {
-    const parts = dateInput.value.split("-").map(Number);
     return {
       reference: makeRef(),
       placedAt: new Date().toISOString(),
@@ -742,7 +733,7 @@ const PRODUCTS = SETTINGS.products;
         address: $("#c-address").value.trim(),
         area: $("#c-area").value.trim()
       },
-      delivery: { method: "Delivery", city: SETTINGS.city, date: dateInput.value, dateLabel: pretty(new Date(parts[0], parts[1] - 1, parts[2])) },
+      delivery: { method: "Delivery", area: $("#c-area").value, promise: SETTINGS.deliveryPromise },
       notes: $("#c-notes").value.trim()
     };
   }
@@ -765,8 +756,8 @@ const PRODUCTS = SETTINGS.products;
       "Address     " + o.customer.address,
       "Area        " + o.customer.area, "",
       "DELIVERY",
-      "Method      Delivery (" + o.delivery.city + " only)",
-      "Date        " + o.delivery.dateLabel, "",
+      "Area        " + o.customer.area,
+      "When        " + o.delivery.promise, "",
       "NOTES       " + (o.notes || "—"), r, ""
     ].join("\n");
   }
@@ -783,7 +774,7 @@ const PRODUCTS = SETTINGS.products;
   async function sendOrder(o) {
     if (SETTINGS.orderEndpoint) {
       const payload = {
-        subject: "New order " + o.reference + " — " + o.delivery.dateLabel,
+        subject: "New order " + o.reference + " — " + o.customer.area,
         from_name: o.customer.fullName,
         order_json: JSON.stringify(o),
         message: orderText(o)
@@ -824,9 +815,18 @@ const PRODUCTS = SETTINGS.products;
     btn.disabled = true; btn.textContent = "Sending…"; note("");
 
     const o = buildOrder();
+    /* The order itself has already been captured. Whether the bakery's
+       notification got through is an operational matter — it is logged for
+       the developer and never shown to the customer, who has done nothing
+       wrong and can do nothing about it. */
     let how = "none";
-    try { how = await sendOrder(o); }
-    catch (err) { how = "failed"; }
+    try {
+      how = await sendOrder(o);
+    } catch (err) {
+      how = "failed";
+      console.warn("[cozyloaf] order " + o.reference + " saved, notification failed:", err);
+    }
+    if (how === "none") console.warn("[cozyloaf] order " + o.reference + " saved; no notification endpoint configured");
     o.notified = how;
 
     saveLocally(o);

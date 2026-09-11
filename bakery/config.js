@@ -10,18 +10,39 @@ window.COZY_CONFIG = {
   city: "Cairo",
   instagram: "thecozyloaf_eg",
 
-  /* ── WhatsApp ────────────────────────────────────────────────
-     The bakery's WhatsApp number in full international form,
-     digits only — no +, no spaces, no dashes.
-     An Egyptian number like 0100 123 4567 becomes "201001234567".
-
-     Leave empty and the Confirm on WhatsApp button stays disabled
-     and says so, rather than opening a broken chat. */
-  whatsappNumber: "",
-
-  /* ── Ordering rules ────────────────────────────────────────── */
-  minNoticeHours: 48,
+  /* ── Ordering rules ──────────────────────────────────────────
+     Customers do not pick a date. Every order is delivered within
+     this window, and the site says so wherever it matters. */
+  deliveryPromise: "Your order will be delivered within 48 hours.",
+  deliveryFeeNote: "Delivery fee will be confirmed separately.",
   maxPerLoaf: 20,
+
+  /* ── Delivery areas ──────────────────────────────────────────
+     The checkout dropdown, grouped by part of the city so a long
+     list stays scannable. Add or remove areas here and the form
+     follows. This list is the site's statement of where the bakery
+     delivers — there is no fee calculation anywhere. */
+  deliveryAreas: [
+    ["New Cairo & East", [
+      "New Cairo", "First Settlement", "Third Settlement", "Fifth Settlement",
+      "Rehab", "Madinaty", "Shorouk", "Badr", "Obour"
+    ]],
+    ["Heliopolis & Nasr City", [
+      "Heliopolis", "Almaza", "Sheraton", "Nozha", "Nasr City", "Abbassia"
+    ]],
+    ["Central Cairo", [
+      "Downtown Cairo", "Garden City", "Zamalek", "Manial"
+    ]],
+    ["Maadi & Mokattam", [
+      "Maadi", "Degla Maadi", "New Maadi", "Zahraa El Maadi", "Mokattam"
+    ]],
+    ["Giza", [
+      "Dokki", "Mohandessin", "Agouza", "Giza", "Haram", "Faisal"
+    ]],
+    ["6th of October & Zayed", [
+      "Sheikh Zayed", "New Zayed", "6th of October", "Hadayek October"
+    ]]
+  ],
 
   /* ── Products ──────────────────────────────────────────────── */
   products: {
@@ -29,27 +50,15 @@ window.COZY_CONFIG = {
     olive: { name: "Black Olive Sourdough", price: 250 }
   },
 
-  /* ── Owner notification by email ─────────────────────────────
-     Optional, and independent of WhatsApp. Needs no domain: the
-     service sends from its own servers to whatever inbox you name.
+  /* ── Notifications ───────────────────────────────────────────
+     Not wired to a service yet — the sending setup is still being
+     chosen. Point orderEndpoint at whatever endpoint ends up
+     handling an order and both emails go out from there.
 
-       1. Sign up free at web3forms.com with the bakery's email.
-       2. Paste the key they send into accessKey.
-       3. Put "https://api.web3forms.com/submit" into orderEndpoint.
-
-     A Formspree URL works too — put it in orderEndpoint and leave
-     accessKey empty. With neither set, the order is saved in the
-     customer's browser only and the confirmation page says so. */
+     Whatever happens here, it never shows on screen: a customer
+     who has successfully placed an order sees a confirmation, and
+     a delivery failure is logged to the console for the developer,
+     never surfaced as an error. */
   orderEndpoint: "",
-  accessKey: "",
-
-  /* ── Customer confirmation email — not live yet ──────────────
-     Sending mail *as the brand* needs a domain you own. When you
-     have one, set customerEmail.enabled to true and wire a sending
-     service; the templates are ready in emails/ and every order
-     already carries customer.email. Nothing else needs rewriting. */
-  customerEmail: {
-    enabled: false,
-    from: ""          // e.g. "orders@thecozyloaf.com"
-  }
+  accessKey: ""
 };

@@ -34,13 +34,23 @@ One self-contained HTML file. No build step, no server, no database.
 The three delivery rules sit directly above the basket, where a customer reads
 them before choosing:
 
-- Minimum 48 hours notice is required for all orders.
-- Delivery is available within Cairo only.
-- Delivery fee varies depending on location.
+- Your order will be delivered within 48 hours.
+- Delivery fee will be confirmed separately.
 
-There is no pickup option and no address or phone number anywhere on the page.
+No delivery fee is calculated anywhere on the site. There is no pickup option,
+and no bakery address or phone number appears on the page.
 
-Basket → **Continue to delivery details** → checkout form → `confirm.html`.
+Basket → **Continue to delivery details** → `confirm.html`.
+
+Checkout collects full name, mobile, email, delivery address and area. There is
+no delivery date: every order is delivered within 48 hours, and the site says so
+on the ordering page, in checkout, on the confirmation page and in the customer
+email.
+
+**Area is a dropdown**, not free text, built from `deliveryAreas` in
+`config.js` — 34 areas grouped by part of the city so the list stays scannable.
+That list is the site's statement of where the bakery delivers. Delivery address
+stays a separate required field for street, building and apartment.
 
 Checkout collects full name, mobile, **email**, delivery address, area,
 preferred delivery date and optional notes. The date input's `min` is set from
@@ -59,25 +69,16 @@ reference, which the URL names. Opening `confirm.html` directly shows a plain
 
 ### After the order is placed
 
-The customer lands on `confirm.html`, which shows the order as
-**Received · awaiting confirmation**. Submitting an order never marks it
-confirmed — only the bakery does that, once it has spoken to the customer.
+The customer lands on `confirm.html` and is finished — nothing more is asked of
+them. The page shows the order number, "Your order will be delivered within 48
+hours", the loaves and quantities, subtotal, delivery fee to be confirmed,
+total before delivery, name, address and area, and a single **Back to home**
+button.
 
-A prominent **Confirm on WhatsApp** button opens a click-to-chat link to the
-bakery's number with the message already written from the real order: order
-number, customer name, products and quantities, requested delivery date, area,
-and a request to confirm the order and the delivery fee. The customer only
-presses send.
-
-This is a plain `wa.me` link. There is no WhatsApp Business API, no provider
-account and no per-message cost.
-
-Set `whatsappNumber` in `config.js`, in full international form, digits only
-(`201001234567`). While it is empty the button stays visibly disabled and says
-what is missing, rather than opening a broken chat.
-
-The order is saved the moment it is submitted, whether or not the customer ever
-presses the button.
+Nothing technical ever appears there. If a notification fails to reach the
+bakery, that is logged to the console for a developer and the customer, who has
+successfully placed an order and can do nothing about it, sees a normal
+confirmation.
 
 ### Where orders go
 
@@ -91,21 +92,14 @@ Every placed order is built as a complete record and written to
 | `orderEndpoint` + `accessKey` | POSTs the order as JSON — orders arrive in the inbox by themselves (web3forms.com, free) |
 | neither set | The order is saved in that browser only and the receipt says so |
 
-**`localStorage` is not an order book.** It is per-browser, per-device, and the
-bakery never sees it. And the WhatsApp button only tells you about an order if
-the customer actually presses it — some will not.
+**`localStorage` is not an order book.** It lives in the customer's own browser,
+on that one device. The bakery cannot see it, cannot query it, and a customer on
+a different phone has a different store entirely. It exists so an order is never
+lost between the two pages — it is not storage the business can rely on.
 
-So `orderEndpoint` is worth setting even with WhatsApp in place. It needs no
-domain: web3forms.com sends from its own servers to whatever inbox you name, so
-a plain Gmail address is enough. That gives you a record of every order,
-pressed button or not.
-
-### Customer email, later
-
-`config.js` has a `customerEmail` block, off by default. Sending mail *as the
-brand* needs a domain you own. When there is one, turn it on and wire a sending
-service — the templates are already in `emails/`, every order already carries
-`customer.email`, and nothing else needs rewriting.
+**No notification is wired up yet.** Until `orderEndpoint` points somewhere, an
+order is captured and the customer is confirmed, but nobody is told. Both email
+templates are ready in `emails/`; what remains is choosing a sending service.
 
 ## Email templates
 

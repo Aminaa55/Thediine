@@ -13,7 +13,7 @@
 
   Merge fields:
     {{order_number}} {{placed_at}} {{customer_name}} {{customer_mobile}}
-    {{customer_email}} {{customer_address}} {{customer_area}} {{delivery_date}}
+    {{customer_email}} {{customer_address}} {{customer_area}}
     {{items_html}} {{subtotal}} {{notes}}
 -->
 <body style="margin:0;padding:0;background:#FEFAF0;">
@@ -33,10 +33,13 @@
 
     <tr><td style="background:#F1C166;padding:16px 26px;border-left:3px solid #542916;border-right:3px solid #542916;">
       <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#A13A1E;">
-        Requested delivery date
+        Deliver to
       </div>
       <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:bold;color:#542916;padding-top:4px;">
-        {{delivery_date}}
+        {{customer_area}}
+      </div>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#542916;padding-top:4px;">
+        within 48 hours
       </div>
     </td></tr>
 
