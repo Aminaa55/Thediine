@@ -205,6 +205,9 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
                     regular menu price.
                   </p>
                 )}
+                <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-faint">
+                  Prices may change with the market.
+                </p>
               </div>
 
               {/* Quote-only, and deliberately outside the subtotal above. */}

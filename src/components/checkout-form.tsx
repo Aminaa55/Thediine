@@ -388,6 +388,9 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
               Orders start at {formatEGP(ctx.limits.minimumOrder)}.
             </p>
           )}
+          <p className="mt-1.5 text-[13.5px] text-ink-faint">
+            Prices may change with the market.
+          </p>
 
           {Object.keys(errors).length > 0 && touched && (
             <p className="mt-5 rounded-sm border border-[#A6391C]/30 bg-[#A6391C]/[0.07] px-4 py-3 text-[14px] text-[#A6391C]">
