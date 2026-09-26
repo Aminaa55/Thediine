@@ -11,10 +11,9 @@ export default async function CheckoutPage() {
   return (
     <div className="mx-auto max-w-content px-5 py-12 sm:px-8 sm:py-14">
       <p className="eyebrow">Checkout</p>
-      <h1 className="mt-3 font-display text-[32px] font-semibold leading-tight text-ink sm:text-[40px]">
-        Your regular order
-      </h1>
-      <div className="mt-12">
+      {/* The heading lives in the form, which knows whether there is an event
+          request alongside this order to tell it apart from. */}
+      <div className="mt-3">
         <CheckoutForm ctx={ctx} day={day} />
       </div>
     </div>

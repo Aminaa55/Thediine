@@ -94,7 +94,7 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
       <div className="py-16 text-center">
         <p className="font-display text-[24px] text-ink">There is nothing to check out</p>
         <p className="mx-auto mt-3 max-w-sm text-[16px] text-ink-soft">
-          Your regular order is empty.
+          {hasEvent ? "Your regular order is empty." : "Your order is empty."}
         </p>
         <Link href="/menu" className="btn-primary mt-8">Browse the menu</Link>
       </div>
@@ -125,7 +125,11 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
   }
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
+    <>
+      <h1 className="font-display text-[32px] font-semibold leading-tight text-ink sm:text-[40px]">
+        {hasEvent ? "Your regular order" : "Your order"}
+      </h1>
+      <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
       <div>
         {/* 1 — delivery or pickup */}
         <section>
@@ -419,7 +423,8 @@ export function CheckoutForm({ ctx, day }: { ctx: CheckoutContext; day: DayStatu
           )}
         </div>
       </aside>
-    </div>
+      </div>
+    </>
   );
 }
 
