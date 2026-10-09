@@ -1,0 +1,268 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:wght@400;500;600;700&display=swap">
+<style>
+:root{--cream:#FBF1E4;--warm:#FFFAF3;--ink:#3B2310;--inkd:#140A03;
+      --gold:#A87E2E;--goldb:#C79A3F;--line:#E4CFAF}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000}
+/* the surround is dark and warm, so any sliver of it reads as deliberate */
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;
+  transform-origin:0 0;background:#1C0F05}
+.L{position:absolute;left:50%;top:50%;transform-origin:50% 50%;
+   backface-visibility:hidden}
+/* a photograph, always the full frame and then some */
+.ph{width:1080px;height:1920px}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+/* a real page of the site, cropped to a window and scrolled inside it */
+.scr{overflow:hidden;background:var(--warm);
+  box-shadow:0 40px 120px rgba(10,5,1,.6),0 6px 20px rgba(10,5,1,.35)}
+.scr img{width:100%;height:auto;display:block}
+/* the one piece of UI that reacts */
+.ring{border:8px solid var(--goldb);border-radius:999px;box-sizing:border-box}
+/* the dish block opening into the photograph behind it */
+#grow{overflow:hidden;background:var(--warm);border:1px solid var(--line);
+  box-shadow:0 40px 120px rgba(10,5,1,.55)}
+#grow img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#grow img.h{object-fit:fill}
+#end{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;opacity:0;padding:0 90px}
+#end img{width:400px;height:400px}
+#end .a{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:80px;
+  color:#FFF6E8;letter-spacing:-.018em;margin-top:44px;text-align:center;
+  line-height:1.1}
+#end .b{font-family:Karla,sans-serif;font-weight:600;font-size:40px;
+  color:var(--goldb);letter-spacing:.09em;text-transform:uppercase;margin-top:34px}
+#end .c{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:56px;
+  color:#FFF6E8;margin-top:20px;letter-spacing:-.01em}
+#scrim{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:40;
+  background:linear-gradient(to bottom,rgba(14,7,2,.78),rgba(14,7,2,.56) 45%,rgba(14,7,2,.84))}
+#flash{position:absolute;inset:0;pointer-events:none;background:#FFF8EC;opacity:0;z-index:60}
+#grain{position:absolute;inset:0;pointer-events:none;z-index:61;opacity:.045;
+  background-image:radial-gradient(rgba(255,255,255,.8) 1px,transparent 1px);
+  background-size:4px 4px;mix-blend-mode:overlay}
+#vig{position:absolute;inset:0;pointer-events:none;z-index:62;
+  background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 48%,rgba(0,0,0,.42) 100%)}
+</style></head><body>
+<div id="stage">
+  <div id="layers"></div>
+  <div id="scrim"></div>
+  <div id="end"><img src="logo.png">
+    <div class="a">Your favorites,<br>now online.</div>
+    <div class="b">Order through our website</div>
+    <div class="c">thediine.vercel.app</div></div>
+  <div id="flash"></div><div id="grain"></div><div id="vig"></div>
+</div>
+<script>
+const R=document.getElementById('layers'),END=document.getElementById('end'),
+      SCRIM=document.getElementById('scrim'),FLASH=document.getElementById('flash');
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), lerp=(a,b,p)=>a+(b-a)*p;
+const E={
+  outCubic:t=>1-Math.pow(1-t,3),
+  inCubic:t=>t*t*t,
+  outExpo:t=>t>=1?1:1-Math.pow(2,-10*t),
+  inExpo:t=>t<=0?0:Math.pow(2,10*t-10),
+  outQuint:t=>1-Math.pow(1-t,5),
+  inOutCubic:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,
+  inOutQuint:t=>t<.5?16*t*t*t*t*t:1-Math.pow(-2*t+2,5)/2,
+  outBack:t=>{const c=2.2,s=c+1;return 1+s*Math.pow(t-1,3)+c*Math.pow(t-1,2)},
+  linear:t=>t};
+/* 0 before a, 1 after b */
+const R_=(t,a,b,e)=>E[e||'inOutCubic'](clamp((t-a)/(b-a),0,1));
+/* a value that rises over [a,b] and falls over [c,d] */
+const win=(t,a,b,c,d,e)=>R_(t,a,b,e||'outCubic')*(1-R_(t,c,d,e||'outCubic'));
+
+/* --------------------------------------------------------------- elements */
+function layer(cls,html,w,h){
+  const d=document.createElement('div'); d.className='L '+cls;
+  if(w) d.style.width=w+'px'; if(h) d.style.height=h+'px';
+  if(html) d.innerHTML=html; R.appendChild(d); return d;
+}
+const photo=src=>layer('ph','<img src="'+src+'">');
+/* a page of the real site. k converts a source pixel of the screenshot into
+   a pixel of this layer, so every scroll position below is a real one. */
+function screen(src,w,h){
+  const d=layer('scr','<img src="'+src+'">',w,h);
+  d.img=d.querySelector('img'); d.k=w/1290; return d;
+}
+const scroll=(d,srcY)=>{d.img.style.transform='translateY('+(-srcY*d.k).toFixed(1)+'px)';};
+
+const hookW = photo('stills/hook-wide.jpg');
+const hookT = photo('stills/hook-tight.jpg');
+const desBg = screen('shots/desserts-full.png',2050,3400);   /* soft depth */
+const des   = screen('shots/desserts-full.png',1240,2160);   /* the hero */
+const prod  = screen('shots/tiramisu-full.png',1240,2620);
+const grow  = (()=>{const d=document.createElement('div');d.className='L';
+  d.id='grow';d.innerHTML='<img class="f" src="stills/pay-wide.jpg">'
+    +'<img class="h" src="stills/head.jpg">';R.appendChild(d);return d;})();
+const payW  = photo('stills/pay-wide.jpg');
+const payT  = photo('stills/pay-tight.jpg');
+const ordBg = screen('shots/tiramisu-button.png',1680,2600);  /* soft depth */
+const ord   = screen('shots/tiramisu-button.png',1010,2190);
+const ordA  = screen('shots/tiramisu-added.png',1010,2190);
+const ring  = layer('ring','',300,300);
+const ring2 = layer('ring','',200,200);
+const ctaBg = photo('stills/pay-wide.jpg');
+const ALL=[hookW,hookT,desBg,des,prod,grow,payW,payT,ordBg,ord,ordA,ring,ring2,ctaBg];
+
+function set(e,o){
+  if(!(o.o>0.004)){e.style.visibility='hidden';e.style.opacity=0;return;}
+  e.style.visibility='visible'; e.style.opacity=Math.min(o.o,1);
+  e.style.zIndex=o.z||1;
+  const f=[]; if(o.blur>0.3) f.push('blur('+o.blur.toFixed(1)+'px)');
+  if(o.bright!==undefined&&o.bright<0.995) f.push('brightness('+o.bright.toFixed(3)+')');
+  e.style.filter=f.length?f.join(' '):'none';
+  e.style.transform='translate(-50%,-50%) translate('+(o.x||0).toFixed(1)+'px,'
+    +(o.y||0).toFixed(1)+'px) rotate('+(o.r||0).toFixed(2)+'deg) scale('
+    +(o.s===undefined?1:o.s).toFixed(4)+')';
+}
+const DUR=11.5;
+
+/* measured off the real screenshots, in their own source pixels */
+const CARD_MID = 2148;    /* centre of the Tiramisu card on the desserts page */
+const HEAD_MID = 787;     /* centre of the dish's heading block on its page   */
+
+function seek(t){
+  ALL.forEach(e=>{e.style.visibility='hidden';e.style.opacity=0;});
+  FLASH.style.opacity=0; SCRIM.style.opacity=0;
+
+/* ======================================================= 0.0-2.0  THE FOOD
+   One photograph, the whole frame. A slow push, then a hard punch into the
+   crust of it. No type, no logo, nothing to read.                          */
+  if(t<2.02){
+    const punch=1.24;
+    if(t<punch){
+      set(hookW,{s:1.00+R_(t,0,punch,'linear')*0.085,
+                 x:-R_(t,0,punch,'linear')*16, o:1, z:10});
+    } else {
+      /* the punch: a tighter crop arriving a little too big and snapping back */
+      const p=R_(t,punch,punch+0.18,'outExpo');
+      set(hookT,{s:lerp(1.16,1.0,p)+R_(t,punch+0.18,2.0,'linear')*0.055,
+                 y:R_(t,punch,2.0,'linear')*14, o:1, z:10});
+      FLASH.style.opacity=(1-R_(t,punch,punch+0.09,'outCubic'))*0.5;
+    }
+  }
+
+/* ======================================================= 2.0-4.0  THE SITE
+   The food is pushed aside and the real Desserts page arrives, far wider
+   than the frame. One hero, one soft layer behind it for depth.            */
+  const sitIn=R_(t,2.0,2.52,'outQuint');
+  if(t>=1.92&&t<6.1){
+    /* the food leaving: it recedes, blurs and dims rather than cutting */
+    const go=R_(t,1.98,2.60,'inOutCubic');
+    if(go<1) set(hookT,{s:1.055-go*0.22, x:-go*520, r:-go*4,
+                        blur:go*14, bright:1-go*0.45, o:1-go*0.9, z:8});
+    /* the soft layer: the same page, far bigger, far back */
+    set(desBg,{s:1+R_(t,2.0,6.0,'linear')*0.07, x:-150, y:-60, r:-3,
+               blur:18, bright:0.52, o:sitIn*0.5*(1-R_(t,5.3,5.9,'outCubic')), z:9});
+    scroll(desBg,600+R_(t,2.0,6.0,'inOutCubic')*2200);
+  }
+
+/* ======================================================= 4.0-6.0  BROWSING
+   One continuous move: down through the real dessert list, then back up and
+   settling on the dish, which is then opened.                              */
+  if(t>=1.92&&t<5.95){
+    /* down the list, then a decisive run back up onto the card */
+    const y1=lerp(240,4300,R_(t,2.40,4.88,'linear'));
+    const y2=lerp(y1,CARD_MID-1123,R_(t,4.88,5.26,'outQuint'));
+    scroll(des,y2);
+    const push=R_(t,2.5,5.95,'linear');
+    set(des,{s:lerp(1.0,1.13,push)*(1-R_(t,5.52,5.95,'inCubic')*0.06),
+             x:lerp(1180,30,sitIn)+R_(t,4.0,5.95,'linear')*-30,
+             y:R_(t,4.0,5.95,'linear')*20,
+             r:lerp(-5,-1.2,sitIn),
+             blur:R_(t,5.55,5.95,'inCubic')*5,
+             bright:1-R_(t,5.5,5.95,'inCubic')*0.25,
+             o:sitIn, z:12});
+    /* the tap on the dish */
+    const rp=R_(t,5.30,5.70,'outCubic');
+    if(rp>0&&rp<1){
+      ring.style.width=ring.style.height=(170+rp*430)+'px';
+      set(ring,{x:10,y:-26,o:(1-rp)*0.92,z:20});
+    }
+  }
+
+/* --------------- the dish's own page rises over the list, 5.5-6.0 -------- */
+  if(t>=5.46&&t<6.46){
+    const up=R_(t,5.50,5.94,'outQuint');
+    scroll(prod,0);
+    set(prod,{s:lerp(0.98,1.0,up)*(1+R_(t,5.94,6.46,'linear')*0.03),
+              x:lerp(40,0,up), y:lerp(2180,1310-HEAD_MID*0.961,up),
+              r:lerp(2.5,0,up), o:1, z:14});
+  }
+
+/* ======================================================= 6.0-8.0  THE FOOD
+   The dish's own block opens, grows past every edge, and the photograph is
+   what is behind it.                                                       */
+  const gw=R_(t,6.14,6.54,'inOutQuint');
+  if(t>=6.13&&t<6.66){
+    const w=lerp(1092,1180,gw), h=lerp(694,2050,gw);
+    grow.style.width=w+'px'; grow.style.height=h+'px';
+    grow.style.borderColor='rgba(228,207,175,'+(1-gw).toFixed(2)+')';
+    grow.querySelector('img.f').style.opacity=clamp((gw-0.02)/0.22,0,1);
+    grow.querySelector('img.h').style.opacity=1-clamp(gw/0.16,0,1);
+    set(grow,{s:1,x:0,y:lerp(0,0,gw),r:lerp(0,-1.2,gw),o:1,z:30});
+    FLASH.style.opacity=win(t,6.34,6.40,6.40,6.54)*0.3;
+  }
+  if(t>=6.48&&t<8.12){
+    const punch=7.30;
+    if(t<punch) set(payW,{s:1.00+R_(t,6.48,punch,'linear')*0.085, o:1, z:16});
+    else {
+      const p=R_(t,punch,punch+0.16,'outExpo');
+      set(payT,{s:lerp(1.14,1.0,p)+R_(t,punch+0.16,8.12,'linear')*0.05,
+                x:-R_(t,punch,8.12,'linear')*18, o:1, z:16});
+      FLASH.style.opacity=(1-R_(t,punch,punch+0.08,'outCubic'))*0.42;
+    }
+  }
+
+/* ======================================================= 8.0-10.0  ORDERING
+   Back to the real page. One press. The button answers, the line appears,
+   the cart in the header goes to one. Nothing else on screen.              */
+  if(t>=7.96&&t<10.30){
+    const go=R_(t,8.00,8.46,'inOutCubic');
+    if(go<1) set(payT,{s:1.05-go*0.16, y:-go*180, blur:go*13,
+                       bright:1-go*0.5, o:1-go*0.95, z:15});
+    const up=R_(t,8.00,8.30,'outQuint');
+    const out=R_(t,10.00,10.30,'inCubic');
+    set(ordBg,{s:1.02+R_(t,8.0,10.0,'linear')*0.05, x:60, y:-40, r:2.5,
+               blur:20, bright:0.60, o:up*0.7*(1-out), z:17});
+    scroll(ordBg,900);
+    const dr=R_(t,8.20,10.00,'linear');
+    const base={s:lerp(0.955,1.0,up)+dr*0.105-out*0.09,
+                x:-dr*26, y:lerp(1640,95,up)+dr*30, r:lerp(1.8,0,up)-dr*0.7,
+                blur:out*7, o:(1-out), z:20};
+    const swap=R_(t,8.74,8.83,'linear');
+    set(ord ,Object.assign({},base,{o:base.o*(1-swap)}));
+    set(ordA,Object.assign({},base,{o:base.o*swap, z:21}));
+    /* the press */
+    const rp=R_(t,8.44,8.80,'outCubic');
+    if(rp>0&&rp<1){
+      ring.style.width=ring.style.height=(130+rp*330)+'px';
+      set(ring,{x:163,y:738,o:(1-rp)*0.95,z:25});
+    }
+    /* the cart answering, up in the header */
+    const rq=R_(t,8.84,9.30,'outCubic');
+    if(rq>0&&rq<1){
+      ring2.style.width=ring2.style.height=(90+rq*230)+'px';
+      set(ring2,{x:431,y:-910,o:(1-rq)*0.95,z:25});
+    }
+    const rq2=R_(t,9.34,9.78,'outCubic');
+    if(rq2>0&&rq2<1){
+      ring2.style.width=ring2.style.height=(90+rq2*210)+'px';
+      set(ring2,{x:431,y:-910,o:(1-rq2)*0.6,z:25});
+    }
+  }
+
+/* ======================================================= 10.0-11.5  THE CTA
+   One photograph, held back, and four lines over it.                       */
+  const ct=R_(t,10.12,10.58,'outCubic');
+  if(ct>0){
+    set(ctaBg,{s:1.06+R_(t,10.12,DUR,'linear')*0.07, o:ct,
+               bright:lerp(1,0.74,ct), blur:2.5, z:5});
+    SCRIM.style.opacity=ct;
+  }
+  END.style.opacity=R_(t,10.34,10.78,'outCubic');
+  END.style.transform='translateY('+(18-R_(t,10.34,DUR,'linear')*30).toFixed(1)
+    +'px) scale('+(0.96+R_(t,10.34,DUR,'linear')*0.05).toFixed(4)+')';
+}
+window.seek=seek; window.DUR=DUR; seek(0);
+</script></body></html>
