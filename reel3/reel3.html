@@ -1,0 +1,261 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:wght@400;500;700&display=swap">
+<style>
+:root{--cream:#FBF1E4;--warm:#FFFAF3;--deep:#F4E5CE;--ink:#3B2310;--inkd:#140A03;
+      --gold:#A87E2E;--goldb:#C79A3F;--line:#E4CFAF}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;transform-origin:0 0;
+  background:radial-gradient(ellipse 130% 85% at 50% 40%,#EFDCC0 0%,#DFC6A0 56%,#C9A878 100%)}
+#wall{position:absolute;left:50%;top:50%;width:0;height:0}
+/* one poster. the whole film is a wall of these. */
+.c{position:absolute;left:0;top:0;overflow:hidden;background:var(--warm);
+   box-shadow:0 22px 52px rgba(48,26,8,.34),0 3px 10px rgba(48,26,8,.2)}
+.c img{width:100%;height:100%;object-fit:cover;display:block}
+/* a photo used as an ad: the real picture, a real line of our own copy */
+.cap{position:absolute;left:0;right:0;bottom:0;padding:26px 28px 24px;
+  background:linear-gradient(to top,rgba(18,9,2,.86) 0%,rgba(18,9,2,.55) 58%,rgba(18,9,2,0) 100%)}
+.cap b{display:block;font-family:Fraunces,Georgia,serif;font-weight:600;color:#FFF6E8;
+  font-size:44px;line-height:1.08;letter-spacing:-.012em}
+.cap i{display:block;font-family:Karla,sans-serif;font-style:normal;font-weight:500;
+  color:var(--goldb);font-size:26px;letter-spacing:.06em;margin-bottom:10px;text-transform:uppercase}
+/* the site's own dish card */
+.menu{padding:46px 44px;display:flex;flex-direction:column;justify-content:center}
+.menu .k{font-family:Karla,sans-serif;font-size:24px;letter-spacing:.14em;color:var(--gold);
+  text-transform:uppercase;margin-bottom:22px}
+.menu h3{font-family:Fraunces,Georgia,serif;font-size:58px;font-weight:600;color:var(--ink);
+  line-height:1.08;letter-spacing:-.014em}
+.menu .u{font-family:Karla,sans-serif;font-size:28px;color:#7A5B3F;margin-top:16px}
+.menu .r{height:1px;background:var(--line);margin:30px 0 26px}
+.menu .p{font-family:Fraunces,Georgia,serif;font-size:62px;font-weight:600;color:var(--ink)}
+.menu.dk{background:#2A1708}
+.menu.dk .k{color:var(--goldb)} .menu.dk h3,.menu.dk .p{color:#FFF6E8}
+.menu.dk .u{color:#C9AC8A} .menu.dk .r{background:rgba(255,246,232,.24)}
+.menu.gd{background:var(--goldb)}
+.menu.gd .k{color:#4A2E12} .menu.gd h3,.menu.gd .p{color:#1B0E03}
+.menu.gd .u{color:#4A2E12} .menu.gd .r{background:rgba(27,14,3,.26)}
+/* a claim, set big. every number on one of these is on the live site. */
+.claim{display:flex;align-items:center;justify-content:center;padding:40px;text-align:center}
+.claim span{font-family:Fraunces,Georgia,serif;font-weight:700;color:var(--warm);
+  line-height:.92;letter-spacing:-.035em}
+.dark{background:#2A1708}
+.gold{background:var(--goldb)} .gold span{color:#1B0E03}
+.pale{background:var(--warm)} .pale span{color:var(--ink)}
+/* a real screen of the site */
+.shot{background:var(--warm)} .shot img{object-fit:cover;object-position:50% 0}
+#end{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:0;opacity:0}
+#end img{width:430px;height:430px}
+#end .l1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:76px;color:#2A1708;
+  letter-spacing:-.015em;margin-top:34px}
+#end .l2{font-family:Karla,sans-serif;font-weight:600;font-size:48px;color:#8A6520;
+  margin-top:22px;letter-spacing:.01em}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.05;
+  background-image:radial-gradient(rgba(90,54,20,.8) 1px,transparent 1px);background-size:4px 4px}
+#vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 46%,rgba(70,40,14,0) 52%,rgba(70,40,14,.22) 100%)}
+</style></head><body>
+<div id="stage"><div id="wall"></div>
+<div id="end"><img src="logo.png"><div class="l1">Order through our website.</div>
+<div class="l2">thediine.vercel.app</div></div>
+<div id="grain"></div><div id="vig"></div></div>
+<script>
+const WALL=document.getElementById('wall'), END=document.getElementById('end');
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), lerp=(a,b,p)=>a+(b-a)*p;
+const E={
+  outBack:t=>{const c=2.3,s=c+1;return 1+s*Math.pow(t-1,3)+c*Math.pow(t-1,2)},
+  outCubic:t=>1-Math.pow(1-t,3),
+  outExpo:t=>t>=1?1:1-Math.pow(2,-10*t),
+  inOutCubic:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,
+  linear:t=>t};
+const ramp=(t,a,b,e)=>E[e||'inOutCubic'](clamp((t-a)/(b-a),0,1));
+/* one seeded generator, so every render of this file is the same film */
+let _s=20251009; const rnd=()=>((_s=(_s*1664525+1013904223)>>>0)/4294967296);
+const pick=a=>a[Math.floor(rnd()*a.length)];
+
+/* ---------------------------------------------------------- the card deck */
+/* Photographs: the business's own, cropped. They carry no dish name, because
+   I cannot verify which dish is in which picture -- only copy that is already
+   on the live site. */
+const PHOTOS=['12_0','12_1','12_3','13_0','13_1','13_2','13_3','14_0','14_2','17_0',
+              '17_1','1_0','1_1','1_2','2_0','6_0','6_1','6_3','8_0','8_1'];
+const PHOTO_CAPS=[
+  ['Our work','Tables we have set'], null,
+  ['The menu','Four courses, cooked to order'], null,
+  ['Order online','thediine.vercel.app'], null,
+  ['The Diine','Order from The Diine'], null,
+  ['Our menu','Everything we cook'], null,
+  ['70 dishes','across four courses'], null,
+  ['For the tables','that matter most'], null,
+  ['Events','Plan an Event'], null,
+  ['Order online','thediine.vercel.app'], null,
+  ['Our work','Tables we have set'], null];
+/* Dishes: name, portion and price exactly as the catalogue holds them. */
+const DISHES=[
+  ['Main courses','Roast Turkey','Serves 10–12','6,500 EGP'],
+  ['Main courses','Roast Fakhda','Serves 10–12','6,500 EGP'],
+  ['Main courses','Grilled Kofta with Mini Chicken Shish','Serves 10','5,000 EGP'],
+  ['Main courses','Duck Shanks','Serves 6–8','4,500 EGP'],
+  ['Main courses','Sweet & Sour Shrimps','1 kg / serves 5','3,000 EGP'],
+  ['Main courses','Egyptian Fattah with Moza','Serves 5','2,200 EGP'],
+  ['Main courses','Stuffed Pigeons','3 pairs / 6 pigeons','2,000 EGP'],
+  ['Desserts','Cheesecake Crème Brûlée with Blueberries','Serves 6–8','1,500 EGP'],
+  ['Desserts','San Sebastián Cheesecake','Serves 6–8','1,300 EGP'],
+  ['Desserts','Tiramisu — Big Bowl','Serves 6–8','1,200 EGP'],
+  ['Desserts','Honey Cake','Serves 6–8','1,200 EGP'],
+  ['Desserts','Om Ali with Crème Brûlée','Serves 5','1,150 EGP'],
+  ['Side dishes','Batata Gratin','Serves 6–8','1,000 EGP'],
+  ['Side dishes','Hawawshi','6 pieces','1,200 EGP'],
+  ['Salads','Fattoush','Serves 10','1,000 EGP'],
+  ['Salads','Caesar Salad with Avocado, Apples, Chicken & Caramelized Walnuts','Serves 10','1,000 EGP'],
+];
+/* Claims: every one of these numbers and phrases is on the live site. */
+const CLAIMS=[
+  ['70','dishes.','dark',150],   ['21','main courses','pale',104],
+  ['22','desserts','gold',104],  ['19','side dishes','pale',104],
+  ['8','salads','dark',104],     ['','hungry?','gold',150],
+  ['','Four courses,\ncooked to order','dark',86],
+  ['','Everything\nwe cook','pale',96],
+  ['','Order from\nThe Diine','gold',92],
+  ['','thediine\n.vercel.app','dark',80],
+];
+const SHOTS=['shots/cat-mains.png','shots/home-top.png','shots/cat-desserts.png',
+             'shots/product-turkey.png','shots/menu.png','shots/our-work.png',
+             'shots/home-mid.png'];
+
+function mk(html,cls){const d=document.createElement('div');d.className='c '+(cls||'');
+  d.innerHTML=html;WALL.appendChild(d);return d;}
+const DECK=[];
+PHOTOS.forEach((p,i)=>{
+  const cap=PHOTO_CAPS[i%PHOTO_CAPS.length];
+  DECK.push({el:mk('<img src="cards/'+p+'.jpg">'+(cap?
+      '<div class="cap"><i>'+cap[0]+'</i><b>'+cap[1]+'</b></div>':''),''),kind:'photo'});
+});
+DISHES.forEach(d=>{
+  const fs=d[1].length>34?38:(d[1].length>20?48:58);
+  const skin=['','dk','gd'][DECK.length%3];
+  DECK.push({el:mk('<div class="k">'+d[0]+'</div><h3 style="font-size:'+fs+'px">'+d[1]
+    +'</h3><div class="u">'+d[2]+'</div><div class="r"></div><div class="p">'+d[3]
+    +'</div>','menu '+skin),kind:'menu'});});
+CLAIMS.forEach(c=>DECK.push({el:mk('<span style="font-size:'+c[3]+'px">'
+  +(c[0]?'<span style="font-size:'+(c[3]*1.7)+'px;display:block">'+c[0]+'</span>':'')
+  +c[1].replace(/\n/g,'<br>')+'</span>','claim '+c[2]),kind:'claim'}));
+SHOTS.forEach(s=>DECK.push({el:mk('<img src="'+s+'">','shot'),kind:'shot'}));
+DECK.forEach(c=>{c.el.style.visibility='hidden';});
+
+/* ------------------------------------------------------- the wall schedule */
+/* Slots are fixed places on the wall. Each one shows a card for a short
+   life, then swaps for another. Density rises through the film. */
+const DUR=11.4;
+const SLOTS=[];
+/* x, y, width, rotation, aspect (height = width * aspect) */
+const GRID=[
+ [-700, -985,420,-4,1.34],[-230,-1015,470,3,1.50],[ 300, -975,400,-3,1.00],[ 740, -955,440,4,1.34],[ 900,-1030,360,-5,1.34],
+ [-760, -715,480,3,1.00],[-250, -685,560,-3,1.34],[ 330, -725,420,4,1.50],[ 790, -675,400,-4,1.34],
+ [-720, -265,440,-3,1.50],[-210, -225,620,4,1.00],[ 360, -275,460,-4,1.34],[ 790, -205,420,3,1.50],
+ [-740,  195,500,4,1.34],[-230,  255,480,-4,1.50],[ 320,  185,560,3,1.00],[ 800,  255,430,-3,1.34],
+ [-680,  675,440,-3,1.34],[-160,  715,520,3,1.00],[ 380,  675,450,-4,1.50],[ 800,  645,410,4,1.34],
+ [-620, 1115,460,3,1.00],[ -80, 1145,490,-3,1.34],[ 460, 1125,430,4,1.34],[ 880, 1090,390,-4,1.00],
+ [-430, -925,340,6,1.34],[ 500, -515,320,-6,1.00],[-500,  015,330,-5,1.50],[ 560,  505,350,5,1.00],
+ [  60, -435,300,-7,1.00],[ -90,  575,310,7,1.34],[ 620,  065,300,-6,1.34],[-880,  455,330,5,1.34],
+];
+/* when the wall is this full, at this moment in the film */
+function density(t){
+  if(t<0.40) return 0;
+  return Math.round(lerp(11,GRID.length,ramp(t,0.40,2.3,'outCubic')));
+}
+const POOL=[]; DECK.forEach(c=>{POOL.push(c);
+  if(c.kind==='photo'){POOL.push(c);POOL.push(c);POOL.push(c);}});
+let _o=0;
+const deal=()=>POOL[(_o=(_o+1+Math.floor(rnd()*4))%POOL.length)];
+GRID.forEach((g,i)=>{
+  const [x,y,w,rot,asp]=g; const life=[];
+  /* staggered so the wall never turns over all at once */
+  let t=0.33+i*0.0065+rnd()*0.14;
+  while(t<DUR){
+    const d=lerp(1.05,0.34,clamp((t-0.4)/5.2,0,1))*(0.78+rnd()*0.62);
+    life.push({a:t,b:t+d,card:deal(),jx:(rnd()-.5)*26,jy:(rnd()-.5)*26,
+               rot:rot+(rnd()-.5)*2.4});
+    t+=d*(0.84+rnd()*0.2);
+  }
+  SLOTS.push({x,y,w,asp,life});
+});
+/* the hook: one photograph slammed across the whole frame */
+const HERO={card:DECK[18],a:0,b:0.50};
+const SLAM=[{card:DECK[7], a:2.18,b:2.46,x:-40,y:-120,rot:-1.6},
+            {card:DECK[11],a:4.44,b:4.70,x:60,y:90,rot:1.8},
+            {card:DECK[14],a:8.96,b:9.26,x:-70,y:-60,rot:-1.2}];
+/* the ordering beat: the real product page, then the cart answering */
+const ORDER={card:DECK.find(c=>c.kind==='shot'&&c.el.querySelector('img').src.includes('product-turkey'))};
+const BADGE=mk('<span style="font-size:58px">Added&nbsp;&middot;&nbsp;cart&nbsp;1</span>','claim gold');
+BADGE.style.visibility='hidden';
+
+/* ------------------------------------------------------------------ render */
+function place(el,x,y,w,h,rot,sc,op,z){
+  el.style.visibility='visible'; el.style.opacity=op; el.style.zIndex=z;
+  el.style.width=w+'px'; el.style.height=h+'px';
+  el.style.transform='translate('+(x-w/2).toFixed(1)+'px,'+(y-h/2).toFixed(1)
+    +'px) rotate('+rot.toFixed(2)+'deg) scale('+sc.toFixed(4)+')';
+}
+function seek(t){
+  DECK.forEach(c=>{c.el.style.visibility='hidden';c.el.style.opacity=0;});
+  BADGE.style.visibility='hidden';
+
+  /* the wall breathes and drifts, so it is never a static mosaic */
+  const dx=Math.sin(t*0.52)*58+Math.sin(t*0.23+1.7)*34;
+  const dy=Math.cos(t*0.41)*48;
+  const zoom=lerp(1.16,0.92,ramp(t,0.3,6.0,'outCubic'))
+            *lerp(1,1.09,ramp(t,8.4,10.2,'inOutCubic'));
+  WALL.style.transform='translate('+dx.toFixed(1)+'px,'+dy.toFixed(1)
+    +'px) scale('+zoom.toFixed(4)+')';
+
+  const n=density(t), clear=ramp(t,10.34,10.66,'outCubic');
+  for(let i=0;i<SLOTS.length;i++){
+    if(i>=n) continue;
+    const s=SLOTS[i];
+    for(const L of s.life){
+      if(t<L.a||t>L.b) continue;
+      const inP=clamp((t-L.a)/0.13,0,1), outP=clamp((L.b-t)/0.10,0,1);
+      const sc=(0.86+E.outBack(inP)*0.14)*(1+(1-outP)*0.07)*(1-clear*0.55);
+      const op=Math.min(clamp((t-L.a)/0.06,0,1),outP)*(1-clear);
+      const h=Math.round(s.w*s.asp), fly=1+clear*0.85;
+      place(L.card.el,(s.x+L.jx)*fly,(s.y+L.jy)*fly, s.w, h,
+            L.rot+clear*(s.x>0?9:-9), sc, op, 10+i);
+    }
+  }
+  /* 0.0-0.5 the hook: one real photograph, the whole frame, no explanation */
+  if(t<HERO.b){
+    const p=ramp(t,0,HERO.b,'linear');
+    place(HERO.card.el, 0, 0, 1180, 1990, -1.2+p*1.6,
+          1.06-p*0.10, 1-ramp(t,0.40,HERO.b,'outCubic'), 90);
+  }
+  /* a photograph owns the frame for a beat, three times, as a hard accent */
+  for(const S of SLAM){
+    const p=clamp((t-S.a)/(S.b-S.a),0,1);
+    if(p<=0||p>=1) continue;
+    const op=Math.min(clamp((t-S.a)/0.05,0,1),clamp((S.b-t)/0.07,0,1));
+    place(S.card.el, S.x, S.y, 1240, 1660, S.rot,
+          0.94+E.outExpo(p)*0.12, op, 93);
+  }
+  /* 6.1-8.1 the ordering beat rides over the wall, bigger than anything else */
+  const op1=ramp(t,6.45,6.66,'outBack')*(1-ramp(t,7.62,7.86,'outCubic'));
+  if(op1>0.004){
+    place(ORDER.card.el, -150, -210, 830, 1380, -3+ramp(t,6.45,7.86,'linear')*5,
+          1+ramp(t,6.45,7.86,'linear')*0.10, op1, 95);
+  }
+  const bp=ramp(t,6.98,7.22,'outBack')*(1-ramp(t,7.64,7.84,'outCubic'));
+  if(bp>0.004){
+    BADGE.style.visibility='visible'; BADGE.style.opacity=Math.min(bp,1);
+    BADGE.style.zIndex=97; BADGE.style.width='700px'; BADGE.style.height='170px';
+    BADGE.style.borderRadius='999px';
+    BADGE.style.transform='translate(-160px,250px) rotate(-3.2deg) scale('
+      +(0.8+E.outBack(clamp((t-6.98)/0.26,0,1))*0.2).toFixed(3)+')';
+  }
+  /* 10.5-11.4 the wall is gone and only the shop front is left */
+  END.style.opacity=ramp(t,10.46,10.80,'outCubic');
+  const eb=ramp(t,10.42,DUR,'linear');
+  END.style.transform='translateY('+(16-eb*26).toFixed(1)+'px) scale('
+    +(0.945+eb*0.075).toFixed(4)+')';
+}
+window.seek=seek; window.DUR=DUR; seek(0);
+</script></body></html>

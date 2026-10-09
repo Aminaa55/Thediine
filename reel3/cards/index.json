@@ -1,0 +1,158 @@
+[
+ {
+  "file": "1_0.jpg",
+  "src": "food/1.jpg",
+  "edge": 41.0,
+  "frac": 0.72
+ },
+ {
+  "file": "1_1.jpg",
+  "src": "food/1.jpg",
+  "edge": 28.9,
+  "frac": 0.52
+ },
+ {
+  "file": "1_2.jpg",
+  "src": "food/1.jpg",
+  "edge": 24.4,
+  "frac": 0.52
+ },
+ {
+  "file": "12_0.jpg",
+  "src": "food/12.jpg",
+  "edge": 45.6,
+  "frac": 0.52
+ },
+ {
+  "file": "12_1.jpg",
+  "src": "food/12.jpg",
+  "edge": 37.1,
+  "frac": 0.52
+ },
+ {
+  "file": "12_2.jpg",
+  "src": "food/12.jpg",
+  "edge": 36.6,
+  "frac": 0.52
+ },
+ {
+  "file": "12_3.jpg",
+  "src": "food/12.jpg",
+  "edge": 31.6,
+  "frac": 0.52
+ },
+ {
+  "file": "13_0.jpg",
+  "src": "food/13.jpg",
+  "edge": 47.5,
+  "frac": 0.72
+ },
+ {
+  "file": "13_1.jpg",
+  "src": "food/13.jpg",
+  "edge": 42.4,
+  "frac": 0.72
+ },
+ {
+  "file": "13_2.jpg",
+  "src": "food/13.jpg",
+  "edge": 35.5,
+  "frac": 0.72
+ },
+ {
+  "file": "13_3.jpg",
+  "src": "food/13.jpg",
+  "edge": 31.4,
+  "frac": 0.52
+ },
+ {
+  "file": "14_0.jpg",
+  "src": "food/14.jpg",
+  "edge": 36.5,
+  "frac": 1.0
+ },
+ {
+  "file": "14_1.jpg",
+  "src": "food/14.jpg",
+  "edge": 24.6,
+  "frac": 1.0
+ },
+ {
+  "file": "14_2.jpg",
+  "src": "food/14.jpg",
+  "edge": 24.3,
+  "frac": 0.52
+ },
+ {
+  "file": "14_3.jpg",
+  "src": "food/14.jpg",
+  "edge": 12.2,
+  "frac": 0.52
+ },
+ {
+  "file": "17_0.jpg",
+  "src": "food/17.jpg",
+  "edge": 45.5,
+  "frac": 1.0
+ },
+ {
+  "file": "17_1.jpg",
+  "src": "food/17.jpg",
+  "edge": 40.4,
+  "frac": 1.0
+ },
+ {
+  "file": "2_0.jpg",
+  "src": "food/2.jpg",
+  "edge": 33.5,
+  "frac": 1.0
+ },
+ {
+  "file": "6_0.jpg",
+  "src": "food/6.jpg",
+  "edge": 37.8,
+  "frac": 0.52
+ },
+ {
+  "file": "6_1.jpg",
+  "src": "food/6.jpg",
+  "edge": 33.0,
+  "frac": 0.52
+ },
+ {
+  "file": "6_2.jpg",
+  "src": "food/6.jpg",
+  "edge": 32.5,
+  "frac": 0.52
+ },
+ {
+  "file": "6_3.jpg",
+  "src": "food/6.jpg",
+  "edge": 30.8,
+  "frac": 0.52
+ },
+ {
+  "file": "8_0.jpg",
+  "src": "food/8.jpg",
+  "edge": 36.6,
+  "frac": 0.52
+ },
+ {
+  "file": "8_1.jpg",
+  "src": "food/8.jpg",
+  "edge": 33.6,
+  "frac": 0.52
+ },
+ {
+  "file": "8_2.jpg",
+  "src": "food/8.jpg",
+  "edge": 26.0,
+  "frac": 0.52
+ },
+ {
+  "file": "8_3.jpg",
+  "src": "food/8.jpg",
+  "edge": 20.9,
+  "frac": 0.52
+ }
+]
