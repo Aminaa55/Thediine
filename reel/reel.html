@@ -1,0 +1,282 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:wght@400;500;700&display=swap">
+<style>
+:root{--cream:#FBF1E4;--warm:#FFFAF3;--deep:#F4E5CE;--ink:#3B2310;--inkd:#1C0F05;
+      --gold:#A87E2E;--goldb:#C79A3F}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--inkd)}
+.layer{position:absolute;inset:0;will-change:transform,opacity;transform-origin:50% 50%;
+       backface-visibility:hidden}
+.layer img{width:100%;height:100%;object-fit:cover;display:block}
+/* a phone-shaped window onto a real screenshot of the site */
+.screen{position:absolute;left:50%;top:50%;width:560px;height:1213px;margin:-606px 0 0 -280px;
+        border-radius:46px;overflow:hidden;background:var(--warm);
+        box-shadow:0 60px 140px rgba(0,0,0,.6),0 0 0 3px rgba(199,154,63,.35);
+        will-change:transform,opacity;transform-origin:50% 50%;backface-visibility:hidden}
+.screen img{width:100%;display:block}
+.cap{position:absolute;left:0;right:0;padding:0 80px;text-align:center;
+     will-change:transform,opacity;
+     font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.025em;line-height:.98;
+     color:#FFF8EC;text-shadow:0 4px 40px rgba(0,0,0,.55)}
+.capsub{position:absolute;left:0;right:0;padding:0 80px;text-align:center;
+     font-family:Fraunces,Georgia,serif;
+     font-style:italic;color:var(--goldb);will-change:transform,opacity}
+.tint{position:absolute;inset:0;background:var(--inkd);will-change:opacity}
+.flash{position:absolute;inset:0;background:#FFF8EC;will-change:opacity;opacity:0}
+#cursor{position:absolute;left:50%;top:50%;margin:-37px 0 0 -37px;
+        width:74px;height:74px;border-radius:50%;
+        background:rgba(255,248,236,.92);box-shadow:0 10px 40px rgba(0,0,0,.45);
+        will-change:transform,opacity;opacity:0;transform-origin:50% 50%}
+#cartpop{position:absolute;left:50%;top:50%;font-family:Karla,sans-serif;font-weight:700;
+        color:var(--inkd);background:var(--goldb);border-radius:999px;padding:26px 54px;
+        font-size:44px;white-space:nowrap;will-change:transform,opacity;opacity:0;
+        transform-origin:50% 50%}
+#logo{position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-115px 0 0 -115px;
+      background:var(--warm);border-radius:50%;padding:20px;
+      box-shadow:0 0 0 2px rgba(199,154,63,.5);will-change:transform,opacity;opacity:0}
+#logo img{width:100%;height:100%;object-fit:contain}
+#url{position:absolute;left:0;right:0;text-align:center;font-family:Karla,sans-serif;
+     font-weight:700;color:#FFF8EC;will-change:transform,opacity;opacity:0}
+</style></head><body>
+<div id="stage">
+  <!-- every photograph and every screen below is the real thing -->
+  <div class="layer" id="L_a"><img src="food/8.jpg"></div>
+  <div class="layer" id="L_b"><img src="food/2.jpg"></div>
+  <div class="layer" id="L_c"><img src="food/17.jpg"></div>
+  <div class="layer" id="L_d"><img src="food/14.jpg"></div>
+  <div class="layer" id="L_e"><img src="food/13.jpg"></div>
+  <div class="tint" id="tint"></div>
+  <div class="screen" id="S_menu"><img src="shots/cat-mains.png"></div>
+  <div class="screen" id="S_prod"><img src="shots/product-turkey.png"></div>
+  <div class="screen" id="S_home"><img src="shots/home-top.png"></div>
+  <div class="screen" id="S_des"><img src="shots/cat-desserts.png"></div>
+  <div class="screen" id="S_work"><img src="shots/our-work.png"></div>
+  <div id="cursor"></div>
+  <div id="cartpop">Added &middot; cart 1</div>
+  <div id="logo"><img src="logo.png"></div>
+  <p class="cap" id="cap1"></p>
+  <p class="capsub" id="cap2"></p>
+  <p id="url">thediine.vercel.app</p>
+  <div class="flash" id="flash"></div>
+</div>
+<script>
+/* ---------------------------------------------------------------- easing */
+const E={
+  outExpo:t=>t>=1?1:1-Math.pow(2,-10*t),
+  inExpo:t=>t<=0?0:Math.pow(2,10*t-10),
+  outCubic:t=>1-Math.pow(1-t,3),
+  inOutCubic:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,
+  outBack:t=>{const c=1.70158,s=c+1;return 1+s*Math.pow(t-1,3)+c*Math.pow(t-1,2)},
+  outQuint:t=>1-Math.pow(1-t,5),
+  linear:t=>t,
+};
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+/** progress through [a,b] with an easing curve */
+function P(t,a,b,ease='inOutCubic'){ if(b<=a) return t>=b?1:0;
+  return E[ease](clamp((t-a)/(b-a),0,1)); }
+const lerp=(a,b,p)=>a+(b-a)*p;
+/* Motion blur belongs to SPEED, not to time. Zero at both ends of a move,
+   strongest through the middle -- so frame 0 is always sharp. */
+function vblur(t,a,b,max){const p=clamp((t-a)/(b-a),0,1);return Math.sin(p*Math.PI)*max;}
+/* Nothing in this film is ever completely still. A held shot still breathes. */
+function breathe(t,a,b,amt){return lerp(0,amt,clamp((t-a)/(b-a),0,1));}
+
+const $=id=>document.getElementById(id);
+const S=$('stage');
+/* a layer is only painted when it is actually on screen */
+function set(el,{x=0,y=0,s=1,r=0,o=1,blur=0,rx=0,ry=0,z=0}){
+  el.style.opacity=o;
+  el.style.filter=blur?`blur(${blur}px)`:'none';
+  el.style.transform=
+    `translate3d(${x}px,${y}px,${z}px) rotateX(${rx}deg) rotateY(${ry}deg) rotate(${r}deg) scale(${s})`;
+  el.style.visibility=o<=0.002?'hidden':'visible';
+}
+function text(el,{str,size,top,o=1,y=0,s=1,letter}){
+  if(str!==undefined) el.textContent=str;
+  if(size) el.style.fontSize=size+'px';
+  if(top!==undefined) el.style.top=top+'px';
+  if(letter!==undefined) el.style.letterSpacing=letter+'em';
+  el.style.opacity=o;
+  el.style.transform=`translate3d(0,${y}px,0) scale(${s})`;
+  el.style.visibility=o<=0.002?'hidden':'visible';
+}
+const HID={o:0};
+
+/* ================================================================ TIMELINE
+   14 s. Every beat hands its movement to the next one.                     */
+const DUR=14;
+
+function seek(t){
+  /* default: everything off */
+  ['L_a','L_b','L_c','L_d','L_e','S_menu','S_prod','S_home','S_des','S_work']
+    .forEach(id=>set($(id),HID));
+  set($('cursor'),HID); set($('logo'),HID);
+  $('cartpop').style.opacity=0; $('cartpop').style.visibility='hidden';
+  $('url').style.opacity=0; $('url').style.visibility='hidden';
+  text($('cap1'),{o:0}); text($('cap2'),{o:0});
+  $('tint').style.opacity=0;
+  $('flash').style.opacity=0;
+
+  /* ---- 0.00-1.15  HOOK: deep inside the tiramisu, hurtling backwards ---- */
+  if(t<1.25){
+    const p=P(t,0,1.15,'outExpo');
+    set($('L_a'),{s:lerp(1.95,1.04,p), y:lerp(60,0,p), r:lerp(-3.5,0,p),
+                  blur:vblur(t,0,1.15,9), o:1});
+    /* the word lands late and hard */
+    const q=P(t,.52,.92,'outBack');
+    text($('cap1'),{str:'craving something?',size:86,top:1486,
+                    o:P(t,.5,.68,'outCubic')*(1-P(t,1.05,1.2,'linear')),
+                    y:lerp(70,0,q), s:lerp(.86,1,q)});
+  }
+  /* ---- 1.15-1.35  WHITE SNAP: the cut that buys the next move ---- */
+  if(t>=1.05&&t<1.4){
+    $('flash').style.opacity = (1-P(t,1.1,1.38,'outCubic'))*P(t,1.05,1.12,'linear')*0.9;
+  }
+
+  /* ---- 1.25-3.00  the real menu screen slams in and scrolls ---- */
+  if(t>=1.18&&t<3.15){
+    const inP=P(t,1.18,1.62,'outExpo');
+    const scroll=P(t,1.62,3.1,'inOutCubic');
+    const out=P(t,2.9,3.15,'inExpo');
+    set($('L_a'),{s:lerp(1.06,1.5,P(t,1.18,3.1,'linear')),o:lerp(1,0,P(t,1.18,1.5,'outCubic')),blur:10});
+    $('tint').style.opacity=lerp(0,.88,P(t,1.2,1.55,'outCubic'));
+    const img=$('S_menu').firstElementChild;
+    img.style.transform=`translateY(${lerp(0,-1180,scroll)}px)`;
+    set($('S_menu'),{ y:lerp(1500,0,inP)+lerp(0,-240,out)-breathe(t,1.6,3.1,70),
+                      s:(lerp(.82,1,inP)+breathe(t,1.6,3.1,.13))*lerp(1,1.9,out),
+                      ry:lerp(-16,0,inP), r:lerp(3,0,inP),
+                      blur:lerp(14,0,P(t,1.18,1.5,'outCubic'))+lerp(0,18,out),
+                      o:1-out*0.15 });
+    /* a finger drags the list */
+    const cv=P(t,1.75,2.8,'inOutCubic');
+    set($('cursor'),{x:lerp(60,30,cv),y:lerp(320,-300,cv),
+      s:lerp(1,.82,Math.sin(cv*Math.PI)), o:P(t,1.7,1.85,'outCubic')*(1-P(t,2.7,2.85,'linear'))});
+    text($('cap1'),{str:'the whole menu.',size:66,top:188,
+      o:P(t,1.95,2.15,'outCubic')*(1-P(t,2.75,2.95,'linear')),
+      y:lerp(50,0,P(t,1.95,2.3,'outBack')),s:1});
+  }
+
+  /* ---- 3.00-4.30  tap, and the real product page flies at the camera ---- */
+  if(t>=3.0&&t<4.45){
+    $('tint').style.opacity=.9;
+    const inP=P(t,3.05,3.62,'outExpo');
+    const hold=P(t,3.62,4.1,'linear');
+    const out=P(t,4.12,4.45,'inExpo');
+    set($('S_prod'),{ s:(lerp(.42,1.0,inP)+breathe(t,3.45,4.45,.20))*lerp(1,2.6,out),
+                      y:lerp(260,0,inP)-breathe(t,3.45,4.45,105),
+                      ry:lerp(26,0,inP), rx:lerp(-12,0,inP),
+                      blur:lerp(20,0,P(t,3.05,3.5,'outCubic'))+lerp(0,22,out),
+                      o:1-out*.2 });
+    /* the tap that caused it */
+    const tapS=1-P(t,3.0,3.22,'outQuint');
+    set($('cursor'),{x:30,y:-300,s:lerp(.55,2.4,P(t,3.0,3.3,'outExpo')),o:tapS*.9});
+    text($('cap2'),{str:'prices and all',size:50,top:1560,
+      o:P(t,3.7,3.9,'outCubic')*(1-P(t,4.1,4.3,'linear')),y:lerp(30,0,P(t,3.7,4.0,'outBack'))});
+  }
+
+  /* ---- 4.30-5.60  burst through the screen into real food ---- */
+  if(t>=4.3&&t<5.75){
+    const p=P(t,4.3,5.3,'outExpo');
+    set($('L_c'),{s:lerp(2.5,1.04,p)+breathe(t,5.0,5.75,.10),
+                  r:lerp(5,0,p),y:lerp(-80,0,p)-breathe(t,5.0,5.75,46),
+                  blur:lerp(22,0,P(t,4.3,4.8,'outCubic')),
+                  o:P(t,4.3,4.5,'outCubic')*(1-P(t,5.55,5.75,'linear'))});
+  }
+
+  /* ---- 5.60-7.60  three real screens, then the camera pushes through ---- */
+  if(t>=5.55&&t<7.75){
+    $('tint').style.opacity=lerp(0,.93,P(t,5.55,5.9,'outCubic'));
+    /* the menu shot is reused here, so put its scroll back to the top */
+    $('S_menu').firstElementChild.style.transform='translateY(0px)';
+    /* a loose fan of three, overlapping, centre card in front */
+    const fan=[['S_home',-360,-150,-13,.52,0],
+               ['S_des',  360, 170,  13,.52,1],
+               ['S_menu',   0,   0,   0,.60,2]];
+    const push=P(t,6.55,7.6,'inExpo');      /* dive into the centre card */
+    fan.forEach(([id,gx,gy,rot,sc,zi],i)=>{
+      const st=P(t,5.62+i*.09,6.34+i*.09,'outBack');
+      const cam=lerp(1,3.4,push);
+      const el=$(id); el.style.zIndex=zi;
+      const dr=breathe(t,6.25,7.6,1)*2.4;
+      set(el,{ x:(lerp(gx*1.5,gx,st)+gx*dr*.10)*cam,
+               y:(lerp(gy*1.5,gy,st)+gy*dr*.10-dr*22)*cam,
+               s:(lerp(sc*.72,sc,st)+dr*.045)*cam,
+               ry:lerp(rot*1.8,rot,st), rx:lerp(10,3,st),
+               blur:lerp(14,0,st)+vblur(t,6.55,7.6,16),
+               o:st*(1-P(t,7.52,7.75,'linear')) });
+    });
+    text($('cap1'),{str:'every dish, every price.',size:62,top:1556,
+      o:P(t,6.0,6.2,'outCubic')*(1-P(t,6.55,6.75,'linear')),
+      y:lerp(44,0,P(t,6.0,6.35,'outBack'))});
+  }
+
+  /* ---- 7.60-9.20  add to cart: the satisfying one ---- */
+  if(t>=7.55&&t<9.35){
+    $('tint').style.opacity=.92;
+    const inP=P(t,7.6,8.05,'outExpo');
+    set($('S_prod'),{s:lerp(1.7,1.0,inP)+breathe(t,7.95,9.35,.22),
+      y:lerp(-120,0,inP)-breathe(t,7.95,9.35,120),
+      blur:lerp(16,0,inP)+lerp(0,16,P(t,9.05,9.35,'inExpo')),
+      ry:lerp(-10,0,inP), o:1-P(t,9.1,9.35,'linear')*.3});
+    /* thumb comes down */
+    const tap=P(t,8.1,8.4,'outExpo');
+    set($('cursor'),{x:0,y:lerp(560,470,tap),s:lerp(1.5,.7,tap),
+      o:P(t,8.05,8.18,'outCubic')*(1-P(t,8.5,8.68,'linear'))});
+    /* and the confirmation pops with real overshoot */
+    const pop=P(t,8.42,8.8,'outBack');
+    const cp=$('cartpop');
+    cp.style.visibility='visible';
+    cp.style.opacity=P(t,8.42,8.56,'outCubic')*(1-P(t,9.0,9.3,'linear'));
+    cp.style.transform=`translate(-50%,-50%) translateY(${lerp(80,0,pop)}px) scale(${lerp(.6,1,pop)})`;
+  }
+
+  /* ---- 9.20-11.10  back to the food, bigger, two fast beats ---- */
+  if(t>=9.2&&t<10.25){
+    const p=P(t,9.2,10.1,'outExpo');
+    set($('L_d'),{s:lerp(1.9,1.05,p),r:lerp(-4,0,p),
+      blur:lerp(18,0,P(t,9.2,9.6,'outCubic')),
+      o:P(t,9.2,9.38,'outCubic')*(1-P(t,10.05,10.25,'linear'))});
+  }
+  if(t>=10.15&&t<11.35){
+    const p=P(t,10.15,11.1,'outExpo');
+    set($('L_e'),{s:lerp(1.75,1.05,p),x:lerp(140,0,p),
+      blur:lerp(18,0,P(t,10.15,10.55,'outCubic')),
+      o:P(t,10.15,10.32,'outCubic')*(1-P(t,11.15,11.35,'linear'))});
+    text($('cap1'),{str:'all of it, online.',size:84,top:1452,
+      o:P(t,10.45,10.68,'outCubic')*(1-P(t,11.1,11.3,'linear')),
+      y:lerp(54,0,P(t,10.45,10.85,'outBack'))});
+  }
+
+  /* ---- 11.10-14.00  the end card, and it holds ---- */
+  if(t>=11.2){
+    $('tint').style.opacity=lerp(0,1,P(t,11.2,11.6,'outCubic'));
+    /* the food never fully leaves: it drifts behind the sign-off */
+    const bg=breathe(t,11.25,14,1);
+    set($('L_b'),{s:lerp(1.15,1.62,bg), x:lerp(-90,90,bg), y:lerp(70,-90,bg),
+                  o:P(t,11.3,11.8,'outCubic')*0.26});
+    const lg=P(t,11.32,11.95,'outBack');
+    text($('cap1'),{str:'Order on our website.',size:88,top:1016,
+      o:P(t,11.72,11.96,'outCubic'),
+      y:lerp(60,0,P(t,11.72,12.16,'outBack'))});
+    const u=$('url');
+    u.style.visibility='visible';
+    u.style.fontSize='52px'; u.style.top='1320px';
+    u.style.opacity=P(t,12.05,12.32,'outCubic');
+    u.style.transform=`translate3d(0,${lerp(40,0,P(t,12.05,12.5,'outBack'))}px,0)`;
+    /* a last breath of movement so the final second is never dead */
+    /* one continuous move: the logo arrives and then keeps rising, never parked */
+    const drift=breathe(t,11.9,14,1);
+    set($('logo'),{ y:lerp(-760,-430,lg)-drift*132,
+                    s:lerp(.55,1,lg)*(1+drift*.17),
+                    o:P(t,11.3,11.6,'outCubic') });
+    text($('cap1'),{str:'Order on our website.',size:88,top:1016,
+      o:P(t,11.85,12.1,'outCubic'),
+      y:lerp(60,0,P(t,11.85,12.3,'outBack'))-drift*62, s:1+drift*.06});
+    u.style.transform=
+      `translate3d(0,${lerp(40,0,P(t,12.25,12.65,'outBack'))-drift*44}px,0) scale(${1+drift*.07})`;
+  }
+}
+window.seek=seek; window.DUR=DUR;
+seek(0);
+</script></body></html>
