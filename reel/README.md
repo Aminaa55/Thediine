@@ -22,12 +22,26 @@ interpolates, `vblur` is motion blur shaped by speed (zero at rest), and
 
 ## Rendering
 
-    node render.mjs          # writes frames/f0000.png ...
-    ffmpeg -framerate 30 -i frames/f%04d.png \
-           -c:v libx264 -pix_fmt yuv420p -crf 18 out.mp4
+Draft first. Always.
 
-`render.mjs` steps `seek()` frame by frame in headless Chromium, so the output
-is deterministic -- the same input always gives the same film.
+    node render.mjs --draft   # 360x640, 12fps, JPEG  -- about 20 seconds
+    ffmpeg -framerate 12 -i draft/d%04d.jpg \
+           -c:v libx264 -pix_fmt yuv420p -crf 26 draft.mp4
+
+    node render.mjs           # 1080x1920, 30fps, PNG -- about 4 minutes
+    ffmpeg -framerate 30 -i frames/f%04d.png \
+           -c:v libx264 -pix_fmt yuv420p -crf 18 final.mp4
+
+Both walk the same `seek()` timeline, so a draft shows the real choreography --
+only the pixels are cheap. Judge the cut on a draft and spend the four minutes
+once, at the end.
+
+A final frame is a 2.07-megapixel lossless PNG; a draft frame is 230k pixels of
+JPEG. That is roughly 570 ms a frame against 70 ms, over 420 frames instead of
+168 -- about eleven times quicker end to end.
+
+Rendering is deterministic: nothing animates on a clock, so the same input
+always gives the same film.
 
 ## Re-shooting the screens
 

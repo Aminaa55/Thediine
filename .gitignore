@@ -8,3 +8,7 @@ build/
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# rendered output — regenerate with `node reel/render.mjs`
+reel/frames/
+reel/draft/
