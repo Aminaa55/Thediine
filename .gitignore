@@ -12,3 +12,9 @@ next-env.d.ts
 # rendered output — regenerate with `node reel/render.mjs`
 reel/frames/
 reel/draft/
+
+# reel render intermediates
+reel2/frames-draft/
+reel2/frames-final/
+reel2/contact/
+reel2/contact-draft.png

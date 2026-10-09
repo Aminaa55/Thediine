@@ -1,0 +1,326 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:wght@400;500;700&display=swap">
+<style>
+:root{--cream:#FBF1E4;--warm:#FFFAF3;--deep:#F4E5CE;--ink:#3B2310;--inkd:#140A03;
+      --gold:#A87E2E;--goldb:#C79A3F;--line:#E4CFAF}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000}
+/* warm room, not a black void */
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;transform-origin:0 0;
+  background:radial-gradient(ellipse 120% 70% at 50% 36%,#3C2512 0%,#201206 52%,#0D0602 100%)}
+/* ONE space. The camera is the only thing that cuts -- and it never does. */
+#vp{position:absolute;inset:0;perspective:1400px;perspective-origin:50% 50%}
+#world{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+/* each object is a zero-size point in the world; its box hangs centred on it */
+.o{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;
+   backface-visibility:hidden}
+.b{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
+.b img{display:block}
+/* a slab of real photography, sized to exceed the frame whenever it is near */
+.food{overflow:hidden;box-shadow:0 0 90px rgba(0,0,0,.6)}
+.food img{width:100%;height:100%;object-fit:cover}
+/* a real screen, used oversized and cropped -- never a polite little phone */
+.panel{background:var(--warm);overflow:hidden;position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,.65)}
+.panel::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,rgba(26,14,5,.34) 0%,rgba(26,14,5,0) 42%,
+             rgba(26,14,5,0) 64%,rgba(26,14,5,.30) 100%)}
+.panel img{width:100%;height:auto}
+/* the site's own dish card, used as motion material */
+.card{background:var(--warm);border:1px solid var(--line);padding:62px 74px 70px;
+      box-shadow:0 26px 60px rgba(0,0,0,.55)}
+.card .rule{display:block;height:2px;background:var(--line);margin-bottom:40px}
+.card h3{font-family:Fraunces,Georgia,serif;font-size:76px;font-weight:600;color:var(--ink);
+         line-height:1.08;letter-spacing:-.014em}
+.card .u{font-family:Karla,sans-serif;font-size:40px;color:#7A5B3F;margin-top:20px;
+         letter-spacing:.02em}
+.card .p{font-family:Fraunces,Georgia,serif;font-size:70px;font-weight:600;color:var(--ink);
+         margin-top:42px}
+/* type used as architecture, not as a caption */
+.big{font-family:Fraunces,Georgia,serif;font-weight:700;color:var(--warm);
+     letter-spacing:-.05em;line-height:.82;white-space:nowrap;
+     text-shadow:0 14px 50px rgba(0,0,0,.6)}
+.kar{font-family:Karla,sans-serif;font-weight:500;color:var(--goldb);white-space:nowrap;
+     letter-spacing:.01em;text-shadow:0 8px 30px rgba(0,0,0,.8)}
+.cta{font-family:Fraunces,Georgia,serif;font-weight:600;color:var(--warm);
+     letter-spacing:-.015em;white-space:nowrap;text-align:center}
+/* the one piece of UI that answers back */
+.badge{background:var(--goldb);color:var(--inkd);font-family:Karla,sans-serif;font-weight:700;
+       border-radius:999px;padding:30px 64px;font-size:54px;white-space:nowrap;
+       box-shadow:0 16px 44px rgba(0,0,0,.6)}
+.ring{border:9px solid var(--goldb);border-radius:999px}
+.scrim{background:radial-gradient(ellipse at 50% 50%,rgba(14,7,2,.93) 0%,rgba(14,7,2,.80) 62%,rgba(14,7,2,.42) 100%)}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.055;
+  background-image:radial-gradient(rgba(255,255,255,.75) 1px,transparent 1px);
+  background-size:4px 4px;mix-blend-mode:overlay}
+#vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 44%,rgba(0,0,0,0) 44%,rgba(0,0,0,.52) 100%)}
+</style></head><body>
+<div id="stage"><div id="vp"><div id="world"></div></div>
+<div id="grain"></div><div id="vig"></div></div>
+<script>
+const W=document.getElementById('world');
+const E={
+  outExpo:t=>t>=1?1:1-Math.pow(2,-10*t),
+  inExpo:t=>t<=0?0:Math.pow(2,10*t-10),
+  outCubic:t=>1-Math.pow(1-t,3),
+  inOutCubic:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,
+  inOutQuint:t=>t<.5?16*t*t*t*t*t:1-Math.pow(-2*t+2,5)/2,
+  outBack:t=>{const c=2.1,s=c+1;return 1+s*Math.pow(t-1,3)+c*Math.pow(t-1,2)},
+  linear:t=>t};
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const lerp=(a,b,p)=>a+(b-a)*p;
+const ramp=(t,a,b,e)=>E[e||'inOutCubic'](clamp((t-a)/(b-a),0,1));
+
+/* ------------------------------------------------------------- the camera */
+/* keys: [t, cz, cx, cy, rotY, rotX, easeIntoThisKey]
+   cz rises as the camera flies deeper. It falls exactly twice: the pull-back
+   at the top, and the rocket-back near the end. Nothing else ever cuts.   */
+const CAM=[
+ [0.00,  1420,  210,  150,  -9,  4],
+ [0.35,   900,  175,  100,  -7,  3, 'outCubic'],
+ [0.82,   420,  150,   55,  -5,  2, 'linear'],
+ [1.60,  1520, -310,  -85,  11, -3, 'outCubic'],
+ [2.95,  3520,  500,  115, -15,  4, 'inOutQuint'],
+ [4.00,  5060,  680, -160,  -6,  2, 'inOutCubic'],
+ [4.95,  6210,  220,   65,   4, -1, 'inExpo'],
+ [5.70,  7080, -160,  145, -11,  3, 'outExpo'],
+ [7.05,  8320, -450,  -95,  14, -4, 'inOutQuint'],
+ [8.45,  8620, -190,   75,   5, -2, 'inOutCubic'],
+ [9.00,  8680, -170,   62,   4, -2, 'linear'],
+ [9.30,  8480, -120,   40,   3, -1, 'outCubic'],
+ [9.88,  6900,    0,    0,   0,  0, 'linear'],
+ [10.52,12000,   0,    0,   0,  0, 'outCubic'],
+ [12.00,12075,   0,    0,   0,  0, 'linear'],
+];
+const DUR=12.0;
+function czMax(t){            /* the deepest the camera has reached by now */
+  let m=CAM[0][1];
+  for(const k of CAM){ if(k[0]<=t) m=Math.max(m,k[1]); }
+  return Math.max(m,cam(t)[0]);
+}
+function cam(t){
+  if(t<=CAM[0][0]) return CAM[0].slice(1,6);
+  for(let i=0;i<CAM.length-1;i++){
+    const a=CAM[i],b=CAM[i+1];
+    if(t>=a[0]&&t<=b[0]){
+      const p=E[b[6]||'inOutCubic'](clamp((t-a[0])/(b[0]-a[0]),0,1));
+      return [1,2,3,4,5].map(k=>lerp(a[k],b[k],p));
+    }
+  }
+  return CAM[CAM.length-1].slice(1,6);
+}
+
+/* ------------------------------------------------------------- the objects */
+/* every dish name, serving size and price below is copied from the live
+   catalogue. nothing here is invented. */
+const DISHES=[
+  ['Roast Turkey','Serves 10&ndash;12','6,500 EGP'],
+  ['Egyptian Fattah<br>with Moza','Serves 5','2,200 EGP'],
+  ['Duck Shanks','Serves 6&ndash;8','4,500 EGP'],
+  ['Grilled Kofta with<br>Mini Chicken Shish','Serves 10','5,000 EGP'],
+  ['Stuffed Pigeons','3 pairs / 6 pigeons','2,000 EGP'],
+  ['Sweet &amp; Sour Shrimps','1 kg / serves 5','3,000 EGP'],
+  ['Tiramisu &mdash; Big Bowl','Serves 6&ndash;8','1,200 EGP'],
+  ['Roast Fakhda','Serves 10&ndash;12','6,500 EGP'],
+];
+function el(cls,html,w,h){
+  const o=document.createElement('div'); o.className='o';
+  const b=document.createElement('div'); b.className='b '+cls;
+  if(w) b.style.width=w+'px'; if(h) b.style.height=h+'px';
+  if(html) b.innerHTML=html;
+  o.appendChild(b); W.appendChild(o); o.box=b; return o;
+}
+const food=(src,w,h)=>el('food','<img src="'+src+'">',w,h);
+const SHOT_H=2796;                       /* every screenshot is this tall */
+function panel(src,w,h){
+  h=h||Math.round(w*SHOT_H/1290);
+  const o=el('panel','<img src="'+src+'">',w,h);
+  o.img=o.box.querySelector('img'); o.k=w/1290;   /* source px -> css px */
+  o.maxScroll=Math.max(0,SHOT_H-h/o.k);           /* never scroll off the page */
+  return o;
+}
+const card=i=>{const d=DISHES[i%DISHES.length];
+  return el('card','<span class="rule"></span><h3>'+d[0]+'</h3><p class="u">'+d[1]
+    +'</p><p class="p">'+d[2]+'</p>',920);};
+/* scroll a panel to put a given SOURCE y at the top of its crop window */
+const scroll=(p,srcY)=>{const y=clamp(srcY,0,p.maxScroll);
+  p.img.style.transform='translateY('+(-y*p.k).toFixed(0)+'px)';};
+
+const O={};
+O.f1    = food('food/17.jpg',3600,2400);                 // the opening slab
+O.c1    = el('kar','hungry?');
+O.pMenu = panel('shots/cat-mains.png',2100,2900);             // Main Courses
+O.pHome = panel('shots/home-top.png',1900,2700);
+O.cards = [0,2,4,5,7,6].map(card);
+O.fBG   = food('food/6.jpg',3400,2300);                  // texture behind cards
+O.c2    = el('big','70 dishes.');
+O.pMid  = panel('shots/home-mid.png',1300,2100);
+O.fly   = card(1);                                       // crosses the foreground
+O.wipe  = card(3);                                       // grows past the lens
+O.scrim = el('scrim','',4600,3400);                      // the room dims
+O.type  = el('big','ROAST TURKEY');                      // the doorway
+O.pDes  = panel('shots/cat-desserts.png',1350,2300);
+O.f2    = food('food/14.jpg',3400,2270);
+O.pWork = panel('shots/our-work.png',1450,2400);
+O.pMenu2= panel('shots/menu.png',1500,2400);
+O.pProd = panel('shots/product-turkey.png',1650,2300);
+O.ring  = el('ring','',300,300);
+O.badge = el('badge','Added &middot; cart 1');
+O.f3    = food('food/12.jpg',3300,2200);
+O.c3    = el('kar','pick, tap, done.');
+O.wA    = card(6);
+O.wB    = food('food/13.jpg',3000,2000);
+O.wC    = panel('shots/home-mid.png',1500,2300);
+O.wD    = panel('shots/cat-desserts.png',1400,2300);
+O.wE    = panel('shots/cat-mains.png',1500,2400);
+O.logo  = el('','<img src="logo.png" style="width:100%">',480,480);
+O.cta1  = el('cta','Order through our website.');
+O.cta2  = el('kar','thediine.vercel.app');
+O.c1.box.style.fontSize='150px';
+O.c2.box.style.fontSize='330px';
+O.c3.box.style.fontSize='160px';
+O.type.box.style.fontSize='330px';
+O.cta1.box.style.fontSize='62px';
+O.cta2.box.style.fontSize='42px';
+
+/* --------------------------------------------------------------- placement */
+let CZ=0,FOGV=2700;            /* camera depth and air for the frame drawn */
+function put(e,x,y,z,ry,rx,rz,o,blur){
+  if(!(o>.005)){e.style.visibility='hidden';e.style.opacity=0;return;}
+  e.style.visibility='visible'; e.style.opacity=Math.min(o,1);
+  const br=0.42+0.58*clamp((z+CZ+FOGV)/(FOGV*0.8),0,1);  /* distance -> dark */
+  const f=(blur>.3?'blur('+blur.toFixed(2)+'px) ':'')
+         +(br<.985?'brightness('+br.toFixed(3)+')':'');
+  e.style.filter=f||'none';
+  e.style.transform='translate3d('+x.toFixed(1)+'px,'+y.toFixed(1)+'px,'+z.toFixed(1)
+    +'px) rotateY('+ry.toFixed(2)+'deg) rotateX('+rx.toFixed(2)+'deg) rotateZ('
+    +rz.toFixed(2)+'deg)';
+}
+const HIDE=e=>{e.style.visibility='hidden';e.style.opacity=0;};
+const ALL=()=>Object.values(O).flat();
+
+/* ------------------------------------------------------------------ render */
+function seek(t){
+  const [cz,cx,cy,cry,crx]=cam(t);
+  /* camera speed -> motion blur, zero at rest and zero on the cover frame */
+  const h=1/60,p0=cam(Math.max(0,t-h)),p1=cam(Math.min(DUR,t+h));
+  const spd=Math.hypot(p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2])/(2*h);
+  const MB=clamp(spd/1500,0,11)*ramp(t,.10,.50,'outCubic');
+
+  CZ=cz;
+  W.style.transform='rotateX('+(-crx)+'deg) rotateY('+(-cry)+'deg) translate3d('
+    +(-cx)+'px,'+(-cy)+'px,'+cz+'px)';
+  ALL().forEach(HIDE);
+
+  /* the air clears for the pull-back, so the whole journey is visible at once */
+  const FOG=lerp(2700,7200,ramp(t,8.95,9.88,'inOutCubic'));
+  FOGV=FOG;
+  const d=z=>z+cz;
+  const CZM=czMax(t);
+  const vis=(z,fog,far)=>{const q=d(z), F=far||860;
+    if(CZM+z>F+70) return 0;                    /* already flown past */
+    return clamp(Math.min((q+(fog||FOG))/900,(F-q)/340),0,1);};
+  const lb=z=>d(z)>620?0:MB+clamp((d(z)-300)/170,0,3)*ramp(t,.10,.50,'outCubic');
+
+/* 0.0-0.9 ------ extreme close on one real dish, then the site pushes it out */
+  const push=ramp(t,1.05,1.95,'inOutQuint');
+  put(O.f1, 110+push*3600, -50+push*300, -1400, -5+push*30, 3, -1.5,
+      vis(-1400,3600,980)*(1-ramp(t,1.6,2.0,'linear')), lb(-1400));
+
+/* 0.9-1.6 ------ the pull-back: two real screens arrive, both far wider and
+   taller than the frame, the slab caught between them ---------------------- */
+  const arrive=ramp(t,.40,.98,'outCubic');
+  put(O.pMenu, -1600+arrive*1080, -260, -2080, 26, -3, -2,
+      vis(-2080,3600,820)*arrive, lb(-2080));
+  put(O.pHome,  1620-arrive*1060, 340, -2560, -27, 4, 3,
+      vis(-2560,3600,820)*arrive, lb(-2560));
+  scroll(O.pMenu, 150+ramp(t,.8,3.2)*860);  /* the page scrolls as we pass */
+  scroll(O.pHome, 110+ramp(t,.9,3.4)*850);
+  put(O.c1, -360, 690, -1900, 12, -3, -2,
+      vis(-1900,3600,760)*ramp(t,.92,1.22,'outCubic'), MB);
+
+/* 1.5-3.2 ------ the layer burst: five real dish cards at five depths over a
+   warm field of real food, drifting apart as the camera dives through ------ */
+  put(O.fBG, -240, 180, -3760, -7, 3, 2, vis(-3760,3400,820)*.85, lb(-3760));
+  const CP=[[-620,-520,-2900, 16,-6,-4],[ 700,-200,-3240,-18, 5, 3],
+            [-460, 560,-3580, 13,-4,-2],[ 760, 480,-3920,-15, 6, 4],
+            [-700,-330,-4300, 17,-5,-3],[ 560,-600,-4720,-14, 5, 2]];
+  O.cards.forEach((c,i)=>{
+    const [x,y,z,ry,rx,rz]=CP[i], dr=ramp(t,1.1,4.8,'linear');
+    put(c, x+dr*(i%2?120:-120), y+dr*(i%3?-90:80), z,
+        ry+dr*(i%2?-7:6), rx, rz, vis(z)*ramp(t,.95,1.3,'outCubic'), lb(z));
+  });
+  put(O.c2, -40, -560, -4000, -10, 4, 2, vis(-4000,3200,1240), lb(-4000)*.5);
+  put(O.pMid, 700, -430, -4400, -24, 5, -3, vis(-4400,3200,820), lb(-4400));
+  scroll(O.pMid, 60+ramp(t,2.4,4.6)*750);
+
+  /* one card shoots across the foreground; the camera just lets it go by */
+  const fp=clamp((t-1.42)/.92,0,1);
+  if(fp>0&&fp<1) put(O.fly, lerp(2100,-2100,E.inOutCubic(fp)), lerp(-160,240,fp),
+      lerp(240,700,fp)-cz, lerp(-30,32,fp), 6, lerp(-11,10,fp),
+      clamp(Math.sin(fp*Math.PI)*2.2,0,1), Math.min(MB+fp*4,6));
+
+/* 2.5-3.2 ------ OVERSCALE 1: a dish card rushes the lens until its own
+   cream surface is the entire frame, and hands us to the next section ------ */
+  const wp=clamp((t-2.42)/.78,0,1);
+  if(wp>0&&wp<1){
+    const wd=lerp(300,1010,E.inExpo(wp)), k=1-E.outCubic(wp);
+    put(O.wipe, 780*k, 360*k, wd-cz, -20*k, 8*k, -7*k,
+        clamp(wp*7,0,1)*(1-clamp((wp-.9)/.1,0,1)), 0);
+  }
+
+/* 4.0-5.7 ------ OVERSCALE 2: the camera flies between the letterforms of a
+   real dish name, and that is the only transition into the next scene ------ */
+  put(O.scrim, 0, 0, -6340, 0, 0, 0,
+      ramp(t,4.05,4.45,'outCubic')*(1-ramp(t,5.35,5.80,'inOutCubic')), 0);
+  put(O.type, 280, -40, -6150, 7, -2, -2, vis(-6150,3600,1010), lb(-6150)*.45);
+
+/* 5.5-7.0 ------ real food and real interface in one composition, both
+   larger than the frame, nothing centred ---------------------------------- */
+  put(O.f2, -760, 160, -6950, -6, 3, 2, vis(-6950,3200,920), lb(-6950));
+  put(O.pDes, 500, -220, -6550, -22, 4, -3, vis(-6550,3200,940), lb(-6550));
+  scroll(O.pDes, 90+ramp(t,5.0,7.4)*500);
+  put(O.pWork, -560, 420, -7500, 20, -5, 3, vis(-7500,3200,880), lb(-7500));
+  scroll(O.pWork, 110+ramp(t,5.6,8.2)*540);
+
+/* 7.0-8.5 ------ the camera dives INTO the product page. OVERSCALE 3. ------ */
+  put(O.pProd, -300, 80, -8320, 17, -4, 2, vis(-8320,3000,1180), lb(-8320)*.55);
+  scroll(O.pProd, 120+ramp(t,6.9,9.0)*820);
+  put(O.pMenu2, 820, -400, -8000, -23, 5, -3, vis(-8000,3000,900), lb(-8000));
+  scroll(O.pMenu2, 80+ramp(t,6.4,8.6)*640);
+
+  /* the tap, and the cart answering it */
+  const rp=clamp((t-7.76)/.52,0,1);
+  if(rp>0&&rp<1){
+    O.ring.box.style.width=O.ring.box.style.height=(110+rp*420)+'px';
+    put(O.ring, -170, 140, -8230, 17, -4, 2, (1-rp)*.95, 0);
+  }
+  const bp=clamp((t-8.00)/.46,0,1);
+  if(t>7.96&&t<9.64){
+    O.badge.box.style.fontSize=(54+E.outBack(bp)*11)+'px';
+    put(O.badge, -250, 470, -8160, 17, -4, -1,
+        clamp((t-7.98)/.15,0,1)*(1-clamp((t-9.4)/.24,0,1)), MB*.25);
+  }
+  put(O.c3, -340, 640, -9100, 14, -3, -2,
+      vis(-9100,3000,800)*ramp(t,8.5,8.8,'outCubic')*(1-ramp(t,9.8,10.15,'linear')), MB);
+  put(O.f3, 900, 520, -8900, -12, 4, -2, vis(-8900,3400,860), lb(-8900));
+
+/* 8.5-10.0 ---- everything rushes backward and the whole journey is visible
+   in one frame for the first time, then we warp into the brand ------------ */
+  const WP=[[-900,-520,-9450,20,-5,-4],[1020,460,-9900,-21,5,3],
+            [-640,560,-10350,15,-4,-3],[ 880,-500,-10800,-19,5,3],
+            [-820,-180,-11250,16,-4,-3]];
+  const gone=1-ramp(t,10.62,10.95,'inOutCubic');   /* clear the sign-off */
+  [O.wA,O.wB,O.wC,O.wD,O.wE].forEach((e,i)=>{const [x,y,z,ry,rx,rz]=WP[i];
+    put(e,x,y,z,ry,rx,rz,vis(z,FOG,880)*ramp(t,8.9,9.3,'linear')*gone,lb(z));});
+  scroll(O.wC,620); scroll(O.wD,480); scroll(O.wE,560);
+
+/* 10.4-12.0 --- the only still point in the film, and it still breathes --- */
+  const br=ramp(t,10.40,12.0,'linear');
+  put(O.logo, 0, -400-br*70, -12000+br*150, 0,0,0, ramp(t,10.36,10.74,'outCubic'), 0);
+  put(O.cta1, 0,  -10-br*44, -12000+br*150, 0,0,0, ramp(t,10.56,10.94,'outCubic'), 0);
+  put(O.cta2, 0,  120-br*26, -12000+br*150, 0,0,0, ramp(t,10.78,11.16,'outCubic'), 0);
+}
+window.seek=seek; window.DUR=DUR; seek(0);
+</script></body></html>
