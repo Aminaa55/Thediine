@@ -1,0 +1,35 @@
+/* The Diine — brand tokens, copied from tailwind.config.ts. Nothing outside them. */
+:root{
+  --cream:#FBF1E4; --cream-warm:#FFFAF3; --cream-deep:#F4E5CE; --cream-toast:#EBD7B4;
+  --ink:#3B2310; --ink-deep:#2A1809; --ink-soft:#6E523A; --ink-faint:#9A7E62;
+  --gold:#A87E2E; --gold-bright:#C79A3F; --gold-pale:#EFE2BE;
+  --line:#E4CFAF; --line-soft:#EFE0C9; --line-dark:#4A331F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;overflow:hidden;background:var(--ink-deep)}
+body{font-family:'Karla',system-ui,sans-serif;color:var(--cream);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+.canvas{position:relative;width:1080px;overflow:hidden}
+.display{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 144}
+.eyebrow{font-family:'Karla';font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:var(--gold-bright)}
+/* the site's gold corner brackets — a brand moment, used once */
+.bracket::before,.bracket::after{content:"";position:absolute;width:34px;height:34px;border-color:rgba(199,154,63,.55)}
+.bracket::before{left:44px;top:44px;border-left:1.5px solid;border-top:1.5px solid}
+.bracket::after{right:44px;bottom:44px;border-right:1.5px solid;border-bottom:1.5px solid}
+/* the logo on a cream disc so its brown line-work reads on the dark ground */
+.logo{position:absolute;display:grid;place-items:center;border-radius:50%;background:var(--cream)}
+.logo img{width:94%;height:94%;object-fit:contain;display:block}
+/* a flowing menu: dish names in the display italic, gold dots between */
+.menu{font-family:'Fraunces';font-style:italic;font-weight:340;font-variation-settings:'opsz' 72;color:var(--cream-toast);text-wrap:pretty}
+.menu .dot{color:var(--gold-bright);font-style:normal;font-weight:500;margin:0 .32em;position:relative;top:-.08em}
+.menu b{font-weight:500;color:var(--cream);font-style:italic}
+/* the stamp */
+.stamp{position:absolute;border-radius:50%;background:var(--gold-bright);color:var(--ink-deep);display:grid;place-items:center;
+  box-shadow:0 40px 70px -30px rgba(0,0,0,.75), inset 0 0 0 1px rgba(42,24,9,.18)}
+.stamp .inner{position:absolute;inset:11%;border-radius:50%;border:1.5px solid rgba(42,24,9,.42)}
+.stamp .pct{font-family:'Fraunces';font-weight:760;letter-spacing:-.045em;line-height:.86;font-variation-settings:'opsz' 144}
+.stamp .off{font-family:'Karla';font-weight:700;text-transform:uppercase;letter-spacing:.26em;margin-top:.05em}
+.stamp svg{position:absolute;inset:0;width:100%;height:100%}
+.stamp svg text{font-family:'Karla';font-weight:700;text-transform:uppercase;fill:var(--ink-deep)}
+.hair{height:1px;background:linear-gradient(90deg,rgba(199,154,63,.7),rgba(199,154,63,.18) 60%,transparent)}
+.pill{display:inline-flex;align-items:center;gap:18px;border-radius:999px;background:var(--cream);color:var(--ink);font-family:'Karla';font-weight:700}
+.pill .arrow{font-family:'Fraunces';font-weight:400}
