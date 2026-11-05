@@ -9,7 +9,7 @@ import { submitEventRequest, type CheckoutContext } from "@/app/checkout-actions
 import { formatEGP } from "@/lib/money";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { EMPTY_CUSTOMER, validateEventSubmission, type CustomerDetails, type Errors } from "@/lib/checkout";
-import { chosenExtras } from "./event-extras";
+import { QuotedBadge, chosenExtras } from "./event-extras";
 import { EventHeader } from "./event-steps";
 import {
   CustomerFields, Field, Money, PaymentChoice, ReviewRow, SectionHeading,
@@ -223,9 +223,10 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
                       {extras.map((x) => (
                         <span
                           key={x}
-                          className="rounded-full border border-gold/45 bg-cream px-3.5 py-1.5 text-[13.5px] text-ink"
+                          className="flex items-center gap-2 rounded-full border border-gold/45 bg-cream py-1.5 pe-1.5 ps-3.5 text-[13.5px] text-ink"
                         >
                           {x}
+                          <QuotedBadge />
                         </span>
                       ))}
                     </div>

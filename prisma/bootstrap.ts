@@ -29,7 +29,24 @@ const added = {
   paymentOptions: 0, servingOptions: 0, menuGroups: 0,
 };
 
+
+/**
+ * A slug names exactly one product. The seed matches on it, so a second entry
+ * with the same slug would silently overwrite the first — and move it to
+ * another category — and the bootstrap would silently skip it.
+ */
+function assertUniqueSlugs() {
+  const seen = new Set<string>();
+  for (const cat of CATALOGUE) {
+    for (const p of cat.products) {
+      if (seen.has(p.slug)) throw new Error(`catalogue: slug "${p.slug}" appears twice`);
+      seen.add(p.slug);
+    }
+  }
+}
+
 async function main() {
+  assertUniqueSlugs();
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set. The database cannot be set up without it.");
   }
@@ -113,6 +130,13 @@ async function main() {
   for (const [catIndex, cat] of CATALOGUE.entries()) {
     let category = await prisma.category.findUnique({ where: { slug: cat.slug } });
     if (!category) {
+      // A category added mid-menu — Finger Food sits after Side Dishes — takes
+      // its place in the order, and the categories after it move down one.
+      // Their relative order, which admin may have set, is untouched.
+      await prisma.category.updateMany({
+        where: { sortOrder: { gte: catIndex } },
+        data: { sortOrder: { increment: 1 } },
+      });
       category = await prisma.category.create({
         data: {
           slug: cat.slug, nameEn: cat.name, sortOrder: catIndex,
@@ -188,12 +212,13 @@ async function main() {
             })),
           },
           optionGroups: {
+            // "Choose two buns" is a set; an accompaniment is one choice.
             create: (p.options ?? []).map((g, gi) => ({
               nameEn: g.name,
-              type: "SINGLE" as const,
-              isRequired: true,
-              minSelect: 1,
-              maxSelect: 1,
+              type: (g.pick?.max ?? 1) > 1 ? ("MULTI" as const) : ("SINGLE" as const),
+              isRequired: (g.pick?.min ?? 1) > 0,
+              minSelect: g.pick?.min ?? 1,
+              maxSelect: g.pick?.max ?? 1,
               sortOrder: gi,
               choices: {
                 // Confirmed: included accompaniments add nothing.

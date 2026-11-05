@@ -9,6 +9,8 @@
  *  - `variants` set     -> priced variants; the product itself has no price.
  *  - `options`          -> required choices. Every choice is +0 EGP, per the
  *                          instruction that included accompaniments don't add cost.
+ *                          A group with `pick` asks for a set ("choose two buns")
+ *                          rather than one; finger food packages use this.
  *  - `unit`             -> the portion, exactly as the business supplied it:
  *                          "Serves 5", "1 kg / serves 5", "25 pieces". Shown
  *                          to the customer on the dish. Where a portion differs
@@ -27,7 +29,15 @@
  */
 
 export type Choice = { name: string };
-export type OptionGroup = { name: string; choices: string[] };
+/**
+ * A choice the customer makes on a dish.
+ *
+ * Without `pick` it is one required choice from the list, as every main-course
+ * accompaniment is. With `pick` the customer chooses a set: `{ min: 2, max: 2 }`
+ * is "choose two", `{ min: 1, max: 3 }` is "choose up to three". Every choice
+ * is +0 EGP either way; the price is the dish's own.
+ */
+export type OptionGroup = { name: string; choices: string[]; pick?: { min: number; max: number } };
 export type Variant = { name: string; price: number };
 
 /**
@@ -93,6 +103,62 @@ const SAUCE_4 = [
   "Prunes sauce",
 ];
 const SIDE_2 = ["Potato purée", "Grilled vegetables"];
+
+// --- finger food --------------------------------------------------------------
+// The finger food menu (pages 10–14 of the menu as supplied) lists what can go
+// in a package but carries no prices: a package is priced as a whole, for a
+// guest count. These are the pools a package chooses from, section by section,
+// exactly as the pages name them. Smoked salmon and shrimps appear only in the
+// 60,000 EGP package, so they are offered only there.
+const BUNS = [
+  "Mini burger",
+  "Mini fried chicken",
+  "Mini turkey & cheddar with apples",
+  "Blue cheese with walnuts",
+];
+const BUNS_WITH_SEAFOOD = [...BUNS, "Mini smoked salmon"];
+const STICKS = [
+  "Chicken balls stuffed with mozzarella & grapes",
+  "Mini shish with honey mustard glaze",
+  "Slices of cordon bleu",
+  "Mozzarella with cherry tomatoes",
+];
+const STICKS_WITH_SEAFOOD = [...STICKS, "Shrimps with pineapple"];
+const CUPS = [
+  "Chicken shawerma",
+  "Meat shawerma",
+  "Mushroom with caramelised onions",
+  "Eggplant with onions, coloured pepper & parsley",
+  "Vine leaves with special yogurt dip",
+];
+// Named in the packages; their own menu page (12) was not supplied.
+const KOBEBA_AND_HAWAWSHI = ["Mini kobeba", "Mombar balls", "Mini hawawshi"];
+const MINI_BITE_FILLINGS = [
+  "Basterma with Kiri",
+  "Blue cheese with Kiri",
+  "Hot dog",
+  "White cheese with mint",
+];
+const DESSERT_BITES_AND_CUPS = [
+  "Mini profiteroles",
+  "Mini Nutella brownies",
+  "Mini cakes with fondant glaze",
+  "Mini baklawa with Nutella or nuts",
+  "Mini chocolate chip cookies",
+  "Mini cheesecake",
+  "Mini batata crème brûlée",
+  "Mini tiramisu",
+];
+
+/**
+ * Finger food is sold by the kilo, by the piece, or as a package for a guest
+ * count. None of it follows the event ladder: for an event the customer orders
+ * more kilos, or the package sized for the table, rather than a scaled tray.
+ */
+const FLAT_FOR_EVENTS: SeedEventPricing = {
+  enabled: false,
+  note: "Finger food is ordered by the kilo, by the piece or as a package, so it costs the same at an event as in a normal order.",
+};
 
 
 export const CATALOGUE: SeedCategory[] = [
@@ -486,6 +552,7 @@ export const CATALOGUE: SeedCategory[] = [
         price: 1200,
         allergens: ["gluten"],
         unit: "6 pieces",
+        note: "Finger Food lists Hawawshi too, 6 pieces at 800. Confirm which price stands.",
       },
       {
         slug: "mini-hawawshi",
@@ -493,6 +560,182 @@ export const CATALOGUE: SeedCategory[] = [
         price: 500,
         allergens: ["gluten"],
         unit: "20 pieces",
+        note: "Finger Food lists Mini Hawawshi too, 35–40 pieces at 850. Confirm both should stay.",
+      },
+    ],
+  },
+  {
+    slug: "finger-food",
+    name: "Finger Food",
+    groups: ["By the kilo & by the piece", "Packages"],
+    products: [
+      // --- by the kilo & by the piece --------------------------------------
+      {
+        slug: "mixed-mini-bites",
+        groups: ["By the kilo & by the piece"],
+        name: "Mixed Mini Bites",
+        description: "Basterma, blue cheese and white cheese, mixed.",
+        price: 700,
+        unit: "1 kg",
+        allergens: ["dairy", "gluten"],
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "mini-pizza",
+        groups: ["By the kilo & by the piece"],
+        name: "Mini Pizza",
+        price: 550,
+        unit: "1 kg",
+        options: [{ name: "Topping", choices: ["Mixed cheese", "Hot dog", "Tuna"] }],
+        allergens: ["dairy", "gluten", "fish"],
+        note: 'Supplied as "mini pizza with mixed cheese/hotdog/tuna (1 kilo) 550". Read as one topping per kilo; if a kilo is a mix of all three, drop the choice. Fish applies to the tuna topping only.',
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "mini-fried-chicken-balls",
+        groups: ["By the kilo & by the piece"],
+        name: "Mini Fried Chicken Balls with Mozzarella & Cherry Tomatoes",
+        price: 850,
+        unit: "1 kg",
+        allergens: ["dairy", "gluten"],
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "salty-profiteroles",
+        groups: ["By the kilo & by the piece"],
+        name: "Salty Profiteroles",
+        unit: "25 pieces",
+        variants: [
+          { name: "White cheese, mint & apples", price: 400 },
+          { name: "Blue cheese & walnuts", price: 600 },
+          { name: "Tuna, onions & pickles", price: 600 },
+        ],
+        allergens: ["dairy", "gluten", "egg", "nuts", "fish"],
+        note: "Nuts apply to the walnut filling and fish to the tuna filling only — allergens are held per product, not per filling, so all show on every filling.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "hawawshi-triangles",
+        groups: ["By the kilo & by the piece"],
+        name: "Hawawshi",
+        description: "Each one cut into triangles.",
+        price: 800,
+        unit: "6 pieces",
+        allergens: ["gluten"],
+        note: "Side Dishes also sells Hawawshi, 6 pieces at 1,200. The finger food list supplied says 6 at 800, cut in triangles. Confirm which price stands, or whether these are two different dishes.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "mini-hawawshi-finger-food",
+        groups: ["By the kilo & by the piece"],
+        name: "Mini Hawawshi",
+        price: 850,
+        unit: "35–40 pieces",
+        allergens: ["gluten"],
+        note: "Side Dishes also sells Mini Hawawshi, 20 pieces at 500. The finger food list supplied says 35–40 pieces at 850. Confirm both should stay.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "sambousak-finger-food",
+        groups: ["By the kilo & by the piece"],
+        name: "Sambousak",
+        unit: "20 pieces",
+        variants: [
+          { name: "White cheese & mint", price: 200 },
+          { name: "Minced meat & parsley", price: 400 },
+          { name: "Triple cheese — mozzarella, cream cheese & cheddar", price: 400 },
+        ],
+        allergens: ["dairy", "gluten"],
+        note: "Side Dishes also sells sambousek at 25 pieces (white cheese & mint 250, minced meat & mozzarella 400). This is the finger food list as supplied, at 20 pieces. Confirm whether both should stay.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "mini-soiree-buns",
+        groups: ["By the kilo & by the piece"],
+        name: "Mini Soirée Buns",
+        description: "Mini buns for soirée sandwiches.",
+        unit: "20 buns",
+        variants: [
+          { name: "Chicken burger", price: 400 },
+          { name: "Beef burger", price: 600 },
+          { name: "Grilled kofta", price: 600 },
+          { name: "Smoked turkey & cheddar", price: 550 },
+          { name: "Chicken pané", price: 400 },
+          { name: "Hot dog", price: 450 },
+        ],
+        allergens: ["dairy", "gluten"],
+        note: "Dairy applies to the smoked turkey & cheddar filling only.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "chicken-shawerma-kilo",
+        groups: ["By the kilo & by the piece"],
+        name: "Chicken Shawerma",
+        description: "Makes 15–17 mini sandwiches.",
+        price: 1000,
+        unit: "1 kg",
+        allergens: ["gluten"],
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+
+      // --- packages --------------------------------------------------------
+      // Each package is the selection the business supplied, with the sections
+      // it lists opened up to the finger food pool: the customer chooses the
+      // same NUMBER per section as the package carries. What the package lists
+      // in full for a section is always in and is said in the description.
+      {
+        slug: "finger-food-package-50",
+        groups: ["Packages"],
+        name: "Finger Food Package for 50 Guests",
+        description:
+          "Savoury finger food for 50 guests, 6–8 pieces each. Choose two buns, two sticks, two cups and two from the kobeba & hawawshi, and pick the filling for the mini bites.",
+        price: 20000,
+        unit: "For 50 guests",
+        options: [
+          { name: "Buns", choices: BUNS, pick: { min: 2, max: 2 } },
+          { name: "Sticks", choices: STICKS, pick: { min: 2, max: 2 } },
+          { name: "Cups", choices: CUPS, pick: { min: 2, max: 2 } },
+          { name: "Kobeba & hawawshi", choices: KOBEBA_AND_HAWAWSHI, pick: { min: 2, max: 2 } },
+          { name: "Mini bites filling", choices: MINI_BITE_FILLINGS },
+        ],
+        note: "Allergens depend on what is chosen, so none are tagged on the package itself.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "finger-food-package-70",
+        groups: ["Packages"],
+        name: "Finger Food Package for 70 Guests",
+        description:
+          "Savoury and sweet finger food for 70 guests: 6–8 savoury pieces and 3–5 desserts each. Choose three buns, two sticks, one cup and three desserts. Always in: mini kobeba, mombar balls, mini hawawshi, and mini bites in all four fillings — basterma with Kiri, blue cheese with Kiri, hot dog, and white cheese with mint.",
+        price: 50000,
+        unit: "For 70 guests",
+        options: [
+          { name: "Buns", choices: BUNS, pick: { min: 3, max: 3 } },
+          { name: "Sticks", choices: STICKS, pick: { min: 2, max: 2 } },
+          { name: "Cups", choices: CUPS },
+          { name: "Desserts", choices: DESSERT_BITES_AND_CUPS, pick: { min: 3, max: 3 } },
+        ],
+        note: "Allergens depend on what is chosen, so none are tagged on the package itself.",
+        eventPricing: FLAT_FOR_EVENTS,
+      },
+      {
+        slug: "finger-food-package-70-seafood",
+        groups: ["Packages"],
+        name: "Finger Food Package for 70 Guests, with Seafood",
+        description:
+          "Savoury and sweet finger food for 70 guests, with smoked salmon and shrimps on the menu: 6–8 savoury pieces and 3–5 desserts each. Choose three buns, three sticks, one cup, two from the kobeba & hawawshi, and four desserts. Always in: mini bites in all four fillings — basterma with Kiri, blue cheese with Kiri, hot dog, and white cheese with mint.",
+        price: 60000,
+        unit: "For 70 guests",
+        options: [
+          { name: "Buns", choices: BUNS_WITH_SEAFOOD, pick: { min: 3, max: 3 } },
+          { name: "Sticks", choices: STICKS_WITH_SEAFOOD, pick: { min: 3, max: 3 } },
+          { name: "Cups", choices: CUPS },
+          { name: "Kobeba & hawawshi", choices: KOBEBA_AND_HAWAWSHI, pick: { min: 2, max: 2 } },
+          { name: "Desserts", choices: DESSERT_BITES_AND_CUPS, pick: { min: 4, max: 4 } },
+        ],
+        allergens: ["seafood", "fish"],
+        note: "Seafood and fish apply to the smoked salmon and shrimp choices; everything else depends on what is chosen.",
+        eventPricing: FLAT_FOR_EVENTS,
       },
     ],
   },

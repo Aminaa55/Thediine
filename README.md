@@ -25,15 +25,32 @@ what remains.
 
 ## The catalogue
 
-À la carte. Every dish is an individual product; there is no buffet package.
+À la carte, plus finger food. Every dish is an individual product; the only
+packages are the three finger food packages, each a product with a fixed price
+for a guest count.
 
 | Category | Products | Price rows |
 |---|---:|---:|
 | Main Courses | 21 | 21 |
 | Side Dishes | 19 | 30 |
+| Finger Food | 12 | 21 |
 | Salads | 8 | 8 |
 | Desserts | 22 | 23 |
-| **Total** | **70** | **82** |
+| **Total** | **82** | **103** |
+
+Finger Food is the menu supplied in November 2026, in two sections. **By the
+kilo & by the piece** is the priced list: nine products, four of them sold by
+filling (salty profiteroles, sambousak, mini soirée buns, and mini pizza by
+topping). **Packages** are the three packages supplied — 50 guests at 20,000
+EGP, 70 guests at 50,000, and 70 guests with seafood at 60,000 — each a product
+at its fixed price whose sections (buns, sticks, cups, kobeba & hawawshi,
+desserts) the customer fills from the finger food pool: the same number per
+section as the package carries, chosen from what the menu pages list for that
+section. Smoked salmon and shrimps are offered only in the seafood package.
+The candy bar carries no prices and is a fourth quoted extra on the event
+journey, beside décor, setup and staff. Nothing in Finger Food follows the
+event guest-count ladder: a customer orders more kilos, or the package sized
+for the table.
 
 Prices and portions are the confirmed revision supplied by the business.
 Seven dishes sell by size rather than at one price — Mahshi, Noodles, Spring
@@ -469,7 +486,7 @@ enforced twice: as the customer answers, and again inside the write.
 ## What the website does
 
 - **Homepage** with the two paths: *Order from The Diine* and *Plan an Event*.
-- **Menu** across all four categories, with a sticky category strip, plus a page
+- **Menu** across all five categories, with a sticky category strip, plus a page
   per category.
 - **Product pages** with required choices, priced variants, allergens, quantity,
   special instructions and Add to Cart. Price updates live; Add to Cart stays

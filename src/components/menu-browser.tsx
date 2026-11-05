@@ -18,8 +18,8 @@ type Category = {
 /**
  * Browsing 70+ dishes.
  *
- * Category is the primary way in — the four categories are shown as real
- * choices, not an afterthought above one endless list. Search filters across
+ * Category is the primary way in — the categories are shown as real choices,
+ * not an afterthought above one endless list. Search filters across
  * every dish at once and takes over the view while it has a query.
  */
 export function MenuBrowser({

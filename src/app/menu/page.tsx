@@ -19,8 +19,8 @@ export default async function MenuPage() {
             Everything we cook
           </h1>
           <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">
-            {total} dishes across four courses. Pick a course to narrow things down, or
-            search if you already know what you are after.
+            {total} dishes, from main courses to finger food. Pick a menu to narrow things down,
+            or search if you already know what you are after.
           </p>
           <EventContextBar tiers={tiers} />
         </div>

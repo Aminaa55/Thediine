@@ -589,6 +589,9 @@ model EventDetail {
   decorNotes            String?
   setupRequested        Boolean @default(false)
   servingStaffRequested Boolean @default(false)
+  /// Fondant and buttercream cakes, cupcakes, cake pops, biscuits. Quoted
+  /// like the other three; it has no price list.
+  candyBarRequested     Boolean @default(false)
   extrasNotes           String?
 
   venueName String?

@@ -22,7 +22,24 @@ import { DEFAULT_EVENT_TIERS, MULTIPLIER_SCALE } from "../src/lib/event-pricing"
 
 const prisma = new PrismaClient();
 
+
+/**
+ * A slug names exactly one product. The seed matches on it, so a second entry
+ * with the same slug would silently overwrite the first — and move it to
+ * another category — and the bootstrap would silently skip it.
+ */
+function assertUniqueSlugs() {
+  const seen = new Set<string>();
+  for (const cat of CATALOGUE) {
+    for (const p of cat.products) {
+      if (seen.has(p.slug)) throw new Error(`catalogue: slug "${p.slug}" appears twice`);
+      seen.add(p.slug);
+    }
+  }
+}
+
 async function main() {
+  assertUniqueSlugs();
   console.log("Seeding The Diine…\n");
 
   // --- allergens -----------------------------------------------------------
@@ -161,14 +178,16 @@ async function main() {
 
       await prisma.optionGroup.deleteMany({ where: { productId: product.id } });
       for (const [gIndex, g] of (p.options ?? []).entries()) {
+        // "Choose two buns" is a set; an accompaniment is one choice.
+        const pick = g.pick ?? { min: 1, max: 1 };
         const group = await prisma.optionGroup.create({
           data: {
             productId: product.id,
             nameEn: g.name,
-            type: "SINGLE",
-            isRequired: true,
-            minSelect: 1,
-            maxSelect: 1,
+            type: pick.max > 1 ? "MULTI" : "SINGLE",
+            isRequired: pick.min > 0,
+            minSelect: pick.min,
+            maxSelect: pick.max,
             sortOrder: gIndex,
           },
         });

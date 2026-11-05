@@ -59,6 +59,7 @@ export default async function OrderPage({ params }: Props) {
     detail?.decorRequested && "Table décor",
     detail?.setupRequested && "Event setup",
     detail?.servingStaffRequested && "Serving staff",
+    detail?.candyBarRequested && "Candy bar",
   ].filter(Boolean) as string[];
 
   const finished = order.status === "DELIVERED" || order.status === "CANCELLED";

@@ -32,7 +32,10 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
     isAvailable: boolean; isFeatured: boolean;
     eventPricingEnabled: boolean; eventPricingNote: string | null;
     variants: { id: string; nameEn: string; price: number; isAvailable: boolean }[];
-    optionGroups: { id: string; nameEn: string; choices: { id: string; nameEn: string; isAvailable: boolean }[] }[];
+    optionGroups: {
+      id: string; nameEn: string; minSelect: number; maxSelect: number;
+      choices: { id: string; nameEn: string; isAvailable: boolean }[];
+    }[];
     allergens: { allergen: { id: string; nameEn: string }; reviewed: boolean }[];
     eventTiers: { id: string; minGuests: number; maxGuests: number; multiplierBp: number | null; fixedPrice: number | null }[];
     orderCount: number;
@@ -277,12 +280,19 @@ export function DishEditor({ product, categories, allergens, sharedTiers }: {
       {product.optionGroups.length > 0 && (
         <Panel
           title="What comes with it"
-          note="Choices the customer makes at no extra cost. Switch one off when you have run out of it."
+          note="Choices the customer makes at no extra cost — one for an accompaniment, a set for a finger food package. Switch one off when you have run out of it."
         >
           <div className="grid gap-5">
             {product.optionGroups.map((g) => (
               <div key={g.id}>
-                <p className="eyebrow">{g.nameEn}</p>
+                <p className="eyebrow">
+                  {g.nameEn}
+                  {g.maxSelect > 1 && (
+                    <span className="ms-2 normal-case tracking-normal text-ink-faint">
+                      the customer chooses {g.minSelect === g.maxSelect ? g.maxSelect : `${g.minSelect}–${g.maxSelect}`}
+                    </span>
+                  )}
+                </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {g.choices.map((c) => (
                     <button

@@ -62,6 +62,7 @@ export type EventDraft = {
   decorRequested: boolean;
   setupRequested: boolean;
   servingStaffRequested: boolean;
+  candyBarRequested: boolean;
   extrasNotes: string;
 };
 
@@ -75,6 +76,7 @@ export const EMPTY_EVENT: EventDraft = {
   decorRequested: false,
   setupRequested: false,
   servingStaffRequested: false,
+  candyBarRequested: false,
   extrasNotes: "",
 };
 

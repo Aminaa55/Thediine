@@ -18,6 +18,11 @@ export const EXTRAS = [
     title: "Serving staff",
     body: "Our team stays to serve through the event.",
   },
+  {
+    key: "candyBarRequested" as const,
+    title: "Candy bar",
+    body: "Fondant cakes, cupcakes, cake pops and biscuits, or buttercream cakes.",
+  },
 ];
 
 export function chosenExtras(event: EventDraft): string[] {
@@ -28,8 +33,10 @@ export function chosenExtras(event: EventDraft): string[] {
  * "Anything else for the day?" — asked while the event is being planned, not
  * discovered later from the cart.
  *
- * All three are request-and-quote. Nothing here carries a price or touches any
- * total; pricing has not been defined, so none is implied.
+ * All four are request-and-quote. Nothing here carries a price or touches any
+ * total; pricing has not been defined, so none is implied. Each card says so
+ * itself, before it is switched on: a toggle with no price beside it could
+ * read as included, and none of these is.
  */
 export function EventExtras({ compact = false }: { compact?: boolean }) {
   const { event, updateEvent } = useCart();
@@ -46,8 +53,8 @@ export function EventExtras({ compact = false }: { compact?: boolean }) {
         Anything else for the day?
       </h2>
       <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-ink-soft">
-        Tell us what you would like and we will quote each one when we confirm your event.
-        Nothing here is added to your total.
+        Each of these is quoted separately — tell us what you would like and we price it when we
+        confirm your event. None of it is included in your food total.
       </p>
 
       <div className="mt-7 grid gap-3">
@@ -62,7 +69,10 @@ export function EventExtras({ compact = false }: { compact?: boolean }) {
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <h3 className="font-display text-[20px] font-semibold text-ink">{x.title}</h3>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <h3 className="font-display text-[20px] font-semibold text-ink">{x.title}</h3>
+                    <QuotedBadge />
+                  </div>
                   <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{x.body}</p>
                 </div>
                 <div className="flex gap-2" role="group" aria-label={x.title}>
@@ -72,7 +82,8 @@ export function EventExtras({ compact = false }: { compact?: boolean }) {
               </div>
               {on && (
                 <p className="mt-4 border-t border-gold/25 pt-3 text-[13.5px] text-ink-soft">
-                  We will quote this when we confirm your event.
+                  Requested. We will quote this separately when we confirm your event — it is not
+                  in your total.
                 </p>
               )}
             </div>
@@ -95,6 +106,20 @@ export function EventExtras({ compact = false }: { compact?: boolean }) {
         />
       </div>
     </section>
+  );
+}
+
+/**
+ * Said on the card itself, not only in the paragraph above the list: the label
+ * travels with each extra wherever it is shown, so none of them can look free.
+ */
+export function QuotedBadge({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-block rounded-full border border-ink/15 bg-cream px-2.5 py-0.5 text-[11px] uppercase tracking-widest text-ink-soft ${className}`}
+    >
+      Quoted separately
+    </span>
   );
 }
 

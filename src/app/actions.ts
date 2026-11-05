@@ -83,10 +83,17 @@ export async function resolveCart(
       },
       variants: { select: { id: true, nameEn: true, price: true, isAvailable: true } },
       optionGroups: {
+        orderBy: { sortOrder: "asc" },
         select: {
           id: true,
           nameEn: true,
-          choices: { select: { id: true, nameEn: true, priceDelta: true, isAvailable: true } },
+          isRequired: true,
+          minSelect: true,
+          maxSelect: true,
+          choices: {
+            orderBy: { sortOrder: "asc" },
+            select: { id: true, nameEn: true, priceDelta: true, isAvailable: true },
+          },
         },
       },
     },
@@ -116,17 +123,41 @@ export async function resolveCart(
       continue;
     }
 
+    /**
+     * A group is one choice ("Served with") or a set ("Buns — choose two", on a
+     * finger food package). Either way it becomes ONE line on the order, with
+     * the chosen names together, so a package reads as a package.
+     *
+     * The browser already refused to add a dish with a set that is short or
+     * over, but the cart lives in the browser for days: a choice withdrawn
+     * since, or a package whose rule has changed, is caught here and the
+     * customer is sent back to choose again rather than charged for a guess.
+     */
     const options: ResolvedOption[] = [];
     let delta = 0;
+    let chooseAgain: string | null = null;
     for (const group of product.optionGroups) {
-      const choice = group.choices.find((c) => line.choiceIds.includes(c.id));
-      if (!choice) continue;
+      const chosen = group.choices.filter((c) => line.choiceIds.includes(c.id));
+      if (chosen.some((c) => !c.isAvailable)) {
+        chooseAgain = "One of the choices on this dish is no longer offered.";
+        break;
+      }
+      if (chosen.length > group.maxSelect || (group.isRequired && chosen.length < group.minSelect)) {
+        chooseAgain = "This dish needs to be chosen again.";
+        break;
+      }
+      if (chosen.length === 0) continue;
+      const groupDelta = chosen.reduce((n, c) => n + c.priceDelta, 0);
       options.push({
         groupName: group.nameEn,
-        choiceName: choice.nameEn,
-        priceDelta: choice.priceDelta,
+        choiceName: chosen.map((c) => c.nameEn).join(", "),
+        priceDelta: groupDelta,
       });
-      delta += choice.priceDelta;
+      delta += groupDelta;
+    }
+    if (chooseAgain) {
+      resolved.push(missing(line, chooseAgain, product.nameEn, product.slug));
+      continue;
     }
 
     /**

@@ -6,6 +6,7 @@ import { formatEGP } from "@/lib/money";
 import { formatMultiplier } from "@/lib/event-pricing";
 import { EVENT_TYPE_LABELS } from "@/lib/ordering";
 import { getRules, getContact } from "@/lib/settings";
+import { QuotedBadge } from "@/components/event-extras";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Your order" };
@@ -115,6 +116,7 @@ export default async function OrderPage({ params }: Props) {
     detail?.decorRequested && "Table décor",
     detail?.setupRequested && "Event setup",
     detail?.servingStaffRequested && "Serving staff",
+    detail?.candyBarRequested && "Candy bar",
   ].filter(Boolean) as string[];
 
   return (
@@ -300,13 +302,14 @@ export default async function OrderPage({ params }: Props) {
               <>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {extras.map((x) => (
-                    <span key={x} className="rounded-full border border-gold/45 bg-cream px-3.5 py-1.5 text-[13.5px] text-ink">
+                    <span key={x} className="flex items-center gap-2 rounded-full border border-gold/45 bg-cream py-1.5 pe-1.5 ps-3.5 text-[13.5px] text-ink">
                       {x}
+                      <QuotedBadge />
                     </span>
                   ))}
                 </div>
                 <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
-                  We quote each one when we confirm the event. None of it is in the total above.
+                  Each is quoted separately when we confirm the event. None of it is in the total above.
                 </p>
               </>
             )}

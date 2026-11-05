@@ -639,7 +639,7 @@ export async function submitEventRequest(
           servingSetup: serving.setup,
           servingSetupLabel: serving.name,
           subtotal,
-          // Décor, setup and staff are quoted separately and are NOT in this total.
+          // Décor, setup, staff and the candy bar are quoted separately and are NOT in this total.
           deliveryFee: null,
           total: subtotal,
           paymentMethod: method,
@@ -662,6 +662,7 @@ export async function submitEventRequest(
               decorRequested: event.decorRequested,
               setupRequested: event.setupRequested,
               servingStaffRequested: event.servingStaffRequested,
+              candyBarRequested: event.candyBarRequested,
               extrasNotes: event.extrasNotes.trim() || null,
               venueName: event.venue.trim(),
             },

@@ -70,7 +70,7 @@ export default async function DishPage({ params }: Props) {
               id: v.id, nameEn: v.nameEn, price: v.price, isAvailable: v.isAvailable,
             })),
             optionGroups: product.optionGroups.map((g) => ({
-              id: g.id, nameEn: g.nameEn,
+              id: g.id, nameEn: g.nameEn, minSelect: g.minSelect, maxSelect: g.maxSelect,
               choices: g.choices.map((c) => ({ id: c.id, nameEn: c.nameEn, isAvailable: c.isAvailable })),
             })),
             allergens: product.allergens.map((a) => ({

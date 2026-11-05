@@ -7,7 +7,7 @@ import { validateEvent } from "@/lib/ordering";
 import { useRules } from "./rules-provider";
 import { formatEGP } from "@/lib/money";
 import { formatMultiplier } from "@/lib/event-pricing";
-import { EventExtras, chosenExtras } from "./event-extras";
+import { EventExtras, QuotedBadge, chosenExtras } from "./event-extras";
 import type { ResolvedCart } from "@/app/actions";
 
 /**
@@ -190,7 +190,7 @@ export function EventRequestSection({
           <p className="mt-3 text-[16px] text-ink-soft">
             Nothing requested.{" "}
             <button type="button" onClick={() => setEditing(true)} className="link-sweep">
-              Add table décor, setup or staff
+              Add table décor, setup, staff or a candy bar
             </button>
           </p>
         ) : (
@@ -199,15 +199,16 @@ export function EventRequestSection({
               {extras.map((x) => (
                 <li
                   key={x}
-                  className="rounded-full border border-gold/45 bg-gold-pale/40 px-4 py-1.5 text-[14.5px] text-ink"
+                  className="flex items-center gap-2.5 rounded-full border border-gold/45 bg-gold-pale/40 py-1.5 pe-1.5 ps-4 text-[14.5px] text-ink"
                 >
                   {x}
+                  <QuotedBadge />
                 </li>
               ))}
             </ul>
             <p className="mt-3.5 text-[14px] text-ink-soft">
-              We will quote each one when we confirm your event. Nothing here is added to
-              your total.{" "}
+              Each is quoted separately when we confirm your event. None of it is in your food
+              subtotal below.{" "}
               <button type="button" onClick={() => setEditing(true)} className="link-sweep">
                 Change
               </button>
@@ -228,7 +229,7 @@ export function EventRequestSection({
         </div>
         {/*
           The food subtotal is the event price of the dishes at this guest count.
-          Décor, setup and staff are quoted separately and are not in it.
+          Décor, setup, staff and the candy bar are quoted separately and are not in it.
         */}
         {scaledTier?.multiplierBp != null && cart.guestCount !== null && (
           <p className="mt-1.5 text-[14px] leading-relaxed text-ink-soft">

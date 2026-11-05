@@ -45,7 +45,10 @@ const configurableSelect = {
     select: {
       id: true,
       nameEn: true,
+      type: true,
       isRequired: true,
+      minSelect: true,
+      maxSelect: true,
       choices: {
         where: { isAvailable: true },
         orderBy: { sortOrder: "asc" },
