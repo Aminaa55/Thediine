@@ -34,9 +34,10 @@ for a guest count.
 | Main Courses | 21 | 21 |
 | Side Dishes | 19 | 30 |
 | Finger Food | 12 | 21 |
+| Frozen & Ready to Cook | 20 | 20 |
 | Salads | 8 | 8 |
 | Desserts | 22 | 23 |
-| **Total** | **82** | **103** |
+| **Total** | **102** | **123** |
 
 Finger Food is the menu supplied in November 2026, in two sections. **By the
 kilo & by the piece** is the priced list: nine products, four of them sold by
@@ -51,6 +52,15 @@ The candy bar carries no prices and is a fourth quoted extra on the event
 journey, beside décor, setup and staff. Nothing in Finger Food follows the
 event guest-count ladder: a customer orders more kilos, or the package sized
 for the table.
+
+Frozen & Ready to Cook is the Arabic "أكل جاهز على التسوية" list, translated:
+twenty priced dishes, sold frozen for the customer to cook — béchamel, lasagna,
+goulash trays, kofta, chicken, hawawshi, kobeba, mombar. Only three carry a
+piece count; the rest were supplied without a portion and are flagged in admin
+until the business says. Sambousak and vegetable spring rolls are on the list
+without a price and are left out until one is given. Several dishes also exist
+on the cooked menu at other prices; the frozen versions are separate products.
+Like Finger Food, nothing here follows the event ladder.
 
 Prices and portions are the confirmed revision supplied by the business.
 Seven dishes sell by size rather than at one price — Mahshi, Noodles, Spring
@@ -486,7 +496,7 @@ enforced twice: as the customer answers, and again inside the write.
 ## What the website does
 
 - **Homepage** with the two paths: *Order from The Diine* and *Plan an Event*.
-- **Menu** across all five categories, with a sticky category strip, plus a page
+- **Menu** across all six categories, with a sticky category strip, plus a page
   per category.
 - **Product pages** with required choices, priced variants, allergens, quantity,
   special instructions and Add to Cart. Price updates live; Add to Cart stays

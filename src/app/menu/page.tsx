@@ -19,7 +19,7 @@ export default async function MenuPage() {
             Everything we cook
           </h1>
           <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">
-            {total} dishes, from main courses to finger food. Pick a menu to narrow things down,
+            {total} dishes, from main courses to finger food and frozen, ready-to-cook trays. Pick a menu to narrow things down,
             or search if you already know what you are after.
           </p>
           <EventContextBar tiers={tiers} />

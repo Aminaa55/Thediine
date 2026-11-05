@@ -93,7 +93,7 @@ export default async function HomePage() {
             <div className="max-w-md">
               <p className="label-rule">The menu</p>
               <h2 className="mt-4 font-display text-[32px] font-semibold leading-[1.1] text-ink sm:text-[42px]">
-                Five menus,
+                Six menus,
                 <span className="italic font-normal text-gold"> cooked to order</span>
               </h2>
             </div>
@@ -101,7 +101,7 @@ export default async function HomePage() {
           </div>
 
           {/* Alternating vertical offsets give the row a hand-set rhythm. */}
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((c, i) => (
               <Link
                 key={c.slug}
