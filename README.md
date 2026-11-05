@@ -55,9 +55,9 @@ for the table.
 
 Frozen & Ready to Cook is the Arabic "أكل جاهز على التسوية" list, translated:
 twenty priced dishes, sold frozen for the customer to cook — béchamel, lasagna,
-goulash trays, kofta, chicken, hawawshi, kobeba, mombar. Only three carry a
-piece count; the rest were supplied without a portion and are flagged in admin
-until the business says. Sambousak and vegetable spring rolls are on the list
+goulash trays, kofta, chicken, hawawshi, kobeba, mombar. The bakes are sold as
+a big tray, the meat and chicken by the kilo, stuffed pigeon as 3 pairs, and
+three dishes by the piece. Sambousak and vegetable spring rolls are on the list
 without a price and are left out until one is given. Several dishes also exist
 on the cooked menu at other prices; the frozen versions are separate products.
 Like Finger Food, nothing here follows the event ladder.

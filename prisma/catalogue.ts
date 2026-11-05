@@ -746,41 +746,41 @@ export const CATALOGUE: SeedCategory[] = [
   },
   {
     // The Arabic "أكل جاهز على التسوية" list, translated. Sold frozen, for the
-    // customer to cook. Prices as supplied; portions only where the list gave
-    // one — the rest are left blank and flagged in admin, never invented.
+    // customer to cook. Prices as supplied; portions as the owner gave them
+    // afterwards — big trays, kilos, and 3 pairs of pigeon.
     // Sambousak and vegetable spring rolls are on the list without a price
     // and are left out until one is given.
     slug: "frozen-ready-to-cook",
     name: "Frozen & Ready to Cook",
     products: [
-      { slug: "frozen-macaroni-bechamel", name: "Macaroni Béchamel", price: 1000, allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-lasagna-minced-meat", name: "Lasagna with Minced Meat", price: 1200, allergens: ["dairy", "gluten", "egg"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-negresco", name: "Negresco", price: 900, allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-cannelloni", name: "Cannelloni", price: 900, allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-creamy-spinach-chicken", name: "Creamy Spinach with Chicken", price: 900, allergens: ["dairy"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-artichoke-mushroom-rose", name: "Artichoke & Mushroom in Rosé Sauce", price: 800, allergens: ["dairy"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-grilled-beef-kofta", name: "Grilled Beef Kofta", price: 900, eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-beef-kofta-pane", name: "Beef Kofta Pané", description: "Breaded.", price: 850, allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-kofta-dawood-basha", name: "Kofta Dawood Basha", price: 850, eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-marinated-chicken-shish", name: "Marinated Chicken Breast Shish", price: 650, eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-macaroni-bechamel", name: "Macaroni Béchamel", price: 1000, unit: "Big tray", allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-lasagna-minced-meat", name: "Lasagna with Minced Meat", price: 1200, unit: "Big tray", allergens: ["dairy", "gluten", "egg"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-negresco", name: "Negresco", price: 900, unit: "Big tray", allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-cannelloni", name: "Cannelloni", price: 900, unit: "Big tray", allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-creamy-spinach-chicken", name: "Creamy Spinach with Chicken", price: 900, unit: "Big tray", allergens: ["dairy"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-artichoke-mushroom-rose", name: "Artichoke & Mushroom in Rosé Sauce", price: 800, unit: "Big tray", allergens: ["dairy"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-grilled-beef-kofta", name: "Grilled Beef Kofta", price: 900, unit: "1 kg", eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-beef-kofta-pane", name: "Beef Kofta Pané", description: "Breaded.", price: 850, unit: "1 kg", allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-kofta-dawood-basha", name: "Kofta Dawood Basha", price: 850, unit: "1 kg", eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-marinated-chicken-shish", name: "Marinated Chicken Breast Shish", price: 650, unit: "1 kg", eventPricing: FROZEN_FOR_EVENTS },
       {
         slug: "frozen-chicken-pane-strips",
         name: "Chicken Pané or Strips",
-        price: 650,
+        price: 650, unit: "1 kg",
         options: [{ name: "Cut", choices: ["Pané", "Strips"] }],
         allergens: ["gluten"],
         note: 'Supplied as "فراخ بانيه/ستربس 650" — read as one price, the customer choosing the cut.',
         eventPricing: FROZEN_FOR_EVENTS,
       },
-      { slug: "frozen-chicken-kofta-mozzarella", name: "Chicken Kofta with Mozzarella", price: 800, allergens: ["dairy"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-stuffed-pigeon", name: "Stuffed Pigeon", price: 600, eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-cheese-goulash-tray", name: "Cheese Goulash Tray", price: 750, allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-minced-meat-goulash-tray", name: "Minced Meat Goulash Tray", price: 850, allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-chicken-kofta-mozzarella", name: "Chicken Kofta with Mozzarella", price: 800, unit: "1 kg", allergens: ["dairy"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-stuffed-pigeon", name: "Stuffed Pigeon", price: 900, unit: "3 pairs", note: "The Arabic list said 600; the owner gave 900 for 3 pairs when supplying portions. 900 is used — confirm.", eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-cheese-goulash-tray", name: "Cheese Goulash Tray", price: 750, unit: "Big tray", allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-minced-meat-goulash-tray", name: "Minced Meat Goulash Tray", price: 850, unit: "Big tray", allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
       { slug: "frozen-roqaq-minced-meat-mozzarella", name: "Roqaq with Minced Meat & Mozzarella", price: 900, unit: "6 pieces", allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
       { slug: "frozen-goulash-white-cheese-mint", name: "Goulash with White Cheese & Mint", price: 350, unit: "20 pieces", allergens: ["dairy", "gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-kobeba", name: "Kobeba", price: 850, allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-kobeba", name: "Kobeba", price: 850, unit: "1 kg", allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
       { slug: "frozen-hawawshi", name: "Hawawshi", price: 800, unit: "6 pieces", allergens: ["gluten"], eventPricing: FROZEN_FOR_EVENTS },
-      { slug: "frozen-mombar", name: "Mombar", price: 500, eventPricing: FROZEN_FOR_EVENTS },
+      { slug: "frozen-mombar", name: "Mombar", price: 500, unit: "1 kg", eventPricing: FROZEN_FOR_EVENTS },
     ],
   },
   {
