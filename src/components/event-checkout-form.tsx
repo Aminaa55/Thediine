@@ -213,10 +213,10 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
               {/* Quote-only, and deliberately outside the subtotal above. */}
               <div className="border-t border-line px-6 py-5">
                 <h3 className="text-[11px] uppercase tracking-widest text-ink-faint">
-                  Anything else for the day?
+                  Quotation requests · priced separately
                 </h3>
                 {extras.length === 0 ? (
-                  <p className="mt-3 text-[15px] text-ink-soft">Nothing requested.</p>
+                  <p className="mt-3 text-[15px] text-ink-soft">None.</p>
                 ) : (
                   <>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -231,7 +231,7 @@ export function EventCheckoutForm({ ctx }: { ctx: CheckoutContext }) {
                       ))}
                     </div>
                     <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
-                      Quoted separately when we confirm the event. Not included in the food subtotal.
+                      No set price. We send a quotation for each with the event confirmation — not included in the food subtotal.
                     </p>
                   </>
                 )}

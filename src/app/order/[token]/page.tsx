@@ -294,10 +294,10 @@ export default async function OrderPage({ params }: Props) {
         {isEvent && (
           <div className="mt-8 border-t border-line pt-5">
             <h3 className="text-[11px] uppercase tracking-widest text-ink-faint">
-              Anything else for the day?
+              Quotation requests · priced separately
             </h3>
             {extras.length === 0 ? (
-              <p className="mt-3 text-[15px] text-ink-soft">Nothing requested.</p>
+              <p className="mt-3 text-[15px] text-ink-soft">None.</p>
             ) : (
               <>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -309,7 +309,7 @@ export default async function OrderPage({ params }: Props) {
                   ))}
                 </div>
                 <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
-                  Each is quoted separately when we confirm the event. None of it is in the total above.
+                  No set price. We send a quotation for each when we confirm the event — none of it is in the total above.
                 </p>
               </>
             )}

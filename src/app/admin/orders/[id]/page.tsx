@@ -242,7 +242,7 @@ export default async function OrderPage({ params }: Props) {
 
           {/* --- what was asked for on the day --- */}
           {isEvent && (
-            <Card title="Anything else for the day?">
+            <Card title="Quotation requests — priced separately">
               {extras.length === 0 ? (
                 <p className="text-[15px] text-ink-soft">Nothing requested.</p>
               ) : (

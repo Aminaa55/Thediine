@@ -1,0 +1,133 @@
+   ▲ Next.js 15.5.24
+   - Local:        http://localhost:3000
+   - Network:      http://192.0.2.2:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 3.4s
+ ○ Compiling /menu/[category] ...
+ ✓ Compiled /menu/[category] in 5.2s (674 modules)
+ ⨯ Error [PrismaClientInitializationError]: 
+Invalid `prisma.category.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5433`
+
+Please make sure your database server is running at `localhost:5433`.
+    at async CategoryPage (src/app/menu/[category]/page.tsx:20:31)
+  18 | export default async function CategoryPage({ params }: Props) {
+  19 |   const { category } = await params;
+> 20 |   const [categories, tiers] = await Promise.all([getMenu(), getEventTiers()]);
+     |                               ^
+  21 |   const found = categories.find((c) => c.slug === category);
+  22 |   if (!found) notFound();
+  23 | {
+  clientVersion: '6.19.3',
+  errorCode: undefined,
+  retryable: undefined,
+  digest: '1223174944'
+}
+ ⨯ Error [PrismaClientInitializationError]: 
+Invalid `prisma.setting.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5433`
+
+Please make sure your database server is running at `localhost:5433`.
+    at async eval (src/lib/settings.ts:45:16)
+  43 |
+  44 | export const getSettings = cache(async (): Promise<Record<string, string>> => {
+> 45 |   const rows = await db.setting.findMany();
+     |                ^
+  46 |   return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  47 | });
+  48 | {
+  clientVersion: '6.19.3',
+  errorCode: undefined,
+  retryable: undefined,
+  digest: '1665719934'
+}
+ GET /menu/finger-food 500 in 8243ms
+ ○ Compiling /events/start ...
+ ✓ Compiled /events/start in 1031ms (684 modules)
+ GET /events/start 200 in 1056ms
+ ⨯ Error [PrismaClientInitializationError]: 
+Invalid `prisma.setting.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5433`
+
+Please make sure your database server is running at `localhost:5433`.
+    at async eval (src/lib/settings.ts:45:16)
+  43 |
+  44 | export const getSettings = cache(async (): Promise<Record<string, string>> => {
+> 45 |   const rows = await db.setting.findMany();
+     |                ^
+  46 |   return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  47 | });
+  48 | {
+  clientVersion: '6.19.3',
+  errorCode: undefined,
+  retryable: undefined,
+  digest: '1665719934'
+}
+ ⨯ Error [PrismaClientInitializationError]: 
+Invalid `prisma.category.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5433`
+
+Please make sure your database server is running at `localhost:5433`.
+    at async CategoryPage (src/app/menu/[category]/page.tsx:20:31)
+  18 | export default async function CategoryPage({ params }: Props) {
+  19 |   const { category } = await params;
+> 20 |   const [categories, tiers] = await Promise.all([getMenu(), getEventTiers()]);
+     |                               ^
+  21 |   const found = categories.find((c) => c.slug === category);
+  22 |   if (!found) notFound();
+  23 | {
+  clientVersion: '6.19.3',
+  errorCode: undefined,
+  retryable: undefined,
+  digest: '1223174944'
+}
+ ⨯ Error [PrismaClientInitializationError]: 
+Invalid `prisma.setting.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5433`
+
+Please make sure your database server is running at `localhost:5433`.
+    at async eval (src/lib/settings.ts:45:16)
+  43 |
+  44 | export const getSettings = cache(async (): Promise<Record<string, string>> => {
+> 45 |   const rows = await db.setting.findMany();
+     |                ^
+  46 |   return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  47 | });
+  48 | {
+  clientVersion: '6.19.3',
+  errorCode: undefined,
+  retryable: undefined,
+  digest: '1665719934'
+}
+ GET /menu/finger-food 500 in 314ms
+ GET /menu/finger-food 200 in 318ms
+ GET /menu/finger-food 200 in 366ms
+ GET /events/start 200 in 80ms
+ ○ Compiling /events/details ...
+ ✓ Compiled /events/details in 1230ms (693 modules)
+ GET /events/details 200 in 1644ms
+ GET /events/details 200 in 254ms
+ GET /events/details 200 in 260ms
+ ✓ Compiled /product/[slug] in 302ms (704 modules)
+ GET /product/finger-food-package-50?for=event 200 in 1322ms
+ GET /product/finger-food-package-50?for=event 200 in 91ms
+ ✓ Compiled /cart in 376ms (756 modules)
+ GET /cart 200 in 819ms
+ POST /cart 200 in 55ms
+ POST /cart 200 in 38ms
+ GET /product/finger-food-package-70-seafood 200 in 233ms
+ ○ Compiling / ...
+ ✓ Compiled / in 527ms (766 modules)
+ GET / 200 in 1324ms

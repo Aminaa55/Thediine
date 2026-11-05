@@ -181,16 +181,17 @@ export function EventRequestSection({
         )}
       </div>
 
-      {/* 3 — the extras */}
+      {/* 3 — the quotation requests, framed apart from the food */}
       <div className="px-6 py-7 sm:px-8">
+        <div className="rounded-sm border-2 border-dashed border-gold/50 bg-cream px-5 py-5">
         <h3 className="text-[11px] uppercase tracking-widest text-ink-faint">
-          Anything else for the day?
+          Quotation requests · priced separately
         </h3>
         {extras.length === 0 ? (
           <p className="mt-3 text-[16px] text-ink-soft">
-            Nothing requested.{" "}
+            None.{" "}
             <button type="button" onClick={() => setEditing(true)} className="link-sweep">
-              Add table décor, setup, staff or a candy bar
+              Request a quote for table décor, setup, staff or a candy bar
             </button>
           </p>
         ) : (
@@ -207,8 +208,8 @@ export function EventRequestSection({
               ))}
             </ul>
             <p className="mt-3.5 text-[14px] text-ink-soft">
-              Each is quoted separately when we confirm your event. None of it is in your food
-              subtotal below.{" "}
+              No set price. We send a quotation for each with your event confirmation — none of
+              it is in the food subtotal below.{" "}
               <button type="button" onClick={() => setEditing(true)} className="link-sweep">
                 Change
               </button>
@@ -220,6 +221,7 @@ export function EventRequestSection({
             {event.extrasNotes}
           </p>
         )}
+        </div>
 
         <div className="mt-7 flex flex-wrap items-baseline justify-between gap-4 border-t border-line pt-6">
           <span className="font-display text-[19px] font-semibold text-ink">Food subtotal</span>
@@ -239,7 +241,7 @@ export function EventRequestSection({
             count above and this recalculates.
           </p>
         )}
-        <p className="mt-1.5 text-[14px] text-ink-faint">Extras are quoted separately.</p>
+        <p className="mt-1.5 text-[14px] text-ink-faint">Food only. Quotation requests are priced separately.</p>
 
         {/* Goes to the event's own review; it never joins the normal order. */}
         <Link
