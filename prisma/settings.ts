@@ -54,6 +54,9 @@ export const SETTINGS: Record<string, string> = {
   whatsapp_number: "+201123030107",
   contact_instagram: "https://www.instagram.com/thediine/",
   contact_email: "", // TO CONFIRM — no address supplied
+  // Where every new order and event request is announced by email. Empty
+  // falls back to contact_email; both empty means no email is sent.
+  order_notification_email: "",
 
   // Serving setup — the options themselves are rows in ServingOption. This is
   // only the line customers read about returning dishes, which is not written.

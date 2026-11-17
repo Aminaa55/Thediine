@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { currentAdmin } from "@/lib/admin-auth";
 import { poundsToPiastres } from "@/lib/money";
 import { MULTIPLIER_SCALE } from "@/lib/event-pricing";
+import { notifyConfig, notificationRecipient, sendEmail } from "@/lib/notify";
 
 /**
  * Changing the business's own rules.
@@ -53,6 +54,11 @@ const asWholeNumber =
     }
     return null;
   };
+
+const asEmail: Check = (raw) =>
+  raw.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw.trim())
+    ? null
+    : "That does not look like an email address.";
 
 const asMoney: Check = (raw) => {
   if (raw.trim() === "") return null;
@@ -115,10 +121,8 @@ const EDITABLE: Record<string, Check> = {
   // Contact
   whatsapp_number: anyText,
   contact_instagram: anyText,
-  contact_email: (raw) =>
-    raw.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw.trim())
-      ? null
-      : "That does not look like an email address.",
+  contact_email: asEmail,
+  order_notification_email: asEmail,
 };
 
 /** Money fields are typed in pounds and stored in piastres, like every price. */
@@ -613,4 +617,26 @@ export async function removeServingOption(id: string): Promise<SaveResult> {
   await db.servingOption.delete({ where: { id } });
   refresh();
   return { ok: true };
+}
+
+// ------------------------------------------------------- order notifications
+
+/**
+ * A test email to the notification address, so the owner can see that new
+ * orders will reach them before the first one does.
+ */
+export async function sendTestNotification(): Promise<SaveResult> {
+  await requireAdmin();
+  if (!notifyConfig().configured) {
+    return { ok: false, error: "Email sending is not set up on the server yet (RESEND_API_KEY)." };
+  }
+  const to = await notificationRecipient();
+  if (!to) return { ok: false, error: "Save an address first." };
+  const result = await sendEmail({
+    to,
+    subject: "Test: new orders from The Diine website will arrive here",
+    text: "This is a test from the website's admin. New orders and event requests will be announced at this address.",
+    html: "<p>This is a test from the website's admin.</p><p>New orders and event requests will be announced at this address.</p>",
+  });
+  return result.ok ? { ok: true } : { ok: false, error: result.error };
 }

@@ -1,6 +1,8 @@
 "use server";
 
+import { after } from "next/server";
 import { db } from "@/lib/db";
+import { notifyNewOrder } from "@/lib/notify";
 import type { CartLine, EventDraft } from "@/lib/cart";
 import { resolveCart } from "./actions";
 import { nextOrderNumber } from "@/lib/order-number";
@@ -549,6 +551,10 @@ export async function placeNormalOrder(
       });
     });
 
+    // Tell the business, once the customer has their confirmation. Nothing
+    // about it can fail or delay the order.
+    after(() => notifyNewOrder(order.id));
+
     if (method === "CARD") {
       const payAt = await startCardPayment(order, input, input.addressLine.trim() || null);
       return { ok: true, orderNumber: order.orderNumber, token: order.publicToken, payAt: payAt ?? undefined };
@@ -670,6 +676,8 @@ export async function submitEventRequest(
         select: { id: true, orderNumber: true, publicToken: true, total: true },
       });
     });
+
+    after(() => notifyNewOrder(order.id));
 
     if (method === "CARD") {
       const payAt = await startCardPayment(order, customer, event.venue.trim() || null);

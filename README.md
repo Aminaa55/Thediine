@@ -391,6 +391,22 @@ email. Nothing invents a deposit, a return period or a late fee for returnable
 dishes -- those have not been decided, so the admin does not present them as
 rules.
 
+### New order alerts
+
+Every order and event request placed on the website is emailed to the business
+the moment it is written, from [`src/lib/notify.ts`](src/lib/notify.ts). The
+email carries everything the kitchen needs — customer, mobile with a WhatsApp
+button, date and time, address or venue, every dish with its choices, the
+totals, how it is being paid — and a link to the order in admin.
+
+The address is a setting, under Settings > Business details > New order alerts,
+with a button that sends a test email. Empty falls back to the contact email.
+Sending goes through [Resend](https://resend.com) and needs `RESEND_API_KEY`
+in the deployment; `ORDER_NOTIFY_FROM` optionally sets the sender (see
+`.env.example` for the test-sender limitation). The email is sent after the
+customer already has their confirmation and can neither delay nor fail an
+order: a problem is logged and the order stands.
+
 ### Getting in
 
 Admin needs `ADMIN_SESSION_SECRET` (any long random string) and an account:
