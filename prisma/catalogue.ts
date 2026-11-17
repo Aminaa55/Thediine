@@ -722,6 +722,13 @@ export const CATALOGUE: SeedCategory[] = [
         unit: "Serves 6–8",
         allergens: ["dairy", "gluten", "egg"],
       },
+      {
+        slug: "cloud-cake",
+        name: "Cloud Cake",
+        price: 650,
+        unit: "Serves 6",
+        note: "Allergens not yet supplied — confirm with the kitchen before launch.",
+      },
     ],
   },
 ];
