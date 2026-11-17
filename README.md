@@ -32,8 +32,8 @@ what remains.
 | Main Courses | 21 | 21 |
 | Side Dishes | 19 | 30 |
 | Salads | 8 | 8 |
-| Desserts | 22 | 23 |
-| **Total** | **70** | **82** |
+| Desserts | 23 | 24 |
+| **Total** | **71** | **83** |
 
 Prices and portions are the confirmed revision supplied by the business.
 Seven dishes sell by size rather than at one price — Mahshi, Noodles, Spring
