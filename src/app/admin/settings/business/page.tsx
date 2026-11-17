@@ -1,6 +1,7 @@
 import { getSettingsMap } from "@/lib/admin-settings";
 import { ContactSettings } from "@/components/admin/settings-contact";
 import { HistoryNote } from "@/components/admin/settings-bits";
+import { notifyConfig } from "@/lib/notify";
 
 export const metadata = { title: "Business details · Settings" };
 
@@ -14,7 +15,9 @@ export default async function BusinessSettingsPage() {
           whatsapp_number: s.whatsapp_number ?? "",
           contact_instagram: s.contact_instagram ?? "",
           contact_email: s.contact_email ?? "",
+          order_notification_email: s.order_notification_email ?? "",
         }}
+        notify={notifyConfig()}
       />
       <HistoryNote>
         An order already placed keeps its own record of the customer&rsquo;s details; nothing here
